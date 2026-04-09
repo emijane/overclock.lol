@@ -1,8 +1,6 @@
 import {
   AuthMessage,
   AuthenticatedPanel,
-  LoginHero,
-  SecurityChecklist,
   UnauthenticatedPanel,
 } from "@/app/login/components";
 import { createClient } from "@/lib/supabase/server";
@@ -31,23 +29,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
-        <LoginHero />
+      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-xl flex-col justify-center gap-6">
         <AuthMessage message={message} type={messageType} />
-
-        <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <SecurityChecklist />
-
+        {isAuthenticated ? (
           <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
-            {isAuthenticated ? (
-              <AuthenticatedPanel
-                email={user?.email ?? claims?.email?.toString()}
-              />
-            ) : (
-              <UnauthenticatedPanel />
-            )}
+            <AuthenticatedPanel email={user?.email ?? claims?.email?.toString()} />
           </div>
-        </section>
+        ) : (
+          <UnauthenticatedPanel />
+        )}
       </div>
     </main>
   );

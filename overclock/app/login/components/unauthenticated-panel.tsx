@@ -1,11 +1,7 @@
-import { SignInForm } from "@/app/login/components/sign-in-form";
-import { SignUpForm } from "@/app/login/components/sign-up-form";
+import { DiscordLoginCard } from "@/app/login/components/discord-login-card";
 
 export function UnauthenticatedPanel() {
   return (
-    <div className="grid gap-6">
-      <SignInForm />
-      <SignUpForm />
-    </div>
+    <DiscordLoginCard />
   );
 }

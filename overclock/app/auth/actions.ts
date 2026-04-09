@@ -26,7 +26,7 @@ export async function signUp(formData: FormData) {
   const headerStore = await headers();
   const origin = headerStore.get("origin") ?? "http://localhost:3000";
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -36,6 +36,10 @@ export async function signUp(formData: FormData) {
 
   if (error) {
     messageRedirect(error.message);
+  }
+
+  if (data.session) {
+    redirect("/login");
   }
 
   messageRedirect(
@@ -62,11 +66,11 @@ export async function signIn(formData: FormData) {
     messageRedirect(error.message);
   }
 
-  redirect("/");
+  redirect("/login");
 }
 
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  redirect("/login");
 }

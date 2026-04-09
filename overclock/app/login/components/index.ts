@@ -1,5 +1,6 @@
 export { AuthMessage } from "@/app/login/components/auth-message";
 export { AuthenticatedPanel } from "@/app/login/components/authenticated-panel";
+export { DiscordLoginCard } from "@/app/login/components/discord-login-card";
 export { LoginHero } from "@/app/login/components/login-hero";
 export { PasswordField } from "@/app/login/components/password-field";
 export { SecurityChecklist } from "@/app/login/components/security-checklist";

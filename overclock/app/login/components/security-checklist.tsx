@@ -1,7 +1,7 @@
 const SECURITY_DEFAULTS = [
   "Use the publishable key only in browser-safe code.",
   "Never expose the service role key to the client.",
-  "Keep email confirmation enabled in Supabase Auth.",
+  "Keep Discord as the only enabled provider until the MVP needs more.",
   "Protect data with Row Level Security, not hidden UI alone.",
   "Verify auth on the server with claims before loading private data.",
   "Store profiles and app data in your own tables keyed by auth user id.",
