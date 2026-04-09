@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { signOut } from "@/app/auth/actions";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 export default async function OnboardingPage() {
@@ -27,6 +28,16 @@ export default async function OnboardingPage() {
             Your account is authenticated with Discord. Next we will collect
             your unique username and create your app profile.
           </p>
+          <div className="mt-6">
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
         </section>
       </div>
     </main>
