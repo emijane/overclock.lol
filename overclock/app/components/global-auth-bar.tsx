@@ -16,6 +16,7 @@ export async function GlobalAuthBar() {
   const avatarFallback = (profile?.display_name ?? visibleName)
     .slice(0, 1)
     .toUpperCase();
+  const profileHref = profile?.username ? `/u/${profile.username}` : "/onboarding";
 
   return (
     <div className="mx-auto flex w-full max-w-6xl justify-end px-6 pt-6">
@@ -36,11 +37,17 @@ export async function GlobalAuthBar() {
           @{visibleName}
         </span>
         <Link
-          href="/login"
+          href={profileHref}
           className="rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:border-sky-400 hover:text-sky-200"
         >
-          Account
+          Profile
         </Link>
+        <button
+          type="button"
+          className="rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:border-slate-600"
+        >
+          Account
+        </button>
         <form action={signOut}>
           <button
             type="submit"
