@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 export function DiscordLoginCard() {
   const [isLoading, setIsLoading] = useState(false);
 
+  // Starts the Supabase OAuth flow in the browser and sends the user through
+  // Discord before returning to our auth callback route.
   async function handleDiscordLogin() {
     setIsLoading(true);
 

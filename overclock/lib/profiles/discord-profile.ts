@@ -9,6 +9,9 @@ type UserMetadata = {
   user_name?: string;
 };
 
+// Pulls Discord-related identity fields from the Supabase auth user metadata.
+// We use this server-side so Discord-owned fields stay trusted and are not
+// supplied by the browser.
 export function getDiscordProfile(user: User) {
   const metadata = (user.user_metadata ?? {}) as UserMetadata;
 

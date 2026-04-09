@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 
+// Completes the OAuth round-trip after Supabase sends the user back from
+// Discord. We exchange the auth code for a session, then return the user to
+// the app.
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");

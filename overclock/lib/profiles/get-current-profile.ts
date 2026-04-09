@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 
+// Looks up the authenticated Supabase user and their matching app profile.
+// This gives route-level code one place to answer "who is signed in?" and
+// "have they finished onboarding yet?"
 export async function getCurrentProfile() {
   const supabase = await createClient();
   const {

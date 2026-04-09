@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
+// Centralized redirect helper for auth flows. Marked as `never` so TypeScript
+// knows execution does not continue after calling it.
 function messageRedirect(
   message: string,
   type: "error" | "success" = "error"
@@ -13,6 +15,8 @@ function messageRedirect(
   redirect(`/?${params.toString()}`);
 }
 
+// Normalizes form values into guaranteed strings before we pass them into
+// Supabase helpers.
 function requireFormString(value: FormDataEntryValue | null, fieldName: string): string {
   const parsed = value?.toString().trim();
 

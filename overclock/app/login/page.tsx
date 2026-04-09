@@ -16,6 +16,9 @@ function pickValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+// The login route is also the auth gate for onboarding. Signed-in users without
+// a profile are redirected to `/onboarding`; signed-out users stay here and see
+// the Discord login card.
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = searchParams ? await searchParams : {};
   const message = pickValue(params.message);
