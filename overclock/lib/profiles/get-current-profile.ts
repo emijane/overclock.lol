@@ -1,3 +1,4 @@
+import { syncDiscordProfileFields } from "@/lib/profiles/sync-discord-profile-fields";
 import { createClient } from "@/lib/supabase/server";
 
 // Looks up the authenticated Supabase user and their matching app profile.
@@ -24,6 +25,11 @@ export async function getCurrentProfile() {
 
   if (profileError) {
     throw profileError;
+  }
+
+  if (profile) {
+    const syncedProfile = await syncDiscordProfileFields(user, profile);
+    return { user, profile: syncedProfile };
   }
 
   return { user, profile };
