@@ -102,5 +102,5 @@ export async function createProfile(formData: FormData) {
     onboardingRedirect("Unable to create your profile right now.");
   }
 
-  redirect("/login?type=success&message=Profile+created.");
+  redirect(`/u/${username}?type=success&message=Profile+created.`);
 }

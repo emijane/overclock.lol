@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
   if (!code) {
     return NextResponse.redirect(
-      `${origin}/login?type=error&message=Missing+Discord+auth+code.`
+      `${origin}/login?type=error&message=Discord+login+failed.+Please+use+a+Discord+account+with+a+verified+email.`
     );
   }
 
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(
-      `${origin}/login?type=error&message=Unable+to+sign+in+with+Discord.`
+      `${origin}/login?type=error&message=Unable+to+sign+in+with+Discord.+Please+use+a+Discord+account+with+a+verified+email.`
     );
   }
 
