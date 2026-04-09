@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { signOut } from "@/app/auth/actions";
+import { getDiscordProfile } from "@/lib/profiles/discord-profile";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 export default async function OnboardingPage() {
@@ -13,6 +14,8 @@ export default async function OnboardingPage() {
   if (profile) {
     redirect("/login");
   }
+
+  const discordProfile = getDiscordProfile(user);
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
@@ -28,6 +31,74 @@ export default async function OnboardingPage() {
             Your account is authenticated with Discord. Next we will collect
             your unique username and create your app profile.
           </p>
+          <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+            <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
+              Discord account
+            </p>
+            <div className="mt-4 flex items-center gap-4">
+              {discordProfile.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={discordProfile.avatarUrl}
+                  alt={`${discordProfile.displayName} avatar`}
+                  className="h-16 w-16 rounded-full border border-slate-700 object-cover"
+                />
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-lg font-semibold text-slate-200">
+                  {discordProfile.displayName.slice(0, 1).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <p className="text-lg font-semibold text-white">
+                  {discordProfile.displayName}
+                </p>
+                <p className="mt-1 text-sm text-slate-400">
+                  @{discordProfile.discordUsername || "discord-user"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <form className="mt-6 grid gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white">
+                Choose your username
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                This will become your unique profile URL. We are only building
+                the form shell in this step.
+              </p>
+            </div>
+
+            <label className="grid gap-2 text-sm text-slate-300">
+              Username
+              <input
+                name="username"
+                type="text"
+                placeholder="sleepyana"
+                className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+              />
+            </label>
+
+            <label className="grid gap-2 text-sm text-slate-300">
+              Display name
+              <input
+                name="display_name"
+                type="text"
+                defaultValue={discordProfile.displayName}
+                className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+              />
+            </label>
+
+            <button
+              type="button"
+              disabled
+              className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-950 opacity-70"
+            >
+              Save profile
+            </button>
+          </form>
+
           <div className="mt-6">
             <form action={signOut}>
               <button
