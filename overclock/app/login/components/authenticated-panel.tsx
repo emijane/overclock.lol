@@ -1,5 +1,3 @@
-import { signOut } from "@/app/auth/actions";
-
 type AuthenticatedPanelProps = {
   email?: string;
 };
@@ -25,15 +23,6 @@ export function AuthenticatedPanel({ email }: AuthenticatedPanelProps) {
         Protected pages should do their own server-side claim check before
         fetching user data.
       </div>
-
-      <form action={signOut}>
-        <button
-          className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-          type="submit"
-        >
-          Sign out
-        </button>
-      </form>
     </div>
   );
 }

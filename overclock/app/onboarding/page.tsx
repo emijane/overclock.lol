@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 
-import { signOut } from "@/app/auth/actions";
 import { createProfile } from "@/app/onboarding/actions";
 import { AuthMessage } from "@/app/login/components";
 import { getDiscordProfile } from "@/lib/profiles/discord-profile";
@@ -121,17 +120,6 @@ export default async function OnboardingPage({
               Save profile
             </button>
           </form>
-
-          <div className="mt-6">
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
-              >
-                Sign out
-              </button>
-            </form>
-          </div>
         </section>
       </div>
     </main>
