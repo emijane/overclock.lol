@@ -1,4 +1,5 @@
 import { signIn } from "@/app/auth/actions";
+import { PasswordField } from "@/app/login/components/password-field";
 
 export function SignInForm() {
   return (
@@ -21,16 +22,7 @@ export function SignInForm() {
         />
       </label>
 
-      <label className="grid gap-2 text-sm text-slate-300">
-        Password
-        <input
-          required
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
-        />
-      </label>
+      <PasswordField name="password" autoComplete="current-password" />
 
       <button
         className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300"
