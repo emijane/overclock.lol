@@ -12,6 +12,9 @@ This file is a local working note for coding agents and should not be committed.
 ## Coding Standards
 
 - Preserve existing project structure and naming unless there is a clear reason to improve it.
+- Follow current Next.js App Router conventions and keep route-related code colocated with its route segment when practical.
+- Split large route files into smaller components, helpers, or actions once a file starts carrying multiple responsibilities.
+- Remove stale components and exports when a feature direction changes so the route tree stays easy to scan.
 - Prefer small, readable components and server-side validation for sensitive flows.
 - Keep auth, profile creation, and other trust-sensitive logic on the server.
 - Favor explicit, maintainable code over clever abstractions.
