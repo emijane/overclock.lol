@@ -16,6 +16,23 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     notFound();
   }
 
+  const currentRank =
+    profile.current_rank_tier && profile.current_rank_tier !== "Unranked"
+      ? `${profile.current_rank_tier} ${profile.current_rank_division ?? ""}`.trim()
+      : profile.current_rank_tier;
+  const peakRank =
+    profile.peak_rank_tier && profile.peak_rank_tier !== "Unranked"
+      ? `${profile.peak_rank_tier} ${profile.peak_rank_division ?? ""}`.trim()
+      : profile.peak_rank_tier;
+  const profileFacts = [
+    profile.region ? { label: "Region", value: profile.region } : null,
+    profile.platform ? { label: "Platform", value: profile.platform } : null,
+    profile.timezone ? { label: "Timezone", value: profile.timezone } : null,
+    currentRank ? { label: "Current rank", value: currentRank } : null,
+    peakRank ? { label: "Peak rank", value: peakRank } : null,
+    profile.uses_mic ? { label: "Comms", value: "Uses mic" } : null,
+  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
+
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-3xl items-center">
@@ -58,6 +75,47 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               {profile.bio || "This player has not added a bio yet."}
             </p>
           </div>
+
+          {profileFacts.length > 0 ? (
+            <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+              <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
+                Profile Details
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {profileFacts.map((fact) => (
+                  <div
+                    key={fact.label}
+                    className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
+                  >
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                      {fact.label}
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-slate-100">
+                      {fact.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {profile.looking_for && profile.looking_for.length > 0 ? (
+            <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+              <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
+                Looking For
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {profile.looking_for.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-sky-200"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </section>
       </div>
     </main>
