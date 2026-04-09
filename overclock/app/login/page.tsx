@@ -1,9 +1,12 @@
+import { redirect } from "next/navigation";
+
 import {
   AuthMessage,
   AuthenticatedPanel,
   UnauthenticatedPanel,
 } from "@/app/login/components";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 type LoginPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -18,14 +21,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
 
+  const { user, profile } = await getCurrentProfile();
+
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const isAuthenticated = Boolean(claims?.sub);
+  const needsOnboarding = Boolean(user && !profile);
+
+  if (needsOnboarding) {
+    redirect("/onboarding");
+  }
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">

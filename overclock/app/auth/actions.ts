@@ -5,18 +5,27 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
-function messageRedirect(message: string, type: "error" | "success" = "error") {
+function messageRedirect(
+  message: string,
+  type: "error" | "success" = "error"
+): never {
   const params = new URLSearchParams({ type, message });
   redirect(`/?${params.toString()}`);
 }
 
-export async function signUp(formData: FormData) {
-  const email = formData.get("email")?.toString().trim();
-  const password = formData.get("password")?.toString();
+function requireFormString(value: FormDataEntryValue | null, fieldName: string): string {
+  const parsed = value?.toString().trim();
 
-  if (!email || !password) {
-    messageRedirect("Email and password are required.");
+  if (!parsed) {
+    messageRedirect(`${fieldName} is required.`);
   }
+
+  return parsed;
+}
+
+export async function signUp(formData: FormData) {
+  const email = requireFormString(formData.get("email"), "Email");
+  const password = requireFormString(formData.get("password"), "Password");
 
   if (password.length < 12) {
     messageRedirect("Use a password with at least 12 characters.");
@@ -49,12 +58,8 @@ export async function signUp(formData: FormData) {
 }
 
 export async function signIn(formData: FormData) {
-  const email = formData.get("email")?.toString().trim();
-  const password = formData.get("password")?.toString();
-
-  if (!email || !password) {
-    messageRedirect("Email and password are required.");
-  }
+  const email = requireFormString(formData.get("email"), "Email");
+  const password = requireFormString(formData.get("password"), "Password");
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({

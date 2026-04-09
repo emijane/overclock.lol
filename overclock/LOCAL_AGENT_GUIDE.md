@@ -29,4 +29,5 @@ This file is a local working note for coding agents and should not be committed.
 
 - Work in baby steps when requested and return after each meaningful step.
 - Include a suggested commit message with each update.
+- Offer user steps to QA and test update before continuing with further instructions.
 - Call out assumptions clearly when proceeding without explicit user input.
