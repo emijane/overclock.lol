@@ -5,7 +5,7 @@ export async function getProfileByUsername(username: string) {
   const supabase = await createClient();
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("username, display_name, discord_username, discord_avatar_url, bio")
     .ilike("username", username)
     .maybeSingle();
 

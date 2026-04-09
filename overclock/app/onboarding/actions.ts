@@ -90,7 +90,6 @@ export async function createProfile(formData: FormData) {
     display_name: displayName,
     discord_user_id: discordProfile.discordUserId,
     discord_username: discordProfile.discordUsername || null,
-    discord_global_name: discordProfile.displayName,
     discord_avatar_url: discordProfile.avatarUrl,
   });
 

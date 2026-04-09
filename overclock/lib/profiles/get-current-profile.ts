@@ -16,7 +16,9 @@ export async function getCurrentProfile() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("*")
+    .select(
+      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, bio, timezone"
+    )
     .eq("id", user.id)
     .maybeSingle();
 
