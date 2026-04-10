@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { signOut } from "@/app/auth/actions";
+import { UserMenu } from "@/app/components/user-menu";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 // Shared top-right auth controls for any page in the app shell.
@@ -25,45 +25,12 @@ export async function GlobalAuthBar() {
           overclock.lol
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href={profileHref} className="flex min-w-0 items-center gap-2">
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={avatarUrl}
-                alt={`${visibleName} avatar`}
-                className="h-8 w-8 rounded-full border border-zinc-800 object-cover"
-              />
-            ) : (
-              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-xs font-semibold text-zinc-200">
-                {avatarFallback}
-              </div>
-            )}
-            <span className="hidden truncate font-medium text-zinc-300 sm:inline">
-              @{visibleName}
-            </span>
-          </Link>
-          <Link
-            href={profileHref}
-            className="rounded-full px-3 py-2 font-medium text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/account"
-            className="rounded-full px-3 py-2 font-medium text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
-          >
-            Account
-          </Link>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="rounded-full border border-zinc-800 px-3 py-2 font-medium text-zinc-300 transition hover:border-zinc-700 hover:bg-zinc-900 hover:text-white"
-            >
-              Sign out
-            </button>
-          </form>
-        </nav>
+        <UserMenu
+          avatarFallback={avatarFallback}
+          avatarUrl={avatarUrl}
+          profileHref={profileHref}
+          visibleName={visibleName}
+        />
       </div>
     </header>
   );
