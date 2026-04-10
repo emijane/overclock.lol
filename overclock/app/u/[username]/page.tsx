@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getRankIconSrc } from "./profile/rank-icons";
-import { IntroCard } from "./profile/intro-card";
+import { IntroCard, type IntroGroup, type IntroItem } from "./profile/intro-card";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { ProfileHeader } from "./profile/profile-header";
 
@@ -11,6 +11,10 @@ type ProfilePageProps = {
     username: string;
   }>;
 };
+
+function compactItems(items: Array<IntroItem | null>) {
+  return items.filter((item): item is IntroItem => Boolean(item));
+}
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
@@ -26,16 +30,27 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       : profile.current_rank_tier;
   const currentRankPill = currentRank ?? "Unranked";
   const currentRankIconSrc = getRankIconSrc(profile.current_rank_tier);
-  const introItems = [
-    profile.region ? { label: "Region", value: profile.region } : null,
-    profile.platform ? { label: "Platform", value: profile.platform } : null,
-    profile.timezone ? { label: "Timezone", value: profile.timezone } : null,
-    currentRank ? { label: "Rank", value: currentRank } : null,
-    profile.uses_mic ? { label: "Comms", value: "Uses mic" } : null,
-    profile.discord_username
-      ? { label: "Discord", value: `@${profile.discord_username}` }
-      : null,
-  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
+  const detailGroups: IntroGroup[] = [
+    {
+      heading: "Play",
+      items: compactItems([
+        profile.region ? { label: "Region", value: profile.region } : null,
+        profile.platform ? { label: "Platform", value: profile.platform } : null,
+        profile.timezone ? { label: "Timezone", value: profile.timezone } : null,
+      ]),
+    },
+    {
+      heading: "Contact",
+      items: compactItems([
+        profile.discord_username
+          ? { label: "Discord", value: `@${profile.discord_username}` }
+          : null,
+        { label: "Battle.net", value: "Player#1234" },
+        { label: "Twitter", value: "@player" },
+        { label: "YouTube", value: "@player" },
+      ]),
+    },
+  ].filter((group) => group.items.length > 0);
 
   return (
     <main className="min-h-screen bg-black px-5 py-7 text-[15px] text-zinc-100">
@@ -49,7 +64,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           displayName={profile.display_name}
           username={profile.username}
         />
-        <IntroCard items={introItems} />
+        <IntroCard groups={detailGroups} />
         <PreferredHeroPools />
       </div>
     </main>
