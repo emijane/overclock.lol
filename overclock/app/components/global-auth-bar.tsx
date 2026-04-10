@@ -42,12 +42,12 @@ export async function GlobalAuthBar() {
         >
           Profile
         </Link>
-        <button
-          type="button"
+        <Link
+          href="/account"
           className="rounded-full border border-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:border-slate-600"
         >
           Account
-        </button>
+        </Link>
         <form action={signOut}>
           <button
             type="submit"
