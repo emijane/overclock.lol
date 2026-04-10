@@ -17,20 +17,40 @@ export async function GlobalAuthBar() {
     .slice(0, 1)
     .toUpperCase();
   const profileHref = profile?.username ? `/u/${profile.username}` : "/onboarding";
+  const discoveryLinks = [
+    { href: "/duos", label: "Duos" },
+    { href: "/stacks", label: "Stacks" },
+    { href: "/scrims", label: "Scrims" },
+    { href: "/teams", label: "Teams" },
+  ] as const;
 
   return (
-    <header className="border-b border-zinc-900 bg-black px-6 py-4">
+    <header className="border-b border-[#313948] bg-[linear-gradient(180deg,#232933_0%,#1a1f27_100%)] px-6 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
-        <Link href="/" className="text-xl font-bold text-white">
+        <Link href="/" className="text-xl font-bold tracking-tight text-[#f7fafc]">
           overclock.lol
         </Link>
 
-        <UserMenu
-          avatarFallback={avatarFallback}
-          avatarUrl={avatarUrl}
-          profileHref={profileHref}
-          visibleName={visibleName}
-        />
+        <div className="flex items-center gap-3">
+          <nav className="flex items-center gap-1">
+            {discoveryLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-[#d8e0ea] transition hover:border-[#546174] hover:bg-[#212833] hover:text-[#f7fafc]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <UserMenu
+            avatarFallback={avatarFallback}
+            avatarUrl={avatarUrl}
+            profileHref={profileHref}
+            visibleName={visibleName}
+          />
+        </div>
       </div>
     </header>
   );

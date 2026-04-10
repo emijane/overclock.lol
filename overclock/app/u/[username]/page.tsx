@@ -53,7 +53,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   ].filter((group) => group.items.length > 0);
 
   return (
-    <main className="min-h-screen bg-black px-5 py-7 text-[15px] text-zinc-100">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(0,174,240,0.08),_transparent_26%),linear-gradient(180deg,_#1e232b_0%,_#14181f_52%,_#101319_100%)] px-5 py-7 text-[15px] text-zinc-100">
       <div className="mx-auto grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}

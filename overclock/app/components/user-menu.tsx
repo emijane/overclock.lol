@@ -41,42 +41,59 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Avatar className="h-9 w-9 border border-zinc-800">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full border border-[#546174] bg-[#212833] text-[#f7fafc] transition hover:bg-[#28313d]"
+        >
+          <Avatar className="h-9 w-9 border border-[#313948]">
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt={`${visibleName} avatar`} />
             ) : null}
-            <AvatarFallback>{avatarFallback}</AvatarFallback>
+            <AvatarFallback className="bg-[#2a313d] text-[#f5f7fa]">
+              {avatarFallback}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="w-56 border border-[#3b4657] bg-[#1a1f27] text-[#eef2f7]"
+      >
         <DropdownMenuLabel className="px-3 py-2">
-          <span className="block text-sm font-semibold text-white">@{visibleName}</span>
+          <span className="block text-sm font-semibold text-[#f7fafc]">
+            @{visibleName}
+          </span>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#313948]" />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem
+            asChild
+            className="text-[#d8e0ea] focus:bg-[#232a34] focus:text-[#f7fafc]"
+          >
             <Link href={profileHref}>
               <UserIcon />
               Profile
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem
+            asChild
+            className="text-[#d8e0ea] focus:bg-[#232a34] focus:text-[#f7fafc]"
+          >
             <Link href="/account">
               <SettingsIcon />
               Account
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#313948]" />
         <DropdownMenuItem
           disabled={isPending}
           onSelect={(event) => {
             event.preventDefault();
             handleSignOut();
           }}
-          className="text-zinc-300"
+          className="text-[#f99e1a] focus:bg-[#232a34] focus:text-[#ffb347]"
         >
           <LogOutIcon />
           {isPending ? "Signing out..." : "Sign out"}
