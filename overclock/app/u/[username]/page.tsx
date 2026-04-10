@@ -24,13 +24,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     profile.peak_rank_tier && profile.peak_rank_tier !== "Unranked"
       ? `${profile.peak_rank_tier} ${profile.peak_rank_division ?? ""}`.trim()
       : profile.peak_rank_tier;
-  const profileFacts = [
-    profile.region ? { label: "Region", value: profile.region } : null,
-    profile.platform ? { label: "Platform", value: profile.platform } : null,
-    profile.timezone ? { label: "Timezone", value: profile.timezone } : null,
+  const competitiveFacts = [
     currentRank ? { label: "Current rank", value: currentRank } : null,
     peakRank ? { label: "Peak rank", value: peakRank } : null,
     profile.uses_mic ? { label: "Comms", value: "Uses mic" } : null,
+  ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
+  const logisticsFacts = [
+    profile.region ? { label: "Region", value: profile.region } : null,
+    profile.platform ? { label: "Platform", value: profile.platform } : null,
+    profile.timezone ? { label: "Timezone", value: profile.timezone } : null,
   ].filter((fact): fact is { label: string; value: string } => Boolean(fact));
 
   return (
@@ -76,13 +78,36 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             </p>
           </div>
 
-          {profileFacts.length > 0 ? (
+          {competitiveFacts.length > 0 ? (
             <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
               <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
-                Profile Details
+                Competitive Profile
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {profileFacts.map((fact) => (
+                {competitiveFacts.map((fact) => (
+                  <div
+                    key={fact.label}
+                    className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
+                  >
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                      {fact.label}
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-slate-100">
+                      {fact.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {logisticsFacts.length > 0 ? (
+            <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+              <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-400">
+                Queue Details
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {logisticsFacts.map((fact) => (
                   <div
                     key={fact.label}
                     className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
