@@ -54,7 +54,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <main className="min-h-screen bg-black px-5 py-7 text-[15px] text-zinc-100">
-      <div className="mx-auto grid w-full max-w-5xl gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="mx-auto grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
           bio={profile.bio}
