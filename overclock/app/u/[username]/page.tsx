@@ -1,35 +1,16 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
+import { getRankIconSrc } from "./profile/rank-icons";
+import { IntroCard } from "./profile/intro-card";
+import { PreferredHeroPools } from "./profile/preferred-hero-pools";
+import { ProfileHeader } from "./profile/profile-header";
 
 type ProfilePageProps = {
   params: Promise<{
     username: string;
   }>;
 };
-
-const rankIconSrcByTier = {
-  Bronze: "/ranks/9 Bronze.png",
-  Silver: "/ranks/8 Silver.png",
-  Gold: "/ranks/7 Gold.png",
-  Platinum: "/ranks/6 Platinum.png",
-  Diamond: "/ranks/5 Diamond.png",
-  Master: "/ranks/4 Masters.png",
-  Grandmaster: "/ranks/3 Grandmaster.png",
-  Champion: "/ranks/2 Champion.png",
-  "Top 500": "/ranks/1 Top 500.png",
-} as const;
-
-const rolePillTemplate = ["Tank", "DPS", "Support"] as const;
-
-function getRankIconSrc(tier: string | null) {
-  if (!tier || tier === "Unranked") {
-    return null;
-  }
-
-  return rankIconSrcByTier[tier as keyof typeof rankIconSrcByTier] ?? null;
-}
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
@@ -59,135 +40,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   return (
     <main className="min-h-screen bg-black px-5 py-7 text-[15px] text-zinc-100">
       <div className="mx-auto grid w-full max-w-5xl gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
-          <div className="h-32 bg-[radial-gradient(circle_at_20%_20%,rgba(212,212,216,0.18),transparent_32%),linear-gradient(135deg,#18181b,#09090b)]" />
-          <div className="px-5 pb-6">
-            <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                {profile.discord_avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={profile.discord_avatar_url}
-                    alt={`${profile.display_name} avatar`}
-                    className="h-24 w-24 rounded-full border-4 border-black object-cover shadow-xl shadow-black/40"
-                  />
-                ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-black bg-zinc-900 text-3xl font-semibold text-zinc-200 shadow-xl shadow-black/40">
-                    {profile.display_name.slice(0, 1).toUpperCase()}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-12 sm:pt-14">
-                <button
-                  type="button"
-                  className="h-9 rounded-full border border-zinc-700 px-4 text-sm font-bold text-white transition hover:border-zinc-500 hover:bg-zinc-900"
-                >
-                  Message
-                </button>
-                <button
-                  type="button"
-                  className="h-9 rounded-full bg-zinc-100 px-4 text-sm font-bold text-black transition hover:bg-white"
-                >
-                  Follow
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl font-bold leading-6 tracking-tight text-white">
-                  {profile.display_name}
-                </h1>
-                {currentRankIconSrc && currentRank ? (
-                  <Image
-                    src={currentRankIconSrc}
-                    alt={`${currentRank} rank icon`}
-                    width={44}
-                    height={44}
-                    className="h-6 w-6 object-contain"
-                  />
-                ) : null}
-              </div>
-              <p className="text-[15px] leading-5 text-zinc-500">
-                @{profile.username}
-              </p>
-              <p className="mt-3.5 max-w-2xl text-[15px] leading-6 text-zinc-200">
-                {profile.bio || "This player has not added a bio yet."}
-              </p>
-            </div>
-
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              <span className="inline-flex h-8 items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-3 text-[13px] font-semibold leading-none text-zinc-100">
-                {currentRankIconSrc && currentRank ? (
-                  <Image
-                    src={currentRankIconSrc}
-                    alt={`${currentRank} rank icon`}
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 shrink-0 object-contain"
-                  />
-                ) : null}
-                {currentRankPill}
-              </span>
-              {rolePillTemplate.map((role) => (
-                <span
-                  key={role}
-                  className="inline-flex h-8 items-center rounded-full border border-zinc-700 bg-zinc-900 px-3 text-[13px] font-semibold leading-none text-zinc-100"
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <aside className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5">
-          <h2 className="text-xl font-bold leading-6 text-white">Intro</h2>
-          <div className="mt-4 grid gap-3.5">
-            {introItems.length > 0 ? (
-              introItems.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-3 text-[15px] leading-5"
-                >
-                  <span className="h-2 w-2 rounded-full bg-zinc-300" />
-                  <span className="text-zinc-500">{item.label}</span>
-                  <span className="ml-auto font-medium text-zinc-100">
-                    {item.value}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <p className="text-[15px] leading-5 text-zinc-500">
-                No profile details added yet.
-              </p>
-            )}
-          </div>
-        </aside>
-
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 lg:col-span-2">
-          <h2 className="text-xl font-bold leading-6 text-white">Heroes</h2>
-          <p className="mt-3 text-[15px] leading-5 text-zinc-500">
-            Hero pools are coming soon. This section will show mains, flex
-            heroes, and role-specific picks.
-          </p>
-          <div className="mt-4 grid gap-3.5 sm:grid-cols-3">
-            {["Mains", "Flex picks", "Learning"].map((label) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-zinc-800 bg-black p-3.5"
-              >
-                <p className="text-[13px] font-semibold leading-4 text-zinc-500">
-                  {label}
-                </p>
-                <p className="mt-2 text-[15px] leading-5 text-zinc-500">
-                  Not set yet
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <ProfileHeader
+          avatarUrl={profile.discord_avatar_url}
+          bio={profile.bio}
+          currentRank={currentRank}
+          currentRankIconSrc={currentRankIconSrc}
+          currentRankPill={currentRankPill}
+          displayName={profile.display_name}
+          username={profile.username}
+        />
+        <IntroCard items={introItems} />
+        <PreferredHeroPools />
       </div>
     </main>
   );
