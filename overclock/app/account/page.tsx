@@ -3,28 +3,15 @@ import { redirect } from "next/navigation";
 import { AuthMessage } from "@/app/login/components";
 import { updateProfile } from "@/app/account/actions";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import {
+  LOOKING_FOR_OPTIONS,
+  PLATFORM_OPTIONS,
+  RANK_TIERS,
+  REGION_OPTIONS,
+  TIMEZONE_OPTIONS,
+} from "@/lib/profiles/profile-options";
 
-const REGION_OPTIONS = ["NA", "EU", "APAC", "LATAM", "MENA", "OCE"] as const;
-const PLATFORM_OPTIONS = ["PC", "Console"] as const;
-const RANK_TIERS = [
-  "Unranked",
-  "Bronze",
-  "Silver",
-  "Gold",
-  "Platinum",
-  "Diamond",
-  "Master",
-  "Grandmaster",
-  "Champion",
-] as const;
 const RANK_DIVISIONS = [1, 2, 3, 4, 5] as const;
-const LOOKING_FOR_OPTIONS = [
-  "Duo",
-  "Team",
-  "Scrims",
-  "Casual",
-  "Competitive",
-] as const;
 
 type AccountPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -116,13 +103,18 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             <div className="grid gap-4 sm:grid-cols-3">
               <label className="grid gap-2 text-sm text-slate-300">
                 Timezone
-                <input
+                <select
                   name="timezone"
-                  type="text"
                   defaultValue={profile.timezone ?? ""}
-                  placeholder="America/New_York"
                   className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
-                />
+                >
+                  <option value="">Not set</option>
+                  {TIMEZONE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="grid gap-2 text-sm text-slate-300">

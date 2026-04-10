@@ -2,28 +2,14 @@
 
 import { redirect } from "next/navigation";
 
+import {
+  LOOKING_FOR_OPTIONS,
+  PLATFORM_OPTIONS,
+  RANK_TIERS,
+  REGION_OPTIONS,
+  TIMEZONE_OPTIONS,
+} from "@/lib/profiles/profile-options";
 import { createClient } from "@/lib/supabase/server";
-
-const REGION_OPTIONS = ["NA", "EU", "APAC", "LATAM", "MENA", "OCE"] as const;
-const PLATFORM_OPTIONS = ["PC", "Console"] as const;
-const RANK_TIERS = [
-  "Unranked",
-  "Bronze",
-  "Silver",
-  "Gold",
-  "Platinum",
-  "Diamond",
-  "Master",
-  "Grandmaster",
-  "Champion",
-] as const;
-const LOOKING_FOR_OPTIONS = [
-  "Duo",
-  "Team",
-  "Scrims",
-  "Casual",
-  "Competitive",
-] as const;
 
 function accountRedirect(
   message: string,
@@ -99,7 +85,11 @@ function validateRankPair(
 
 export async function updateProfile(formData: FormData) {
   const bio = optionalTrimmedString(formData.get("bio"));
-  const timezone = optionalTrimmedString(formData.get("timezone"));
+  const timezone = optionalEnumValue(
+    formData.get("timezone"),
+    TIMEZONE_OPTIONS,
+    "timezone"
+  );
   const region = optionalEnumValue(formData.get("region"), REGION_OPTIONS, "region");
   const platform = optionalEnumValue(
     formData.get("platform"),
