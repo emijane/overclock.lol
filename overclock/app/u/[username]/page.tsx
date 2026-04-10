@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
@@ -7,6 +8,26 @@ type ProfilePageProps = {
     username: string;
   }>;
 };
+
+const rankIconSrcByTier = {
+  Bronze: "/ranks/9 Bronze.png",
+  Silver: "/ranks/8 Silver.png",
+  Gold: "/ranks/7 Gold.png",
+  Platinum: "/ranks/6 Platinum.png",
+  Diamond: "/ranks/5 Diamond.png",
+  Master: "/ranks/4 Masters.png",
+  Grandmaster: "/ranks/3 Grandmaster.png",
+  Champion: "/ranks/2 Champion.png",
+  "Top 500": "/ranks/1 Top 500.png",
+} as const;
+
+function getRankIconSrc(tier: string | null) {
+  if (!tier || tier === "Unranked") {
+    return null;
+  }
+
+  return rankIconSrcByTier[tier as keyof typeof rankIconSrcByTier] ?? null;
+}
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
@@ -20,6 +41,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     profile.current_rank_tier && profile.current_rank_tier !== "Unranked"
       ? `${profile.current_rank_tier} ${profile.current_rank_division ?? ""}`.trim()
       : profile.current_rank_tier;
+  const currentRankIconSrc = getRankIconSrc(profile.current_rank_tier);
   const introItems = [
     profile.region ? { label: "Region", value: profile.region } : null,
     profile.platform ? { label: "Platform", value: profile.platform } : null,
@@ -35,7 +57,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     <main className="min-h-screen bg-black px-6 py-10 text-zinc-100">
       <div className="mx-auto grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
-          <div className="h-36 bg-[radial-gradient(circle_at_20%_20%,_rgba(212,212,216,0.18),_transparent_32%),linear-gradient(135deg,_#18181b,_#09090b)]" />
+          <div className="h-36 bg-[radial-gradient(circle_at_20%_20%,rgba(212,212,216,0.18),transparent_32%),linear-gradient(135deg,#18181b,#09090b)]" />
           <div className="px-6 pb-7">
             <div className="-mt-14 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -70,9 +92,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             </div>
 
             <div className="mt-5">
-              <h1 className="text-3xl font-semibold tracking-tight text-white">
-                {profile.display_name}
-              </h1>
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="text-3xl font-semibold tracking-tight text-white">
+                  {profile.display_name}
+                </h1>
+                {currentRankIconSrc && currentRank ? (
+                  <Image
+                    src={currentRankIconSrc}
+                    alt={`${currentRank} rank icon`}
+                    width={44}
+                    height={44}
+                    className="h-7 w-7 object-contain"
+                  />
+                ) : null}
+              </div>
               <p className="mt-1 text-sm text-zinc-400">@{profile.username}</p>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-300">
                 {profile.bio || "This player has not added a bio yet."}
