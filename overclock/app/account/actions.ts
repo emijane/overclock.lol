@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import {
   LOOKING_FOR_OPTIONS,
   PLATFORM_OPTIONS,
+  REGION_TO_TIMEZONES,
   RANK_TIERS,
   REGION_OPTIONS,
   TIMEZONE_OPTIONS,
@@ -124,6 +125,18 @@ export async function updateProfile(formData: FormData) {
 
   if (bio && bio.length > 1000) {
     accountRedirect("Bio must be 1000 characters or less.");
+  }
+
+  if (timezone && !region) {
+    accountRedirect("Choose a region before selecting a timezone.");
+  }
+
+  if (region && timezone) {
+    const allowedTimezones = REGION_TO_TIMEZONES[region];
+
+    if (!allowedTimezones.includes(timezone)) {
+      accountRedirect("Selected timezone does not match the chosen region.");
+    }
   }
 
   validateRankPair(currentRankTier, currentRankDivision, "Current rank");
