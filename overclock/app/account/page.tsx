@@ -1,6 +1,38 @@
 import { redirect } from "next/navigation";
 
+import { AuthMessage } from "@/app/login/components";
+import { updateProfile } from "@/app/account/actions";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+
+const REGION_OPTIONS = ["NA", "EU", "APAC", "LATAM", "MENA", "OCE"] as const;
+const PLATFORM_OPTIONS = ["PC", "Console"] as const;
+const RANK_TIERS = [
+  "Unranked",
+  "Bronze",
+  "Silver",
+  "Gold",
+  "Platinum",
+  "Diamond",
+  "Master",
+  "Grandmaster",
+  "Champion",
+] as const;
+const RANK_DIVISIONS = [1, 2, 3, 4, 5] as const;
+const LOOKING_FOR_OPTIONS = [
+  "Duo",
+  "Team",
+  "Scrims",
+  "Casual",
+  "Competitive",
+] as const;
+
+type AccountPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function pickValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 function formatRank(
   tier: string | null | undefined,
@@ -17,7 +49,10 @@ function formatRank(
   return `${tier} ${division ?? ""}`.trim();
 }
 
-export default async function AccountPage() {
+export default async function AccountPage({ searchParams }: AccountPageProps) {
+  const params = searchParams ? await searchParams : {};
+  const message = pickValue(params.message);
+  const messageType = pickValue(params.type);
   const { user, profile } = await getCurrentProfile();
 
   if (!user) {
@@ -31,6 +66,7 @@ export default async function AccountPage() {
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <AuthMessage message={message} type={messageType} />
         <section className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
           <p className="text-sm font-medium uppercase tracking-[0.3em] text-sky-300">
             Account
@@ -39,118 +75,214 @@ export default async function AccountPage() {
             Profile settings
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
-            This page will become the editing surface for your Overwatch profile.
-            For now, it shows the current stored values so we can confirm the
-            route and data are wired correctly before adding updates.
+            Update the public Overwatch profile details that other players will
+            use to decide whether they want to queue with you.
           </p>
         </section>
 
         <section className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Username
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                @{profile.username}
-              </p>
+          <form action={updateProfile} className="grid gap-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  Username
+                </p>
+                <p className="mt-2 text-sm font-medium text-slate-100">
+                  @{profile.username}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                  Display name
+                </p>
+                <p className="mt-2 text-sm font-medium text-slate-100">
+                  {profile.display_name}
+                </p>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Display name
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {profile.display_name}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Region
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {profile.region ?? "Not set"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Platform
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {profile.platform ?? "Not set"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Timezone
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {profile.timezone ?? "Not set"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Uses mic
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {profile.uses_mic ? "Yes" : "No"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Current rank
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {formatRank(
-                  profile.current_rank_tier,
-                  profile.current_rank_division
-                )}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Peak rank
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-100">
-                {formatRank(profile.peak_rank_tier, profile.peak_rank_division)}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-              Looking for
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {profile.looking_for && profile.looking_for.length > 0 ? (
-                profile.looking_for.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-sky-200"
-                  >
-                    {item}
-                  </span>
-                ))
-              ) : (
-                <span className="text-sm text-slate-400">Not set</span>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+            <label className="grid gap-2 text-sm text-slate-300">
               Bio
-            </p>
-            <p className="mt-3 text-sm leading-7 text-slate-300">
-              {profile.bio ?? "No bio added yet."}
-            </p>
-          </div>
+              <textarea
+                name="bio"
+                rows={5}
+                maxLength={1000}
+                defaultValue={profile.bio ?? ""}
+                className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+              />
+            </label>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <label className="grid gap-2 text-sm text-slate-300">
+                Timezone
+                <input
+                  name="timezone"
+                  type="text"
+                  defaultValue={profile.timezone ?? ""}
+                  placeholder="America/New_York"
+                  className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm text-slate-300">
+                Region
+                <select
+                  name="region"
+                  defaultValue={profile.region ?? ""}
+                  className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                >
+                  <option value="">Not set</option>
+                  {REGION_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="grid gap-2 text-sm text-slate-300">
+                Platform
+                <select
+                  name="platform"
+                  defaultValue={profile.platform ?? ""}
+                  className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                >
+                  <option value="">Not set</option>
+                  {PLATFORM_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-sm font-semibold text-white">Current rank</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="grid gap-2 text-sm text-slate-300">
+                    Tier
+                    <select
+                      name="current_rank_tier"
+                      defaultValue={profile.current_rank_tier ?? ""}
+                      className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                    >
+                      <option value="">Not set</option>
+                      {RANK_TIERS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-sm text-slate-300">
+                    Division
+                    <select
+                      name="current_rank_division"
+                      defaultValue={profile.current_rank_division?.toString() ?? ""}
+                      className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                    >
+                      <option value="">None</option>
+                      {RANK_DIVISIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Current value:{" "}
+                  {formatRank(
+                    profile.current_rank_tier,
+                    profile.current_rank_division
+                  )}
+                </p>
+              </div>
+
+              <div className="grid gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                <p className="text-sm font-semibold text-white">Peak rank</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="grid gap-2 text-sm text-slate-300">
+                    Tier
+                    <select
+                      name="peak_rank_tier"
+                      defaultValue={profile.peak_rank_tier ?? ""}
+                      className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                    >
+                      <option value="">Not set</option>
+                      {RANK_TIERS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-sm text-slate-300">
+                    Division
+                    <select
+                      name="peak_rank_division"
+                      defaultValue={profile.peak_rank_division?.toString() ?? ""}
+                      className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                    >
+                      <option value="">None</option>
+                      {RANK_DIVISIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Current value:{" "}
+                  {formatRank(profile.peak_rank_tier, profile.peak_rank_division)}
+                </p>
+              </div>
+            </div>
+
+            <fieldset className="grid gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+              <legend className="px-2 text-sm font-semibold text-white">
+                Looking for
+              </legend>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {LOOKING_FOR_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3 text-sm text-slate-200"
+                  >
+                    <input
+                      type="checkbox"
+                      name="looking_for"
+                      value={option}
+                      defaultChecked={profile.looking_for?.includes(option) ?? false}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <label className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 px-4 py-4 text-sm text-slate-200">
+              <input
+                type="checkbox"
+                name="uses_mic"
+                defaultChecked={profile.uses_mic}
+              />
+              I actively use voice comms
+            </label>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300"
+              >
+                Save settings
+              </button>
+            </div>
+          </form>
         </section>
       </div>
     </main>

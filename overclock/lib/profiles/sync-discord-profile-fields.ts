@@ -4,9 +4,23 @@ import { getDiscordProfile } from "@/lib/profiles/discord-profile";
 import { createClient } from "@/lib/supabase/server";
 
 type ProfileRow = {
+  bio: string | null;
+  current_rank_division: number | null;
+  current_rank_tier: string | null;
+  discord_avatar_url: string | null;
+  discord_user_id: string | null;
   id: string;
+  looking_for: string[] | null;
+  peak_rank_division: number | null;
+  peak_rank_tier: string | null;
+  platform: string | null;
+  region: string | null;
+  timezone: string | null;
   discord_avatar_url: string | null;
   discord_username: string | null;
+  uses_mic: boolean;
+  username: string;
+  display_name: string;
 };
 
 // Keeps stored Discord-facing profile fields aligned with trusted Supabase auth
@@ -32,7 +46,9 @@ export async function syncDiscordProfileFields(user: User, profile: ProfileRow) 
       discord_avatar_url: nextAvatarUrl,
     })
     .eq("id", profile.id)
-    .select("id, discord_user_id, username, display_name, discord_username, discord_avatar_url, bio, timezone")
+    .select(
+      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, bio, timezone, region, platform, current_rank_tier, current_rank_division, peak_rank_tier, peak_rank_division, looking_for, uses_mic"
+    )
     .single();
 
   if (error) {
