@@ -27,23 +27,49 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
+    <main className="min-h-screen bg-zinc-950 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <AuthMessage message={message} type={messageType} />
-        <section className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
-          <p className="text-sm font-medium uppercase tracking-[0.3em] text-sky-300">
-            Account
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-            Profile settings
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
-            Update the public Overwatch profile details that other players will
-            use to decide whether they want to queue with you.
-          </p>
+
+        <section className="rounded-[28px] border border-zinc-800 bg-zinc-900">
+          <div className="border-b border-zinc-800 px-6 py-5 sm:px-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
+              Account
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-zinc-50">
+              Profile settings
+            </h1>
+            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-zinc-400">
+              Update the public Overwatch profile details other players will see
+              when they decide whether to queue with you.
+            </p>
+          </div>
+
+          <div className="px-6 py-5 sm:px-8">
+            <div className="grid gap-3 text-sm text-zinc-400 sm:grid-cols-3">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
+                  Identity
+                </p>
+                <p className="mt-1 text-zinc-300">Name, handle, and bio</p>
+              </div>
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
+                  Play
+                </p>
+                <p className="mt-1 text-zinc-300">Platform, region, and comms</p>
+              </div>
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
+                  Competitive
+                </p>
+                <p className="mt-1 text-zinc-300">Ranks and queue preferences</p>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
+        <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-6 sm:p-8">
           <AccountForm profile={profile} />
         </section>
       </div>
