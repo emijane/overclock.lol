@@ -13,9 +13,9 @@ export function ProfileContactRow({
   Icon,
 }: ProfileContactRowProps) {
   return (
-    <div className="flex items-center gap-2">
-      <Icon className={`h-4 w-4 shrink-0 ${iconClassName}`} />
-      <span>{value}</span>
+    <div className="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em] text-[#1f2937]">
+      <Icon className={`h-[15px] w-[15px] shrink-0 ${iconClassName}`} />
+      <span className="text-[#243041]">{value}</span>
     </div>
   );
 }

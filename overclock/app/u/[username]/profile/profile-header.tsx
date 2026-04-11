@@ -43,9 +43,9 @@ export function ProfileHeader({
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#d7dee8] bg-[#ffffff]">
-      <div className="pb-5 sm:pb-6">
-        <div className="flex min-h-24 items-start justify-end gap-2 bg-[#f6ead7] px-4 py-4 sm:h-28 sm:px-5">
+    <section className="overflow-hidden rounded-[28px] border border-[#d8dee8] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+      <div className="pb-6 sm:pb-7">
+        <div className="flex min-h-28 items-start justify-end gap-2 bg-[linear-gradient(180deg,#f6ead7_0%,#f7eddc_100%)] px-4 py-4 sm:h-32 sm:px-6">
           {region ? (
             <ProfileBadge
               Icon={Globe2Icon}
@@ -66,15 +66,15 @@ export function ProfileHeader({
           ) : null}
         </div>
 
-        <div className="-mt-10 px-4 sm:px-5">
+        <div className="-mt-11 px-4 sm:px-6">
           <div className="w-fit">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
         </div>
 
-        <div className="mt-4 px-4 sm:px-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold leading-6 tracking-tight text-[#111827]">
+        <div className="mt-4 px-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#111827]">
               {displayName}
             </h1>
             {currentRankIconSrc && currentRank ? (
@@ -83,16 +83,18 @@ export function ProfileHeader({
                 alt={`${currentRank} rank icon`}
                 width={44}
                 height={44}
-                className="h-6 w-6 object-contain"
+                className="h-7 w-7 object-contain"
               />
             ) : null}
           </div>
-          <p className="mt-1 text-[15px] leading-5 text-[#4b5563]">@{username}</p>
-          <p className="max-w-2xl text-[15px] leading-6 text-black/80">
+          <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-[#6b7280]">
+            @{username}
+          </p>
+          <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-[#1f2937]">
             {bio || "This player has not added a bio yet."}
           </p>
 
-          <div className="mt-3 flex flex-col gap-2 text-[15px] leading-5 text-[#111827]">
+          <div className="mt-4 flex flex-col gap-2.5">
             {discordUsername ? (
               <ProfileContactRow
                 Icon={FaDiscord}
@@ -110,7 +112,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2 px-4 sm:px-5">
+        <div className="mt-6 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
           <ProfileBadge>
             {currentRankIconSrc && currentRank ? (
               <Image
