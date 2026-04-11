@@ -25,9 +25,9 @@ export async function GlobalAuthBar() {
   ] as const;
 
   return (
-    <header className="border-b border-[#d7dee8] bg-[#f9f9f9] px-6 py-4">
+    <header className="border-b border-zinc-800/80 bg-zinc-950/95 px-6 py-4 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
-        <Link href="/" className="text-xl font-bold tracking-tight text-[#111827]">
+        <Link href="/" className="text-xl font-bold tracking-tight text-zinc-100">
           overclock.lol
         </Link>
 
@@ -37,7 +37,7 @@ export async function GlobalAuthBar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-[#4b5563] transition hover:border-[#d7dee8] hover:bg-[#f7f9fc] hover:text-[#111827]"
+                className="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
               >
                 {link.label}
               </Link>

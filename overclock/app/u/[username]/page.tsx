@@ -24,7 +24,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     getCurrentRankDisplay(profile);
 
   return (
-    <main className="min-h-screen bg-[#f9f9f9] px-4 py-5 text-[15px] text-[#111827] sm:px-6 sm:py-7">
+    <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
       <div className="mx-auto w-full max-w-4xl">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}

@@ -28,7 +28,7 @@ export default function RootLayout({
     >
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col bg-[#f9f9f9]"
+        className="min-h-full flex flex-col bg-zinc-950 text-zinc-100"
       >
         <GlobalAuthBar />
         {children}

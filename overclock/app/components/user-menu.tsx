@@ -44,13 +44,13 @@ export function UserMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full border border-[#d7dee8] bg-[#f7f9fc] text-[#111827] transition hover:bg-[#eef2f7]"
+          className="rounded-full border border-zinc-700 bg-zinc-900 text-zinc-100 transition hover:bg-zinc-800"
         >
-          <Avatar className="h-9 w-9 border border-[#d7dee8]">
+          <Avatar className="h-9 w-9 border border-zinc-700">
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt={`${visibleName} avatar`} />
             ) : null}
-            <AvatarFallback className="bg-[#eef2f7] text-[#111827]">
+            <AvatarFallback className="bg-zinc-800 text-zinc-100">
               {avatarFallback}
             </AvatarFallback>
           </Avatar>
@@ -58,18 +58,18 @@ export function UserMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-56 border border-[#d7dee8] bg-[#ffffff] text-[#111827]"
+        className="w-56 border border-zinc-800 bg-zinc-950 text-zinc-100"
       >
         <DropdownMenuLabel className="px-3 py-2">
-          <span className="block text-sm font-semibold text-[#111827]">
+          <span className="block text-sm font-semibold text-zinc-100">
             @{visibleName}
           </span>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-[#e5e7eb]" />
+        <DropdownMenuSeparator className="bg-zinc-800" />
         <DropdownMenuGroup>
           <DropdownMenuItem
             asChild
-            className="text-[#4b5563] focus:bg-[#f8fafc] focus:text-[#111827]"
+            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
           >
             <Link href={profileHref}>
               <UserIcon />
@@ -78,7 +78,7 @@ export function UserMenu({
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild
-            className="text-[#4b5563] focus:bg-[#f8fafc] focus:text-[#111827]"
+            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
           >
             <Link href="/account">
               <SettingsIcon />
@@ -86,14 +86,14 @@ export function UserMenu({
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className="bg-[#e5e7eb]" />
+        <DropdownMenuSeparator className="bg-zinc-800" />
         <DropdownMenuItem
           disabled={isPending}
           onSelect={(event) => {
             event.preventDefault();
             handleSignOut();
           }}
-          className="text-[#c06a00] focus:bg-[#fff7ed] focus:text-[#9a3412]"
+          className="text-amber-400 focus:bg-amber-950/40 focus:text-amber-300"
         >
           <LogOutIcon />
           {isPending ? "Signing out..." : "Sign out"}

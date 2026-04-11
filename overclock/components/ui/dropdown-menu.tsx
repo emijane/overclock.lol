@@ -17,7 +17,7 @@ export function DropdownMenuContent({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
-        className={`z-50 min-w-52 overflow-hidden rounded-xl border border-zinc-800 bg-black p-1 text-zinc-100 shadow-xl shadow-black/40 outline-none ${className}`}
+        className={`z-50 min-w-52 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 p-1 text-zinc-100 shadow-xl shadow-black/40 outline-none ${className}`}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>

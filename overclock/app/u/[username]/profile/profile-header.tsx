@@ -43,13 +43,13 @@ export function ProfileHeader({
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-[#d8dee8] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+    <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
       <div className="pb-6 sm:pb-7">
-        <div className="flex min-h-28 items-start justify-end gap-2 bg-[linear-gradient(180deg,#f6ead7_0%,#f7eddc_100%)] px-4 py-4 sm:h-32 sm:px-6">
+        <div className="flex min-h-28 items-start justify-end gap-2 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 px-4 py-4 sm:h-32 sm:px-6">
           {region ? (
             <ProfileBadge
               Icon={Globe2Icon}
-              iconClassName="text-[#00aef0]"
+              iconClassName="text-sky-400"
               tone="cover"
             >
               {region}
@@ -58,7 +58,7 @@ export function ProfileHeader({
           {timezone ? (
             <ProfileBadge
               Icon={Clock3Icon}
-              iconClassName="text-[#f99e1a]"
+              iconClassName="text-amber-400"
               tone="cover"
             >
               {timezone}
@@ -74,7 +74,7 @@ export function ProfileHeader({
 
         <div className="mt-4 px-4 sm:px-6">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#111827]">
+            <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
               {displayName}
             </h1>
             {currentRankIconSrc && currentRank ? (
@@ -87,10 +87,10 @@ export function ProfileHeader({
               />
             ) : null}
           </div>
-          <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-[#6b7280]">
+          <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
             @{username}
           </p>
-          <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-[#1f2937]">
+          <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-zinc-300">
             {bio || "This player has not added a bio yet."}
           </p>
 
