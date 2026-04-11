@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ShieldIcon, SwordsIcon, CrossIcon } from "lucide-react";
 import { useState } from "react";
 
+import { saveHeroPools } from "@/app/account/hero-pools/actions";
 import {
   HERO_POOL_GROUPS,
   HERO_POOL_LABELS,
@@ -11,6 +12,10 @@ import {
   type HeroDefinition,
   type HeroPoolRole,
 } from "@/lib/heroes/hero-roster";
+import {
+  type HeroPoolRoleOption,
+  type HeroPoolSelections,
+} from "@/lib/heroes/profile-hero-pools";
 
 const ROLE_OPTIONS = [
   {
@@ -31,7 +36,6 @@ const ROLE_OPTIONS = [
 ] as const;
 
 type RoleId = (typeof ROLE_OPTIONS)[number]["id"];
-type HeroSelections = Record<RoleId, string[]>;
 const HERO_LIMIT = 5;
 
 const steps = [
@@ -52,20 +56,35 @@ const steps = [
   },
 ] as const;
 
-export function HeroPoolsBuilder() {
-  const [selectedRoles, setSelectedRoles] = useState<RoleId[]>([]);
-  const [heroSelections, setHeroSelections] = useState<HeroSelections>({
-    tank: [],
-    dps: [],
-    support: [],
-  });
+type HeroPoolsBuilderProps = {
+  initialRoles: HeroPoolRoleOption[];
+  initialHeroSelections: HeroPoolSelections;
+};
+
+export function HeroPoolsBuilder({
+  initialRoles,
+  initialHeroSelections,
+}: HeroPoolsBuilderProps) {
+  const [selectedRoles, setSelectedRoles] = useState<RoleId[]>(initialRoles);
+  const [heroSelections, setHeroSelections] = useState<HeroPoolSelections>(
+    initialHeroSelections
+  );
 
   function toggleRole(role: RoleId) {
-    setSelectedRoles((current) =>
-      current.includes(role)
-        ? current.filter((value) => value !== role)
-        : [...current, role]
-    );
+    setSelectedRoles((current) => {
+      const isSelected = current.includes(role);
+
+      if (isSelected) {
+        setHeroSelections((heroCurrent) => ({
+          ...heroCurrent,
+          [role]: [],
+        }));
+
+        return current.filter((value) => value !== role);
+      }
+
+      return [...current, role];
+    });
   }
 
   function toggleHero(role: RoleId, heroId: string) {
@@ -131,7 +150,14 @@ export function HeroPoolsBuilder() {
   );
 
   return (
-    <>
+    <form action={saveHeroPools} className="grid gap-4">
+      <input type="hidden" name="roles" value={JSON.stringify(selectedRoles)} />
+      <input
+        type="hidden"
+        name="hero_picks"
+        value={JSON.stringify(heroSelections)}
+      />
+
       <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
         <div className="grid gap-3 md:grid-cols-3">
           {steps.map((step) => (
@@ -305,6 +331,15 @@ export function HeroPoolsBuilder() {
           </div>
         )}
       </section>
-    </>
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+        >
+          Save
+        </button>
+      </div>
+    </form>
   );
 }
