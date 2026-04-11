@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { Clock3Icon, Globe2Icon } from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
 import { IoGameController } from "react-icons/io5";
+import { SiBattledotnet } from "react-icons/si";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -9,7 +12,11 @@ type ProfileHeaderProps = {
   currentRankIconSrc: string | null;
   currentRankPill: string;
   displayName: string;
+  discordUsername: string | null;
+  battleNet: string | null;
   platform: string | null;
+  region: string | null;
+  timezone: string | null;
   username: string;
 };
 
@@ -22,7 +29,11 @@ export function ProfileHeader({
   currentRankIconSrc,
   currentRankPill,
   displayName,
+  discordUsername,
+  battleNet,
   platform,
+  region,
+  timezone,
   username,
 }: ProfileHeaderProps) {
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
@@ -30,7 +41,20 @@ export function ProfileHeader({
   return (
     <section className="overflow-hidden rounded-2xl border border-[#d7dee8] bg-[#ffffff]">
       <div className="pb-6">
-        <div className="h-28 bg-[#f6ead7]" />
+        <div className="flex h-28 items-start justify-end gap-2 bg-[#f6ead7] px-5 py-4">
+          {region ? (
+            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#e8dcc8] bg-[#fff7eb] px-3 text-[13px] font-semibold leading-none text-[#111827]">
+              <Globe2Icon className="h-4 w-4 shrink-0 text-[#00aef0]" />
+              {region}
+            </span>
+          ) : null}
+          {timezone ? (
+            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#e8dcc8] bg-[#fff7eb] px-3 text-[13px] font-semibold leading-none text-[#111827]">
+              <Clock3Icon className="h-4 w-4 shrink-0 text-[#f99e1a]" />
+              {timezone}
+            </span>
+          ) : null}
+        </div>
 
         <div className="-mt-10 px-5">
           <div className="w-fit">
@@ -69,9 +93,19 @@ export function ProfileHeader({
             {bio || "This player has not added a bio yet."}
           </p>
 
-          <div className="flex flex-col mt-3">
-            <span>Discord</span>
-            <span>BattleNet</span>
+          <div className="mt-3 flex flex-col gap-2 text-[15px] leading-5 text-[#111827]">
+            {discordUsername ? (
+              <div className="flex items-center gap-2">
+                <FaDiscord className="h-4 w-4 shrink-0 text-[#5865F2]" />
+                <span>@{discordUsername}</span>
+              </div>
+            ) : null}
+            {battleNet ? (
+              <div className="flex items-center gap-2">
+                <SiBattledotnet className="h-4 w-4 shrink-0 text-[#00aef0]" />
+                <span>{battleNet}</span>
+              </div>
+            ) : null}
           </div>
         </div>
 
