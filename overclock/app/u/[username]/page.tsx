@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
-import { getRankIconSrc } from "./profile/rank-icons";
 import { ProfileHeader } from "./profile/profile-header";
+import { getCurrentRankDisplay } from "./profile/profile-rank";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -18,12 +18,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     notFound();
   }
 
-  const currentRank =
-    profile.current_rank_tier && profile.current_rank_tier !== "Unranked"
-      ? `${profile.current_rank_tier} ${profile.current_rank_division ?? ""}`.trim()
-      : profile.current_rank_tier;
-  const currentRankPill = currentRank ?? "Unranked";
-  const currentRankIconSrc = getRankIconSrc(profile.current_rank_tier);
+  // Keep route components focused on loading data while profile presentation
+  // helpers stay colocated with the UI they support.
+  const { currentRank, currentRankIconSrc, currentRankPill } =
+    getCurrentRankDisplay(profile);
 
   return (
     <main className="min-h-screen bg-[#f9f9f9] px-5 py-7 text-[15px] text-[#111827]">

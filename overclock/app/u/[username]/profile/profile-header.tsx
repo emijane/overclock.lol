@@ -5,6 +5,10 @@ import { FaComputerMouse } from "react-icons/fa6";
 import { IoGameController } from "react-icons/io5";
 import { SiBattledotnet } from "react-icons/si";
 
+import { ProfileAvatar } from "./profile-avatar";
+import { ProfileBadge } from "./profile-badge";
+import { ProfileContactRow } from "./profile-contact-row";
+
 type ProfileHeaderProps = {
   avatarUrl: string | null;
   bio: string | null;
@@ -43,33 +47,28 @@ export function ProfileHeader({
       <div className="pb-6">
         <div className="flex h-28 items-start justify-end gap-2 bg-[#f6ead7] px-5 py-4">
           {region ? (
-            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#e8dcc8] bg-[#fff7eb] px-3 text-[13px] font-semibold leading-none text-[#111827]">
-              <Globe2Icon className="h-4 w-4 shrink-0 text-[#00aef0]" />
+            <ProfileBadge
+              Icon={Globe2Icon}
+              iconClassName="text-[#00aef0]"
+              tone="cover"
+            >
               {region}
-            </span>
+            </ProfileBadge>
           ) : null}
           {timezone ? (
-            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#e8dcc8] bg-[#fff7eb] px-3 text-[13px] font-semibold leading-none text-[#111827]">
-              <Clock3Icon className="h-4 w-4 shrink-0 text-[#f99e1a]" />
+            <ProfileBadge
+              Icon={Clock3Icon}
+              iconClassName="text-[#f99e1a]"
+              tone="cover"
+            >
               {timezone}
-            </span>
+            </ProfileBadge>
           ) : null}
         </div>
 
         <div className="-mt-10 px-5">
           <div className="w-fit">
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={avatarUrl}
-                alt={`${displayName} avatar`}
-                className="h-24 w-24 rounded-full border-4 border-[#ffffff] bg-[#fde2b2] object-cover"
-              />
-            ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#ffffff] bg-[#fde2b2] text-3xl font-semibold text-[#111827]">
-                {displayName.slice(0, 1).toUpperCase()}
-              </div>
-            )}
+            <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
         </div>
 
@@ -95,22 +94,24 @@ export function ProfileHeader({
 
           <div className="mt-3 flex flex-col gap-2 text-[15px] leading-5 text-[#111827]">
             {discordUsername ? (
-              <div className="flex items-center gap-2">
-                <FaDiscord className="h-4 w-4 shrink-0 text-[#5865F2]" />
-                <span>@{discordUsername}</span>
-              </div>
+              <ProfileContactRow
+                Icon={FaDiscord}
+                iconClassName="text-[#5865F2]"
+                value={`@${discordUsername}`}
+              />
             ) : null}
             {battleNet ? (
-              <div className="flex items-center gap-2">
-                <SiBattledotnet className="h-4 w-4 shrink-0 text-[#00aef0]" />
-                <span>{battleNet}</span>
-              </div>
+              <ProfileContactRow
+                Icon={SiBattledotnet}
+                iconClassName="text-[#00aef0]"
+                value={battleNet}
+              />
             ) : null}
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-2 px-5">
-          <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]">
+          <ProfileBadge>
             {currentRankIconSrc && currentRank ? (
               <Image
                 src={currentRankIconSrc}
@@ -121,20 +122,16 @@ export function ProfileHeader({
               />
             ) : null}
             {currentRankPill}
-          </span>
+          </ProfileBadge>
           {platform ? (
-            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]">
-              <PlatformIcon className="h-4 w-4" />
+            <ProfileBadge Icon={PlatformIcon}>
               {platform}
-            </span>
+            </ProfileBadge>
           ) : null}
           {rolePillTemplate.map((role) => (
-            <span
-              key={role}
-              className="inline-flex h-8 items-center rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]"
-            >
+            <ProfileBadge key={role}>
               {role}
-            </span>
+            </ProfileBadge>
           ))}
         </div>
       </div>
