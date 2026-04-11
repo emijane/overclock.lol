@@ -22,44 +22,30 @@ export function ProfileHeader({
   username,
 }: ProfileHeaderProps) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#3b4657] bg-[#1a1f27] shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
-      <div className="h-32 bg-[radial-gradient(circle_at_16%_18%,rgba(249,158,26,0.30),transparent_24%),radial-gradient(circle_at_82%_12%,rgba(0,174,240,0.18),transparent_22%),linear-gradient(135deg,#444b57_0%,#242b35_48%,#171c23_100%)]" />
-      <div className="px-5 pb-6">
-        <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+    <section className="overflow-hidden rounded-2xl border border-[#d7dee8] bg-[#ffffff]">
+      <div className="pb-6">
+        <div className="h-28 bg-[#f6ead7]" />
+
+        <div className="-mt-10 px-5">
+          <div className="w-fit">
             {avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={avatarUrl}
                 alt={`${displayName} avatar`}
-                className="h-24 w-24 rounded-full border-4 border-[#161b21] object-cover shadow-xl shadow-black/30"
+                className="h-24 w-24 rounded-full border-4 border-[#ffffff] bg-[#fde2b2] object-cover"
               />
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#161b21] bg-[#2a313d] text-3xl font-semibold text-[#f5f7fa] shadow-xl shadow-black/30">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#ffffff] bg-[#fde2b2] text-3xl font-semibold text-[#111827]">
                 {displayName.slice(0, 1).toUpperCase()}
               </div>
             )}
           </div>
-
-          <div className="flex gap-2 pt-12 sm:pt-14">
-            <button
-              type="button"
-              className="h-9 rounded-full border border-[#546174] bg-[#212833] px-4 text-sm font-bold text-[#f5f7fa] transition hover:border-[#6a7b91] hover:bg-[#28313d]"
-            >
-              Message
-            </button>
-            <button
-              type="button"
-              className="h-9 rounded-full bg-[#f99e1a] px-4 text-sm font-bold text-[#171b22] transition hover:bg-[#ffb347]"
-            >
-              Follow
-            </button>
-          </div>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 px-5">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold leading-6 tracking-tight text-[#f7fafc]">
+            <h1 className="text-xl font-bold leading-6 tracking-tight text-[#111827]">
               {displayName}
             </h1>
             {currentRankIconSrc && currentRank ? (
@@ -72,14 +58,14 @@ export function ProfileHeader({
               />
             ) : null}
           </div>
-          <p className="text-[15px] leading-5 text-[#8ea0b8]">@{username}</p>
-          <p className="mt-3.5 max-w-2xl text-[15px] leading-6 text-[#eef2f7]">
+          <p className="mt-1 text-[15px] leading-5 text-[#4b5563]">@{username}</p>
+          <p className="max-w-2xl text-[15px] leading-6 text-[#1f2937]">
             {bio || "This player has not added a bio yet."}
           </p>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#546174] bg-[#212833] px-3 text-[13px] font-semibold leading-none text-[#f5f7fa]">
+        <div className="mt-5 flex flex-wrap items-center gap-2 px-5">
+          <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]">
             {currentRankIconSrc && currentRank ? (
               <Image
                 src={currentRankIconSrc}
@@ -94,7 +80,7 @@ export function ProfileHeader({
           {rolePillTemplate.map((role) => (
             <span
               key={role}
-              className="inline-flex h-8 items-center rounded-full border border-[#546174] bg-[#212833] px-3 text-[13px] font-semibold leading-none text-[#f5f7fa]"
+              className="inline-flex h-8 items-center rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]"
             >
               {role}
             </span>

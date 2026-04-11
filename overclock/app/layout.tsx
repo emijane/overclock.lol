@@ -25,7 +25,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black">
+      <body className="min-h-full flex flex-col bg-[#f9f9f9]">
         <GlobalAuthBar />
         {children}
       </body>

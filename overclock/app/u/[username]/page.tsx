@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getRankIconSrc } from "./profile/rank-icons";
 import { IntroCard, type IntroGroup, type IntroItem } from "./profile/intro-card";
-import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { ProfileHeader } from "./profile/profile-header";
 
 type ProfilePageProps = {
@@ -46,14 +45,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           ? { label: "Discord", value: `@${profile.discord_username}` }
           : null,
         { label: "Battle.net", value: "Player#1234" },
-        { label: "Twitter", value: "@player" },
-        { label: "YouTube", value: "@player" },
       ]),
     },
   ].filter((group) => group.items.length > 0);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(0,174,240,0.08),_transparent_26%),linear-gradient(180deg,_#1e232b_0%,_#14181f_52%,_#101319_100%)] px-5 py-7 text-[15px] text-zinc-100">
+    <main className="min-h-screen bg-[#f9f9f9] px-5 py-7 text-[15px] text-[#111827]">
       <div className="mx-auto grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
@@ -65,7 +62,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           username={profile.username}
         />
         <IntroCard groups={detailGroups} />
-        <PreferredHeroPools />
       </div>
     </main>
   );
