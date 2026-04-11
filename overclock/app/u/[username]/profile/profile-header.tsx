@@ -43,7 +43,7 @@ export function ProfileHeader({
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+    <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900">
       <div className="pb-6 sm:pb-7">
         <div className="flex min-h-28 items-start justify-end gap-2 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 px-4 py-4 sm:h-32 sm:px-6">
           {region ? (

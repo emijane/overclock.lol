@@ -17,8 +17,8 @@ export function ProfileBadge({
 }: ProfileBadgeProps) {
   const palette =
     tone === "cover"
-      ? "border-zinc-700/80 bg-zinc-900/80 text-zinc-100 shadow-[0_1px_0_rgba(255,255,255,0.03)_inset]"
-      : "border-zinc-800 bg-zinc-900/90 text-zinc-100 shadow-[0_1px_0_rgba(255,255,255,0.03)_inset]";
+      ? "border-zinc-700/80 bg-zinc-900/80 text-zinc-100"
+      : "border-zinc-800 bg-zinc-900/90 text-zinc-100";
 
   return (
     <span
