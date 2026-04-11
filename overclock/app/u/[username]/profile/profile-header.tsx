@@ -59,7 +59,7 @@ export function ProfileHeader({
             ) : null}
           </div>
           <p className="mt-1 text-[15px] leading-5 text-[#4b5563]">@{username}</p>
-          <p className="max-w-2xl text-[15px] leading-6 text-[#1f2937]">
+          <p className="max-w-2xl text-[15px] leading-6 text-black/80">
             {bio || "This player has not added a bio yet."}
           </p>
         </div>

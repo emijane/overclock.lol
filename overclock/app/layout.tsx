@@ -23,9 +23,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f9f9f9]">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-[#f9f9f9]"
+      >
         <GlobalAuthBar />
         {children}
       </body>
