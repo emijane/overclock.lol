@@ -24,8 +24,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     getCurrentRankDisplay(profile);
 
   return (
-    <main className="min-h-screen bg-[#f9f9f9] px-5 py-7 text-[15px] text-[#111827]">
-      <div className="mx-auto w-full max-w-6xl">
+    <main className="min-h-screen bg-[#f9f9f9] px-4 py-5 text-[15px] text-[#111827] sm:px-6 sm:py-7">
+      <div className="mx-auto w-full max-w-4xl">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
           battleNet="Player#1234"

@@ -44,8 +44,8 @@ export function ProfileHeader({
 
   return (
     <section className="overflow-hidden rounded-2xl border border-[#d7dee8] bg-[#ffffff]">
-      <div className="pb-6">
-        <div className="flex h-28 items-start justify-end gap-2 bg-[#f6ead7] px-5 py-4">
+      <div className="pb-5 sm:pb-6">
+        <div className="flex min-h-24 items-start justify-end gap-2 bg-[#f6ead7] px-4 py-4 sm:h-28 sm:px-5">
           {region ? (
             <ProfileBadge
               Icon={Globe2Icon}
@@ -66,13 +66,13 @@ export function ProfileHeader({
           ) : null}
         </div>
 
-        <div className="-mt-10 px-5">
+        <div className="-mt-10 px-4 sm:px-5">
           <div className="w-fit">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
         </div>
 
-        <div className="mt-4 px-5">
+        <div className="mt-4 px-4 sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl font-bold leading-6 tracking-tight text-[#111827]">
               {displayName}
@@ -110,7 +110,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2 px-5">
+        <div className="mt-5 flex flex-wrap items-center gap-2 px-4 sm:px-5">
           <ProfileBadge>
             {currentRankIconSrc && currentRank ? (
               <Image
