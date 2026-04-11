@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { FaComputerMouse } from "react-icons/fa6";
+import { IoGameController } from "react-icons/io5";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -7,6 +9,7 @@ type ProfileHeaderProps = {
   currentRankIconSrc: string | null;
   currentRankPill: string;
   displayName: string;
+  platform: string | null;
   username: string;
 };
 
@@ -19,8 +22,11 @@ export function ProfileHeader({
   currentRankIconSrc,
   currentRankPill,
   displayName,
+  platform,
   username,
 }: ProfileHeaderProps) {
+  const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
+
   return (
     <section className="overflow-hidden rounded-2xl border border-[#d7dee8] bg-[#ffffff]">
       <div className="pb-6">
@@ -62,6 +68,11 @@ export function ProfileHeader({
           <p className="max-w-2xl text-[15px] leading-6 text-black/80">
             {bio || "This player has not added a bio yet."}
           </p>
+
+          <div className="flex flex-col mt-3">
+            <span>Discord</span>
+            <span>BattleNet</span>
+          </div>
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-2 px-5">
@@ -77,6 +88,12 @@ export function ProfileHeader({
             ) : null}
             {currentRankPill}
           </span>
+          {platform ? (
+            <span className="inline-flex h-8 items-center gap-2 rounded-full border border-[#d7dee8] bg-[#f7f9fc] px-3 text-[13px] font-semibold leading-none text-[#111827]">
+              <PlatformIcon className="h-4 w-4" />
+              {platform}
+            </span>
+          ) : null}
           {rolePillTemplate.map((role) => (
             <span
               key={role}

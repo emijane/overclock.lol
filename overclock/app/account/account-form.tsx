@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { FaComputerMouse } from "react-icons/fa6";
+import { IoGameController } from "react-icons/io5";
 
 import { updateProfile } from "@/app/account/actions";
 import {
@@ -48,6 +50,7 @@ function formatRank(
 export function AccountForm({ profile }: AccountFormProps) {
   const [region, setRegion] = useState(profile.region ?? "");
   const [timezone, setTimezone] = useState(profile.timezone ?? "");
+  const [platform, setPlatform] = useState(profile.platform ?? "");
 
   const timezoneOptions = region
     ? (REGION_TO_TIMEZONES[region as keyof typeof REGION_TO_TIMEZONES] ?? [])
@@ -138,21 +141,33 @@ export function AccountForm({ profile }: AccountFormProps) {
           </select>
         </label>
 
-        <label className="grid gap-2 text-sm text-slate-300">
-          Platform
-          <select
-            name="platform"
-            defaultValue={profile.platform ?? ""}
-            className="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-sky-400"
-          >
-            <option value="">Not set</option>
-            {PLATFORM_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="grid gap-2 text-sm text-slate-300">
+          <span>Platform</span>
+          <input type="hidden" name="platform" value={platform} />
+          <div className="grid grid-cols-2 gap-2">
+            {PLATFORM_OPTIONS.map((option) => {
+              const isSelected = platform === option;
+              const Icon = option === "PC" ? FaComputerMouse : IoGameController;
+
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setPlatform(option)}
+                  aria-pressed={isSelected}
+                  className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold outline-none transition ${
+                    isSelected
+                      ? "border-sky-400 bg-sky-400/15 text-white"
+                      : "border-slate-700 bg-slate-950 text-slate-300 hover:border-slate-500 hover:text-white"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

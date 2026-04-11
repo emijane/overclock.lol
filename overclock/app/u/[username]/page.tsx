@@ -59,6 +59,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           currentRankIconSrc={currentRankIconSrc}
           currentRankPill={currentRankPill}
           displayName={profile.display_name}
+          platform={profile.platform}
           username={profile.username}
         />
         <IntroCard groups={detailGroups} />

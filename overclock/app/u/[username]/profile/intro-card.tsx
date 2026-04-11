@@ -43,7 +43,7 @@ export function IntroCard({ groups }: IntroCardProps) {
             <div key={group.heading}>
               <div className="grid gap-3">
                 {group.items.map((item) => {
-                  const iconConfig = introIconByLabel[item.label] ?? {
+                  const iconConfig = introIconByLabel[item.label as keyof typeof introIconByLabel] ?? {
                     Icon: InfoIcon,
                     className: "text-[#6b7280]",
                   };
