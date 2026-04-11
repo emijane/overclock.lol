@@ -121,7 +121,6 @@ export async function updateProfile(formData: FormData) {
     .filter((value): value is (typeof LOOKING_FOR_OPTIONS)[number] =>
       LOOKING_FOR_OPTIONS.includes(value as (typeof LOOKING_FOR_OPTIONS)[number])
     );
-  const usesMic = formData.get("uses_mic") === "on";
 
   if (bio && bio.length > 1000) {
     accountRedirect("Bio must be 1000 characters or less.");
@@ -164,7 +163,6 @@ export async function updateProfile(formData: FormData) {
       peak_rank_tier: peakRankTier,
       peak_rank_division: peakRankDivision,
       looking_for: lookingFor,
-      uses_mic: usesMic,
     })
     .eq("id", user.id);
 

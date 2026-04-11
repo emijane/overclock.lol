@@ -29,7 +29,6 @@ type AccountFormProps = {
     region: string | null;
     timezone: string | null;
     username: string;
-    uses_mic: boolean;
   };
 };
 
@@ -199,15 +198,6 @@ export function AccountForm({ profile }: AccountFormProps) {
             </div>
           </div>
         </div>
-
-        <label className="mt-5 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-4 text-sm text-zinc-200">
-          <input
-            type="checkbox"
-            name="uses_mic"
-            defaultChecked={profile.uses_mic}
-          />
-          I actively use voice comms
-        </label>
       </AccountSection>
 
       <AccountSection

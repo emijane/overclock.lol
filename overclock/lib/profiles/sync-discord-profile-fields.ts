@@ -18,7 +18,6 @@ type ProfileRow = {
   timezone: string | null;
   discord_avatar_url: string | null;
   discord_username: string | null;
-  uses_mic: boolean;
   username: string;
   display_name: string;
 };
@@ -47,7 +46,7 @@ export async function syncDiscordProfileFields(user: User, profile: ProfileRow) 
     })
     .eq("id", profile.id)
     .select(
-      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, bio, timezone, region, platform, current_rank_tier, current_rank_division, peak_rank_tier, peak_rank_division, looking_for, uses_mic"
+      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, bio, timezone, region, platform, current_rank_tier, current_rank_division, peak_rank_tier, peak_rank_division, looking_for"
     )
     .single();
 
