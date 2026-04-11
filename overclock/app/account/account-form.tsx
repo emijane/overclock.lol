@@ -23,8 +23,6 @@ type AccountFormProps = {
     current_rank_tier: string | null;
     display_name: string;
     looking_for: string[] | null;
-    peak_rank_division: number | null;
-    peak_rank_tier: string | null;
     platform: string | null;
     region: string | null;
     timezone: string | null;
@@ -202,87 +200,46 @@ export function AccountForm({ profile }: AccountFormProps) {
 
       <AccountSection
         title="Competitive Info"
-        description="Keep your current and peak rank easy to compare at a glance."
+        description="Keep your current rank up to date for players checking your profile."
       >
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="grid gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-4">
-            <p className="text-sm font-semibold text-zinc-100">Current rank</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm text-zinc-300">
-                Tier
-                <select
-                  name="current_rank_tier"
-                  defaultValue={profile.current_rank_tier ?? ""}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">Not set</option>
-                  {RANK_TIERS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="grid gap-2 text-sm text-zinc-300">
-                Division
-                <select
-                  name="current_rank_division"
-                  defaultValue={profile.current_rank_division?.toString() ?? ""}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">None</option>
-                  {RANK_DIVISIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <p className="text-xs text-zinc-500">
-              Current value:{" "}
-              {formatRank(profile.current_rank_tier, profile.current_rank_division)}
-            </p>
+        <div className="grid gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-4">
+          <p className="text-sm font-semibold text-zinc-100">Current rank</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm text-zinc-300">
+              Tier
+              <select
+                name="current_rank_tier"
+                defaultValue={profile.current_rank_tier ?? ""}
+                className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+              >
+                <option value="">Not set</option>
+                {RANK_TIERS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-2 text-sm text-zinc-300">
+              Division
+              <select
+                name="current_rank_division"
+                defaultValue={profile.current_rank_division?.toString() ?? ""}
+                className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+              >
+                <option value="">None</option>
+                {RANK_DIVISIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-
-          <div className="grid gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-4">
-            <p className="text-sm font-semibold text-zinc-100">Peak rank</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm text-zinc-300">
-                Tier
-                <select
-                  name="peak_rank_tier"
-                  defaultValue={profile.peak_rank_tier ?? ""}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">Not set</option>
-                  {RANK_TIERS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="grid gap-2 text-sm text-zinc-300">
-                Division
-                <select
-                  name="peak_rank_division"
-                  defaultValue={profile.peak_rank_division?.toString() ?? ""}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">None</option>
-                  {RANK_DIVISIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <p className="text-xs text-zinc-500">
-              Current value: {formatRank(profile.peak_rank_tier, profile.peak_rank_division)}
-            </p>
-          </div>
+          <p className="text-xs text-zinc-500">
+            Current value:{" "}
+            {formatRank(profile.current_rank_tier, profile.current_rank_division)}
+          </p>
         </div>
       </AccountSection>
 

@@ -106,15 +106,6 @@ export async function updateProfile(formData: FormData) {
     formData.get("current_rank_division"),
     "current rank division"
   );
-  const peakRankTier = optionalEnumValue(
-    formData.get("peak_rank_tier"),
-    RANK_TIERS,
-    "peak rank tier"
-  );
-  const peakRankDivision = parseRankDivision(
-    formData.get("peak_rank_division"),
-    "peak rank division"
-  );
   const lookingFor = formData
     .getAll("looking_for")
     .map((value) => value.toString())
@@ -139,7 +130,6 @@ export async function updateProfile(formData: FormData) {
   }
 
   validateRankPair(currentRankTier, currentRankDivision, "Current rank");
-  validateRankPair(peakRankTier, peakRankDivision, "Peak rank");
 
   const supabase = await createClient();
   const {
@@ -160,8 +150,6 @@ export async function updateProfile(formData: FormData) {
       platform,
       current_rank_tier: currentRankTier,
       current_rank_division: currentRankDivision,
-      peak_rank_tier: peakRankTier,
-      peak_rank_division: peakRankDivision,
       looking_for: lookingFor,
     })
     .eq("id", user.id);
