@@ -4,7 +4,13 @@ import Image from "next/image";
 import { ShieldIcon, SwordsIcon, CrossIcon } from "lucide-react";
 import { useState } from "react";
 
-import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
+import {
+  HERO_POOL_GROUPS,
+  HERO_POOL_LABELS,
+  HERO_ROSTER,
+  type HeroDefinition,
+  type HeroPoolRole,
+} from "@/lib/heroes/hero-roster";
 
 const ROLE_OPTIONS = [
   {
@@ -102,6 +108,27 @@ export function HeroPoolsBuilder() {
       (hero) => hero.pool === "support_main" || hero.pool === "support_flex"
     );
   }
+
+  const selectedHeroes = selectedRoles.flatMap((role) =>
+    heroSelections[role]
+      .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId))
+      .filter((hero): hero is HeroDefinition => Boolean(hero))
+  );
+
+  const derivedPools = selectedHeroes.reduce<Record<HeroPoolRole, HeroDefinition[]>>(
+    (accumulator, hero) => {
+      accumulator[hero.pool].push(hero);
+      return accumulator;
+    },
+    {
+      main_tank: [],
+      off_tank: [],
+      dps_hitscan: [],
+      dps_flex: [],
+      support_main: [],
+      support_flex: [],
+    }
+  );
 
   return (
     <>
@@ -215,6 +242,66 @@ export function HeroPoolsBuilder() {
         ) : (
           <div className="rounded-[22px] border border-dashed border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
             Choose at least one role to continue.
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+        {selectedHeroes.length > 0 ? (
+          <div className="grid gap-4">
+            {HERO_POOL_GROUPS.map((group) => {
+              const visiblePools = group.pools.filter(
+                (pool) => derivedPools[pool].length > 0
+              );
+
+              if (visiblePools.length === 0) {
+                return null;
+              }
+
+              return (
+                <section
+                  key={group.label}
+                  className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
+                >
+                  <h3 className="text-sm font-semibold text-zinc-100">
+                    {group.label}
+                  </h3>
+
+                  <div className="mt-4 grid gap-4">
+                    {visiblePools.map((pool) => (
+                      <div key={pool} className="grid gap-2">
+                        <p className="text-sm text-zinc-400">
+                          {HERO_POOL_LABELS[pool]}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {derivedPools[pool].map((hero) => (
+                            <div
+                              key={hero.id}
+                              className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-200"
+                            >
+                              <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
+                                <Image
+                                  src={hero.imageSrc}
+                                  alt={hero.label}
+                                  fill
+                                  className="object-cover"
+                                  sizes="24px"
+                                />
+                              </div>
+                              <span>{hero.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-[22px] border border-dashed border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
+            Your hero pool preview will appear here.
           </div>
         )}
       </section>
