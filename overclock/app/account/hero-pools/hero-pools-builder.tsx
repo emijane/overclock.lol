@@ -37,11 +37,11 @@ const ROLE_OPTIONS = [
 
 const STEP_META = [
   ...ROLE_OPTIONS.map((role, index) => ({
-    number: `0${index + 1}`,
+    number: `${index + 1}`,
     title: role.label,
   })),
   {
-    number: "04",
+    number: "4",
     title: "Preview",
   },
 ] as const;
@@ -220,9 +220,11 @@ export function HeroPoolsBuilder({
                     <p className="text-sm font-semibold text-zinc-100">
                       {step.title}
                     </p>
-                    <p className="text-xs text-zinc-500">
-                      {index < ROLE_OPTIONS.length ? "Role step" : "Final review"}
-                    </p>
+                    {index < ROLE_OPTIONS.length ? (
+                      <p className="text-xs text-zinc-500">
+                        {heroSelections[ROLE_OPTIONS[index].id].length} selected
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </button>
@@ -235,21 +237,13 @@ export function HeroPoolsBuilder({
         <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                {STEP_META[currentStep].number}
-              </p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-zinc-50">
+              <h2 className="text-xl font-semibold tracking-[-0.03em] text-zinc-50">
                 {currentRole.label} hero pool
               </h2>
               <p className="mt-1 text-sm leading-6 text-zinc-400">
                 {currentRole.description}
               </p>
             </div>
-            <p className="text-sm text-zinc-500">
-              {currentRoleSelected
-                ? `${currentRoleHeroes.length}/${HERO_LIMIT} heroes selected`
-                : "You can skip this role"}
-            </p>
           </div>
 
           <div className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4">
@@ -299,11 +293,6 @@ export function HeroPoolsBuilder({
               })}
             </div>
 
-            {currentRoleHeroes.length === 0 ? (
-              <p className="mt-4 text-sm text-zinc-500">
-                Pick at least one hero, or skip this role to move on.
-              </p>
-            ) : null}
           </div>
 
           <div className="mt-5 flex flex-wrap justify-between gap-3">
@@ -345,10 +334,7 @@ export function HeroPoolsBuilder({
         <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                04
-              </p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-zinc-50">
+              <h2 className="text-xl font-semibold tracking-[-0.03em] text-zinc-50">
                 Preview your hero pools
               </h2>
               <p className="mt-1 text-sm leading-6 text-zinc-400">
