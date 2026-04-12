@@ -20,11 +20,10 @@ type ProfileHeaderProps = {
   battleNet: string | null;
   platform: string | null;
   region: string | null;
+  roleLabels: string[];
   timezone: string | null;
   username: string;
 };
-
-const rolePillTemplate = ["Tank", "DPS", "Support"] as const;
 
 export function ProfileHeader({
   avatarUrl,
@@ -37,6 +36,7 @@ export function ProfileHeader({
   battleNet,
   platform,
   region,
+  roleLabels,
   timezone,
   username,
 }: ProfileHeaderProps) {
@@ -130,7 +130,7 @@ export function ProfileHeader({
               {platform}
             </ProfileBadge>
           ) : null}
-          {rolePillTemplate.map((role) => (
+          {roleLabels.map((role) => (
             <ProfileBadge key={role}>
               {role}
             </ProfileBadge>
