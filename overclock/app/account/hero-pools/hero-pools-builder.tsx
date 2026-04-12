@@ -38,24 +38,6 @@ const ROLE_OPTIONS = [
 type RoleId = (typeof ROLE_OPTIONS)[number]["id"];
 const HERO_LIMIT = 5;
 
-const steps = [
-  {
-    number: "01",
-    title: "Roles",
-    description: "Choose the roles you play.",
-  },
-  {
-    number: "02",
-    title: "Heroes",
-    description: "Pick up to five heroes for each role.",
-  },
-  {
-    number: "03",
-    title: "Preview",
-    description: "Review the hero pools we build from your picks.",
-  },
-] as const;
-
 type HeroPoolsBuilderProps = {
   initialRoles: HeroPoolRoleOption[];
   initialHeroSelections: HeroPoolSelections;
@@ -159,27 +141,16 @@ export function HeroPoolsBuilder({
       />
 
       <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
-        <div className="grid gap-3 md:grid-cols-3">
-          {steps.map((step) => (
-            <section
-              key={step.number}
-              className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                {step.number}
-              </p>
-              <h2 className="mt-2 text-sm font-semibold text-zinc-100">
-                {step.title}
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-zinc-400">
-                {step.description}
-              </p>
-            </section>
-          ))}
+        <div className="mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+            01
+          </p>
+          <h2 className="mt-2 text-base font-semibold text-zinc-100">Roles</h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-400">
+            Choose the roles you play.
+          </p>
         </div>
-      </section>
 
-      <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
         <div className="grid gap-3 sm:grid-cols-3">
           {ROLE_OPTIONS.map((role) => {
             const isSelected = selectedRoles.includes(role.id);
@@ -206,6 +177,16 @@ export function HeroPoolsBuilder({
       </section>
 
       <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+        <div className="mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+            02
+          </p>
+          <h2 className="mt-2 text-base font-semibold text-zinc-100">Heroes</h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-400">
+            Pick up to five heroes for each role.
+          </p>
+        </div>
+
         {selectedRoles.length > 0 ? (
           <div className="grid gap-4">
             {selectedRoles.map((role) => {
@@ -273,6 +254,16 @@ export function HeroPoolsBuilder({
       </section>
 
       <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+        <div className="mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+            03
+          </p>
+          <h2 className="mt-2 text-base font-semibold text-zinc-100">Preview</h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-400">
+            Review the hero pools we build from your picks.
+          </p>
+        </div>
+
         {selectedHeroes.length > 0 ? (
           <div className="grid gap-4">
             {HERO_POOL_GROUPS.map((group) => {
