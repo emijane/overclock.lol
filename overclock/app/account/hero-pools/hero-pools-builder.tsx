@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ShieldIcon, SwordsIcon, CrossIcon } from "lucide-react";
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
 import { saveHeroPools } from "@/app/account/hero-pools/actions";
@@ -21,27 +21,38 @@ const ROLE_OPTIONS = [
   {
     id: "tank",
     label: "Tank",
-    Icon: ShieldIcon,
+    description: "Build your tank pool with the heroes you trust in ranked.",
   },
   {
     id: "dps",
     label: "DPS",
-    Icon: SwordsIcon,
+    description: "Pick the damage heroes you actually want to queue on.",
   },
   {
     id: "support",
     label: "Support",
-    Icon: CrossIcon,
+    description: "Choose the support heroes you feel strongest playing.",
+  },
+] as const;
+
+const STEP_META = [
+  ...ROLE_OPTIONS.map((role, index) => ({
+    number: `0${index + 1}`,
+    title: role.label,
+  })),
+  {
+    number: "04",
+    title: "Preview",
   },
 ] as const;
 
 type RoleId = (typeof ROLE_OPTIONS)[number]["id"];
-const HERO_LIMIT = 5;
-
 type HeroPoolsBuilderProps = {
   initialRoles: HeroPoolRoleOption[];
   initialHeroSelections: HeroPoolSelections;
 };
+
+const HERO_LIMIT = 5;
 
 export function HeroPoolsBuilder({
   initialRoles,
@@ -51,22 +62,32 @@ export function HeroPoolsBuilder({
   const [heroSelections, setHeroSelections] = useState<HeroPoolSelections>(
     initialHeroSelections
   );
+  const [currentStep, setCurrentStep] = useState(0);
 
-  function toggleRole(role: RoleId) {
+  const isPreviewStep = currentStep === ROLE_OPTIONS.length;
+  const currentRole = !isPreviewStep ? ROLE_OPTIONS[currentStep] : null;
+  const currentRoleId = currentRole?.id ?? null;
+  const currentRoleSelected = currentRoleId
+    ? selectedRoles.includes(currentRoleId)
+    : false;
+  const currentRoleHeroes = currentRoleId ? heroSelections[currentRoleId] : [];
+  const canMoveNext = isPreviewStep || currentRoleHeroes.length > 0;
+
+  function setRoleEnabled(role: RoleId, enabled: boolean) {
     setSelectedRoles((current) => {
-      const isSelected = current.includes(role);
-
-      if (isSelected) {
-        setHeroSelections((heroCurrent) => ({
-          ...heroCurrent,
-          [role]: [],
-        }));
-
-        return current.filter((value) => value !== role);
+      if (enabled) {
+        return current.includes(role) ? current : [...current, role];
       }
 
-      return [...current, role];
+      return current.filter((value) => value !== role);
     });
+
+    if (!enabled) {
+      setHeroSelections((current) => ({
+        ...current,
+        [role]: [],
+      }));
+    }
   }
 
   function toggleHero(role: RoleId, heroId: string) {
@@ -110,7 +131,23 @@ export function HeroPoolsBuilder({
     );
   }
 
-  const selectedHeroes = selectedRoles.flatMap((role) =>
+  function goToNextStep() {
+    if (!canMoveNext) {
+      return;
+    }
+
+    setCurrentStep((current) => Math.min(current + 1, ROLE_OPTIONS.length));
+  }
+
+  function goToPreviousStep() {
+    setCurrentStep((current) => Math.max(current - 1, 0));
+  }
+
+  const normalizedSelectedRoles = ROLE_OPTIONS.map((role) => role.id).filter((role) =>
+    selectedRoles.includes(role)
+  );
+
+  const selectedHeroes = normalizedSelectedRoles.flatMap((role) =>
     heroSelections[role]
       .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId))
       .filter((hero): hero is HeroDefinition => Boolean(hero))
@@ -133,7 +170,11 @@ export function HeroPoolsBuilder({
 
   return (
     <form action={saveHeroPools} className="grid gap-4">
-      <input type="hidden" name="roles" value={JSON.stringify(selectedRoles)} />
+      <input
+        type="hidden"
+        name="roles"
+        value={JSON.stringify(normalizedSelectedRoles)}
+      />
       <input
         type="hidden"
         name="hero_picks"
@@ -141,196 +182,262 @@ export function HeroPoolsBuilder({
       />
 
       <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
-        <div className="mb-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-            01
-          </p>
-          <h2 className="mt-2 text-base font-semibold text-zinc-100">Roles</h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">
-            Choose the roles you play.
-          </p>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-3">
-          {ROLE_OPTIONS.map((role) => {
-            const isSelected = selectedRoles.includes(role.id);
-            const { Icon } = role;
+        <div className="grid gap-4 md:grid-cols-4">
+          {STEP_META.map((step, index) => {
+            const isActive = index === currentStep;
+            const isComplete = index < currentStep;
 
             return (
               <button
-                key={role.id}
+                key={step.number}
                 type="button"
-                onClick={() => toggleRole(role.id)}
-                aria-pressed={isSelected}
-                className={`rounded-[22px] border px-4 py-5 text-left transition ${
-                  isSelected
-                    ? "border-sky-400 bg-sky-400/12 text-zinc-50"
-                    : "border-zinc-800 bg-zinc-950/70 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100"
+                onClick={() => {
+                  if (index <= currentStep) {
+                    setCurrentStep(index);
+                  }
+                }}
+                className={`rounded-[22px] border px-4 py-4 text-left transition ${
+                  isActive
+                    ? "border-sky-400 bg-sky-400/10"
+                    : isComplete
+                      ? "border-zinc-700 bg-zinc-950/70"
+                      : "border-zinc-800 bg-zinc-950/40"
                 }`}
               >
-                <Icon className="h-5 w-5" />
-                <p className="mt-4 text-base font-semibold">{role.label}</p>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`inline-flex h-9 w-9 items-center justify-center rounded-full border text-xs font-semibold ${
+                      isActive
+                        ? "border-sky-400 bg-sky-400 text-zinc-950"
+                        : isComplete
+                          ? "border-zinc-600 bg-zinc-800 text-zinc-100"
+                          : "border-zinc-700 bg-zinc-900 text-zinc-500"
+                    }`}
+                  >
+                    {isComplete ? <CheckIcon className="h-4 w-4" /> : step.number}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-zinc-100">
+                      {step.title}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {index < ROLE_OPTIONS.length ? "Role step" : "Final review"}
+                    </p>
+                  </div>
+                </div>
               </button>
             );
           })}
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
-        <div className="mb-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-            02
-          </p>
-          <h2 className="mt-2 text-base font-semibold text-zinc-100">Heroes</h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">
-            Pick up to five heroes for each role.
-          </p>
-        </div>
+      {!isPreviewStep && currentRoleId ? (
+        <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                {STEP_META[currentStep].number}
+              </p>
+              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-zinc-50">
+                {currentRole.label} hero pool
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-zinc-400">
+                {currentRole.description}
+              </p>
+            </div>
+            <p className="text-sm text-zinc-500">
+              {currentRoleSelected
+                ? `${currentRoleHeroes.length}/${HERO_LIMIT} heroes selected`
+                : "You can skip this role"}
+            </p>
+          </div>
 
-        {selectedRoles.length > 0 ? (
-          <div className="grid gap-4">
-            {selectedRoles.map((role) => {
-              const heroes = getHeroesForRole(role);
-              const selected = heroSelections[role];
-              const roleLabel =
-                ROLE_OPTIONS.find((option) => option.id === role)?.label ?? role;
+          <div className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="text-sm font-semibold text-zinc-100">
+                Choose up to five heroes
+              </h3>
+              <p className="text-sm text-zinc-500">
+                {currentRoleHeroes.length}/{HERO_LIMIT}
+              </p>
+            </div>
 
-              return (
-                <section
-                  key={role}
-                  className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
-                >
-                  <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {getHeroesForRole(currentRoleId).map((hero) => {
+                const isSelected = currentRoleHeroes.includes(hero.id);
+                const isDisabled =
+                  !isSelected && currentRoleHeroes.length >= HERO_LIMIT;
+
+                return (
+                  <button
+                    key={hero.id}
+                    type="button"
+                    onClick={() => {
+                      setRoleEnabled(currentRoleId, true);
+                      toggleHero(currentRoleId, hero.id);
+                    }}
+                    disabled={isDisabled}
+                    aria-pressed={isSelected}
+                    className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition ${
+                      isSelected
+                        ? "border-sky-400 bg-sky-400/12 text-zinc-50"
+                        : "border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+                    }`}
+                  >
+                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+                      <Image
+                        src={hero.imageSrc}
+                        alt={hero.label}
+                        fill
+                        className="object-cover"
+                        sizes="44px"
+                      />
+                    </div>
+                    <span className="text-sm font-medium">{hero.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {currentRoleHeroes.length === 0 ? (
+              <p className="mt-4 text-sm text-zinc-500">
+                Pick at least one hero, or skip this role to move on.
+              </p>
+            ) : null}
+          </div>
+
+          <div className="mt-5 flex flex-wrap justify-between gap-3">
+            <button
+              type="button"
+              onClick={goToPreviousStep}
+              disabled={currentStep === 0}
+              className="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+              Back
+            </button>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setRoleEnabled(currentRoleId, false);
+                  goToNextStep();
+                }}
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
+              >
+                Skip
+              </button>
+
+              <button
+                type="button"
+                onClick={goToNextStep}
+                disabled={!canMoveNext}
+                className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+              >
+                Next
+                <ChevronRightIcon className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                04
+              </p>
+              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-zinc-50">
+                Preview your hero pools
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-zinc-400">
+                Review the roles you kept and the heroes that will show on your profile.
+              </p>
+            </div>
+            <p className="text-sm text-zinc-500">
+              {normalizedSelectedRoles.length} role
+              {normalizedSelectedRoles.length === 1 ? "" : "s"} selected
+            </p>
+          </div>
+
+          {selectedHeroes.length > 0 ? (
+            <div className="grid gap-4">
+              {HERO_POOL_GROUPS.map((group) => {
+                const visiblePools = group.pools.filter(
+                  (pool) => derivedPools[pool].length > 0
+                );
+
+                if (visiblePools.length === 0) {
+                  return null;
+                }
+
+                return (
+                  <section
+                    key={group.label}
+                    className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
+                  >
                     <h3 className="text-sm font-semibold text-zinc-100">
-                      {roleLabel}
+                      {group.label}
                     </h3>
-                    <p className="text-sm text-zinc-500">
-                      {selected.length}/{HERO_LIMIT}
-                    </p>
-                  </div>
 
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                    {heroes.map((hero) => {
-                      const isSelected = selected.includes(hero.id);
-                      const isDisabled =
-                        !isSelected && selected.length >= HERO_LIMIT;
-
-                      return (
-                        <button
-                          key={hero.id}
-                          type="button"
-                          onClick={() => toggleHero(role, hero.id)}
-                          disabled={isDisabled}
-                          aria-pressed={isSelected}
-                          className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition ${
-                            isSelected
-                              ? "border-sky-400 bg-sky-400/12 text-zinc-50"
-                              : "border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
-                          }`}
-                        >
-                          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
-                            <Image
-                              src={hero.imageSrc}
-                              alt={hero.label}
-                              fill
-                              className="object-cover"
-                              sizes="44px"
-                            />
-                          </div>
-                          <span className="text-sm font-medium">{hero.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="rounded-[22px] border border-dashed border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
-            Choose at least one role to continue.
-          </div>
-        )}
-      </section>
-
-      <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
-        <div className="mb-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-            03
-          </p>
-          <h2 className="mt-2 text-base font-semibold text-zinc-100">Preview</h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">
-            Review the hero pools we build from your picks.
-          </p>
-        </div>
-
-        {selectedHeroes.length > 0 ? (
-          <div className="grid gap-4">
-            {HERO_POOL_GROUPS.map((group) => {
-              const visiblePools = group.pools.filter(
-                (pool) => derivedPools[pool].length > 0
-              );
-
-              if (visiblePools.length === 0) {
-                return null;
-              }
-
-              return (
-                <section
-                  key={group.label}
-                  className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
-                >
-                  <h3 className="text-sm font-semibold text-zinc-100">
-                    {group.label}
-                  </h3>
-
-                  <div className="mt-4 grid gap-4">
-                    {visiblePools.map((pool) => (
-                      <div key={pool} className="grid gap-2">
-                        <p className="text-sm text-zinc-400">
-                          {HERO_POOL_LABELS[pool]}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {derivedPools[pool].map((hero) => (
-                            <div
-                              key={hero.id}
-                              className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-200"
-                            >
-                              <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
-                                <Image
-                                  src={hero.imageSrc}
-                                  alt={hero.label}
-                                  fill
-                                  className="object-cover"
-                                  sizes="24px"
-                                />
+                    <div className="mt-4 grid gap-4">
+                      {visiblePools.map((pool) => (
+                        <div key={pool} className="grid gap-2">
+                          <p className="text-sm text-zinc-400">
+                            {HERO_POOL_LABELS[pool]}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {derivedPools[pool].map((hero) => (
+                              <div
+                                key={hero.id}
+                                className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-200"
+                              >
+                                <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
+                                  <Image
+                                    src={hero.imageSrc}
+                                    alt={hero.label}
+                                    fill
+                                    className="object-cover"
+                                    sizes="24px"
+                                  />
+                                </div>
+                                <span>{hero.label}</span>
                               </div>
-                              <span>{hero.label}</span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="rounded-[22px] border border-dashed border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
-            Your hero pool preview will appear here.
-          </div>
-        )}
-      </section>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-[22px] border border-dashed border-zinc-800 bg-zinc-950/70 px-4 py-8 text-sm text-zinc-500">
+              You skipped every role, so no hero pools will be shown on your profile yet.
+            </div>
+          )}
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
-        >
-          Save
-        </button>
-      </div>
+          <div className="mt-5 flex flex-wrap justify-between gap-3">
+            <button
+              type="button"
+              onClick={goToPreviousStep}
+              className="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+              Back
+            </button>
+
+            <button
+              type="submit"
+              className="rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+            >
+              Save hero pools
+            </button>
+          </div>
+        </section>
+      )}
     </form>
   );
 }
