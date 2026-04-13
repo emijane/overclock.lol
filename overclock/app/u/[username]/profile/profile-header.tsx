@@ -7,6 +7,7 @@ import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfileSocialLinks } from "./profile-social-links";
+import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -50,7 +51,10 @@ export function ProfileHeader({
   return (
     <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900">
       <div className="pb-6 sm:pb-7">
-        <div className="relative min-h-36 overflow-hidden px-4 py-4 sm:h-40 sm:px-6">
+        <div
+          className="relative overflow-hidden px-4 py-4 sm:px-6"
+          style={{ aspectRatio: PROFILE_COVER_ASPECT_RATIO }}
+        >
           {coverImageUrl ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}

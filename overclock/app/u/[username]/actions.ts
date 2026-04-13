@@ -11,16 +11,13 @@ import {
 } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 
-function profileRedirect(
-  username: string,
-  message: string,
-  type: "error" | "success" = "error"
-): never {
-  const params = new URLSearchParams({ type, message });
-  redirect(`/u/${username}?${params.toString()}`);
-}
+type UploadProfileCoverResult =
+  | { status: "success"; message: string }
+  | { status: "error"; message: string };
 
-export async function uploadProfileCover(formData: FormData) {
+export async function uploadProfileCover(
+  formData: FormData
+): Promise<UploadProfileCoverResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -44,18 +41,21 @@ export async function uploadProfileCover(formData: FormData) {
   const coverImage = formData.get("cover_image");
 
   if (!(coverImage instanceof File) || coverImage.size === 0) {
-    profileRedirect(ownerProfile.username, "Choose a cover image to upload.");
+    return { status: "error", message: "Choose a cover image to upload." };
   }
 
   if (!PROFILE_MEDIA_IMAGE_MIME_TYPES.some((type) => type === coverImage.type)) {
-    profileRedirect(
-      ownerProfile.username,
-      "Cover image must be a JPG, PNG, or WebP file."
-    );
+    return {
+      status: "error",
+      message: "Cover image must be a JPG, PNG, or WebP file.",
+    };
   }
 
   if (coverImage.size > PROFILE_COVER_IMAGE_MAX_BYTES) {
-    profileRedirect(ownerProfile.username, "Cover image must be 5 MB or smaller.");
+    return {
+      status: "error",
+      message: "Cover image must be 5 MB or smaller.",
+    };
   }
 
   const coverImagePath = getProfileCoverPath(user.id);
@@ -76,16 +76,17 @@ export async function uploadProfileCover(formData: FormData) {
       uploadErrorMessage.includes("permission") ||
       uploadErrorMessage.includes("not authorized")
     ) {
-      profileRedirect(
-        ownerProfile.username,
-        "Cover upload is blocked by storage policy. Add the profile-media upload policies first."
-      );
+      return {
+        status: "error",
+        message:
+          "Cover upload is blocked by storage policy. Add the profile-media upload policies first.",
+      };
     }
 
-    profileRedirect(
-      ownerProfile.username,
-      "Unable to upload your cover image right now."
-    );
+    return {
+      status: "error",
+      message: "Unable to upload your cover image right now.",
+    };
   }
 
   const coverImageUpdatedAt = new Date().toISOString();
@@ -98,13 +99,13 @@ export async function uploadProfileCover(formData: FormData) {
     .eq("id", user.id);
 
   if (updateError) {
-    profileRedirect(
-      ownerProfile.username,
-      "Cover image uploaded, but we could not save it to your profile."
-    );
+    return {
+      status: "error",
+      message: "Cover image uploaded, but we could not save it to your profile.",
+    };
   }
 
   revalidatePath("/account");
   revalidatePath(`/u/${ownerProfile.username}`);
-  profileRedirect(ownerProfile.username, "Cover image updated.", "success");
+  return { status: "success", message: "Cover image updated." };
 }
