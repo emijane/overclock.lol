@@ -63,7 +63,6 @@ export function ProfileHeader({
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
             </>
           ) : (
             <div
