@@ -1,14 +1,26 @@
 Website recommendations
 
+Profile polish
+
 - Add featured Twitch clips support with up to 2 saved clips per profile.
 - Add editable social link fields for Battle.net, Twitch, X, and YouTube instead of placeholders.
 - Add owner-only empty states on profile sections so setup feels guided without exposing blank cards publicly.
-- Add availability fields so profiles can show queue times and preferred days by timezone.
 - Add a compact "looking for" summary near the top of the profile for faster scanning.
 - Add profile completion prompts in account settings to encourage filling out rank, socials, hero pools, and bio.
 - Add copy or link feedback states across the site so interactions feel more polished on mobile.
 - Add validation helpers for all profile URLs to keep external links clean and consistent.
-- Add tests for profile editing flows, especially bio validation, hero pool skipping, and clear-all behavior.
 - Add database-backed support for richer profile content like featured clips or custom social links.
 - Add a better public empty-profile experience so sparse profiles still feel intentional.
 - Review the profile page visual system and decide on a final accent direction so colors and borders stay consistent.
+
+Presence and matchmaking
+
+- Add an online status system so players can quickly see who is around right now.
+- Add availability fields so players can define when they usually play, such as "Mon-Fri 5 PM to 10 PM" in their own timezone.
+- Add filtering and matching around schedule overlap, such as "show players who usually play at my time."
+- Add a lightweight "play again" feature so players can send a reconnect request after a good session.
+- Decide whether online status should be a simple presence indicator first, with availability and reconnect flows layered on after.
+
+Quality and testing
+
+- Add tests for profile editing flows, especially bio validation, hero pool skipping, and clear-all behavior.
