@@ -67,9 +67,6 @@ export function HeroPoolsBuilder({
   const isPreviewStep = currentStep === ROLE_OPTIONS.length;
   const currentRole = !isPreviewStep ? ROLE_OPTIONS[currentStep] : null;
   const currentRoleId = currentRole?.id ?? null;
-  const currentRoleSelected = currentRoleId
-    ? selectedRoles.includes(currentRoleId)
-    : false;
   const currentRoleHeroes = currentRoleId ? heroSelections[currentRoleId] : [];
   const canMoveNext = isPreviewStep || currentRoleHeroes.length > 0;
 
@@ -141,6 +138,10 @@ export function HeroPoolsBuilder({
 
   function goToPreviousStep() {
     setCurrentStep((current) => Math.max(current - 1, 0));
+  }
+
+  function clearRole(role: RoleId) {
+    setRoleEnabled(role, false);
   }
 
   const normalizedSelectedRoles = ROLE_OPTIONS.map((role) => role.id).filter((role) =>
@@ -251,9 +252,19 @@ export function HeroPoolsBuilder({
               <h3 className="text-sm font-semibold text-zinc-100">
                 Choose up to five heroes
               </h3>
-              <p className="text-sm text-zinc-500">
-                {currentRoleHeroes.length}/{HERO_LIMIT}
-              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-sm text-zinc-500">
+                  {currentRoleHeroes.length}/{HERO_LIMIT}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => clearRole(currentRoleId)}
+                  disabled={currentRoleHeroes.length === 0}
+                  className="text-sm font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
+                >
+                  Clear all
+                </button>
+              </div>
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
