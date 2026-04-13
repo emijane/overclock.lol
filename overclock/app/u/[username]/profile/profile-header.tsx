@@ -45,7 +45,7 @@ export function ProfileHeader({
   return (
     <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900">
       <div className="pb-6 sm:pb-7">
-        <div className="flex min-h-28 items-start justify-end gap-2 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 px-4 py-4 sm:h-32 sm:px-6">
+        <div className="flex min-h-36 items-start justify-end gap-2 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 px-4 py-4 sm:h-40 sm:px-6">
           {region ? (
             <ProfileBadge
               Icon={Globe2Icon}
@@ -66,16 +66,16 @@ export function ProfileHeader({
           ) : null}
         </div>
 
-        <div className="-mt-11 px-4 sm:px-6">
+        <div className="-mt-14 px-4 sm:-mt-16 sm:px-6">
           <div className="w-fit">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
         </div>
 
-        <div className="mt-4 px-4 sm:-mt-9 sm:px-6">
+        <div className="mt-6 px-4 sm:-mt-10 sm:px-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
             <div className="min-w-0 flex-1">
-              <div className="sm:h-9" aria-hidden="true" />
+              <div className="sm:h-12" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2.5">
                 <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
                   {displayName}

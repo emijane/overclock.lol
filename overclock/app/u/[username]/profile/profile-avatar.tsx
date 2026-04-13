@@ -13,13 +13,13 @@ export function ProfileAvatar({
       <img
         src={avatarUrl}
         alt={`${displayName} avatar`}
-        className="h-24 w-24 rounded-full border-[3px] border-zinc-900 bg-zinc-800 object-cover"
+        className="h-28 w-28 rounded-full border-[3px] border-zinc-900 bg-zinc-800 object-cover sm:h-32 sm:w-32"
       />
     );
   }
 
   return (
-    <div className="flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-zinc-900 bg-zinc-800 text-3xl font-semibold text-zinc-100">
+    <div className="flex h-28 w-28 items-center justify-center rounded-full border-[3px] border-zinc-900 bg-zinc-800 text-3xl font-semibold text-zinc-100 sm:h-32 sm:w-32 sm:text-[2.2rem]">
       {displayName.slice(0, 1).toUpperCase()}
     </div>
   );
