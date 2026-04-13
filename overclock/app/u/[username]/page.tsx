@@ -29,22 +29,50 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const roleLabels = heroPools.roles.map((role) =>
     role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
   );
+  const socialLinks = [
+    {
+      label: "Discord",
+      platform: "discord" as const,
+      value: profile.discord_username
+        ? `@${profile.discord_username}`
+        : "@discord-user",
+    },
+    {
+      label: "Battle.net",
+      platform: "battlenet" as const,
+      value: "Player#1234",
+    },
+    {
+      label: "Twitch",
+      platform: "twitch" as const,
+      value: "twitch.tv/username",
+    },
+    {
+      label: "X",
+      platform: "x" as const,
+      value: "@username",
+    },
+    {
+      label: "YouTube",
+      platform: "youtube" as const,
+      value: "youtube.com/@channel",
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
       <div className="mx-auto grid w-full max-w-4xl gap-4">
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
-          battleNet="Player#1234"
           bio={profile.bio}
           currentRank={currentRank}
           currentRankIconSrc={currentRankIconSrc}
           currentRankPill={currentRankPill}
           displayName={profile.display_name}
-          discordUsername={profile.discord_username}
           platform={profile.platform}
           region={profile.region}
           roleLabels={roleLabels}
+          socialLinks={socialLinks}
           timezone={profile.timezone}
           username={profile.username}
         />

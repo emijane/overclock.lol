@@ -1,13 +1,11 @@
 import Image from "next/image";
 import { Clock3Icon, Globe2Icon } from "lucide-react";
-import { FaDiscord } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
 import { IoGameController } from "react-icons/io5";
-import { SiBattledotnet } from "react-icons/si";
 
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
-import { ProfileContactRow } from "./profile-contact-row";
+import { ProfileSocialLinks } from "./profile-social-links";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -16,11 +14,14 @@ type ProfileHeaderProps = {
   currentRankIconSrc: string | null;
   currentRankPill: string;
   displayName: string;
-  discordUsername: string | null;
-  battleNet: string | null;
   platform: string | null;
   region: string | null;
   roleLabels: string[];
+  socialLinks: Array<{
+    label: string;
+    platform: "discord" | "battlenet" | "twitch" | "x" | "youtube";
+    value: string;
+  }>;
   timezone: string | null;
   username: string;
 };
@@ -32,11 +33,10 @@ export function ProfileHeader({
   currentRankIconSrc,
   currentRankPill,
   displayName,
-  discordUsername,
-  battleNet,
   platform,
   region,
   roleLabels,
+  socialLinks,
   timezone,
   username,
 }: ProfileHeaderProps) {
@@ -72,43 +72,35 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-4 px-4 sm:px-6">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
-              {displayName}
-            </h1>
-            {currentRankIconSrc && currentRank ? (
-              <Image
-                src={currentRankIconSrc}
-                alt={`${currentRank} rank icon`}
-                width={44}
-                height={44}
-                className="h-7 w-7 object-contain"
-              />
-            ) : null}
-          </div>
-          <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
-            @{username}
-          </p>
-          <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-zinc-300">
-            {bio || "This player has not added a bio yet."}
-          </p>
+        <div className="mt-4 px-4 sm:-mt-9 sm:px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <div className="min-w-0 flex-1">
+              <div className="sm:h-9" aria-hidden="true" />
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
+                  {displayName}
+                </h1>
+                {currentRankIconSrc && currentRank ? (
+                  <Image
+                    src={currentRankIconSrc}
+                    alt={`${currentRank} rank icon`}
+                    width={44}
+                    height={44}
+                    className="h-7 w-7 object-contain"
+                  />
+                ) : null}
+              </div>
+              <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
+                @{username}
+              </p>
+              <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-zinc-300">
+                {bio || "This player has not added a bio yet."}
+              </p>
+            </div>
 
-          <div className="mt-4 flex flex-col gap-2.5">
-            {discordUsername ? (
-              <ProfileContactRow
-                Icon={FaDiscord}
-                iconClassName="text-[#5865F2]"
-                value={`@${discordUsername}`}
-              />
-            ) : null}
-            {battleNet ? (
-              <ProfileContactRow
-                Icon={SiBattledotnet}
-                iconClassName="text-[#00aef0]"
-                value={battleNet}
-              />
-            ) : null}
+            <div className="sm:min-w-[220px]">
+              <ProfileSocialLinks links={socialLinks} />
+            </div>
           </div>
         </div>
 
