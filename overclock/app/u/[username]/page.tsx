@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
+import { AuthMessage } from "@/app/login/components";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
@@ -11,11 +13,23 @@ type ProfilePageProps = {
   params: Promise<{
     username: string;
   }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function ProfilePage({ params }: ProfilePageProps) {
+function pickValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function ProfilePage({
+  params,
+  searchParams,
+}: ProfilePageProps) {
   const { username } = await params;
+  const query = searchParams ? await searchParams : {};
+  const message = pickValue(query.message);
+  const messageType = pickValue(query.type);
   const profile = await getProfileByUsername(username);
+  const { profile: currentProfile } = await getCurrentProfile();
 
   if (!profile) {
     notFound();
@@ -30,6 +44,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const roleLabels = heroPools.roles.map((role) =>
     role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
   );
+  const isOwner = currentProfile?.id === profile.id;
   const coverImageUrl = getProfileCoverUrl(
     profile.cover_image_path,
     profile.cover_image_updated_at
@@ -67,6 +82,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
       <div className="mx-auto grid w-full max-w-4xl gap-4">
+        {isOwner ? <AuthMessage message={message} type={messageType} /> : null}
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
           bio={profile.bio}
@@ -75,6 +91,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           currentRankIconSrc={currentRankIconSrc}
           currentRankPill={currentRankPill}
           displayName={profile.display_name}
+          isOwner={isOwner}
           platform={profile.platform}
           region={profile.region}
           roleLabels={roleLabels}

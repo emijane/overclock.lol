@@ -244,10 +244,10 @@ export function HeroPoolsBuilder({
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold tracking-[-0.03em] text-zinc-50">
-                {currentRole.label} hero pool
+                {currentRole?.label} hero pool
               </h2>
               <p className="mt-1 text-sm leading-6 text-zinc-400">
-                {currentRole.description}
+                {currentRole?.description}
               </p>
             </div>
           </div>
@@ -335,7 +335,7 @@ export function HeroPoolsBuilder({
 
               <button
                 type="button"
-                onClick={goToNextStep}
+                onClick={() => goToNextStep()}
                 disabled={!canMoveNext}
                 className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
               >

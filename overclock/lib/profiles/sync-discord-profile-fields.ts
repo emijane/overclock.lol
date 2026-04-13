@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 
 type ProfileRow = {
   bio: string | null;
+  cover_image_path: string | null;
+  cover_image_updated_at: string | null;
   current_rank_division: number | null;
   current_rank_tier: string | null;
   discord_avatar_url: string | null;
@@ -14,7 +16,6 @@ type ProfileRow = {
   platform: string | null;
   region: string | null;
   timezone: string | null;
-  discord_avatar_url: string | null;
   discord_username: string | null;
   username: string;
   display_name: string;
@@ -44,7 +45,7 @@ export async function syncDiscordProfileFields(user: User, profile: ProfileRow) 
     })
     .eq("id", profile.id)
     .select(
-      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, bio, timezone, region, platform, current_rank_tier, current_rank_division, looking_for"
+      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, cover_image_path, cover_image_updated_at, bio, timezone, region, platform, current_rank_tier, current_rank_division, looking_for"
     )
     .single();
 

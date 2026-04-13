@@ -5,6 +5,7 @@ import { IoGameController } from "react-icons/io5";
 
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
+import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfileSocialLinks } from "./profile-social-links";
 
 type ProfileHeaderProps = {
@@ -15,6 +16,7 @@ type ProfileHeaderProps = {
   currentRankIconSrc: string | null;
   currentRankPill: string;
   displayName: string;
+  isOwner: boolean;
   platform: string | null;
   region: string | null;
   roleLabels: string[];
@@ -35,6 +37,7 @@ export function ProfileHeader({
   currentRankIconSrc,
   currentRankPill,
   displayName,
+  isOwner,
   platform,
   region,
   roleLabels,
@@ -65,25 +68,31 @@ export function ProfileHeader({
             />
           )}
 
-          <div className="relative z-10 flex items-start justify-end gap-2">
-            {region ? (
-              <ProfileBadge
-                Icon={Globe2Icon}
-                iconClassName="text-sky-400"
-                tone="cover"
-              >
-                {region}
-              </ProfileBadge>
-            ) : null}
-            {timezone ? (
-              <ProfileBadge
-                Icon={Clock3Icon}
-                iconClassName="text-amber-400"
-                tone="cover"
-              >
-                {timezone}
-              </ProfileBadge>
-            ) : null}
+          <div className="relative z-10 flex items-start justify-between gap-3">
+            <div>
+              {isOwner ? <ProfileCoverUploadButton /> : null}
+            </div>
+
+            <div className="flex items-start gap-2">
+              {region ? (
+                <ProfileBadge
+                  Icon={Globe2Icon}
+                  iconClassName="text-sky-400"
+                  tone="cover"
+                >
+                  {region}
+                </ProfileBadge>
+              ) : null}
+              {timezone ? (
+                <ProfileBadge
+                  Icon={Clock3Icon}
+                  iconClassName="text-amber-400"
+                  tone="cover"
+                >
+                  {timezone}
+                </ProfileBadge>
+              ) : null}
+            </div>
           </div>
         </div>
 

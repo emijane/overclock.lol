@@ -127,7 +127,7 @@ export async function updateProfile(formData: FormData) {
   if (region && timezone) {
     const allowedTimezones = REGION_TO_TIMEZONES[region];
 
-    if (!allowedTimezones.includes(timezone)) {
+    if (!allowedTimezones.some((value) => value === timezone)) {
       accountRedirect("Selected timezone does not match the chosen region.");
     }
   }

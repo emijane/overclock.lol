@@ -1,4 +1,18 @@
-const PROFILE_MEDIA_BUCKET = "profile-media";
+export const PROFILE_MEDIA_BUCKET = "profile-media";
+export const PROFILE_COVER_IMAGE_MAX_MB = 5;
+export const PROFILE_COVER_IMAGE_MAX_BYTES =
+  PROFILE_COVER_IMAGE_MAX_MB * 1024 * 1024;
+export const PROFILE_MEDIA_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
+export const PROFILE_MEDIA_IMAGE_ACCEPT_ATTRIBUTE =
+  PROFILE_MEDIA_IMAGE_MIME_TYPES.join(",");
+
+export function getProfileCoverPath(userId: string) {
+  return `covers/${userId}/cover`;
+}
 
 export function getProfileCoverUrl(
   coverImagePath: string | null,

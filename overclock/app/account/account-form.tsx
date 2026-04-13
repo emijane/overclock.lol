@@ -77,7 +77,9 @@ export function AccountForm({ profile }: AccountFormProps) {
   const [region, setRegion] = useState(profile.region ?? "");
   const [timezone, setTimezone] = useState(profile.timezone ?? "");
   const [platform, setPlatform] = useState(profile.platform ?? "");
-  const [lookingFor, setLookingFor] = useState(profile.looking_for ?? []);
+  const [lookingFor, setLookingFor] = useState<string[]>(
+    profile.looking_for ?? []
+  );
 
   const timezoneOptions = region
     ? (REGION_TO_TIMEZONES[region as keyof typeof REGION_TO_TIMEZONES] ?? [])
@@ -94,7 +96,7 @@ export function AccountForm({ profile }: AccountFormProps) {
     const nextTimezoneOptions =
       REGION_TO_TIMEZONES[nextRegion as keyof typeof REGION_TO_TIMEZONES] ?? [];
 
-    if (!nextTimezoneOptions.includes(timezone)) {
+    if (!nextTimezoneOptions.some((value) => value === timezone)) {
       setTimezone("");
     }
   }
