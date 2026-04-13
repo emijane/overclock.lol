@@ -5,6 +5,7 @@ import Cropper, { type Area, type Point } from "react-easy-crop";
 import { CameraIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 
 import { uploadProfileCover } from "../actions";
 import { createCroppedCoverFile } from "./profile-cover-crop";
@@ -141,8 +142,9 @@ export function ProfileCoverUploadButton() {
         {isSubmitting ? "Uploading..." : "Update cover"}
       </button>
 
-      {imageSrc ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6">
+      {imageSrc && typeof document !== "undefined"
+        ? createPortal(
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6">
           <div className="w-full max-w-3xl rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 shadow-2xl shadow-black/40 sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -224,8 +226,10 @@ export function ProfileCoverUploadButton() {
               </button>
             </div>
           </div>
-        </div>
-      ) : null}
+        </div>,
+            document.body
+          )
+        : null}
     </>
   );
 }
