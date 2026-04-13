@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
+import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { ProfileHeader } from "./profile/profile-header";
 import { getCurrentRankDisplay } from "./profile/profile-rank";
@@ -28,6 +29,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     getCurrentRankDisplay(profile);
   const roleLabels = heroPools.roles.map((role) =>
     role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
+  );
+  const coverImageUrl = getProfileCoverUrl(
+    profile.cover_image_path,
+    profile.cover_image_updated_at
   );
   const socialLinks = [
     {
@@ -65,6 +70,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         <ProfileHeader
           avatarUrl={profile.discord_avatar_url}
           bio={profile.bio}
+          coverImageUrl={coverImageUrl}
           currentRank={currentRank}
           currentRankIconSrc={currentRankIconSrc}
           currentRankPill={currentRankPill}

@@ -10,6 +10,7 @@ import { ProfileSocialLinks } from "./profile-social-links";
 type ProfileHeaderProps = {
   avatarUrl: string | null;
   bio: string | null;
+  coverImageUrl: string | null;
   currentRank: string | null;
   currentRankIconSrc: string | null;
   currentRankPill: string;
@@ -29,6 +30,7 @@ type ProfileHeaderProps = {
 export function ProfileHeader({
   avatarUrl,
   bio,
+  coverImageUrl,
   currentRank,
   currentRankIconSrc,
   currentRankPill,
@@ -45,28 +47,47 @@ export function ProfileHeader({
   return (
     <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900">
       <div className="pb-6 sm:pb-7">
-        <div className="flex min-h-36 items-start justify-end gap-2 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 px-4 py-4 sm:h-40 sm:px-6">
-          {region ? (
-            <ProfileBadge
-              Icon={Globe2Icon}
-              iconClassName="text-sky-400"
-              tone="cover"
-            >
-              {region}
-            </ProfileBadge>
-          ) : null}
-          {timezone ? (
-            <ProfileBadge
-              Icon={Clock3Icon}
-              iconClassName="text-amber-400"
-              tone="cover"
-            >
-              {timezone}
-            </ProfileBadge>
-          ) : null}
+        <div className="relative min-h-36 overflow-hidden px-4 py-4 sm:h-40 sm:px-6">
+          {coverImageUrl ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={coverImageUrl}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
+            </>
+          ) : (
+            <div
+              className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950"
+              aria-hidden="true"
+            />
+          )}
+
+          <div className="relative z-10 flex items-start justify-end gap-2">
+            {region ? (
+              <ProfileBadge
+                Icon={Globe2Icon}
+                iconClassName="text-sky-400"
+                tone="cover"
+              >
+                {region}
+              </ProfileBadge>
+            ) : null}
+            {timezone ? (
+              <ProfileBadge
+                Icon={Clock3Icon}
+                iconClassName="text-amber-400"
+                tone="cover"
+              >
+                {timezone}
+              </ProfileBadge>
+            ) : null}
+          </div>
         </div>
 
-        <div className="-mt-14 px-4 sm:-mt-16 sm:px-6">
+        <div className="relative z-20 -mt-14 px-4 sm:-mt-16 sm:px-6">
           <div className="w-fit">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
