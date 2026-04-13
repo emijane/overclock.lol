@@ -31,6 +31,11 @@ export function PreferredHeroPools({
   roles,
 }: PreferredHeroPoolsProps) {
   const selectedHeroes = roles.flatMap((role) => getHeroesForRole(role, heroPicks));
+
+  if (selectedHeroes.length === 0) {
+    return null;
+  }
+
   const derivedPools = selectedHeroes.reduce<Record<HeroPoolRole, HeroDefinition[]>>(
     (accumulator, hero) => {
       accumulator[hero.pool].push(hero);
@@ -57,63 +62,57 @@ export function PreferredHeroPools({
         </p>
       </div>
 
-      {selectedHeroes.length > 0 ? (
-        <div className="grid gap-4 px-5 py-5 sm:px-6">
-          {HERO_POOL_GROUPS.map((group) => {
-            const visiblePools = group.pools.filter(
-              (pool) => derivedPools[pool].length > 0
-            );
+      <div className="grid gap-4 px-5 py-5 sm:px-6">
+        {HERO_POOL_GROUPS.map((group) => {
+          const visiblePools = group.pools.filter(
+            (pool) => derivedPools[pool].length > 0
+          );
 
-            if (visiblePools.length === 0) {
-              return null;
-            }
+          if (visiblePools.length === 0) {
+            return null;
+          }
 
-            return (
-              <section
-                key={group.label}
-                className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
-              >
-                <h3 className="text-sm font-semibold text-zinc-100">
-                  {group.label}
-                </h3>
+          return (
+            <section
+              key={group.label}
+              className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4"
+            >
+              <h3 className="text-sm font-semibold text-zinc-100">
+                {group.label}
+              </h3>
 
-                <div className="mt-4 grid gap-4">
-                  {visiblePools.map((pool) => (
-                    <div key={pool} className="grid gap-2">
-                      <p className="text-sm text-zinc-400">
-                        {HERO_POOL_LABELS[pool]}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {derivedPools[pool].map((hero) => (
-                          <div
-                            key={hero.id}
-                            className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-200"
-                          >
-                            <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
-                              <Image
-                                src={hero.imageSrc}
-                                alt={hero.label}
-                                fill
-                                className="object-cover"
-                                sizes="24px"
-                              />
-                            </div>
-                            <span>{hero.label}</span>
+              <div className="mt-4 grid gap-4">
+                {visiblePools.map((pool) => (
+                  <div key={pool} className="grid gap-2">
+                    <p className="text-sm text-zinc-400">
+                      {HERO_POOL_LABELS[pool]}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {derivedPools[pool].map((hero) => (
+                        <div
+                          key={hero.id}
+                          className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-200"
+                        >
+                          <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
+                            <Image
+                              src={hero.imageSrc}
+                              alt={hero.label}
+                              fill
+                              className="object-cover"
+                              sizes="24px"
+                            />
                           </div>
-                        ))}
-                      </div>
+                          <span>{hero.label}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="px-5 py-8 text-sm text-zinc-500 sm:px-6">
-          This player has not added hero pools yet.
-        </div>
-      )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
     </section>
   );
 }

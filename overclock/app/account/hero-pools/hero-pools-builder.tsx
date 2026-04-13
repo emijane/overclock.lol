@@ -128,8 +128,8 @@ export function HeroPoolsBuilder({
     );
   }
 
-  function goToNextStep() {
-    if (!canMoveNext) {
+  function goToNextStep(options?: { allowEmpty?: boolean }) {
+    if (!options?.allowEmpty && !canMoveNext) {
       return;
     }
 
@@ -142,6 +142,11 @@ export function HeroPoolsBuilder({
 
   function clearRole(role: RoleId) {
     setRoleEnabled(role, false);
+  }
+
+  function skipRole(role: RoleId) {
+    clearRole(role);
+    goToNextStep({ allowEmpty: true });
   }
 
   const normalizedSelectedRoles = ROLE_OPTIONS.map((role) => role.id).filter((role) =>
@@ -321,8 +326,7 @@ export function HeroPoolsBuilder({
               <button
                 type="button"
                 onClick={() => {
-                  setRoleEnabled(currentRoleId, false);
-                  goToNextStep();
+                  skipRole(currentRoleId);
                 }}
                 className="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
               >
