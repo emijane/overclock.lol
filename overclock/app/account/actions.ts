@@ -10,6 +10,7 @@ import {
   REGION_OPTIONS,
   TIMEZONE_OPTIONS,
 } from "@/lib/profiles/profile-options";
+import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
 import { createClient } from "@/lib/supabase/server";
 
 function accountRedirect(
@@ -85,7 +86,7 @@ function validateRankPair(
 }
 
 export async function updateProfile(formData: FormData) {
-  const bio = optionalTrimmedString(formData.get("bio"));
+  const bio = sanitizeProfileBio(formData.get("bio"));
   const timezone = optionalEnumValue(
     formData.get("timezone"),
     TIMEZONE_OPTIONS,
@@ -113,8 +114,10 @@ export async function updateProfile(formData: FormData) {
       LOOKING_FOR_OPTIONS.includes(value as (typeof LOOKING_FOR_OPTIONS)[number])
     );
 
-  if (bio && bio.length > 1000) {
-    accountRedirect("Bio must be 1000 characters or less.");
+  const bioValidationError = validateProfileBio(bio);
+
+  if (bioValidationError) {
+    accountRedirect(bioValidationError);
   }
 
   if (timezone && !region) {

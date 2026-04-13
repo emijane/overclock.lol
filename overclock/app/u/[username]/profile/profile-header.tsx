@@ -93,7 +93,7 @@ export function ProfileHeader({
               <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <p className="mt-3 max-w-2xl text-[17px] leading-7 tracking-[-0.015em] text-zinc-300">
+              <p className="mt-3 max-w-xl break-words text-[17px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>

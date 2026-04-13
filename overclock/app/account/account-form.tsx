@@ -20,6 +20,9 @@ import {
   REGION_OPTIONS,
   REGION_TO_TIMEZONES,
 } from "@/lib/profiles/profile-options";
+import {
+  PROFILE_BIO_MAX_CHARACTERS,
+} from "@/lib/profiles/profile-bio";
 
 const RANK_DIVISIONS = [1, 2, 3, 4, 5] as const;
 
@@ -132,10 +135,13 @@ export function AccountForm({ profile }: AccountFormProps) {
           <textarea
             name="bio"
             rows={4}
-            maxLength={1000}
+            maxLength={PROFILE_BIO_MAX_CHARACTERS}
             defaultValue={profile.bio ?? ""}
             className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
           />
+          <p className="text-xs text-zinc-500">
+            Up to {PROFILE_BIO_MAX_CHARACTERS} characters.
+          </p>
         </label>
       </AccountSection>
 
