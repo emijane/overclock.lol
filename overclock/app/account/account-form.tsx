@@ -28,6 +28,7 @@ const RANK_DIVISIONS = [1, 2, 3, 4, 5] as const;
 
 type AccountFormProps = {
   profile: {
+    battlenet_handle: string | null;
     bio: string | null;
     current_rank_division: number | null;
     current_rank_tier: string | null;
@@ -36,7 +37,10 @@ type AccountFormProps = {
     platform: string | null;
     region: string | null;
     timezone: string | null;
+    twitch_url: string | null;
     username: string;
+    x_url: string | null;
+    youtube_url: string | null;
   };
 };
 
@@ -145,6 +149,55 @@ export function AccountForm({ profile }: AccountFormProps) {
             Up to {PROFILE_BIO_MAX_CHARACTERS} characters.
           </p>
         </label>
+      </AccountSection>
+
+      <AccountSection title="Socials">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="grid gap-2 text-sm text-zinc-300">
+            <span>Battle.net</span>
+            <input
+              name="battlenet_handle"
+              type="text"
+              defaultValue={profile.battlenet_handle ?? ""}
+              placeholder="Player#1234"
+              maxLength={40}
+              className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+            />
+          </label>
+
+          <label className="grid gap-2 text-sm text-zinc-300">
+            <span>Twitch</span>
+            <input
+              name="twitch_url"
+              type="text"
+              defaultValue={profile.twitch_url ?? ""}
+              placeholder="https://twitch.tv/username"
+              className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+            />
+          </label>
+
+          <label className="grid gap-2 text-sm text-zinc-300">
+            <span>X</span>
+            <input
+              name="x_url"
+              type="text"
+              defaultValue={profile.x_url ?? ""}
+              placeholder="https://x.com/username"
+              className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+            />
+          </label>
+
+          <label className="grid gap-2 text-sm text-zinc-300">
+            <span>YouTube</span>
+            <input
+              name="youtube_url"
+              type="text"
+              defaultValue={profile.youtube_url ?? ""}
+              placeholder="https://youtube.com/@channel"
+              className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
+            />
+          </label>
+        </div>
       </AccountSection>
 
       <AccountSection>

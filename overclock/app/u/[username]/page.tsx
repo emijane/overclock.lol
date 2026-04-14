@@ -50,34 +50,42 @@ export default async function ProfilePage({
     profile.cover_image_updated_at
   );
   const socialLinks = [
-    {
-      label: "Discord",
-      platform: "discord" as const,
-      value: profile.discord_username
-        ? `@${profile.discord_username}`
-        : "@discord-user",
-    },
-    {
-      label: "Battle.net",
-      platform: "battlenet" as const,
-      value: "Player#1234",
-    },
-    {
-      label: "Twitch",
-      platform: "twitch" as const,
-      value: "twitch.tv/username",
-    },
-    {
-      label: "X",
-      platform: "x" as const,
-      value: "@username",
-    },
-    {
-      label: "YouTube",
-      platform: "youtube" as const,
-      value: "youtube.com/@channel",
-    },
-  ];
+    profile.discord_username
+      ? {
+          label: "Discord",
+          platform: "discord" as const,
+          value: `@${profile.discord_username}`,
+        }
+      : null,
+    profile.battlenet_handle
+      ? {
+          label: "Battle.net",
+          platform: "battlenet" as const,
+          value: profile.battlenet_handle,
+        }
+      : null,
+    profile.twitch_url
+      ? {
+          label: "Twitch",
+          platform: "twitch" as const,
+          value: profile.twitch_url,
+        }
+      : null,
+    profile.x_url
+      ? {
+          label: "X",
+          platform: "x" as const,
+          value: profile.x_url,
+        }
+      : null,
+    profile.youtube_url
+      ? {
+          label: "YouTube",
+          platform: "youtube" as const,
+          value: profile.youtube_url,
+        }
+      : null,
+  ].filter((link): link is NonNullable<typeof link> => Boolean(link));
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">

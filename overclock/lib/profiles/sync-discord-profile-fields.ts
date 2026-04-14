@@ -4,6 +4,7 @@ import { getDiscordProfile } from "@/lib/profiles/discord-profile";
 import { createClient } from "@/lib/supabase/server";
 
 type ProfileRow = {
+  battlenet_handle: string | null;
   bio: string | null;
   cover_image_path: string | null;
   cover_image_updated_at: string | null;
@@ -15,10 +16,13 @@ type ProfileRow = {
   looking_for: string[] | null;
   platform: string | null;
   region: string | null;
+  twitch_url: string | null;
   timezone: string | null;
   discord_username: string | null;
   username: string;
   display_name: string;
+  x_url: string | null;
+  youtube_url: string | null;
 };
 
 // Keeps stored Discord-facing profile fields aligned with trusted Supabase auth
@@ -45,7 +49,7 @@ export async function syncDiscordProfileFields(user: User, profile: ProfileRow) 
     })
     .eq("id", profile.id)
     .select(
-      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, cover_image_path, cover_image_updated_at, bio, timezone, region, platform, current_rank_tier, current_rank_division, looking_for"
+      "id, username, display_name, discord_user_id, discord_username, discord_avatar_url, cover_image_path, cover_image_updated_at, bio, timezone, region, platform, current_rank_tier, current_rank_division, looking_for, battlenet_handle, twitch_url, x_url, youtube_url"
     )
     .single();
 

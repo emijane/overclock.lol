@@ -99,8 +99,8 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="relative z-20 -mt-14 px-4 sm:-mt-16 sm:px-6">
-          <div className="w-fit">
+        <div className="pointer-events-none relative z-20 -mt-14 px-4 sm:-mt-16 sm:px-6">
+          <div className="pointer-events-auto w-fit">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
           </div>
         </div>

@@ -11,6 +11,12 @@ import {
   TIMEZONE_OPTIONS,
 } from "@/lib/profiles/profile-options";
 import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
+import {
+  sanitizeBattlenetHandle,
+  sanitizeSocialUrl,
+  validateBattlenetHandle,
+  validateSocialUrl,
+} from "@/lib/profiles/profile-socials";
 import { createClient } from "@/lib/supabase/server";
 
 function accountRedirect(
@@ -87,6 +93,10 @@ function validateRankPair(
 
 export async function updateProfile(formData: FormData) {
   const bio = sanitizeProfileBio(formData.get("bio"));
+  const battlenetHandle = sanitizeBattlenetHandle(formData.get("battlenet_handle"));
+  const twitchUrl = sanitizeSocialUrl(formData.get("twitch_url"));
+  const xUrl = sanitizeSocialUrl(formData.get("x_url"));
+  const youtubeUrl = sanitizeSocialUrl(formData.get("youtube_url"));
   const timezone = optionalEnumValue(
     formData.get("timezone"),
     TIMEZONE_OPTIONS,
@@ -115,9 +125,29 @@ export async function updateProfile(formData: FormData) {
     );
 
   const bioValidationError = validateProfileBio(bio);
+  const battlenetValidationError = validateBattlenetHandle(battlenetHandle);
+  const twitchValidationError = validateSocialUrl("twitch_url", twitchUrl);
+  const xValidationError = validateSocialUrl("x_url", xUrl);
+  const youtubeValidationError = validateSocialUrl("youtube_url", youtubeUrl);
 
   if (bioValidationError) {
     accountRedirect(bioValidationError);
+  }
+
+  if (battlenetValidationError) {
+    accountRedirect(battlenetValidationError);
+  }
+
+  if (twitchValidationError) {
+    accountRedirect(twitchValidationError);
+  }
+
+  if (xValidationError) {
+    accountRedirect(xValidationError);
+  }
+
+  if (youtubeValidationError) {
+    accountRedirect(youtubeValidationError);
   }
 
   if (timezone && !region) {
@@ -147,6 +177,7 @@ export async function updateProfile(formData: FormData) {
   const { error } = await supabase
     .from("profiles")
     .update({
+      battlenet_handle: battlenetHandle,
       bio,
       timezone,
       region,
@@ -154,6 +185,9 @@ export async function updateProfile(formData: FormData) {
       current_rank_tier: currentRankTier,
       current_rank_division: currentRankDivision,
       looking_for: lookingFor,
+      twitch_url: twitchUrl,
+      x_url: xUrl,
+      youtube_url: youtubeUrl,
     })
     .eq("id", user.id);
 
