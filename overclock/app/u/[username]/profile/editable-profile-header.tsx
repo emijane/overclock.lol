@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 
 import { ProfileHeader } from "./profile-header";
 import { ProfileEditModalShell } from "./profile-edit-modal-shell";
+import type { SocialValues } from "./profile-edit-types";
 
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader>;
 
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const pathname = usePathname();
-  const socials = {
+  const socials: SocialValues = {
     battlenet:
       props.socialLinks.find((link) => link.platform === "battlenet")?.value ?? "",
     twitch:
@@ -39,9 +40,6 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
           currentRankTier: props.currentRankTier ?? null,
           discordUsername,
           displayName: props.displayName,
-          hasDiscordUser: props.socialLinks.some(
-            (link) => link.platform === "discord"
-          ),
           lookingFor: props.lookingFor ?? [],
           platform: props.platform,
           region: props.region,

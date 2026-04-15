@@ -1,0 +1,93 @@
+"use client";
+
+import { useState } from "react";
+
+import {
+  buildSocialUrl,
+  formatCurrentRank,
+  getServerOptions,
+  RANK_DIVISION_OPTIONS,
+  resetServerIfInvalid,
+  SOCIAL_URL_PREFIXES,
+  stripSocialPrefix,
+} from "@/lib/profiles/profile-editor";
+
+import type { ProfileEditProfile } from "./profile-edit-types";
+
+export { RANK_DIVISION_OPTIONS };
+
+export function useProfileEditForm(profile: ProfileEditProfile) {
+  const [battleNetHandle, setBattleNetHandle] = useState(profile.socials.battlenet);
+  const [bio, setBio] = useState(profile.bio ?? "");
+  const [displayName, setDisplayName] = useState(profile.displayName);
+  const [selectedRankTier, setSelectedRankTier] = useState(
+    profile.currentRankTier ?? ""
+  );
+  const [selectedRankDivision, setSelectedRankDivision] = useState(
+    profile.currentRankDivision?.toString() ?? ""
+  );
+  const [selectedRegion, setSelectedRegion] = useState(profile.region ?? "");
+  const [selectedTimezone, setSelectedTimezone] = useState(profile.timezone ?? "");
+  const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
+  const [twitchHandle, setTwitchHandle] = useState(
+    stripSocialPrefix(profile.socials.twitch, SOCIAL_URL_PREFIXES.twitch)
+  );
+  const [xHandle, setXHandle] = useState(
+    stripSocialPrefix(profile.socials.x, SOCIAL_URL_PREFIXES.x)
+  );
+  const [youtubeHandle, setYoutubeHandle] = useState(
+    stripSocialPrefix(profile.socials.youtube, SOCIAL_URL_PREFIXES.youtube)
+  );
+
+  const currentRankDisplay = formatCurrentRank(
+    selectedRankTier,
+    selectedRankDivision
+  );
+  const timezoneOptions = getServerOptions(selectedRegion);
+  const twitchUrl = buildSocialUrl("https://twitch.tv/", twitchHandle);
+  const xUrl = buildSocialUrl("https://x.com/", xHandle);
+  const youtubeUrl = buildSocialUrl("https://youtube.com/@", youtubeHandle);
+
+  function handleRegionSelect(nextRegion: string) {
+    setSelectedRegion(nextRegion);
+    setSelectedTimezone(resetServerIfInvalid(nextRegion, selectedTimezone));
+  }
+
+  function handleRankTierSelect(nextRankTier: string) {
+    setSelectedRankTier(nextRankTier);
+
+    if (nextRankTier === "Unranked") {
+      setSelectedRankDivision("");
+    }
+  }
+
+  return {
+    battleNetHandle,
+    bio,
+    currentRankDisplay,
+    displayName,
+    selectedPlatform,
+    selectedRankDivision,
+    selectedRankTier,
+    selectedRegion,
+    selectedTimezone,
+    timezoneOptions,
+    twitchHandle,
+    twitchUrl,
+    xHandle,
+    xUrl,
+    youtubeHandle,
+    youtubeUrl,
+    setBattleNetHandle,
+    setBio,
+    setDisplayName,
+    setSelectedPlatform,
+    setSelectedRankDivision,
+    setSelectedTimezone,
+    setTwitchHandle,
+    setXHandle,
+    setYoutubeHandle,
+    handleRankTierSelect,
+    handleRegionSelect,
+  };
+}
