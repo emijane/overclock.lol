@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
+import { deleteFeaturedClip } from "@/app/u/[username]/actions";
 import { AddFeaturedVideoButton } from "./add-featured-video-button";
 import { FeaturedClipCard } from "./featured-clip-card";
 import { FeaturedVideoModal } from "./featured-video-modal";
@@ -17,9 +18,35 @@ export function FeaturedClipsSection({
   isOwner,
 }: FeaturedClipsSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalKey, setModalKey] = useState(0);
+  const [selectedClip, setSelectedClip] = useState<FeaturedClip | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   if (!isOwner && clips.length === 0) {
     return null;
+  }
+
+  function openAddModal() {
+    setSelectedClip(null);
+    setModalKey((current) => current + 1);
+    setIsModalOpen(true);
+  }
+
+  function openEditModal(clip: FeaturedClip) {
+    setSelectedClip(clip);
+    setModalKey((current) => current + 1);
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    setSelectedClip(null);
+  }
+
+  function handleDelete(clip: FeaturedClip) {
+    startTransition(async () => {
+      await deleteFeaturedClip(clip.id);
+    });
   }
 
   return (
@@ -30,21 +57,29 @@ export function FeaturedClipsSection({
         </h2>
 
         {isOwner && clips.length < 2 ? (
-          <AddFeaturedVideoButton onClick={() => setIsModalOpen(true)} />
+          <AddFeaturedVideoButton onClick={openAddModal} />
         ) : null}
       </div>
 
       {clips.length > 0 ? (
         <div className="grid gap-3 md:grid-cols-2">
           {clips.map((clip) => (
-            <FeaturedClipCard key={clip.id} clip={clip} isOwner={isOwner} />
+            <FeaturedClipCard
+              key={clip.id}
+              clip={clip}
+              isOwner={isOwner}
+              onDelete={isPending ? undefined : handleDelete}
+              onEdit={openEditModal}
+            />
           ))}
         </div>
       ) : null}
 
       <FeaturedVideoModal
+        key={modalKey}
+        clip={selectedClip}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
       />
     </section>
   );

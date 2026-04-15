@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
+import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
@@ -40,6 +41,7 @@ export default async function ProfilePage({
   }
 
   const heroPools = await getProfileHeroPools(profile.id);
+  const featuredClips = await getProfileFeaturedClips(profile.id);
 
   // Keep route components focused on loading data while profile presentation
   // helpers stay colocated with the UI they support.
@@ -53,7 +55,6 @@ export default async function ProfilePage({
     profile.cover_image_path,
     profile.cover_image_updated_at
   );
-  const featuredClips: FeaturedClip[] = [];
   const socialLinks = [
     profile.discord_username
       ? {
@@ -115,7 +116,10 @@ export default async function ProfilePage({
           timezone={profile.timezone}
           username={profile.username}
         />
-        <FeaturedClipsSection clips={featuredClips} isOwner={isOwner} />
+        <FeaturedClipsSection
+          clips={featuredClips as FeaturedClip[]}
+          isOwner={isOwner}
+        />
         <PreferredHeroPools
           heroPicks={heroPools.heroPicks}
           roles={heroPools.roles}

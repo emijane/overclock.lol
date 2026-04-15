@@ -1,44 +1,23 @@
 "use client";
 
 import { TrophyIcon, XIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaTwitch, FaYoutube } from "react-icons/fa";
 
-import type { FeaturedClipPlatform } from "./types";
+import {
+  saveFeaturedClip,
+  type SaveFeaturedClipResult,
+} from "@/app/u/[username]/actions";
+import { detectFeaturedClipPlatform } from "@/lib/profiles/featured-clip-shared";
+
+import type { FeaturedClip } from "./types";
 
 type FeaturedVideoModalProps = {
+  clip?: FeaturedClip | null;
   isOpen: boolean;
   onClose: () => void;
 };
-
-function detectPlatform(value: string): FeaturedClipPlatform | null {
-  const normalizedValue = value.trim().toLowerCase();
-
-  if (!normalizedValue) {
-    return null;
-  }
-
-  if (
-    normalizedValue.includes("twitch.tv/") ||
-    normalizedValue.includes("clips.twitch.tv/")
-  ) {
-    return "twitch";
-  }
-
-  if (
-    normalizedValue.includes("youtube.com/") ||
-    normalizedValue.includes("youtu.be/")
-  ) {
-    return "youtube";
-  }
-
-  if (normalizedValue.includes("medal.tv/")) {
-    return "medal";
-  }
-
-  return null;
-}
 
 const PLATFORM_UI = {
   twitch: {
@@ -59,12 +38,18 @@ const PLATFORM_UI = {
 } as const;
 
 export function FeaturedVideoModal({
+  clip = null,
   isOpen,
   onClose,
 }: FeaturedVideoModalProps) {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const detectedPlatform = useMemo(() => detectPlatform(url), [url]);
+  const initialState: SaveFeaturedClipResult = {
+    status: "idle",
+    message: "",
+  };
+  const [formState, formAction] = useActionState(saveFeaturedClip, initialState);
+  const [title, setTitle] = useState(clip?.title ?? "");
+  const [url, setUrl] = useState(clip?.url ?? "");
+  const detectedPlatform = useMemo(() => detectFeaturedClipPlatform(url), [url]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -88,6 +73,12 @@ export function FeaturedVideoModal({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (isOpen && formState.status === "success" && formState.message) {
+      onClose();
+    }
+  }, [formState.message, formState.status, isOpen, onClose]);
+
   if (!isOpen || typeof document === "undefined") {
     return null;
   }
@@ -110,7 +101,7 @@ export function FeaturedVideoModal({
               id="featured-video-modal-title"
               className="text-lg font-semibold tracking-[-0.02em] text-zinc-50"
             >
-              Add featured video
+              {clip ? "Edit featured video" : "Add featured video"}
             </h2>
 
             <button
@@ -123,10 +114,12 @@ export function FeaturedVideoModal({
             </button>
           </header>
 
-          <div className="grid gap-4 px-4 py-5 sm:px-5">
+          <form action={formAction} className="grid gap-4 px-4 py-5 sm:px-5">
+            <input type="hidden" name="clip_id" value={clip?.id ?? ""} />
             <label className="grid gap-1.5 text-sm text-zinc-300">
               <span>Video URL</span>
               <input
+                name="url"
                 type="text"
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
@@ -138,6 +131,7 @@ export function FeaturedVideoModal({
             <label className="grid gap-1.5 text-sm text-zinc-300">
               <span>Title</span>
               <input
+                name="title"
                 type="text"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
@@ -164,25 +158,28 @@ export function FeaturedVideoModal({
                 </p>
               )}
             </div>
-          </div>
 
-          <footer className="flex items-center justify-end gap-3 border-t border-zinc-800 px-4 py-4 sm:px-5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={!url.trim() || !detectedPlatform}
-              className="rounded-full bg-sky-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
-            >
-              Save
-            </button>
-          </footer>
+            {formState.status === "error" && formState.message ? (
+              <p className="text-sm text-amber-300">{formState.message}</p>
+            ) : null}
+
+            <footer className="flex items-center justify-end gap-3 border-t border-zinc-800 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                disabled={!url.trim() || !detectedPlatform}
+                className="rounded-full bg-sky-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+              >
+                Save
+              </button>
+            </footer>
+          </form>
         </section>
       </div>
     </div>,
