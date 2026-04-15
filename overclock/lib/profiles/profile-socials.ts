@@ -4,6 +4,12 @@ const SOCIAL_URL_RULES = {
   youtube_url: ["youtube.com", "youtu.be"],
 } as const;
 
+const SOCIAL_URL_MAX_LENGTH = {
+  twitch_url: 100,
+  x_url: 60,
+  youtube_url: 100,
+} as const;
+
 type SocialUrlFieldName = keyof typeof SOCIAL_URL_RULES;
 
 function optionalTrimmedString(value: FormDataEntryValue | null) {
@@ -53,6 +59,18 @@ export function validateSocialUrl(
 ) {
   if (!value) {
     return null;
+  }
+
+  if (value.length > SOCIAL_URL_MAX_LENGTH[fieldName]) {
+    if (fieldName === "x_url") {
+      return "X URL must be 60 characters or less.";
+    }
+
+    if (fieldName === "twitch_url") {
+      return "Twitch URL must be 100 characters or less.";
+    }
+
+    return "YouTube URL must be 100 characters or less.";
   }
 
   let url: URL;

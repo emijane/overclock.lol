@@ -234,7 +234,14 @@ export async function updateProfile(formData: FormData) {
 
   if (error) {
     accountRedirect(
-      error.message || "Unable to save your profile settings right now.",
+      [
+        error.message || "Unable to save your profile settings right now.",
+        `region=${region ?? "null"}`,
+        `server=${timezone ?? "null"}`,
+        `platform=${platform ?? "null"}`,
+        `rank=${currentRankTier ?? "null"}`,
+        `division=${currentRankDivision?.toString() ?? "null"}`,
+      ].join(" | "),
       returnTo
     );
   }

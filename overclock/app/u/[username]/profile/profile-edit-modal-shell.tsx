@@ -8,6 +8,10 @@ import { FaDiscord, FaTwitch, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiBattledotnet } from "react-icons/si";
 
+import { RankSection } from "@/components/profile-editor/rank-section";
+import { SectionCard } from "@/components/profile-editor/section-card";
+import { SetupSection } from "@/components/profile-editor/setup-section";
+import { SocialsSection } from "@/components/profile-editor/socials-section";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +24,16 @@ import {
   PLATFORM_OPTIONS,
   RANK_TIERS,
   REGION_OPTIONS,
-  REGION_TO_TIMEZONES,
 } from "@/lib/profiles/profile-options";
+import {
+  buildSocialUrl,
+  formatCurrentRank,
+  getServerOptions,
+  RANK_DIVISION_OPTIONS,
+  resetServerIfInvalid,
+  SOCIAL_URL_PREFIXES,
+  stripSocialPrefix,
+} from "@/lib/profiles/profile-editor";
 
 type SocialValues = {
   battlenet: string;
@@ -44,30 +56,11 @@ type ProfileEditModalShellProps = {
     lookingFor: string[];
     platform: string | null;
     region: string | null;
-    returnTo: string;
-    socials: SocialValues;
-    timezone: string | null;
+  returnTo: string;
+  socials: SocialValues;
+  timezone: string | null;
   };
 };
-
-function ModalSection({
-  title,
-  children,
-}: {
-  title?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4">
-      {title ? (
-        <h3 className="mb-4 text-sm font-semibold tracking-[-0.02em] text-zinc-100">
-          {title}
-        </h3>
-      ) : null}
-      {children}
-    </section>
-  );
-}
 
 function SocialLabel({
   children,
@@ -82,27 +75,6 @@ function SocialLabel({
       <span>{children}</span>
     </span>
   );
-}
-
-function stripSocialPrefix(value: string, prefixes: string[]) {
-  const normalizedValue = value.trim();
-
-  for (const prefix of prefixes) {
-    if (normalizedValue.toLowerCase().startsWith(prefix.toLowerCase())) {
-      return normalizedValue.slice(prefix.length);
-    }
-  }
-
-  return normalizedValue;
-}
-
-function normalizeHandle(value: string) {
-  return value.trim().replace(/^@+/, "");
-}
-
-function buildSocialUrl(prefix: string, value: string) {
-  const normalizedValue = normalizeHandle(value);
-  return normalizedValue ? `${prefix}${normalizedValue}` : "";
 }
 
 function ModalDropdownField({
@@ -189,47 +161,18 @@ export function ProfileEditModalShell({
   const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
   const [showDiscordUser, setShowDiscordUser] = useState(profile.hasDiscordUser);
   const [twitchHandle, setTwitchHandle] = useState(
-    stripSocialPrefix(profile.socials.twitch, [
-      "https://twitch.tv/",
-      "http://twitch.tv/",
-      "https://www.twitch.tv/",
-      "http://www.twitch.tv/",
-      "twitch.tv/",
-      "www.twitch.tv/",
-    ])
+    stripSocialPrefix(profile.socials.twitch, SOCIAL_URL_PREFIXES.twitch)
   );
   const [xHandle, setXHandle] = useState(
-    stripSocialPrefix(profile.socials.x, [
-      "https://x.com/",
-      "http://x.com/",
-      "https://www.x.com/",
-      "http://www.x.com/",
-      "https://twitter.com/",
-      "http://twitter.com/",
-      "https://www.twitter.com/",
-      "http://www.twitter.com/",
-      "x.com/",
-      "twitter.com/",
-      "www.x.com/",
-      "www.twitter.com/",
-    ])
+    stripSocialPrefix(profile.socials.x, SOCIAL_URL_PREFIXES.x)
   );
   const [youtubeHandle, setYoutubeHandle] = useState(
-    stripSocialPrefix(profile.socials.youtube, [
-      "https://youtube.com/@",
-      "http://youtube.com/@",
-      "https://www.youtube.com/@",
-      "http://www.youtube.com/@",
-      "youtube.com/@",
-      "www.youtube.com/@",
-    ])
+    stripSocialPrefix(profile.socials.youtube, SOCIAL_URL_PREFIXES.youtube)
   );
-  const rankDivisionOptions = ["1", "2", "3", "4", "5"];
-  const currentRankDisplay = selectedRankTier
-    ? selectedRankTier === "Unranked"
-      ? "Unranked"
-      : [selectedRankTier, selectedRankDivision].filter(Boolean).join(" ")
-    : "Not set";
+  const currentRankDisplay = formatCurrentRank(
+    selectedRankTier,
+    selectedRankDivision
+  );
 
   useEffect(() => {
     if (!isOpen) {
@@ -253,9 +196,7 @@ export function ProfileEditModalShell({
     };
   }, [isOpen, onClose]);
 
-  const timezoneOptions = selectedRegion
-    ? [...(REGION_TO_TIMEZONES[selectedRegion as keyof typeof REGION_TO_TIMEZONES] ?? [])]
-    : [];
+  const timezoneOptions = getServerOptions(selectedRegion);
 
   if (!isOpen || typeof document === "undefined") {
     return null;
@@ -313,7 +254,7 @@ export function ProfileEditModalShell({
             <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
               {children ?? (
                 <div className="grid gap-4">
-                <ModalSection>
+                <SectionCard>
                   <div className="grid gap-3">
                     <label className="grid gap-2 text-sm text-zinc-300">
                       <span>Display name</span>
@@ -337,31 +278,33 @@ export function ProfileEditModalShell({
                       className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none"
                     />
                   </label>
-                </ModalSection>
+                </SectionCard>
 
-                <ModalSection title="Socials">
-                  <div className="mb-3 flex items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 py-3">
-                    <div className="min-w-0">
-                      <p className="inline-flex items-center gap-2 text-sm font-medium text-zinc-100">
-                        <FaDiscord className="h-4 w-4 text-[#5865F2]" />
-                        <span>Display Discord user</span>
-                      </p>
-                      {profile.discordUsername ? (
-                        <p className="mt-0.5 text-sm text-zinc-500">
-                          {profile.discordUsername}
+                <SocialsSection
+                  discordVisibility={
+                    <div className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 py-3">
+                      <div className="min-w-0">
+                        <p className="inline-flex items-center gap-2 text-sm font-medium text-zinc-100">
+                          <FaDiscord className="h-4 w-4 text-[#5865F2]" />
+                          <span>Display Discord user</span>
                         </p>
-                      ) : null}
+                        {profile.discordUsername ? (
+                          <p className="mt-0.5 text-sm text-zinc-500">
+                            {profile.discordUsername}
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="flex items-center">
+                        <Switch
+                          checked={showDiscordUser}
+                          onCheckedChange={setShowDiscordUser}
+                          aria-label="Toggle Discord user visibility"
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <Switch
-                        checked={showDiscordUser}
-                        onCheckedChange={setShowDiscordUser}
-                        aria-label="Toggle Discord user visibility"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  }
+                  fields={
+                    <div className="grid gap-2 sm:grid-cols-2">
                     <label className="grid gap-1.5 text-sm text-zinc-300">
                       <SocialLabel
                         icon={<SiBattledotnet className="h-4 w-4 text-[#00AEF0]" />}
@@ -374,6 +317,7 @@ export function ProfileEditModalShell({
                         value={battleNetHandle}
                         onChange={(event) => setBattleNetHandle(event.target.value)}
                         placeholder="Player#1234"
+                        maxLength={40}
                         className="h-11 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 text-zinc-100 outline-none"
                       />
                     </label>
@@ -393,6 +337,7 @@ export function ProfileEditModalShell({
                           value={twitchHandle}
                           onChange={(event) => setTwitchHandle(event.target.value)}
                           placeholder="username"
+                          maxLength={100}
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
                       </div>
@@ -411,6 +356,7 @@ export function ProfileEditModalShell({
                           value={xHandle}
                           onChange={(event) => setXHandle(event.target.value)}
                           placeholder="username"
+                          maxLength={60}
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
                       </div>
@@ -431,15 +377,17 @@ export function ProfileEditModalShell({
                           value={youtubeHandle}
                           onChange={(event) => setYoutubeHandle(event.target.value)}
                           placeholder="channel"
+                          maxLength={100}
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
                       </div>
                     </label>
-                  </div>
-                </ModalSection>
+                    </div>
+                  }
+                />
 
-                <ModalSection title="Setup">
-                  <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.05fr]">
+                <SetupSection
+                  regionField={
                     <ModalDropdownField
                       inputName="region"
                       label="Region"
@@ -448,17 +396,13 @@ export function ProfileEditModalShell({
                       options={REGION_OPTIONS}
                       onSelect={(nextRegion) => {
                         setSelectedRegion(nextRegion);
-
-                        const nextTimezoneOptions = nextRegion
-                          ? [...(REGION_TO_TIMEZONES[nextRegion as keyof typeof REGION_TO_TIMEZONES] ?? [])]
-                          : [];
-
-                        if (!nextTimezoneOptions.includes(selectedTimezone)) {
-                          setSelectedTimezone("");
-                        }
+                        setSelectedTimezone(
+                          resetServerIfInvalid(nextRegion, selectedTimezone)
+                        );
                       }}
                     />
-
+                  }
+                  serverField={
                     <ModalDropdownField
                       disabled={!selectedRegion}
                       inputName="timezone"
@@ -468,7 +412,8 @@ export function ProfileEditModalShell({
                       options={timezoneOptions}
                       onSelect={setSelectedTimezone}
                     />
-
+                  }
+                  platformField={
                     <ModalDropdownField
                       inputName="platform"
                       label="Platform"
@@ -477,15 +422,15 @@ export function ProfileEditModalShell({
                       options={PLATFORM_OPTIONS}
                       onSelect={setSelectedPlatform}
                     />
-                  </div>
-                </ModalSection>
+                  }
+                />
 
-                <ModalSection title="Rank">
-                  <p className="mb-3 text-sm text-zinc-300">
-                    Current: {currentRankDisplay}
-                  </p>
-
-                  <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                <RankSection
+                  title="Rank"
+                  currentLabel={`Current: ${currentRankDisplay}`}
+                  current={null}
+                  controls={
+                    <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
                     <ModalDropdownField
                       inputName="current_rank_tier"
                       hideLabel
@@ -515,11 +460,12 @@ export function ProfileEditModalShell({
                             : "Select division"
                           : "Choose rank first"
                       }
-                      options={rankDivisionOptions}
+                      options={RANK_DIVISION_OPTIONS}
                       onSelect={setSelectedRankDivision}
                     />
-                  </div>
-                </ModalSection>
+                    </div>
+                  }
+                />
                 </div>
               )}
             </div>

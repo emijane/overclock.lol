@@ -1,12 +1,15 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { FaComputerMouse } from "react-icons/fa6";
 import { IoGameController } from "react-icons/io5";
 
 import { updateProfile } from "@/app/account/actions";
+import { RankSection } from "@/components/profile-editor/rank-section";
+import { SectionCard } from "@/components/profile-editor/section-card";
+import { SetupSection } from "@/components/profile-editor/setup-section";
+import { SocialsSection } from "@/components/profile-editor/socials-section";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,13 +21,16 @@ import {
   PLATFORM_OPTIONS,
   RANK_TIERS,
   REGION_OPTIONS,
-  REGION_TO_TIMEZONES,
 } from "@/lib/profiles/profile-options";
+import {
+  formatCurrentRank,
+  getServerOptions,
+  RANK_DIVISION_OPTIONS,
+  resetServerIfInvalid,
+} from "@/lib/profiles/profile-editor";
 import {
   PROFILE_BIO_MAX_CHARACTERS,
 } from "@/lib/profiles/profile-bio";
-
-const RANK_DIVISIONS = [1, 2, 3, 4, 5] as const;
 
 type AccountFormProps = {
   profile: {
@@ -44,39 +50,6 @@ type AccountFormProps = {
   };
 };
 
-type SectionProps = {
-  title?: string;
-  children: ReactNode;
-};
-
-function formatRank(
-  tier: string | null | undefined,
-  division: number | null | undefined
-) {
-  if (!tier) {
-    return "Not set";
-  }
-
-  if (tier === "Unranked") {
-    return "Unranked";
-  }
-
-  return `${tier} ${division ?? ""}`.trim();
-}
-
-function AccountSection({ title, children }: SectionProps) {
-  return (
-    <section className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4">
-      {title ? (
-        <h2 className="mb-4 text-sm font-semibold tracking-[-0.02em] text-zinc-100">
-          {title}
-        </h2>
-      ) : null}
-      {children}
-    </section>
-  );
-}
-
 export function AccountForm({ profile }: AccountFormProps) {
   const [region, setRegion] = useState(profile.region ?? "");
   const [timezone, setTimezone] = useState(profile.timezone ?? "");
@@ -85,24 +58,11 @@ export function AccountForm({ profile }: AccountFormProps) {
     profile.looking_for ?? []
   );
 
-  const timezoneOptions = region
-    ? (REGION_TO_TIMEZONES[region as keyof typeof REGION_TO_TIMEZONES] ?? [])
-    : [];
+  const timezoneOptions = getServerOptions(region);
 
   function handleRegionChange(nextRegion: string) {
     setRegion(nextRegion);
-
-    if (!nextRegion) {
-      setTimezone("");
-      return;
-    }
-
-    const nextTimezoneOptions =
-      REGION_TO_TIMEZONES[nextRegion as keyof typeof REGION_TO_TIMEZONES] ?? [];
-
-    if (!nextTimezoneOptions.some((value) => value === timezone)) {
-      setTimezone("");
-    }
+    setTimezone(resetServerIfInvalid(nextRegion, timezone));
   }
 
   function toggleLookingFor(option: string) {
@@ -117,7 +77,7 @@ export function AccountForm({ profile }: AccountFormProps) {
     <form action={updateProfile} className="grid gap-4">
       <input type="hidden" name="display_name" value={profile.display_name} />
       <input type="hidden" name="return_to" value="/account" />
-      <AccountSection>
+      <SectionCard>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3">
             <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
@@ -151,10 +111,11 @@ export function AccountForm({ profile }: AccountFormProps) {
             Up to {PROFILE_BIO_MAX_CHARACTERS} characters.
           </p>
         </label>
-      </AccountSection>
+      </SectionCard>
 
-      <AccountSection title="Socials">
-        <div className="grid gap-3 sm:grid-cols-2">
+      <SocialsSection
+        fields={
+          <div className="grid gap-3 sm:grid-cols-2">
           <label className="grid gap-2 text-sm text-zinc-300">
             <span>Battle.net</span>
             <input
@@ -174,6 +135,7 @@ export function AccountForm({ profile }: AccountFormProps) {
               type="text"
               defaultValue={profile.twitch_url ?? ""}
               placeholder="https://twitch.tv/username"
+              maxLength={100}
               className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
             />
           </label>
@@ -185,6 +147,7 @@ export function AccountForm({ profile }: AccountFormProps) {
               type="text"
               defaultValue={profile.x_url ?? ""}
               placeholder="https://x.com/username"
+              maxLength={60}
               className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
             />
           </label>
@@ -196,14 +159,16 @@ export function AccountForm({ profile }: AccountFormProps) {
               type="text"
               defaultValue={profile.youtube_url ?? ""}
               placeholder="https://youtube.com/@channel"
+              maxLength={100}
               className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
             />
           </label>
-        </div>
-      </AccountSection>
+          </div>
+        }
+      />
 
-      <AccountSection>
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.05fr]">
+      <SetupSection
+        regionField={
           <label className="grid gap-2 text-sm text-zinc-300">
             <span>Region</span>
             <select
@@ -220,7 +185,8 @@ export function AccountForm({ profile }: AccountFormProps) {
               ))}
             </select>
           </label>
-
+        }
+        serverField={
           <label className="grid gap-2 text-sm text-zinc-300">
             <span>Server</span>
             <select
@@ -238,7 +204,8 @@ export function AccountForm({ profile }: AccountFormProps) {
               ))}
             </select>
           </label>
-
+        }
+        platformField={
           <div className="grid gap-2 text-sm text-zinc-300">
             <span>Platform</span>
             <input type="hidden" name="platform" value={platform} />
@@ -266,12 +233,12 @@ export function AccountForm({ profile }: AccountFormProps) {
               })}
             </div>
           </div>
-        </div>
-      </AccountSection>
+        }
+      />
 
-      <AccountSection>
-        <div className="grid gap-3 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="grid gap-2 text-sm text-zinc-300">
+      <RankSection
+        controls={
+          <>
             <span>Rank</span>
             <div className="grid gap-3 sm:grid-cols-2">
               <select
@@ -293,25 +260,26 @@ export function AccountForm({ profile }: AccountFormProps) {
                 className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none transition focus:border-sky-400"
               >
                 <option value="">Division</option>
-                {RANK_DIVISIONS.map((option) => (
+                {RANK_DIVISION_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
+          </>
+        }
+        current={
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium text-zinc-100">
+            {formatCurrentRank(
+              profile.current_rank_tier,
+              profile.current_rank_division
+            )}
           </div>
+        }
+      />
 
-          <div className="grid gap-2 text-sm text-zinc-300">
-            <span>Current</span>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium text-zinc-100">
-              {formatRank(profile.current_rank_tier, profile.current_rank_division)}
-            </div>
-          </div>
-        </div>
-      </AccountSection>
-
-      <AccountSection title="Looking for">
+      <SectionCard title="Looking for">
         {lookingFor.map((option) => (
           <input key={option} type="hidden" name="looking_for" value={option} />
         ))}
@@ -369,7 +337,7 @@ export function AccountForm({ profile }: AccountFormProps) {
             </button>
           ))}
         </div>
-      </AccountSection>
+      </SectionCard>
 
       <div className="flex justify-end pt-1">
         <button
