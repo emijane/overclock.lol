@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { ProfileHeader } from "./profile-header";
 import { ProfileEditModalShell } from "./profile-edit-modal-shell";
@@ -9,6 +10,7 @@ type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader>;
 
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const pathname = usePathname();
   const socials = {
     battlenet:
       props.socialLinks.find((link) => link.platform === "battlenet")?.value ?? "",
@@ -33,16 +35,19 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
           onClose={() => setIsEditModalOpen(false)}
         profile={{
           bio: props.bio,
-          currentRankPill: props.currentRankPill,
+          currentRankDivision: props.currentRankDivision,
+          currentRankTier: props.currentRankTier ?? null,
           discordUsername,
           displayName: props.displayName,
           hasDiscordUser: props.socialLinks.some(
             (link) => link.platform === "discord"
           ),
+          lookingFor: props.lookingFor ?? [],
           platform: props.platform,
           region: props.region,
+          returnTo: pathname,
           socials,
-            timezone: props.timezone,
+          timezone: props.timezone,
           }}
         />
       ) : null}

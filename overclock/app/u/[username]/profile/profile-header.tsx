@@ -14,10 +14,13 @@ type ProfileHeaderProps = {
   bio: string | null;
   coverImageUrl: string | null;
   currentRank: string | null;
+  currentRankTier?: string | null;
   currentRankIconSrc: string | null;
   currentRankPill: string;
+  currentRankDivision?: number | null;
   displayName: string;
   isOwner: boolean;
+  lookingFor?: string[] | null;
   platform: string | null;
   region: string | null;
   roleLabels: string[];

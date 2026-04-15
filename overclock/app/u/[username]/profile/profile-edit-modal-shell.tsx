@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
+import { updateProfile } from "@/app/account/actions";
 import {
   PLATFORM_OPTIONS,
   RANK_TIERS,
@@ -35,12 +36,15 @@ type ProfileEditModalShellProps = {
   children?: ReactNode;
   profile: {
     bio: string | null;
-    currentRankPill: string;
+    currentRankDivision: number | null;
+    currentRankTier: string | null;
     discordUsername: string | null;
     displayName: string;
     hasDiscordUser: boolean;
+    lookingFor: string[];
     platform: string | null;
     region: string | null;
+    returnTo: string;
     socials: SocialValues;
     timezone: string | null;
   };
@@ -90,6 +94,15 @@ function stripSocialPrefix(value: string, prefixes: string[]) {
   }
 
   return normalizedValue;
+}
+
+function normalizeHandle(value: string) {
+  return value.trim().replace(/^@+/, "");
+}
+
+function buildSocialUrl(prefix: string, value: string) {
+  const normalizedValue = normalizeHandle(value);
+  return normalizedValue ? `${prefix}${normalizedValue}` : "";
 }
 
 function ModalDropdownField({
@@ -164,12 +177,53 @@ export function ProfileEditModalShell({
   children,
   profile,
 }: ProfileEditModalShellProps) {
-  const [selectedRankTier, setSelectedRankTier] = useState("");
-  const [selectedRankDivision, setSelectedRankDivision] = useState("");
+  const [battleNetHandle, setBattleNetHandle] = useState(profile.socials.battlenet);
+  const [bio, setBio] = useState(profile.bio ?? "");
+  const [displayName, setDisplayName] = useState(profile.displayName);
+  const [selectedRankTier, setSelectedRankTier] = useState(profile.currentRankTier ?? "");
+  const [selectedRankDivision, setSelectedRankDivision] = useState(
+    profile.currentRankDivision?.toString() ?? ""
+  );
   const [selectedRegion, setSelectedRegion] = useState(profile.region ?? "");
   const [selectedTimezone, setSelectedTimezone] = useState(profile.timezone ?? "");
   const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
   const [showDiscordUser, setShowDiscordUser] = useState(profile.hasDiscordUser);
+  const [twitchHandle, setTwitchHandle] = useState(
+    stripSocialPrefix(profile.socials.twitch, [
+      "https://twitch.tv/",
+      "http://twitch.tv/",
+      "https://www.twitch.tv/",
+      "http://www.twitch.tv/",
+      "twitch.tv/",
+      "www.twitch.tv/",
+    ])
+  );
+  const [xHandle, setXHandle] = useState(
+    stripSocialPrefix(profile.socials.x, [
+      "https://x.com/",
+      "http://x.com/",
+      "https://www.x.com/",
+      "http://www.x.com/",
+      "https://twitter.com/",
+      "http://twitter.com/",
+      "https://www.twitter.com/",
+      "http://www.twitter.com/",
+      "x.com/",
+      "twitter.com/",
+      "www.x.com/",
+      "www.twitter.com/",
+    ])
+  );
+  const [youtubeHandle, setYoutubeHandle] = useState(
+    stripSocialPrefix(profile.socials.youtube, [
+      "https://youtube.com/@",
+      "http://youtube.com/@",
+      "https://www.youtube.com/@",
+      "http://www.youtube.com/@",
+      "youtube.com/@",
+      "www.youtube.com/@",
+    ])
+  );
   const rankDivisionOptions = ["1", "2", "3", "4", "5"];
   const currentRankDisplay = selectedRankTier
     ? selectedRankTier === "Unranked"
@@ -243,16 +297,31 @@ export function ProfileEditModalShell({
             </button>
           </header>
 
-          <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
-            {children ?? (
-              <div className="grid gap-4">
+          <form action={updateProfile} className="flex min-h-0 flex-1 flex-col">
+            <input type="hidden" name="return_to" value={profile.returnTo} />
+            {profile.lookingFor.map((option) => (
+              <input key={option} type="hidden" name="looking_for" value={option} />
+            ))}
+            <input type="hidden" name="twitch_url" value={buildSocialUrl("https://twitch.tv/", twitchHandle)} />
+            <input type="hidden" name="x_url" value={buildSocialUrl("https://x.com/", xHandle)} />
+            <input
+              type="hidden"
+              name="youtube_url"
+              value={buildSocialUrl("https://youtube.com/@", youtubeHandle)}
+            />
+
+            <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
+              {children ?? (
+                <div className="grid gap-4">
                 <ModalSection>
                   <div className="grid gap-3">
                     <label className="grid gap-2 text-sm text-zinc-300">
                       <span>Display name</span>
                       <input
+                        name="display_name"
                         type="text"
-                        defaultValue={profile.displayName}
+                        value={displayName}
+                        onChange={(event) => setDisplayName(event.target.value)}
                         className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none"
                       />
                     </label>
@@ -261,13 +330,12 @@ export function ProfileEditModalShell({
                   <label className="mt-3 grid gap-2 text-sm text-zinc-300">
                     <span>Bio</span>
                     <textarea
+                      name="bio"
                       rows={4}
-                      defaultValue={profile.bio ?? ""}
+                      value={bio}
+                      onChange={(event) => setBio(event.target.value)}
                       className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none"
                     />
-                    <p className="text-xs text-zinc-500">
-                      Bio editing will be wired in next.
-                    </p>
                   </label>
                 </ModalSection>
 
@@ -301,8 +369,10 @@ export function ProfileEditModalShell({
                         Battle.net
                       </SocialLabel>
                       <input
+                        name="battlenet_handle"
                         type="text"
-                        defaultValue={profile.socials.battlenet}
+                        value={battleNetHandle}
+                        onChange={(event) => setBattleNetHandle(event.target.value)}
                         placeholder="Player#1234"
                         className="h-11 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 text-zinc-100 outline-none"
                       />
@@ -320,14 +390,8 @@ export function ProfileEditModalShell({
                         </span>
                         <input
                           type="text"
-                          defaultValue={stripSocialPrefix(profile.socials.twitch, [
-                            "https://twitch.tv/",
-                            "http://twitch.tv/",
-                            "https://www.twitch.tv/",
-                            "http://www.twitch.tv/",
-                            "twitch.tv/",
-                            "www.twitch.tv/",
-                          ])}
+                          value={twitchHandle}
+                          onChange={(event) => setTwitchHandle(event.target.value)}
                           placeholder="username"
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
@@ -344,20 +408,8 @@ export function ProfileEditModalShell({
                         </span>
                         <input
                           type="text"
-                          defaultValue={stripSocialPrefix(profile.socials.x, [
-                            "https://x.com/",
-                            "http://x.com/",
-                            "https://www.x.com/",
-                            "http://www.x.com/",
-                            "https://twitter.com/",
-                            "http://twitter.com/",
-                            "https://www.twitter.com/",
-                            "http://www.twitter.com/",
-                            "x.com/",
-                            "twitter.com/",
-                            "www.x.com/",
-                            "www.twitter.com/",
-                          ])}
+                          value={xHandle}
+                          onChange={(event) => setXHandle(event.target.value)}
                           placeholder="username"
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
@@ -376,14 +428,8 @@ export function ProfileEditModalShell({
                         </span>
                         <input
                           type="text"
-                          defaultValue={stripSocialPrefix(profile.socials.youtube, [
-                            "https://youtube.com/@",
-                            "http://youtube.com/@",
-                            "https://www.youtube.com/@",
-                            "http://www.youtube.com/@",
-                            "youtube.com/@",
-                            "www.youtube.com/@",
-                          ])}
+                          value={youtubeHandle}
+                          onChange={(event) => setYoutubeHandle(event.target.value)}
                           placeholder="channel"
                           className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
                         />
@@ -474,26 +520,26 @@ export function ProfileEditModalShell({
                     />
                   </div>
                 </ModalSection>
-              </div>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
 
-          <footer className="flex items-center justify-end gap-3 border-t border-zinc-800 px-4 py-4 sm:px-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              disabled
-              className="rounded-full bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-zinc-500"
-            >
-              Save
-            </button>
-          </footer>
+            <footer className="flex items-center justify-end gap-3 border-t border-zinc-800 px-4 py-4 sm:px-6">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                className="rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+              >
+                Save
+              </button>
+            </footer>
+          </form>
         </section>
       </div>
     </div>,

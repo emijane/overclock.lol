@@ -115,6 +115,8 @@ export function AccountForm({ profile }: AccountFormProps) {
 
   return (
     <form action={updateProfile} className="grid gap-4">
+      <input type="hidden" name="display_name" value={profile.display_name} />
+      <input type="hidden" name="return_to" value="/account" />
       <AccountSection>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3">

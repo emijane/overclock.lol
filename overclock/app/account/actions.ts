@@ -21,10 +21,11 @@ import { createClient } from "@/lib/supabase/server";
 
 function accountRedirect(
   message: string,
+  returnTo = "/account",
   type: "error" | "success" = "error"
 ): never {
   const params = new URLSearchParams({ type, message });
-  redirect(`/account?${params.toString()}`);
+  redirect(`${returnTo}?${params.toString()}`);
 }
 
 function optionalTrimmedString(value: FormDataEntryValue | null) {
@@ -32,10 +33,25 @@ function optionalTrimmedString(value: FormDataEntryValue | null) {
   return parsed.length > 0 ? parsed : null;
 }
 
+function resolveReturnTo(formData: FormData) {
+  const parsed = optionalTrimmedString(formData.get("return_to"));
+
+  if (!parsed) {
+    return "/account";
+  }
+
+  if (!parsed.startsWith("/") || parsed.startsWith("//")) {
+    return "/account";
+  }
+
+  return parsed;
+}
+
 function optionalEnumValue<T extends readonly string[]>(
   value: FormDataEntryValue | null,
   options: T,
-  fieldName: string
+  fieldName: string,
+  returnTo?: string
 ): T[number] | null {
   const parsed = optionalTrimmedString(value);
 
@@ -44,7 +60,7 @@ function optionalEnumValue<T extends readonly string[]>(
   }
 
   if (!options.includes(parsed as T[number])) {
-    accountRedirect(`Invalid ${fieldName}.`);
+    accountRedirect(`Invalid ${fieldName}.`, returnTo);
   }
 
   return parsed as T[number];
@@ -52,7 +68,8 @@ function optionalEnumValue<T extends readonly string[]>(
 
 function parseRankDivision(
   value: FormDataEntryValue | null,
-  fieldName: string
+  fieldName: string,
+  returnTo?: string
 ): number | null {
   const parsed = optionalTrimmedString(value);
 
@@ -63,7 +80,7 @@ function parseRankDivision(
   const division = Number(parsed);
 
   if (!Number.isInteger(division) || division < 1 || division > 5) {
-    accountRedirect(`Invalid ${fieldName}.`);
+    accountRedirect(`Invalid ${fieldName}.`, returnTo);
   }
 
   return division;
@@ -72,26 +89,32 @@ function parseRankDivision(
 function validateRankPair(
   tier: (typeof RANK_TIERS)[number] | null,
   division: number | null,
-  label: string
+  label: string,
+  returnTo?: string
 ) {
   if (!tier && division === null) {
     return;
   }
 
   if (!tier && division !== null) {
-    accountRedirect(`${label} tier is required when a division is set.`);
+    accountRedirect(`${label} tier is required when a division is set.`, returnTo);
   }
 
   if (tier === "Unranked" && division !== null) {
-    accountRedirect(`${label} division must be empty when rank is Unranked.`);
+    accountRedirect(
+      `${label} division must be empty when rank is Unranked.`,
+      returnTo
+    );
   }
 
   if (tier && tier !== "Unranked" && division === null) {
-    accountRedirect(`${label} division is required.`);
+    accountRedirect(`${label} division is required.`, returnTo);
   }
 }
 
 export async function updateProfile(formData: FormData) {
+  const returnTo = resolveReturnTo(formData);
+  const displayName = optionalTrimmedString(formData.get("display_name"));
   const bio = sanitizeProfileBio(formData.get("bio"));
   const battlenetHandle = sanitizeBattlenetHandle(formData.get("battlenet_handle"));
   const twitchUrl = sanitizeSocialUrl(formData.get("twitch_url"));
@@ -100,22 +123,31 @@ export async function updateProfile(formData: FormData) {
   const timezone = optionalEnumValue(
     formData.get("timezone"),
     TIMEZONE_OPTIONS,
-    "server"
+    "server",
+    returnTo
   );
-  const region = optionalEnumValue(formData.get("region"), REGION_OPTIONS, "region");
+  const region = optionalEnumValue(
+    formData.get("region"),
+    REGION_OPTIONS,
+    "region",
+    returnTo
+  );
   const platform = optionalEnumValue(
     formData.get("platform"),
     PLATFORM_OPTIONS,
-    "platform"
+    "platform",
+    returnTo
   );
   const currentRankTier = optionalEnumValue(
     formData.get("current_rank_tier"),
     RANK_TIERS,
-    "current rank tier"
+    "current rank tier",
+    returnTo
   );
   const currentRankDivision = parseRankDivision(
     formData.get("current_rank_division"),
-    "current rank division"
+    "current rank division",
+    returnTo
   );
   const lookingFor = formData
     .getAll("looking_for")
@@ -130,39 +162,47 @@ export async function updateProfile(formData: FormData) {
   const xValidationError = validateSocialUrl("x_url", xUrl);
   const youtubeValidationError = validateSocialUrl("youtube_url", youtubeUrl);
 
+  if (!displayName) {
+    accountRedirect("Display name is required.", returnTo);
+  }
+
+  if (displayName.length > 40) {
+    accountRedirect("Display name must be 40 characters or less.", returnTo);
+  }
+
   if (bioValidationError) {
-    accountRedirect(bioValidationError);
+    accountRedirect(bioValidationError, returnTo);
   }
 
   if (battlenetValidationError) {
-    accountRedirect(battlenetValidationError);
+    accountRedirect(battlenetValidationError, returnTo);
   }
 
   if (twitchValidationError) {
-    accountRedirect(twitchValidationError);
+    accountRedirect(twitchValidationError, returnTo);
   }
 
   if (xValidationError) {
-    accountRedirect(xValidationError);
+    accountRedirect(xValidationError, returnTo);
   }
 
   if (youtubeValidationError) {
-    accountRedirect(youtubeValidationError);
+    accountRedirect(youtubeValidationError, returnTo);
   }
 
   if (timezone && !region) {
-    accountRedirect("Choose a region before selecting a server.");
+    accountRedirect("Choose a region before selecting a server.", returnTo);
   }
 
   if (region && timezone) {
     const allowedTimezones = REGION_TO_TIMEZONES[region];
 
     if (!allowedTimezones.some((value) => value === timezone)) {
-      accountRedirect("Selected server does not match the chosen region.");
+      accountRedirect("Selected server does not match the chosen region.", returnTo);
     }
   }
 
-  validateRankPair(currentRankTier, currentRankDivision, "Current rank");
+  validateRankPair(currentRankTier, currentRankDivision, "Current rank", returnTo);
 
   const supabase = await createClient();
   const {
@@ -179,6 +219,7 @@ export async function updateProfile(formData: FormData) {
     .update({
       battlenet_handle: battlenetHandle,
       bio,
+      display_name: displayName,
       timezone,
       region,
       platform,
@@ -192,8 +233,11 @@ export async function updateProfile(formData: FormData) {
     .eq("id", user.id);
 
   if (error) {
-    accountRedirect("Unable to save your profile settings right now.");
+    accountRedirect(
+      error.message || "Unable to save your profile settings right now.",
+      returnTo
+    );
   }
 
-  accountRedirect("Profile settings saved.", "success");
+  accountRedirect("Profile settings saved.", returnTo, "success");
 }

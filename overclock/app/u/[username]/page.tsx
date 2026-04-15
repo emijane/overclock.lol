@@ -96,10 +96,13 @@ export default async function ProfilePage({
           bio={profile.bio}
           coverImageUrl={coverImageUrl}
           currentRank={currentRank}
+          currentRankTier={profile.current_rank_tier}
+          currentRankDivision={profile.current_rank_division}
           currentRankIconSrc={currentRankIconSrc}
           currentRankPill={currentRankPill}
           displayName={profile.display_name}
           isOwner={isOwner}
+          lookingFor={profile.looking_for}
           platform={profile.platform}
           region={profile.region}
           roleLabels={roleLabels}
