@@ -6,6 +6,10 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
+import {
+  FeaturedClipsSection,
+  type FeaturedClip,
+} from "./profile/featured-clips";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { getCurrentRankDisplay } from "./profile/profile-rank";
 
@@ -49,6 +53,7 @@ export default async function ProfilePage({
     profile.cover_image_path,
     profile.cover_image_updated_at
   );
+  const featuredClips: FeaturedClip[] = [];
   const socialLinks = [
     profile.discord_username
       ? {
@@ -110,6 +115,7 @@ export default async function ProfilePage({
           timezone={profile.timezone}
           username={profile.username}
         />
+        <FeaturedClipsSection clips={featuredClips} isOwner={isOwner} />
         <PreferredHeroPools
           heroPicks={heroPools.heroPicks}
           roles={heroPools.roles}
