@@ -17,12 +17,12 @@ export function RankSection({
 }: RankSectionProps) {
   return (
     <SectionCard title={title}>
-      <div className="grid gap-3 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="grid gap-2 text-sm text-zinc-300">{controls}</div>
+      <div className="grid gap-3">
         <div className="grid gap-2 text-sm text-zinc-300">
           <span>{currentLabel}</span>
-          {current}
+          {current ? current : null}
         </div>
+        <div className="grid gap-2 text-sm text-zinc-300">{controls}</div>
       </div>
     </SectionCard>
   );
