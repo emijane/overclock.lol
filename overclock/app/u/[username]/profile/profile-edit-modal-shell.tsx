@@ -17,6 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import {
   PLATFORM_OPTIONS,
+  RANK_TIERS,
   REGION_OPTIONS,
   REGION_TO_TIMEZONES,
 } from "@/lib/profiles/profile-options";
@@ -95,6 +96,7 @@ function ModalDropdownField({
   disabled = false,
   inputName,
   label,
+  hideLabel = false,
   onSelect,
   options,
   placeholder,
@@ -103,6 +105,7 @@ function ModalDropdownField({
   disabled?: boolean;
   inputName: string;
   label: string;
+  hideLabel?: boolean;
   onSelect: (value: string) => void;
   options: readonly string[];
   placeholder: string;
@@ -110,7 +113,7 @@ function ModalDropdownField({
 }) {
   return (
     <label className="grid gap-1.5 text-sm text-zinc-300">
-      <span>{label}</span>
+      {hideLabel ? <span className="sr-only">{label}</span> : <span>{label}</span>}
       <input type="hidden" name={inputName} value={value} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -161,10 +164,18 @@ export function ProfileEditModalShell({
   children,
   profile,
 }: ProfileEditModalShellProps) {
+  const [selectedRankTier, setSelectedRankTier] = useState("");
+  const [selectedRankDivision, setSelectedRankDivision] = useState("");
   const [selectedRegion, setSelectedRegion] = useState(profile.region ?? "");
   const [selectedTimezone, setSelectedTimezone] = useState(profile.timezone ?? "");
   const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
   const [showDiscordUser, setShowDiscordUser] = useState(profile.hasDiscordUser);
+  const rankDivisionOptions = ["1", "2", "3", "4", "5"];
+  const currentRankDisplay = selectedRankTier
+    ? selectedRankTier === "Unranked"
+      ? "Unranked"
+      : [selectedRankTier, selectedRankDivision].filter(Boolean).join(" ")
+    : "Not set";
 
   useEffect(() => {
     if (!isOpen) {
@@ -405,7 +416,7 @@ export function ProfileEditModalShell({
                     <ModalDropdownField
                       disabled={!selectedRegion}
                       inputName="timezone"
-                      label="Timezone"
+                      label="Server"
                       value={selectedTimezone}
                       placeholder={selectedRegion ? "Not set" : "Choose region first"}
                       options={timezoneOptions}
@@ -424,11 +435,43 @@ export function ProfileEditModalShell({
                 </ModalSection>
 
                 <ModalSection title="Rank">
-                  <div className="grid gap-2 text-sm text-zinc-300">
-                    <span>Current</span>
-                    <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium text-zinc-100">
-                      {profile.currentRankPill}
-                    </div>
+                  <p className="mb-3 text-sm text-zinc-300">
+                    Current: {currentRankDisplay}
+                  </p>
+
+                  <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                    <ModalDropdownField
+                      inputName="current_rank_tier"
+                      hideLabel
+                      label="Rank"
+                      value={selectedRankTier}
+                      placeholder="Select rank"
+                      options={RANK_TIERS}
+                      onSelect={(nextRankTier) => {
+                        setSelectedRankTier(nextRankTier);
+
+                        if (nextRankTier === "Unranked") {
+                          setSelectedRankDivision("");
+                        }
+                      }}
+                    />
+
+                    <ModalDropdownField
+                      disabled={!selectedRankTier || selectedRankTier === "Unranked"}
+                      inputName="current_rank_division"
+                      hideLabel
+                      label="Sub-rank"
+                      value={selectedRankDivision}
+                      placeholder={
+                        selectedRankTier
+                          ? selectedRankTier === "Unranked"
+                            ? "No sub-rank"
+                            : "Select division"
+                          : "Choose rank first"
+                      }
+                      options={rankDivisionOptions}
+                      onSelect={setSelectedRankDivision}
+                    />
                   </div>
                 </ModalSection>
               </div>

@@ -220,7 +220,7 @@ export function AccountForm({ profile }: AccountFormProps) {
           </label>
 
           <label className="grid gap-2 text-sm text-zinc-300">
-            <span>Timezone</span>
+            <span>Server</span>
             <select
               name="timezone"
               value={timezone}

@@ -8,7 +8,7 @@ next sensible product steps look like based on the current codebase and `TODO`.
 
 `overclock.lol` is a Next.js App Router app for Overwatch players to create a
 public profile, connect through Discord auth, and share matchmaking-relevant
-details such as rank, platform, timezone, bio, and preferred hero pools.
+details such as rank, platform, preferred server, bio, and preferred hero pools.
 
 The current product shape is profile-first rather than feed-first:
 
@@ -25,7 +25,7 @@ The homepage currently redirects to `/login`.
 1. A user signs in with Discord through Supabase auth.
 2. If they do not yet have a `profiles` row, they are redirected to onboarding.
 3. Onboarding creates the app-specific profile with a unique username.
-4. The user can fill in account details like bio, region, timezone, platform,
+4. The user can fill in account details like bio, region, preferred server, platform,
    rank, and looking-for preferences.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.

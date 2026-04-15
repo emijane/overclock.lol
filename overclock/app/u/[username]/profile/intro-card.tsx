@@ -28,7 +28,7 @@ const introIconByLabel = {
   Discord: { Icon: FaDiscord, className: "text-[#5865F2]" },
   Platform: { Icon: Gamepad2Icon, className: "text-[#f99e1a]" },
   Region: { Icon: Globe2Icon, className: "text-[#00aef0]" },
-  Timezone: { Icon: Clock3Icon, className: "text-[#f99e1a]" },
+  Server: { Icon: Clock3Icon, className: "text-[#f99e1a]" },
 } as const satisfies Record<
   string,
   { Icon: IconType | LucideIcon; className: string }

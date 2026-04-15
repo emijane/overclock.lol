@@ -1,10 +1,7 @@
 export const REGION_OPTIONS = [
-  "NA",
-  "EU",
-  "APAC",
-  "LATAM",
-  "MENA",
-  "OCE",
+  "Americas",
+  "Europe",
+  "Asia",
 ] as const;
 
 export const PLATFORM_OPTIONS = ["PC", "Console"] as const;
@@ -30,27 +27,22 @@ export const LOOKING_FOR_OPTIONS = [
 ] as const;
 
 export const REGION_TO_TIMEZONES = {
-  NA: [
-    "America/New_York",
-    "America/Chicago",
-    "America/Denver",
-    "America/Los_Angeles",
-    "America/Phoenix",
-    "America/Toronto",
-    "America/Vancouver",
+  Americas: [
+    "US Central/East",
+    "US West",
+    "South America",
+    "Oceania",
+    "Southeast Asia",
   ],
-  EU: [
-    "Europe/London",
-    "Europe/Paris",
-    "Europe/Berlin",
-    "Europe/Madrid",
-    "Europe/Warsaw",
-    "Europe/Helsinki",
+  Europe: [
+    "Amsterdam",
+    "Paris",
   ],
-  APAC: ["Asia/Tokyo", "Asia/Seoul", "Asia/Singapore"],
-  LATAM: ["America/Sao_Paulo"],
-  MENA: ["Europe/Istanbul"],
-  OCE: ["Australia/Sydney"],
+  Asia: [
+    "Seoul",
+    "Taipei",
+    "Hong Kong / Macau",
+  ],
 } as const satisfies Record<(typeof REGION_OPTIONS)[number], readonly string[]>;
 
 export const TIMEZONE_OPTIONS = Object.values(REGION_TO_TIMEZONES).flat();

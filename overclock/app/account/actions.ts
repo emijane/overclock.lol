@@ -100,7 +100,7 @@ export async function updateProfile(formData: FormData) {
   const timezone = optionalEnumValue(
     formData.get("timezone"),
     TIMEZONE_OPTIONS,
-    "timezone"
+    "server"
   );
   const region = optionalEnumValue(formData.get("region"), REGION_OPTIONS, "region");
   const platform = optionalEnumValue(
@@ -151,14 +151,14 @@ export async function updateProfile(formData: FormData) {
   }
 
   if (timezone && !region) {
-    accountRedirect("Choose a region before selecting a timezone.");
+    accountRedirect("Choose a region before selecting a server.");
   }
 
   if (region && timezone) {
     const allowedTimezones = REGION_TO_TIMEZONES[region];
 
     if (!allowedTimezones.some((value) => value === timezone)) {
-      accountRedirect("Selected timezone does not match the chosen region.");
+      accountRedirect("Selected server does not match the chosen region.");
     }
   }
 
