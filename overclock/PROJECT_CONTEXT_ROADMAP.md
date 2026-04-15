@@ -50,17 +50,13 @@ The homepage currently redirects to `/login`.
 - Public profile rendering is split into route-local components under
   `app/u/[username]/profile`.
 - Hero pool logic is isolated in `lib/heroes/*` and the dedicated account route.
-- Some metadata and top-level docs are still starter-template quality and should
-  be replaced with project-specific content.
+- Metadata and top-level docs should stay aligned with the current profile-first
+  product as the app evolves.
 
 ## Current Gaps
 
 These are already visible in the codebase today:
 
-- App metadata in `app/layout.tsx` still uses the default Create Next App title
-  and description.
-- `README.md` is still boilerplate and does not explain setup, env vars, or the
-  product purpose.
 - Public profile social links are partly placeholder values rather than
   user-managed data.
 - The public profile experience depends heavily on users filling things out, so
