@@ -110,7 +110,7 @@ export function FeaturedVideoModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="featured-video-modal-title"
-          className="flex w-full max-w-lg flex-col overflow-hidden rounded-t-[28px] border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/40 sm:rounded-[28px]"
+          className="flex w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/40 sm:rounded-[28px]"
           onClick={(event) => event.stopPropagation()}
         >
           <header className="flex items-center justify-between gap-4 border-b border-zinc-800 px-4 py-4 sm:px-5">
