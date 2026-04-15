@@ -2,15 +2,15 @@
 
 import { redirect } from "next/navigation";
 
+import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
 import {
   LOOKING_FOR_OPTIONS,
   PLATFORM_OPTIONS,
+  REGION_OPTIONS,
   REGION_TO_TIMEZONES,
   RANK_TIERS,
-  REGION_OPTIONS,
   TIMEZONE_OPTIONS,
 } from "@/lib/profiles/profile-options";
-import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
 import {
   sanitizeBattlenetHandle,
   sanitizeSocialUrl,
@@ -18,6 +18,22 @@ import {
   validateSocialUrl,
 } from "@/lib/profiles/profile-socials";
 import { createClient } from "@/lib/supabase/server";
+
+type ParsedProfileUpdate = {
+  battlenetHandle: string | null;
+  bio: string | null;
+  currentRankDivision: number | null;
+  currentRankTier: (typeof RANK_TIERS)[number] | null;
+  displayName: string | null;
+  lookingFor: (typeof LOOKING_FOR_OPTIONS)[number][];
+  platform: (typeof PLATFORM_OPTIONS)[number] | null;
+  region: (typeof REGION_OPTIONS)[number] | null;
+  returnTo: string;
+  timezone: (typeof TIMEZONE_OPTIONS)[number] | null;
+  twitchUrl: string | null;
+  xUrl: string | null;
+  youtubeUrl: string | null;
+};
 
 function accountRedirect(
   message: string,
@@ -112,7 +128,7 @@ function validateRankPair(
   }
 }
 
-export async function updateProfile(formData: FormData) {
+function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
   const returnTo = resolveReturnTo(formData);
   const displayName = optionalTrimmedString(formData.get("display_name"));
   const bio = sanitizeProfileBio(formData.get("bio"));
@@ -156,6 +172,36 @@ export async function updateProfile(formData: FormData) {
       LOOKING_FOR_OPTIONS.includes(value as (typeof LOOKING_FOR_OPTIONS)[number])
     );
 
+  return {
+    battlenetHandle,
+    bio,
+    currentRankDivision,
+    currentRankTier,
+    displayName,
+    lookingFor,
+    platform,
+    region,
+    returnTo,
+    timezone,
+    twitchUrl,
+    xUrl,
+    youtubeUrl,
+  };
+}
+
+function validateProfileUpdate({
+  battlenetHandle,
+  bio,
+  currentRankDivision,
+  currentRankTier,
+  displayName,
+  region,
+  returnTo,
+  timezone,
+  twitchUrl,
+  xUrl,
+  youtubeUrl,
+}: ParsedProfileUpdate) {
   const bioValidationError = validateProfileBio(bio);
   const battlenetValidationError = validateBattlenetHandle(battlenetHandle);
   const twitchValidationError = validateSocialUrl("twitch_url", twitchUrl);
@@ -203,6 +249,27 @@ export async function updateProfile(formData: FormData) {
   }
 
   validateRankPair(currentRankTier, currentRankDivision, "Current rank", returnTo);
+}
+
+export async function updateProfile(formData: FormData) {
+  const parsedUpdate = parseProfileUpdate(formData);
+  validateProfileUpdate(parsedUpdate);
+
+  const {
+    battlenetHandle,
+    bio,
+    currentRankDivision,
+    currentRankTier,
+    displayName,
+    lookingFor,
+    platform,
+    region,
+    returnTo,
+    timezone,
+    twitchUrl,
+    xUrl,
+    youtubeUrl,
+  } = parsedUpdate;
 
   const supabase = await createClient();
   const {
@@ -219,13 +286,13 @@ export async function updateProfile(formData: FormData) {
     .update({
       battlenet_handle: battlenetHandle,
       bio,
-      display_name: displayName,
-      timezone,
-      region,
-      platform,
-      current_rank_tier: currentRankTier,
       current_rank_division: currentRankDivision,
+      current_rank_tier: currentRankTier,
+      display_name: displayName,
       looking_for: lookingFor,
+      platform,
+      region,
+      timezone,
       twitch_url: twitchUrl,
       x_url: xUrl,
       youtube_url: youtubeUrl,
@@ -233,17 +300,12 @@ export async function updateProfile(formData: FormData) {
     .eq("id", user.id);
 
   if (error) {
-    accountRedirect(
-      [
-        error.message || "Unable to save your profile settings right now.",
-        `region=${region ?? "null"}`,
-        `server=${timezone ?? "null"}`,
-        `platform=${platform ?? "null"}`,
-        `rank=${currentRankTier ?? "null"}`,
-        `division=${currentRankDivision?.toString() ?? "null"}`,
-      ].join(" | "),
-      returnTo
-    );
+    console.error("Profile update failed", {
+      error,
+      profileId: user.id,
+      returnTo,
+    });
+    accountRedirect("Unable to save your profile settings right now.", returnTo);
   }
 
   accountRedirect("Profile settings saved.", returnTo, "success");
