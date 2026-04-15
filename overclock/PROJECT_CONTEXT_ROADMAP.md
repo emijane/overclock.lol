@@ -14,7 +14,7 @@ The current product shape is profile-first rather than feed-first:
 
 - `/login` is the main entry point and auth gate.
 - `/onboarding` creates an app profile for a Discord-authenticated user.
-- `/account` manages editable profile fields.
+- `/account` is currently a placeholder settings route.
 - `/account/hero-pools` manages role selection and preferred heroes.
 - `/u/[username]` renders the public player profile.
 
@@ -26,7 +26,7 @@ The homepage currently redirects to `/login`.
 2. If they do not yet have a `profiles` row, they are redirected to onboarding.
 3. Onboarding creates the app-specific profile with a unique username.
 4. The user can fill in account details like bio, region, preferred server, platform,
-   rank, and looking-for preferences.
+   rank, and looking-for preferences from the edit modal on `/u/[username]`.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.
 
