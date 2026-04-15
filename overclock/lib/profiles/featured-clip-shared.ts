@@ -1,8 +1,4 @@
-export const FEATURED_CLIP_PLATFORMS = [
-  "twitch",
-  "youtube",
-  "medal",
-] as const;
+export const FEATURED_CLIP_PLATFORMS = ["youtube"] as const;
 
 export type FeaturedClipPlatform = (typeof FEATURED_CLIP_PLATFORMS)[number];
 
@@ -39,6 +35,16 @@ export function normalizeFeaturedClipUrl(value: string) {
 export function detectFeaturedClipPlatform(
   value: string
 ): FeaturedClipPlatform | null {
+  const videoId = getYouTubeVideoId(value);
+
+  if (videoId) {
+    return "youtube";
+  }
+
+  return null;
+}
+
+export function getYouTubeVideoId(value: string) {
   const normalizedValue = normalizeFeaturedClipUrl(value);
 
   if (!normalizedValue) {
@@ -55,27 +61,46 @@ export function detectFeaturedClipPlatform(
 
   const hostname = parsedUrl.hostname.toLowerCase();
 
-  if (
-    hostname === "twitch.tv" ||
-    hostname.endsWith(".twitch.tv") ||
-    hostname === "clips.twitch.tv"
-  ) {
-    return "twitch";
+  if (hostname === "youtu.be") {
+    const id = parsedUrl.pathname.replace(/^\/+/, "").split("/")[0];
+    return id || null;
   }
 
-  if (
-    hostname === "youtube.com" ||
-    hostname.endsWith(".youtube.com") ||
-    hostname === "youtu.be"
-  ) {
-    return "youtube";
-  }
+  if (hostname === "youtube.com" || hostname.endsWith(".youtube.com")) {
+    if (parsedUrl.pathname === "/watch") {
+      return parsedUrl.searchParams.get("v");
+    }
 
-  if (hostname === "medal.tv" || hostname.endsWith(".medal.tv")) {
-    return "medal";
+    if (parsedUrl.pathname.startsWith("/embed/")) {
+      return parsedUrl.pathname.replace("/embed/", "").split("/")[0] || null;
+    }
+
+    if (parsedUrl.pathname.startsWith("/shorts/")) {
+      return parsedUrl.pathname.replace("/shorts/", "").split("/")[0] || null;
+    }
   }
 
   return null;
+}
+
+export function getYouTubeThumbnailUrl(value: string) {
+  const videoId = getYouTubeVideoId(value);
+
+  if (!videoId) {
+    return null;
+  }
+
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+}
+
+export function getYouTubeEmbedUrl(value: string) {
+  const videoId = getYouTubeVideoId(value);
+
+  if (!videoId) {
+    return null;
+  }
+
+  return `https://www.youtube.com/embed/${videoId}`;
 }
 
 export function sanitizeFeaturedClipTitle(value: FormDataEntryValue | null) {
@@ -103,7 +128,7 @@ export function validateFeaturedClipInput(input: {
   }
 
   if (!detectFeaturedClipPlatform(input.url)) {
-    return "Only Twitch, YouTube, and Medal URLs are supported.";
+    return "Only YouTube URLs are supported right now.";
   }
 
   if (input.title && input.title.length > FEATURED_CLIP_MAX_TITLE_LENGTH) {

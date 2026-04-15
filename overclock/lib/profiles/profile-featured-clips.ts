@@ -33,6 +33,40 @@ function mapFeaturedClipRow(row: FeaturedClipRow): ProfileFeaturedClip | null {
   };
 }
 
+type YouTubeOEmbedResponse = {
+  thumbnail_url?: string;
+  title?: string;
+};
+
+export async function getYouTubeOEmbedMetadata(url: string) {
+  const oEmbedUrl = new URL("https://www.youtube.com/oembed");
+  oEmbedUrl.searchParams.set("url", url);
+  oEmbedUrl.searchParams.set("format", "json");
+
+  try {
+    const response = await fetch(oEmbedUrl.toString(), {
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = (await response.json()) as YouTubeOEmbedResponse;
+
+    return {
+      thumbnailUrl: data.thumbnail_url?.trim() || null,
+      title: data.title?.trim() || null,
+    };
+  } catch (error) {
+    console.error("YouTube oEmbed lookup failed", {
+      error,
+      url,
+    });
+    return null;
+  }
+}
+
 export async function getProfileFeaturedClips(profileId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase

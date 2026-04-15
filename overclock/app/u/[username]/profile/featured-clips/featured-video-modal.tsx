@@ -1,15 +1,18 @@
 "use client";
 
-import { TrophyIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FaTwitch, FaYoutube } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa";
 
 import {
   saveFeaturedClip,
   type SaveFeaturedClipResult,
 } from "@/app/u/[username]/actions";
-import { detectFeaturedClipPlatform } from "@/lib/profiles/featured-clip-shared";
+import {
+  detectFeaturedClipPlatform,
+  getYouTubeVideoId,
+} from "@/lib/profiles/featured-clip-shared";
 
 import type { FeaturedClip } from "./types";
 
@@ -18,24 +21,6 @@ type FeaturedVideoModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-const PLATFORM_UI = {
-  twitch: {
-    badgeClassName: "border-[#9146FF]/40 bg-[#9146FF]/10 text-[#cdb3ff]",
-    icon: FaTwitch,
-    label: "Twitch",
-  },
-  youtube: {
-    badgeClassName: "border-[#FF0033]/40 bg-[#FF0033]/10 text-[#ff9aae]",
-    icon: FaYoutube,
-    label: "YouTube",
-  },
-  medal: {
-    badgeClassName: "border-amber-400/40 bg-amber-400/10 text-amber-200",
-    icon: TrophyIcon,
-    label: "Medal",
-  },
-} as const;
 
 export function FeaturedVideoModal({
   clip = null,
@@ -50,6 +35,7 @@ export function FeaturedVideoModal({
   const [title, setTitle] = useState(clip?.title ?? "");
   const [url, setUrl] = useState(clip?.url ?? "");
   const detectedPlatform = useMemo(() => detectFeaturedClipPlatform(url), [url]);
+  const videoId = useMemo(() => getYouTubeVideoId(url), [url]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -83,9 +69,6 @@ export function FeaturedVideoModal({
     return null;
   }
 
-  const platformUi = detectedPlatform ? PLATFORM_UI[detectedPlatform] : null;
-  const PlatformIcon = platformUi?.icon;
-
   return createPortal(
     <div className="fixed inset-0 z-[120] bg-zinc-950/88" onClick={onClose}>
       <div className="flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
@@ -107,7 +90,7 @@ export function FeaturedVideoModal({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close add featured video modal"
+              aria-label="Close featured video modal"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950/80 text-zinc-200 transition hover:border-zinc-700 hover:bg-zinc-950"
             >
               <XIcon className="h-4.5 w-4.5" />
@@ -116,14 +99,15 @@ export function FeaturedVideoModal({
 
           <form action={formAction} className="grid gap-4 px-4 py-5 sm:px-5">
             <input type="hidden" name="clip_id" value={clip?.id ?? ""} />
+
             <label className="grid gap-1.5 text-sm text-zinc-300">
-              <span>Video URL</span>
+              <span>YouTube URL</span>
               <input
                 name="url"
                 type="text"
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
-                placeholder="Paste a Twitch, YouTube, or Medal URL"
+                placeholder="Paste a YouTube watch, short, embed, or youtu.be URL"
                 className="h-11 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 text-zinc-100 outline-none"
               />
             </label>
@@ -141,23 +125,25 @@ export function FeaturedVideoModal({
             </label>
 
             <div className="min-h-8">
-              {platformUi && PlatformIcon ? (
-                <span
-                  className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[11px] font-medium ${platformUi.badgeClassName}`}
-                >
-                  <PlatformIcon className="h-3.5 w-3.5" />
-                  {platformUi.label}
+              {detectedPlatform ? (
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#FF0033]/40 bg-[#FF0033]/10 px-2.5 py-1 text-[11px] font-medium text-[#ff9aae]">
+                  <FaYoutube className="h-3.5 w-3.5" />
+                  YouTube
                 </span>
               ) : url ? (
                 <p className="text-xs text-amber-300">
-                  URL not recognized yet. Supported: Twitch, YouTube, Medal.
+                  URL not recognized yet. Supported: YouTube watch links, shorts, embeds, and `youtu.be`.
                 </p>
               ) : (
                 <p className="text-xs text-zinc-500">
-                  Platform will be detected automatically from the pasted URL.
+                  Paste a YouTube URL and we&apos;ll detect the video automatically.
                 </p>
               )}
             </div>
+
+            {videoId ? (
+              <p className="text-xs text-zinc-500">Video ID: {videoId}</p>
+            ) : null}
 
             {formState.status === "error" && formState.message ? (
               <p className="text-sm text-amber-300">{formState.message}</p>

@@ -56,20 +56,21 @@ export function FeaturedClipsSection({
           Featured videos
         </h2>
 
-        {isOwner && clips.length < 2 ? (
+        {isOwner ? (
           <AddFeaturedVideoButton onClick={openAddModal} />
         ) : null}
       </div>
 
       {clips.length > 0 ? (
         <div className="grid gap-3 md:grid-cols-2">
-          {clips.map((clip) => (
+          {clips.map((clip, index) => (
             <FeaturedClipCard
               key={clip.id}
               clip={clip}
               isOwner={isOwner}
               onDelete={isPending ? undefined : handleDelete}
               onEdit={openEditModal}
+              priority={index === 0}
             />
           ))}
         </div>

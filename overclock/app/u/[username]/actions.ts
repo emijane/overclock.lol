@@ -6,11 +6,15 @@ import { redirect } from "next/navigation";
 import {
   detectFeaturedClipPlatform,
   FEATURED_CLIP_PLATFORMS,
+  getYouTubeThumbnailUrl,
   normalizeFeaturedClipUrl,
   sanitizeFeaturedClipTitle,
   validateFeaturedClipInput,
 } from "@/lib/profiles/featured-clip-shared";
-import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
+import {
+  getProfileFeaturedClips,
+  getYouTubeOEmbedMetadata,
+} from "@/lib/profiles/profile-featured-clips";
 import {
   PROFILE_COVER_IMAGE_MAX_BYTES,
   PROFILE_MEDIA_BUCKET,
@@ -161,9 +165,14 @@ export async function saveFeaturedClip(
   if (!platform || !FEATURED_CLIP_PLATFORMS.includes(platform)) {
     return {
       status: "error",
-      message: "Only Twitch, YouTube, and Medal URLs are supported.",
+      message: "Only YouTube URLs are supported right now.",
     };
   }
+
+  const youtubeMetadata = await getYouTubeOEmbedMetadata(url);
+  const resolvedTitle = title ?? youtubeMetadata?.title ?? null;
+  const resolvedThumbnailUrl =
+    youtubeMetadata?.thumbnailUrl ?? getYouTubeThumbnailUrl(url);
 
   const existingClips = await getProfileFeaturedClips(user.id);
   const existingClip = clipId
@@ -186,7 +195,8 @@ export async function saveFeaturedClip(
     platform,
     position: nextPosition,
     profile_id: user.id,
-    title,
+    thumbnail_url: resolvedThumbnailUrl,
+    title: resolvedTitle,
     url,
   };
 
