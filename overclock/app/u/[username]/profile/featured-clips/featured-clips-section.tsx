@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
-
-import { deleteFeaturedClip } from "@/app/u/[username]/actions";
+import { useState } from "react";
 import { AddFeaturedVideoButton } from "./add-featured-video-button";
 import { FeaturedClipCard } from "./featured-clip-card";
 import { FeaturedVideoModal } from "./featured-video-modal";
@@ -20,7 +18,6 @@ export function FeaturedClipsSection({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [selectedClip, setSelectedClip] = useState<FeaturedClip | null>(null);
-  const [isPending, startTransition] = useTransition();
 
   if (!isOwner && clips.length === 0) {
     return null;
@@ -32,21 +29,9 @@ export function FeaturedClipsSection({
     setIsModalOpen(true);
   }
 
-  function openEditModal(clip: FeaturedClip) {
-    setSelectedClip(clip);
-    setModalKey((current) => current + 1);
-    setIsModalOpen(true);
-  }
-
   function closeModal() {
     setIsModalOpen(false);
     setSelectedClip(null);
-  }
-
-  function handleDelete(clip: FeaturedClip) {
-    startTransition(async () => {
-      await deleteFeaturedClip(clip.id);
-    });
   }
 
   return (
@@ -64,14 +49,7 @@ export function FeaturedClipsSection({
       {clips.length > 0 ? (
         <div className="grid gap-3 md:grid-cols-2">
           {clips.map((clip, index) => (
-            <FeaturedClipCard
-              key={clip.id}
-              clip={clip}
-              isOwner={isOwner}
-              onDelete={isPending ? undefined : handleDelete}
-              onEdit={openEditModal}
-              priority={index === 0}
-            />
+            <FeaturedClipCard key={clip.id} clip={clip} priority={index === 0} />
           ))}
         </div>
       ) : null}
@@ -79,6 +57,7 @@ export function FeaturedClipsSection({
       <FeaturedVideoModal
         key={modalKey}
         clip={selectedClip}
+        clips={clips}
         isOpen={isModalOpen}
         onClose={closeModal}
       />
