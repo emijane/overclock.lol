@@ -36,7 +36,7 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
           onClose={() => setIsEditModalOpen(false)}
         profile={{
           bio: props.bio,
-          currentRankDivision: props.currentRankDivision,
+          currentRankDivision: props.currentRankDivision ?? null,
           currentRankTier: props.currentRankTier ?? null,
           discordUsername,
           displayName: props.displayName,
