@@ -22,6 +22,15 @@ This file is a local working note for coding agents and should not be committed.
 - Add comments only when they save future readers time.
 - Run lightweight verification after changes when possible.
 
+## Maintenance Direction
+
+- Preserve the current split-component structure.
+- Prefer small route-local components, hooks, and helpers over large all-in-one files.
+- Extend extracted profile edit modules instead of rebuilding inline form logic.
+- Keep profile editing centralized in the public profile modal unless product requirements change.
+- Reuse centralized query/select helpers and validation helpers instead of reintroducing duplication.
+- If a file starts growing across multiple responsibilities, split it before adding more behavior.
+
 ## Safety
 
 - Do not perform destructive actions without checking with the user first.
