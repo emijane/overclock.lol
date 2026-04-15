@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { FaDiscord, FaTwitch, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -15,6 +16,7 @@ type SocialLink = {
 };
 
 type ProfileSocialLinksProps = {
+  leadingAction?: ReactNode;
   links: SocialLink[];
 };
 
@@ -38,7 +40,10 @@ function isExternalUrl(value: string) {
   return /^https?:\/\//i.test(value);
 }
 
-export function ProfileSocialLinks({ links }: ProfileSocialLinksProps) {
+export function ProfileSocialLinks({
+  leadingAction,
+  links,
+}: ProfileSocialLinksProps) {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
 
@@ -86,6 +91,7 @@ export function ProfileSocialLinks({ links }: ProfileSocialLinksProps) {
   return (
     <div className="relative flex flex-col items-start gap-2 sm:items-end">
       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        {leadingAction}
         {links.map((link) => {
           const Icon = ICONS[link.platform];
           const isActive = activeLabel === link.label;

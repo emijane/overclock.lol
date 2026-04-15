@@ -24,3 +24,12 @@ Presence and matchmaking
 Quality and testing
 
 - Add tests for profile editing flows, especially bio validation, hero pool skipping, and clear-all behavior.
+
+
+Future:
+- Only friends can see battletag, privacy... etc..
+- Friends count
+- People can comment on your profile
+- Vouches
+- Online / last seen
+- Featured clips
