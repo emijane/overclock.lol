@@ -5,8 +5,8 @@ import { AuthMessage } from "@/app/login/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { EditableProfileHeader } from "./profile/editable-profile-header";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
-import { ProfileHeader } from "./profile/profile-header";
 import { getCurrentRankDisplay } from "./profile/profile-rank";
 
 type ProfilePageProps = {
@@ -91,7 +91,7 @@ export default async function ProfilePage({
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
       <div className="mx-auto grid w-full max-w-4xl gap-4">
         {isOwner ? <AuthMessage message={message} type={messageType} /> : null}
-        <ProfileHeader
+        <EditableProfileHeader
           avatarUrl={profile.discord_avatar_url}
           bio={profile.bio}
           coverImageUrl={coverImageUrl}

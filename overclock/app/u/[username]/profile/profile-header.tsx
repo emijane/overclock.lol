@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Clock3Icon, Globe2Icon } from "lucide-react";
 import { FaComputerMouse } from "react-icons/fa6";
 import { IoGameController } from "react-icons/io5";
@@ -29,6 +28,7 @@ type ProfileHeaderProps = {
   }>;
   timezone: string | null;
   username: string;
+  onEditProfile?: () => void;
 };
 
 export function ProfileHeader({
@@ -46,6 +46,7 @@ export function ProfileHeader({
   socialLinks,
   timezone,
   username,
+  onEditProfile,
 }: ProfileHeaderProps) {
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
 
@@ -136,12 +137,13 @@ export function ProfileHeader({
               <ProfileSocialLinks
                 leadingAction={
                   isOwner ? (
-                    <Link
-                      href="/account"
+                    <button
+                      type="button"
+                      onClick={onEditProfile}
                       className="inline-flex h-10 items-center rounded-full border border-zinc-700 bg-zinc-950/75 px-4 text-sm font-semibold text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-900"
                     >
                       Edit profile
-                    </Link>
+                    </button>
                   ) : null
                 }
                 links={socialLinks}
