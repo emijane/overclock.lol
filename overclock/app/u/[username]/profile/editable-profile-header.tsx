@@ -9,6 +9,17 @@ type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader>;
 
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const socials = {
+    battlenet:
+      props.socialLinks.find((link) => link.platform === "battlenet")?.value ?? "",
+    twitch:
+      props.socialLinks.find((link) => link.platform === "twitch")?.value ?? "",
+    x: props.socialLinks.find((link) => link.platform === "x")?.value ?? "",
+    youtube:
+      props.socialLinks.find((link) => link.platform === "youtube")?.value ?? "",
+  };
+  const discordUsername =
+    props.socialLinks.find((link) => link.platform === "discord")?.value ?? null;
 
   return (
     <>
@@ -16,10 +27,25 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
         {...props}
         onEditProfile={props.isOwner ? () => setIsEditModalOpen(true) : undefined}
       />
-      <ProfileEditModalShell
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-      />
+      {isEditModalOpen ? (
+        <ProfileEditModalShell
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+        profile={{
+          bio: props.bio,
+          currentRankPill: props.currentRankPill,
+          discordUsername,
+          displayName: props.displayName,
+          hasDiscordUser: props.socialLinks.some(
+            (link) => link.platform === "discord"
+          ),
+          platform: props.platform,
+          region: props.region,
+          socials,
+            timezone: props.timezone,
+          }}
+        />
+      ) : null}
     </>
   );
 }

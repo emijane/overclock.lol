@@ -1,21 +1,171 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { XIcon } from "lucide-react";
-import { useEffect } from "react";
+import { CheckIcon, ChevronDownIcon, XIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { FaDiscord, FaTwitch, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { SiBattledotnet } from "react-icons/si";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
+import {
+  PLATFORM_OPTIONS,
+  REGION_OPTIONS,
+  REGION_TO_TIMEZONES,
+} from "@/lib/profiles/profile-options";
+
+type SocialValues = {
+  battlenet: string;
+  twitch: string;
+  x: string;
+  youtube: string;
+};
 
 type ProfileEditModalShellProps = {
   isOpen: boolean;
   onClose: () => void;
   children?: ReactNode;
+  profile: {
+    bio: string | null;
+    currentRankPill: string;
+    discordUsername: string | null;
+    displayName: string;
+    hasDiscordUser: boolean;
+    platform: string | null;
+    region: string | null;
+    socials: SocialValues;
+    timezone: string | null;
+  };
 };
+
+function ModalSection({
+  title,
+  children,
+}: {
+  title?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 px-4 py-4">
+      {title ? (
+        <h3 className="mb-4 text-sm font-semibold tracking-[-0.02em] text-zinc-100">
+          {title}
+        </h3>
+      ) : null}
+      {children}
+    </section>
+  );
+}
+
+function SocialLabel({
+  children,
+  icon,
+}: {
+  children: ReactNode;
+  icon: ReactNode;
+}) {
+  return (
+    <span className="inline-flex items-center gap-2 text-sm text-zinc-300">
+      <span className="text-zinc-500">{icon}</span>
+      <span>{children}</span>
+    </span>
+  );
+}
+
+function stripSocialPrefix(value: string, prefixes: string[]) {
+  const normalizedValue = value.trim();
+
+  for (const prefix of prefixes) {
+    if (normalizedValue.toLowerCase().startsWith(prefix.toLowerCase())) {
+      return normalizedValue.slice(prefix.length);
+    }
+  }
+
+  return normalizedValue;
+}
+
+function ModalDropdownField({
+  disabled = false,
+  inputName,
+  label,
+  onSelect,
+  options,
+  placeholder,
+  value,
+}: {
+  disabled?: boolean;
+  inputName: string;
+  label: string;
+  onSelect: (value: string) => void;
+  options: readonly string[];
+  placeholder: string;
+  value: string;
+}) {
+  return (
+    <label className="grid gap-1.5 text-sm text-zinc-300">
+      <span>{label}</span>
+      <input type="hidden" name={inputName} value={value} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            disabled={disabled}
+            className={`inline-flex h-11 w-full items-center justify-between rounded-2xl border bg-zinc-950 px-3.5 text-left text-sm text-zinc-100 outline-none transition ${
+              disabled
+                ? "cursor-not-allowed border-zinc-800 text-zinc-500 opacity-60"
+                : "border-zinc-800 hover:border-zinc-700"
+            }`}
+          >
+            <span className={value ? "text-zinc-100" : "text-zinc-500"}>
+              {value || placeholder}
+            </span>
+            <ChevronDownIcon className="h-4 w-4 shrink-0 text-zinc-500" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)]"
+        >
+          <DropdownMenuItem onSelect={() => onSelect("")}>
+            <span className="flex w-full items-center justify-between gap-3">
+              <span>{placeholder}</span>
+              {!value ? <CheckIcon className="h-4 w-4 text-sky-400" /> : null}
+            </span>
+          </DropdownMenuItem>
+          {options.map((option) => (
+            <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
+              <span className="flex w-full items-center justify-between gap-3">
+                <span>{option}</span>
+                {value === option ? (
+                  <CheckIcon className="h-4 w-4 text-sky-400" />
+                ) : null}
+              </span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </label>
+  );
+}
 
 export function ProfileEditModalShell({
   isOpen,
   onClose,
   children,
+  profile,
 }: ProfileEditModalShellProps) {
+  const [selectedRegion, setSelectedRegion] = useState(profile.region ?? "");
+  const [selectedTimezone, setSelectedTimezone] = useState(profile.timezone ?? "");
+  const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
+  const [showDiscordUser, setShowDiscordUser] = useState(profile.hasDiscordUser);
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -38,13 +188,17 @@ export function ProfileEditModalShell({
     };
   }, [isOpen, onClose]);
 
+  const timezoneOptions = selectedRegion
+    ? [...(REGION_TO_TIMEZONES[selectedRegion as keyof typeof REGION_TO_TIMEZONES] ?? [])]
+    : [];
+
   if (!isOpen || typeof document === "undefined") {
     return null;
   }
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[110] bg-zinc-950/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[110] bg-zinc-950/88"
       onClick={onClose}
     >
       <div className="flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
@@ -81,15 +235,202 @@ export function ProfileEditModalShell({
           <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
             {children ?? (
               <div className="grid gap-4">
-                <section className="rounded-[24px] border border-dashed border-zinc-800 bg-zinc-950/50 p-5 sm:p-6">
-                  <h3 className="text-base font-semibold tracking-[-0.02em] text-zinc-100">
-                    Modal shell ready
-                  </h3>
-                  <p className="mt-2 max-w-lg text-sm leading-6 text-zinc-400">
-                    This is the responsive template for the profile editor modal.
-                    We can start moving fields into here next in small steps.
-                  </p>
-                </section>
+                <ModalSection>
+                  <div className="grid gap-3">
+                    <label className="grid gap-2 text-sm text-zinc-300">
+                      <span>Display name</span>
+                      <input
+                        type="text"
+                        defaultValue={profile.displayName}
+                        className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="mt-3 grid gap-2 text-sm text-zinc-300">
+                    <span>Bio</span>
+                    <textarea
+                      rows={4}
+                      defaultValue={profile.bio ?? ""}
+                      className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-zinc-100 outline-none"
+                    />
+                    <p className="text-xs text-zinc-500">
+                      Bio editing will be wired in next.
+                    </p>
+                  </label>
+                </ModalSection>
+
+                <ModalSection title="Socials">
+                  <div className="mb-3 flex items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 py-3">
+                    <div className="min-w-0">
+                      <p className="inline-flex items-center gap-2 text-sm font-medium text-zinc-100">
+                        <FaDiscord className="h-4 w-4 text-[#5865F2]" />
+                        <span>Display Discord user</span>
+                      </p>
+                      {profile.discordUsername ? (
+                        <p className="mt-0.5 text-sm text-zinc-500">
+                          {profile.discordUsername}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center">
+                      <Switch
+                        checked={showDiscordUser}
+                        onCheckedChange={setShowDiscordUser}
+                        aria-label="Toggle Discord user visibility"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <label className="grid gap-1.5 text-sm text-zinc-300">
+                      <SocialLabel
+                        icon={<SiBattledotnet className="h-4 w-4 text-[#00AEF0]" />}
+                      >
+                        Battle.net
+                      </SocialLabel>
+                      <input
+                        type="text"
+                        defaultValue={profile.socials.battlenet}
+                        placeholder="Player#1234"
+                        className="h-11 rounded-2xl border border-zinc-800 bg-zinc-950 px-3.5 text-zinc-100 outline-none"
+                      />
+                    </label>
+
+                    <label className="grid gap-1.5 text-sm text-zinc-300">
+                      <SocialLabel
+                        icon={<FaTwitch className="h-4 w-4 text-[#9146FF]" />}
+                      >
+                        Twitch
+                      </SocialLabel>
+                      <div className="flex h-11 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+                        <span className="inline-flex items-center px-3 pr-0 text-sm text-zinc-500">
+                          twitch.tv/
+                        </span>
+                        <input
+                          type="text"
+                          defaultValue={stripSocialPrefix(profile.socials.twitch, [
+                            "https://twitch.tv/",
+                            "http://twitch.tv/",
+                            "https://www.twitch.tv/",
+                            "http://www.twitch.tv/",
+                            "twitch.tv/",
+                            "www.twitch.tv/",
+                          ])}
+                          placeholder="username"
+                          className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
+                        />
+                      </div>
+                    </label>
+
+                    <label className="grid gap-1.5 text-sm text-zinc-300">
+                      <span className="inline-flex items-center text-zinc-300">
+                        <FaXTwitter className="h-4 w-4 text-zinc-100" />
+                      </span>
+                      <div className="flex h-11 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+                        <span className="inline-flex items-center px-3 pr-0 text-sm text-zinc-500">
+                          x.com/
+                        </span>
+                        <input
+                          type="text"
+                          defaultValue={stripSocialPrefix(profile.socials.x, [
+                            "https://x.com/",
+                            "http://x.com/",
+                            "https://www.x.com/",
+                            "http://www.x.com/",
+                            "https://twitter.com/",
+                            "http://twitter.com/",
+                            "https://www.twitter.com/",
+                            "http://www.twitter.com/",
+                            "x.com/",
+                            "twitter.com/",
+                            "www.x.com/",
+                            "www.twitter.com/",
+                          ])}
+                          placeholder="username"
+                          className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
+                        />
+                      </div>
+                    </label>
+
+                    <label className="grid gap-1.5 text-sm text-zinc-300">
+                      <SocialLabel
+                        icon={<FaYoutube className="h-4 w-4 text-[#FF0033]" />}
+                      >
+                        YouTube
+                      </SocialLabel>
+                      <div className="flex h-11 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+                        <span className="inline-flex items-center px-3 pr-0 text-sm text-zinc-500">
+                          youtube.com/@
+                        </span>
+                        <input
+                          type="text"
+                          defaultValue={stripSocialPrefix(profile.socials.youtube, [
+                            "https://youtube.com/@",
+                            "http://youtube.com/@",
+                            "https://www.youtube.com/@",
+                            "http://www.youtube.com/@",
+                            "youtube.com/@",
+                            "www.youtube.com/@",
+                          ])}
+                          placeholder="channel"
+                          className="min-w-0 flex-1 bg-transparent pl-0 pr-3.5 text-zinc-100 outline-none"
+                        />
+                      </div>
+                    </label>
+                  </div>
+                </ModalSection>
+
+                <ModalSection title="Setup">
+                  <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.05fr]">
+                    <ModalDropdownField
+                      inputName="region"
+                      label="Region"
+                      value={selectedRegion}
+                      placeholder="Not set"
+                      options={REGION_OPTIONS}
+                      onSelect={(nextRegion) => {
+                        setSelectedRegion(nextRegion);
+
+                        const nextTimezoneOptions = nextRegion
+                          ? [...(REGION_TO_TIMEZONES[nextRegion as keyof typeof REGION_TO_TIMEZONES] ?? [])]
+                          : [];
+
+                        if (!nextTimezoneOptions.includes(selectedTimezone)) {
+                          setSelectedTimezone("");
+                        }
+                      }}
+                    />
+
+                    <ModalDropdownField
+                      disabled={!selectedRegion}
+                      inputName="timezone"
+                      label="Timezone"
+                      value={selectedTimezone}
+                      placeholder={selectedRegion ? "Not set" : "Choose region first"}
+                      options={timezoneOptions}
+                      onSelect={setSelectedTimezone}
+                    />
+
+                    <ModalDropdownField
+                      inputName="platform"
+                      label="Platform"
+                      value={selectedPlatform}
+                      placeholder="Not set"
+                      options={PLATFORM_OPTIONS}
+                      onSelect={setSelectedPlatform}
+                    />
+                  </div>
+                </ModalSection>
+
+                <ModalSection title="Rank">
+                  <div className="grid gap-2 text-sm text-zinc-300">
+                    <span>Current</span>
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium text-zinc-100">
+                      {profile.currentRankPill}
+                    </div>
+                  </div>
+                </ModalSection>
               </div>
             )}
           </div>
