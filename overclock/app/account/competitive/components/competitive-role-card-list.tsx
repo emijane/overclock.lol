@@ -25,7 +25,7 @@ export function CompetitiveRoleCardList({
   );
 
   return (
-    <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+    <section className="border-t border-white/10 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6">
       <div className="grid items-stretch gap-3 sm:grid-cols-3">
         {COMPETITIVE_ROLE_OPTIONS.map((role: CompetitiveRole) => (
           <CompetitiveRoleCard

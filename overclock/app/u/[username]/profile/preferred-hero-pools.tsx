@@ -34,6 +34,27 @@ const GROUP_ROLE_BY_LABEL: Record<string, CompetitiveRole> = {
   Support: "support",
 };
 
+function getOrderedHeroPoolGroups(mainRole: CompetitiveRole | null) {
+  if (!mainRole) {
+    return HERO_POOL_GROUPS;
+  }
+
+  return [...HERO_POOL_GROUPS].sort((firstGroup, secondGroup) => {
+    const firstRole = GROUP_ROLE_BY_LABEL[firstGroup.label];
+    const secondRole = GROUP_ROLE_BY_LABEL[secondGroup.label];
+
+    if (firstRole === mainRole) {
+      return -1;
+    }
+
+    if (secondRole === mainRole) {
+      return 1;
+    }
+
+    return 0;
+  });
+}
+
 const roleStatusClassName = {
   "Main role":
     "border-sky-300/35 bg-sky-300/10 text-sky-100 shadow-[0_0_18px_rgba(56,189,248,0.12),inset_0_1px_0_rgba(255,255,255,0.08)]",
@@ -82,7 +103,7 @@ export function PreferredHeroPools({
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
-            Hero Pool
+            Competitive Roles
           </h2>
         </div>
 
@@ -103,7 +124,7 @@ export function PreferredHeroPools({
         </div>
       ) : (
         <div className="mt-4 grid gap-4 lg:grid-cols-3 lg:gap-0">
-          {HERO_POOL_GROUPS.map((group) => {
+          {getOrderedHeroPoolGroups(competitiveProfile.mainRole).map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
             const roleProfile = competitiveProfile.roles.find(
               (roleProfile) => roleProfile.role === groupRole

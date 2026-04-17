@@ -36,7 +36,7 @@ export function CompetitiveRoleCard({
   const rankIconSrc = roleProfile ? getRankIconSrc(roleProfile.rankTier) : null;
 
   return (
-    <article className="flex h-full flex-col rounded-[22px] border border-zinc-800 bg-zinc-950/70 p-4">
+    <article className="flex h-full flex-col rounded-[22px] border border-white/10 bg-white/[0.035] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-base font-semibold text-zinc-50">
@@ -46,7 +46,7 @@ export function CompetitiveRoleCard({
         </div>
 
         {isMainRole ? (
-          <span className="rounded-full border border-sky-400/40 bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-200">
+          <span className="rounded-full border border-sky-300/35 bg-sky-300/10 px-3 py-1 text-xs font-semibold text-sky-100 shadow-[0_0_18px_rgba(56,189,248,0.12),inset_0_1px_0_rgba(255,255,255,0.08)]">
             Main
           </span>
         ) : null}
@@ -83,9 +83,9 @@ export function CompetitiveRoleCard({
             {heroes.map((hero) => (
               <div
                 key={hero.id}
-                className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-zinc-200"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-2.5 py-1.5 text-xs font-medium text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
               >
-                <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-950">
+                <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-zinc-900">
                   <Image
                     src={hero.imageSrc}
                     alt={hero.label}
@@ -109,7 +109,7 @@ export function CompetitiveRoleCard({
         <button
           type="button"
           onClick={() => onSelectRole(role)}
-          className="w-full rounded-full border border-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-900 hover:text-zinc-50"
+          className="w-full rounded-full border border-white/12 bg-white/[0.055] px-4 py-2.5 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_28px_rgba(0,0,0,0.16)] backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 hover:shadow-[0_0_24px_rgba(56,189,248,0.16),inset_0_1px_0_rgba(255,255,255,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           {isConfigured ? "Edit" : "Set up"}
         </button>

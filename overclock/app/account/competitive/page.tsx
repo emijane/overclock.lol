@@ -38,11 +38,15 @@ export default async function CompetitiveProfilePage({
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
         <AuthMessage message={message} type={messageType} />
-        <CompetitiveProfileHeader />
-        <CompetitiveProfileManager
-          competitiveProfile={competitiveProfile}
-          heroSelections={heroPools.heroPicks}
-        />
+        <div className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+          <div className="overflow-hidden rounded-[27px] bg-zinc-950">
+            <CompetitiveProfileHeader />
+            <CompetitiveProfileManager
+              competitiveProfile={competitiveProfile}
+              heroSelections={heroPools.heroPicks}
+            />
+          </div>
+        </div>
       </div>
     </main>
   );

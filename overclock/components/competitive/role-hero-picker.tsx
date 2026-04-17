@@ -84,13 +84,13 @@ export function RoleHeroPicker({
               onClick={() => toggleHero(hero.id)}
               disabled={isDisabled}
               aria-pressed={isSelected}
-              className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition ${
+              className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition ${
                 isSelected
-                  ? "border-sky-400 bg-sky-400/12 text-zinc-50"
-                  : "border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  ? "border-sky-300/35 bg-sky-300/10 text-zinc-50 shadow-[0_0_18px_rgba(56,189,248,0.12),inset_0_1px_0_rgba(255,255,255,0.08)]"
+                  : "border-white/10 bg-white/[0.035] text-zinc-300 hover:border-white/20 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
               }`}
             >
-              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
                 <Image
                   src={hero.imageSrc}
                   alt={hero.label}
