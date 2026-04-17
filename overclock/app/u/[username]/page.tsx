@@ -95,36 +95,38 @@ export default async function ProfilePage({
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
-      <div className="mx-auto grid w-full max-w-4xl gap-4">
+      <div className="mx-auto grid w-full max-w-4xl gap-3">
         {isOwner ? <AuthMessage message={message} type={messageType} /> : null}
-        <EditableProfileHeader
-          avatarUrl={profile.discord_avatar_url}
-          bio={profile.bio}
-          coverImageUrl={coverImageUrl}
-          currentRank={currentRank}
-          currentRankTier={profile.current_rank_tier}
-          currentRankDivision={profile.current_rank_division}
-          currentRankIconSrc={currentRankIconSrc}
-          currentRankPill={currentRankPill}
-          displayName={profile.display_name}
-          isOwner={isOwner}
-          lookingFor={profile.looking_for}
-          platform={profile.platform}
-          region={profile.region}
-          roleLabels={roleLabels}
-          socialLinks={socialLinks}
-          timezone={profile.timezone}
-          username={profile.username}
-        />
-        <FeaturedClipsSection
-          clips={featuredClips as FeaturedClip[]}
-          isOwner={isOwner}
-        />
-        <PreferredHeroPools
-          heroPicks={heroPools.heroPicks}
-          isOwner={isOwner}
-          roles={heroPools.roles}
-        />
+        <div className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-950 shadow-[0_18px_60px_rgba(0,0,0,0.28)]">
+          <EditableProfileHeader
+            avatarUrl={profile.discord_avatar_url}
+            bio={profile.bio}
+            coverImageUrl={coverImageUrl}
+            currentRank={currentRank}
+            currentRankTier={profile.current_rank_tier}
+            currentRankDivision={profile.current_rank_division}
+            currentRankIconSrc={currentRankIconSrc}
+            currentRankPill={currentRankPill}
+            displayName={profile.display_name}
+            isOwner={isOwner}
+            lookingFor={profile.looking_for}
+            platform={profile.platform}
+            region={profile.region}
+            roleLabels={roleLabels}
+            socialLinks={socialLinks}
+            timezone={profile.timezone}
+            username={profile.username}
+          />
+          <FeaturedClipsSection
+            clips={featuredClips as FeaturedClip[]}
+            isOwner={isOwner}
+          />
+          <PreferredHeroPools
+            heroPicks={heroPools.heroPicks}
+            isOwner={isOwner}
+            roles={heroPools.roles}
+          />
+        </div>
       </div>
     </main>
   );

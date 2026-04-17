@@ -56,8 +56,8 @@ export function PreferredHeroPools({
   );
 
   return (
-    <section className="rounded-[24px] border border-zinc-800 bg-zinc-900">
-      <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-5 py-3.5 sm:px-6">
+    <section className="border-t border-white/10 px-5 py-4 sm:px-6">
+      <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
             Hero pools
@@ -79,11 +79,11 @@ export function PreferredHeroPools({
       </div>
 
       {selectedHeroes.length === 0 ? (
-        <div className="px-5 py-4 text-sm text-zinc-400 sm:px-6">
+        <div className="mt-3 rounded-[18px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
-        <div className="grid gap-3 px-5 py-4 sm:px-6 lg:grid-cols-3">
+        <div className="mt-3 grid gap-3 lg:grid-cols-3">
           {HERO_POOL_GROUPS.map((group) => {
             const visiblePools = group.pools.filter(
               (pool) => derivedPools[pool].length > 0

@@ -21,7 +21,7 @@ export function FeaturedClipCard({
 
   return (
     <div
-      className="group overflow-hidden rounded-[22px] border border-zinc-800 bg-zinc-950/80 transition hover:border-zinc-700"
+      className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-white/16 hover:bg-white/[0.045]"
     >
       <div className="relative aspect-video overflow-hidden bg-zinc-900">
         {isPlaying && embedUrl ? (

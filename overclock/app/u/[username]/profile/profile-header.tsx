@@ -78,7 +78,7 @@ export function ProfileHeader({
     "border-white/12 bg-white/[0.055]";
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-zinc-800 bg-zinc-900">
+    <section className="bg-zinc-950">
       <div className="pb-6 sm:pb-7">
         <div
           className="relative overflow-hidden px-4 py-4 sm:px-6"

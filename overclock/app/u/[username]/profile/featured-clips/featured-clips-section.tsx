@@ -35,11 +35,16 @@ export function FeaturedClipsSection({
   }
 
   return (
-    <section className="grid gap-3">
+    <section className="border-t border-white/10 px-5 py-4 sm:px-6">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold tracking-[-0.02em] text-zinc-50">
-          Featured videos
-        </h2>
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
+            Featured videos
+          </h2>
+          <p className="mt-0.5 text-sm leading-5 text-zinc-400">
+            Clips and highlights worth showing first.
+          </p>
+        </div>
 
         {isOwner ? (
           <AddFeaturedVideoButton onClick={openAddModal} />
@@ -47,12 +52,16 @@ export function FeaturedClipsSection({
       </div>
 
       {clips.length > 0 ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
           {clips.map((clip, index) => (
             <FeaturedClipCard key={clip.id} clip={clip} priority={index === 0} />
           ))}
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-3 rounded-[18px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+          Add up to two featured videos to show them here.
+        </div>
+      )}
 
       <FeaturedVideoModal
         key={modalKey}
