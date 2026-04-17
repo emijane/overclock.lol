@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Google_Sans_Flex } from "next/font/google";
 
 import { GlobalAuthBar } from "@/app/components/global-auth-bar";
 
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const googleSansFlex = Google_Sans_Flex({
+  variable: "--font-google-sans-flex",
   subsets: ["latin"],
 });
 
@@ -25,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} h-full antialiased`}
+      className={`${googleSansFlex.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning

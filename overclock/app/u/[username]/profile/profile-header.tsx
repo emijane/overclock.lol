@@ -41,6 +41,7 @@ export function ProfileHeader({
   currentRank,
   currentRankIconSrc,
   currentRankPill,
+  currentRankTier,
   displayName,
   isOwner,
   platform,
@@ -106,16 +107,20 @@ export function ProfileHeader({
 
         <div className="pointer-events-none relative z-20 -mt-14 px-4 sm:-mt-16 sm:px-6">
           <div className="pointer-events-auto w-fit">
-            <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} />
+            <ProfileAvatar
+              avatarUrl={avatarUrl}
+              currentRankTier={currentRankTier}
+              displayName={displayName}
+            />
           </div>
         </div>
 
-        <div className="mt-6 px-4 sm:-mt-10 sm:px-6">
+        <div className="mt-7 px-4 sm:-mt-10 sm:px-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
             <div className="min-w-0 flex-1">
-              <div className="sm:h-12" aria-hidden="true" />
+              <div className="sm:h-14" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-[32px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
+                <h1 className="text-[25px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
                   {displayName}
                 </h1>
                 {currentRankIconSrc && currentRank ? (
@@ -128,10 +133,10 @@ export function ProfileHeader({
                   />
                 ) : null}
               </div>
-              <p className="mt-1.5 text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
+              <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <p className="mt-3 max-w-xl break-words text-[17px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-3 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>
