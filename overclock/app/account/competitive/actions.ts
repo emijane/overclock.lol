@@ -232,3 +232,76 @@ export async function saveCompetitiveRoleProfile(formData: FormData) {
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role saved.", "success");
 }
+
+export async function removeCompetitiveRoleProfile(formData: FormData) {
+  const rawRole = optionalTrimmedString(formData.get("role"));
+  const wasMainRole = formData.get("was_main_role") === "true";
+
+  if (!rawRole || !isCompetitiveRole(rawRole)) {
+    competitiveRedirect("Invalid competitive role.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    redirect("/login");
+  }
+
+  const { error: roleError } = await supabase
+    .from("competitive_role_profiles")
+    .delete()
+    .eq("profile_id", user.id)
+    .eq("role", rawRole);
+
+  if (roleError) {
+    console.error("Competitive role profile removal failed", {
+      error: roleError,
+      profileId: user.id,
+      role: rawRole,
+    });
+    competitiveRedirect("Unable to remove competitive role right now.");
+  }
+
+  if (wasMainRole) {
+    const { error: profileError } = await supabase
+      .from("competitive_profiles")
+      .upsert(
+        {
+          main_role: null,
+          profile_id: user.id,
+        },
+        {
+          onConflict: "profile_id",
+        }
+      );
+
+    if (profileError) {
+      console.error("Competitive profile main role clear failed", {
+        error: profileError,
+        profileId: user.id,
+        role: rawRole,
+      });
+      competitiveRedirect("Removed role, but could not clear main role.");
+    }
+  }
+
+  try {
+    const currentHeroPools = await getProfileHeroPools(user.id);
+    const nextHeroPools = mergeRoleHeroPool(currentHeroPools, rawRole, []);
+    await saveProfileHeroPools(user.id, nextHeroPools);
+  } catch (error) {
+    console.error("Competitive role hero pool clear failed", {
+      error,
+      profileId: user.id,
+      role: rawRole,
+    });
+    competitiveRedirect("Removed role, but could not clear hero pool.");
+  }
+
+  revalidatePath("/account/competitive");
+  competitiveRedirect("Competitive role removed.", "success");
+}

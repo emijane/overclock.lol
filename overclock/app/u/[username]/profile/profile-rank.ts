@@ -1,4 +1,10 @@
 import { getRankIconSrc } from "./rank-icons";
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
+import type {
+  CompetitiveProfile,
+  CompetitiveRoleProfile,
+} from "@/lib/competitive/competitive-profile-types";
+import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 type RankFields = {
   current_rank_tier: string | null;
@@ -16,4 +22,29 @@ export function getCurrentRankDisplay(profile: RankFields) {
     currentRankIconSrc: getRankIconSrc(profile.current_rank_tier),
     currentRankPill: currentRank ?? "Unranked",
   };
+}
+
+export function getCompetitiveRankDisplay(
+  fallbackProfile: RankFields,
+  competitiveProfile: CompetitiveProfile
+) {
+  const mainRoleProfile = competitiveProfile.roles.find(
+    (roleProfile) => roleProfile.role === competitiveProfile.mainRole
+  );
+
+  if (!mainRoleProfile) {
+    return getCurrentRankDisplay(fallbackProfile);
+  }
+
+  const currentRank = formatCompetitiveRoleRank(mainRoleProfile);
+
+  return {
+    currentRank,
+    currentRankIconSrc: getRankIconSrc(mainRoleProfile.rankTier),
+    currentRankPill: `${currentRank} ${COMPETITIVE_ROLE_LABELS[mainRoleProfile.role]}`,
+  };
+}
+
+function formatCompetitiveRoleRank(roleProfile: CompetitiveRoleProfile) {
+  return formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision);
 }

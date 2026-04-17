@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
 import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
@@ -16,7 +17,7 @@ import {
   getRankAccentStyle,
   getRankBorderClassName,
 } from "./profile/rank-border-styles";
-import { getCurrentRankDisplay } from "./profile/profile-rank";
+import { getCompetitiveRankDisplay } from "./profile/profile-rank";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -45,18 +46,23 @@ export default async function ProfilePage({
   }
 
   const heroPools = await getProfileHeroPools(profile.id);
+  const competitiveProfile = await getCompetitiveProfile(profile.id);
   const featuredClips = await getProfileFeaturedClips(profile.id);
 
   // Keep route components focused on loading data while profile presentation
   // helpers stay colocated with the UI they support.
   const { currentRank, currentRankIconSrc, currentRankPill } =
-    getCurrentRankDisplay(profile);
+    getCompetitiveRankDisplay(profile, competitiveProfile);
   const roleLabels = heroPools.roles.map((role) =>
     role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
   );
   const isOwner = currentProfile?.id === profile.id;
-  const profileAccentStyle = getRankAccentStyle(profile.current_rank_tier);
-  const profileBorderClassName = getRankBorderClassName(profile.current_rank_tier);
+  const mainRoleProfile = competitiveProfile.roles.find(
+    (roleProfile) => roleProfile.role === competitiveProfile.mainRole
+  );
+  const profileRankTier = mainRoleProfile?.rankTier ?? profile.current_rank_tier;
+  const profileAccentStyle = getRankAccentStyle(profileRankTier);
+  const profileBorderClassName = getRankBorderClassName(profileRankTier);
   const coverImageUrl = getProfileCoverUrl(
     profile.cover_image_path,
     profile.cover_image_updated_at
@@ -113,8 +119,10 @@ export default async function ProfilePage({
               bio={profile.bio}
               coverImageUrl={coverImageUrl}
               currentRank={currentRank}
-              currentRankTier={profile.current_rank_tier}
-              currentRankDivision={profile.current_rank_division}
+              currentRankTier={profileRankTier}
+              currentRankDivision={
+                mainRoleProfile?.rankDivision ?? profile.current_rank_division
+              }
               currentRankIconSrc={currentRankIconSrc}
               currentRankPill={currentRankPill}
               displayName={profile.display_name}
@@ -132,6 +140,7 @@ export default async function ProfilePage({
               isOwner={isOwner}
             />
             <PreferredHeroPools
+              competitiveProfile={competitiveProfile}
               heroPicks={heroPools.heroPicks}
               isOwner={isOwner}
               roles={heroPools.roles}

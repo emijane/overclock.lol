@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-import { saveCompetitiveRoleProfile } from "@/app/account/competitive/actions";
+import {
+  removeCompetitiveRoleProfile,
+  saveCompetitiveRoleProfile,
+} from "@/app/account/competitive/actions";
 import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
@@ -91,6 +94,23 @@ export function CompetitiveRoleEditorShell({
           Cancel
         </button>
       </div>
+
+      {roleProfile ? (
+        <form action={removeCompetitiveRoleProfile} className="mt-5">
+          <input type="hidden" name="role" value={role} />
+          <input
+            type="hidden"
+            name="was_main_role"
+            value={isMainRole ? "true" : "false"}
+          />
+          <button
+            type="submit"
+            className="rounded-full border border-rose-400/40 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-300/60 hover:bg-rose-950/30 hover:text-rose-100"
+          >
+            Remove {COMPETITIVE_ROLE_LABELS[role]} profile
+          </button>
+        </form>
+      ) : null}
 
       <div className="mt-5 rounded-[22px] border border-zinc-800 bg-zinc-950/60 p-4 sm:p-5">
         {currentStep.id === "rank" ? (
