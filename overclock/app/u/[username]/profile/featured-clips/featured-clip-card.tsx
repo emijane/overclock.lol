@@ -21,7 +21,7 @@ export function FeaturedClipCard({
 
   return (
     <div
-      className="group overflow-hidden rounded-[18px] border bg-white/[0.035] shadow-[0_0_18px_var(--profile-rank-glow),inset_0_1px_0_rgba(255,255,255,0.06)] transition [border-color:var(--profile-rank-border)] hover:bg-white/[0.045]"
+      className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-white/16 hover:bg-white/[0.045]"
     >
       <div className="relative aspect-video overflow-hidden bg-zinc-900">
         {isPlaying && embedUrl ? (
@@ -52,7 +52,7 @@ export function FeaturedClipCard({
               aria-label="Play featured video"
               className="absolute inset-0 z-10 flex items-center justify-center"
             >
-              <span className="inline-flex h-15 w-15 items-center justify-center rounded-full border bg-black/50 text-zinc-100 shadow-[0_0_18px_var(--profile-rank-glow),0_12px_28px_rgba(0,0,0,0.35)] transition [border-color:var(--profile-rank-border)] group-hover:scale-105 group-hover:bg-black/58">
+              <span className="inline-flex h-15 w-15 items-center justify-center rounded-full border border-white/12 bg-black/50 text-zinc-100 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition group-hover:scale-105 group-hover:bg-black/58">
                 <PlayIcon className="ml-0.5 h-5.5 w-5.5" />
               </span>
             </button>

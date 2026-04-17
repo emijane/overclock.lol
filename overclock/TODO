@@ -30,9 +30,12 @@ Quality and testing
 
 
 Future:
-- Only friends can see battletag, privacy... etc..
+- Only friends can see battletag, privacy... etc.. // REVISIT
 - Friends count
-- People can comment on your profile
 - Vouches
+  - Rank system
+  - Auto level up after certain count of vouches/rep.
+  - Ex: +162 rep [ 0-10 rep / 10-20 rep : titles -> [level 0 // level 1 // level 2]
+    - Limited number of reps given per day
+  - People can comment on your profile - > LFG
 - Online / last seen
-- Featured clips
