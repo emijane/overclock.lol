@@ -15,7 +15,9 @@ The current product shape is profile-first rather than feed-first:
 - `/login` is the main entry point and auth gate.
 - `/onboarding` creates an app profile for a Discord-authenticated user.
 - `/account` is currently a placeholder settings route.
-- `/account/hero-pools` manages role selection and preferred heroes.
+- `/account/competitive` is the future home for per-role rank and hero setup.
+- `/account/hero-pools` manages role selection and preferred heroes during the
+  transition to Competitive Profile.
 - `/u/[username]` renders the public player profile.
 
 The homepage currently redirects to `/login`.

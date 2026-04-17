@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Layers3Icon, LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
+import {
+  Layers3Icon,
+  LogOutIcon,
+  SettingsIcon,
+  TrophyIcon,
+  UserIcon,
+} from "lucide-react";
 import { useTransition } from "react";
 
 import { signOut } from "@/app/auth/actions";
@@ -74,6 +80,15 @@ export function UserMenu({
             <Link href={profileHref}>
               <UserIcon />
               Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+          >
+            <Link href="/account/competitive">
+              <TrophyIcon />
+              Competitive Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem

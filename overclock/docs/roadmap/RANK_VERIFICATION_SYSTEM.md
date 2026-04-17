@@ -146,7 +146,6 @@ competitive_role_profiles
 - role: "tank" | "dps" | "support"
 - rank_tier
 - rank_division
-- is_main_role
 - enabled
 - verification_status
 - verified_at
@@ -154,6 +153,10 @@ competitive_role_profiles
 - verification_expires_at
 - updated_at
 ```
+
+The player's main role should live on `competitive_profiles.main_role`, not on
+each role row. Verification remains role-specific, so a verified Support rank
+does not verify DPS or Tank.
 
 Submissions should be stored separately from the role profile:
 

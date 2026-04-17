@@ -10,7 +10,8 @@ their public profile modal, and manage role-based hero pools.
 - `/onboarding` creates the app profile and reserves a username.
 - `/u/[username]` renders the public profile and hosts the profile edit modal for owners.
 - `/account` is currently an empty placeholder settings route.
-- `/account/hero-pools` manages preferred hero pools by role.
+- `/account/competitive` is the placeholder for per-role Competitive Profile setup.
+- `/account/hero-pools` currently manages preferred hero pools by role.
 
 ## Stack
 

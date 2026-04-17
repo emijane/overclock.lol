@@ -183,8 +183,15 @@ profile_hero_pools
   }
 ```
 
-Competitive role profiles store the user's per-role rank and active role
-identity:
+Competitive profiles store the user's main competitive identity:
+
+```text
+competitive_profiles
+- profile_id
+- main_role: "support"
+```
+
+Competitive role profiles store the user's per-role rank:
 
 ```text
 competitive_role_profiles
@@ -192,10 +199,13 @@ competitive_role_profiles
 - role: "support"
 - rank_tier: "Champion"
 - rank_division: 3
-- is_main_role: true
 - enabled: true
 - updated_at
 ```
+
+The main role should be selected from configured role profiles in server actions.
+Keeping `main_role` on the parent competitive profile avoids needing multiple
+role rows to coordinate which one is primary.
 
 The hero pool table should remain the source of truth for hero selections unless
 there is a future migration to merge rank and heroes into one per-role table.
@@ -246,7 +256,7 @@ not to the user's registered role identity.
 ## Validation Notes
 
 - Validate role, rank tier, and rank division on the server.
-- Validate that only one enabled role is marked as main.
+- Validate that `main_role` points to a configured role profile.
 - Decide what happens if the main role is disabled or deleted.
 - Validate hero picks on the server using the existing hero roster rules.
 - Prevent cross-role hero picks, such as selecting Support heroes for a Tank
