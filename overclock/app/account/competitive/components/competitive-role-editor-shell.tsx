@@ -1,14 +1,13 @@
 import { useState } from "react";
-import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
+import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
   CompetitiveRankTier,
   CompetitiveRole,
   CompetitiveRoleProfile,
 } from "@/lib/competitive/competitive-profile-types";
-import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { RANK_TIERS } from "@/lib/profiles/profile-options";
 import {
   formatCurrentRank,
@@ -48,6 +47,7 @@ export function CompetitiveRoleEditorShell({
     roleProfile?.rankDivision?.toString() ?? ""
   );
   const [mainRoleEnabled, setMainRoleEnabled] = useState(isMainRole);
+  const [selectedHeroIds, setSelectedHeroIds] = useState(heroIds);
 
   function handleRankTierChange(nextTier: CompetitiveRankTier) {
     setSelectedRankTier(nextTier);
@@ -69,9 +69,6 @@ export function CompetitiveRoleEditorShell({
   const currentStep = EDITOR_STEPS[currentStepIndex];
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === EDITOR_STEPS.length - 1;
-  const heroes = heroIds
-    .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId))
-    .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
 
   return (
     <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
@@ -161,31 +158,13 @@ export function CompetitiveRoleEditorShell({
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
               Hero pool
             </p>
-            {heroes.length > 0 ? (
-              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {heroes.map((hero) => (
-                  <div
-                    key={hero.id}
-                    className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-3 py-3 text-sm font-medium text-zinc-200"
-                  >
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
-                      <Image
-                        src={hero.imageSrc}
-                        alt={hero.label}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    </div>
-                    <span>{hero.label}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-4 rounded-2xl border border-dashed border-zinc-800 bg-zinc-950 px-4 py-8 text-center text-sm font-medium text-zinc-500">
-                No heroes selected
-              </div>
-            )}
+            <div className="mt-4">
+              <RoleHeroPicker
+                onChange={setSelectedHeroIds}
+                role={role}
+                selectedHeroIds={selectedHeroIds}
+              />
+            </div>
           </>
         )}
       </div>
