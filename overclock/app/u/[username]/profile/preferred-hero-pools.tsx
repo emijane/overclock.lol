@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PencilIcon } from "lucide-react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type {
   CompetitiveProfile,
   CompetitiveRole,
@@ -18,6 +19,7 @@ import {
   type HeroPoolRoleOption,
   type HeroPoolSelections,
 } from "@/lib/heroes/profile-hero-pools";
+import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 type PreferredHeroPoolsProps = {
   competitiveProfile: CompetitiveProfile;
@@ -103,13 +105,14 @@ export function PreferredHeroPools({
         <div className="mt-4 grid gap-4 lg:grid-cols-3 lg:gap-0">
           {HERO_POOL_GROUPS.map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
-            const isConfiguredRole = competitiveProfile.roles.some(
+            const roleProfile = competitiveProfile.roles.find(
               (roleProfile) => roleProfile.role === groupRole
             );
+            const rankIconSrc = getRankIconSrc(roleProfile?.rankTier);
             const roleStatus =
               competitiveProfile.mainRole === groupRole
                 ? "Main role"
-                : isConfiguredRole
+                : roleProfile
                   ? "Off role"
                   : null;
             const visiblePools = group.pools.filter(
@@ -130,23 +133,42 @@ export function PreferredHeroPools({
                     {COMPETITIVE_ROLE_LABELS[groupRole]}
                   </h3>
                   {roleStatus ? (
-                    <div>
+                    <div className="flex flex-wrap items-center gap-2">
                       <span
                         className={`inline-flex h-7 items-center rounded-full border px-3 text-xs font-semibold ${roleStatusClassName[roleStatus]}`}
                       >
                         {roleStatus}
                       </span>
+                      {roleProfile ? (
+                        <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                          {rankIconSrc ? (
+                            <span className="relative h-5 w-5 shrink-0">
+                              <Image
+                                src={rankIconSrc}
+                                alt={`${roleProfile.rankTier} rank icon`}
+                                fill
+                                className="object-contain"
+                                sizes="20px"
+                              />
+                            </span>
+                          ) : null}
+                          {formatCurrentRank(
+                            roleProfile.rankTier,
+                            roleProfile.rankDivision
+                          )}
+                        </span>
+                      ) : null}
                     </div>
                   ) : null}
                 </div>
 
-                <div className="mt-3 grid gap-3">
+                <div className="mt-4 grid gap-4">
                   {visiblePools.map((pool) => (
-                    <div key={pool} className="grid gap-1.5">
+                    <div key={pool} className="grid gap-2">
                       <p className="text-[12px] font-medium text-zinc-500">
                         {HERO_POOL_LABELS[pool]}
                       </p>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {derivedPools[pool].map((hero) => (
                           <div
                             key={hero.id}

@@ -5,6 +5,7 @@ import type {
   CompetitiveRole,
   CompetitiveRoleProfile,
 } from "@/lib/competitive/competitive-profile-types";
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -32,6 +33,7 @@ export function CompetitiveRoleCard({
   const heroes = heroIds
     .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId))
     .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
+  const rankIconSrc = roleProfile ? getRankIconSrc(roleProfile.rankTier) : null;
 
   return (
     <article className="flex h-full flex-col rounded-[22px] border border-zinc-800 bg-zinc-950/70 p-4">
@@ -54,11 +56,22 @@ export function CompetitiveRoleCard({
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
           Rank
         </p>
-        <p className="mt-1 text-sm font-medium text-zinc-200">
-          {roleProfile
-            ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
-            : "Not listed"}
-        </p>
+        <div className="mt-1 flex items-center gap-2">
+          {rankIconSrc && roleProfile ? (
+            <Image
+              src={rankIconSrc}
+              alt={`${roleProfile.rankTier} rank icon`}
+              width={24}
+              height={24}
+              className="h-6 w-6 shrink-0 object-contain"
+            />
+          ) : null}
+          <p className="text-sm font-medium text-zinc-200">
+            {roleProfile
+              ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
+              : "Not listed"}
+          </p>
+        </div>
       </div>
 
       <div className="mt-5">
