@@ -83,7 +83,7 @@ export function PreferredHeroPools({
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
-        <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="mt-4 grid gap-4 lg:grid-cols-3 lg:gap-0">
           {HERO_POOL_GROUPS.map((group) => {
             const visiblePools = group.pools.filter(
               (pool) => derivedPools[pool].length > 0
@@ -96,9 +96,9 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/10 bg-white/[0.035] px-3.5 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                className="border-t border-white/10 pt-4 first:border-t-0 first:pt-0 lg:border-l lg:border-t-0 lg:px-4 lg:pt-0 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
               >
-                <h3 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-300">
+                <h3 className="text-sm font-semibold tracking-[-0.01em] text-zinc-100">
                   {group.label}
                 </h3>
 
@@ -112,7 +112,7 @@ export function PreferredHeroPools({
                         {derivedPools[pool].map((hero) => (
                           <div
                             key={hero.id}
-                            className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[0.045] pl-1.5 pr-3 text-sm font-medium text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                            className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] pl-1.5 pr-3 text-sm font-medium text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                           >
                             <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-white/10 bg-zinc-900">
                               <Image
