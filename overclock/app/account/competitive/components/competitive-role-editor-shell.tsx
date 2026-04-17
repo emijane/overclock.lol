@@ -72,26 +72,7 @@ export function CompetitiveRoleEditorShell({
   const isLastStep = currentStepIndex === EDITOR_STEPS.length - 1;
 
   return (
-    <form
-      action={saveCompetitiveRoleProfile}
-      className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6"
-    >
-      <input type="hidden" name="role" value={role} />
-      <input
-        type="hidden"
-        name="was_main_role"
-        value={isMainRole ? "true" : "false"}
-      />
-      <input type="hidden" name="rank_tier" value={selectedRankTier} />
-      <input
-        type="hidden"
-        name="rank_division"
-        value={selectedRankDivision}
-      />
-      {mainRoleEnabled ? (
-        <input type="hidden" name="main_role" value="on" />
-      ) : null}
-
+    <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
@@ -202,22 +183,52 @@ export function CompetitiveRoleEditorShell({
           Back
         </button>
 
-        <button
-          type={isLastStep ? "submit" : "button"}
-          onClick={
-            isLastStep
-              ? undefined
-              : () =>
-                  setCurrentStepIndex((current) =>
-                    Math.min(current + 1, EDITOR_STEPS.length - 1)
-                  )
-          }
-          className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
-        >
-          {currentStep.id === "rank" ? "Next: hero pool" : "Save role"}
-          <ChevronRightIcon className="h-4 w-4" />
-        </button>
+        {isLastStep ? (
+          <form action={saveCompetitiveRoleProfile}>
+            <input type="hidden" name="role" value={role} />
+            <input
+              type="hidden"
+              name="was_main_role"
+              value={isMainRole ? "true" : "false"}
+            />
+            <input type="hidden" name="rank_tier" value={selectedRankTier} />
+            <input
+              type="hidden"
+              name="rank_division"
+              value={selectedRankDivision}
+            />
+            <input
+              type="hidden"
+              name="hero_ids"
+              value={JSON.stringify(selectedHeroIds)}
+            />
+            {mainRoleEnabled ? (
+              <input type="hidden" name="main_role" value="on" />
+            ) : null}
+
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+            >
+              Save role
+              <ChevronRightIcon className="h-4 w-4" />
+            </button>
+          </form>
+        ) : (
+          <button
+            type="button"
+            onClick={() =>
+              setCurrentStepIndex((current) =>
+                Math.min(current + 1, EDITOR_STEPS.length - 1)
+              )
+            }
+            className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+          >
+            Next: hero pool
+            <ChevronRightIcon className="h-4 w-4" />
+          </button>
+        )}
       </div>
-    </form>
+    </section>
   );
 }
