@@ -4,13 +4,16 @@ import {
   type CompetitiveProfile,
   type CompetitiveRole,
 } from "@/lib/competitive/competitive-profile";
+import type { HeroPoolSelections } from "@/lib/heroes/profile-hero-pools";
 
 type CompetitiveRoleCardListProps = {
   competitiveProfile: CompetitiveProfile;
+  heroSelections: HeroPoolSelections;
 };
 
 export function CompetitiveRoleCardList({
   competitiveProfile,
+  heroSelections,
 }: CompetitiveRoleCardListProps) {
   const roleProfileByRole = new Map(
     competitiveProfile.roles.map((roleProfile) => [
@@ -26,6 +29,7 @@ export function CompetitiveRoleCardList({
           <CompetitiveRoleCard
             key={role}
             isMainRole={competitiveProfile.mainRole === role}
+            heroIds={heroSelections[role]}
             role={role}
             roleProfile={roleProfileByRole.get(role) ?? null}
           />
