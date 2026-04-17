@@ -104,7 +104,7 @@ export function ProfileHeader({
             aria-hidden="true"
           />
           <div
-            className="absolute inset-x-0 bottom-0 h-px bg-white/10"
+            className="absolute inset-x-0 bottom-0 h-px bg-[var(--profile-rank-border)] shadow-[0_0_16px_var(--profile-rank-glow)]"
             aria-hidden="true"
           />
 
@@ -179,7 +179,7 @@ export function ProfileHeader({
                     <button
                       type="button"
                       onClick={onEditProfile}
-                      className="inline-flex h-10 items-center rounded-full border border-white/12 bg-white/[0.055] px-4 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_28px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 hover:shadow-[0_0_24px_rgba(56,189,248,0.16),inset_0_1px_0_rgba(255,255,255,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                      className="inline-flex h-10 items-center rounded-full border bg-white/[0.055] px-4 text-sm font-semibold text-zinc-50 shadow-[0_0_18px_var(--profile-rank-glow),inset_0_1px_0_rgba(255,255,255,0.1),0_10px_28px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 [border-color:var(--profile-rank-border)] hover:bg-white/[0.075] hover:shadow-[0_0_24px_var(--profile-rank-glow),inset_0_1px_0_rgba(255,255,255,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                     >
                       Edit profile
                     </button>

@@ -19,8 +19,8 @@ export function ProfileBadge({
 }: ProfileBadgeProps) {
   const palette =
     tone === "cover"
-      ? "border-white/10 bg-zinc-950/70 text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
-      : "border-white/10 bg-white/[0.045] text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_8px_24px_rgba(0,0,0,0.16)]";
+      ? "bg-zinc-950/70 text-zinc-100 shadow-[0_0_14px_var(--profile-rank-glow),inset_0_1px_0_rgba(255,255,255,0.1)] [border-color:var(--profile-rank-border)]"
+      : "bg-white/[0.045] text-zinc-100 shadow-[0_0_14px_var(--profile-rank-glow),inset_0_1px_0_rgba(255,255,255,0.08),0_8px_24px_rgba(0,0,0,0.16)] [border-color:var(--profile-rank-border)]";
 
   return (
     <span
