@@ -4,12 +4,13 @@ import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labe
 import type {
   CompetitiveRole,
   CompetitiveRoleProfile,
-} from "@/lib/competitive/competitive-profile";
+} from "@/lib/competitive/competitive-profile-types";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 
 type CompetitiveRoleCardProps = {
   heroIds: string[];
   isMainRole: boolean;
+  onSelectRole: (role: CompetitiveRole) => void;
   role: CompetitiveRole;
   roleProfile: CompetitiveRoleProfile | null;
 };
@@ -29,6 +30,7 @@ function getRankLabel(roleProfile: CompetitiveRoleProfile | null) {
 export function CompetitiveRoleCard({
   heroIds,
   isMainRole,
+  onSelectRole,
   role,
   roleProfile,
 }: CompetitiveRoleCardProps) {
@@ -102,6 +104,7 @@ export function CompetitiveRoleCard({
       <div className="mt-5">
         <button
           type="button"
+          onClick={() => onSelectRole(role)}
           className="w-full rounded-full border border-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-900 hover:text-zinc-50"
         >
           {isConfigured ? "Edit" : "Set up"}
