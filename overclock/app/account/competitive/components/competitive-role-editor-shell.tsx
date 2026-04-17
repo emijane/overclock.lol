@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
+import { saveCompetitiveRoleProfile } from "@/app/account/competitive/actions";
 import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
@@ -71,7 +72,26 @@ export function CompetitiveRoleEditorShell({
   const isLastStep = currentStepIndex === EDITOR_STEPS.length - 1;
 
   return (
-    <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">
+    <form
+      action={saveCompetitiveRoleProfile}
+      className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6"
+    >
+      <input type="hidden" name="role" value={role} />
+      <input
+        type="hidden"
+        name="was_main_role"
+        value={isMainRole ? "true" : "false"}
+      />
+      <input type="hidden" name="rank_tier" value={selectedRankTier} />
+      <input
+        type="hidden"
+        name="rank_division"
+        value={selectedRankDivision}
+      />
+      {mainRoleEnabled ? (
+        <input type="hidden" name="main_role" value="on" />
+      ) : null}
+
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
@@ -183,19 +203,21 @@ export function CompetitiveRoleEditorShell({
         </button>
 
         <button
-          type="button"
-          onClick={() =>
-            setCurrentStepIndex((current) =>
-              Math.min(current + 1, EDITOR_STEPS.length - 1)
-            )
+          type={isLastStep ? "submit" : "button"}
+          onClick={
+            isLastStep
+              ? undefined
+              : () =>
+                  setCurrentStepIndex((current) =>
+                    Math.min(current + 1, EDITOR_STEPS.length - 1)
+                  )
           }
-          disabled={isLastStep}
           className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
         >
-          {currentStep.id === "rank" ? "Next: hero pool" : "Ready to save"}
+          {currentStep.id === "rank" ? "Next: hero pool" : "Save role"}
           <ChevronRightIcon className="h-4 w-4" />
         </button>
       </div>
-    </section>
+    </form>
   );
 }
