@@ -164,15 +164,21 @@ export function CompetitiveRoleEditorShell({
               </label>
             </div>
 
-            <label className="mt-4 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950 px-3 py-3 text-sm font-medium text-zinc-200">
-              <input
-                type="checkbox"
-                checked={mainRoleEnabled}
-                onChange={(event) => setMainRoleEnabled(event.target.checked)}
-                className="h-4 w-4 accent-sky-400"
-              />
-              Use as main competitive role
-            </label>
+            <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950 px-3 py-3">
+              <label className="flex items-center gap-3 text-sm font-medium text-zinc-200">
+                <input
+                  type="checkbox"
+                  checked={mainRoleEnabled}
+                  onChange={(event) => setMainRoleEnabled(event.target.checked)}
+                  className="h-4 w-4 accent-sky-400"
+                />
+                Use as main competitive role
+              </label>
+              <p className="mt-2 pl-7 text-xs leading-5 text-zinc-500">
+                You can only have one main role. Choosing this will replace your
+                current main role.
+              </p>
+            </div>
           </>
         ) : (
           <>

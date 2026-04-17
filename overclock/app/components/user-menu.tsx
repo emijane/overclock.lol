@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {
-  Layers3Icon,
   LogOutIcon,
   SettingsIcon,
   TrophyIcon,
@@ -89,15 +88,6 @@ export function UserMenu({
             <Link href="/account/competitive">
               <TrophyIcon />
               Competitive Profile
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            asChild
-            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
-          >
-            <Link href="/account/hero-pools">
-              <Layers3Icon />
-              Hero Pools
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem

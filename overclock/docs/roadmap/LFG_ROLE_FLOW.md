@@ -14,8 +14,8 @@ should not require separate registration.
 
 ## Competitive Profile
 
-The existing Hero Pools page should evolve into a Competitive Profile page.
-Instead of only managing heroes, this page becomes the source of truth for:
+The old Hero Pools page has been folded into Competitive Profile. Instead of
+only managing heroes, this page is the source of truth for:
 
 ```text
 What roles does this player actually play?
@@ -30,7 +30,7 @@ Recommended route:
 /account/competitive
 ```
 
-This can replace or redirect from the current `/account/hero-pools` route.
+The old `/account/hero-pools` route redirects here for existing links.
 
 ## Core Model
 
