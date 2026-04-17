@@ -122,6 +122,7 @@ export default async function ProfilePage({
         />
         <PreferredHeroPools
           heroPicks={heroPools.heroPicks}
+          isOwner={isOwner}
           roles={heroPools.roles}
         />
       </div>
