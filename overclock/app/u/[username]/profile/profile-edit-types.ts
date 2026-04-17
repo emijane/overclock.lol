@@ -9,8 +9,6 @@ export type SocialValues = {
 
 export type ProfileEditProfile = {
   bio: string | null;
-  currentRankDivision: number | null;
-  currentRankTier: string | null;
   discordUsername: string | null;
   displayName: string;
   lookingFor: string[];

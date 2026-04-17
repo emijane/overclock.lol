@@ -120,9 +120,6 @@ export default async function ProfilePage({
               coverImageUrl={coverImageUrl}
               currentRank={currentRank}
               currentRankTier={profileRankTier}
-              currentRankDivision={
-                mainRoleProfile?.rankDivision ?? profile.current_rank_division
-              }
               currentRankIconSrc={currentRankIconSrc}
               currentRankPill={currentRankPill}
               displayName={profile.display_name}

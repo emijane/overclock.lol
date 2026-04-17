@@ -34,7 +34,7 @@ export function CompetitiveRoleCard({
     .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
 
   return (
-    <article className="rounded-[22px] border border-zinc-800 bg-zinc-950/70 p-4">
+    <article className="flex h-full flex-col rounded-[22px] border border-zinc-800 bg-zinc-950/70 p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-base font-semibold text-zinc-50">
@@ -92,7 +92,7 @@ export function CompetitiveRoleCard({
         )}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-auto pt-5">
         <button
           type="button"
           onClick={() => onSelectRole(role)}

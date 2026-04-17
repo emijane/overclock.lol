@@ -8,7 +8,6 @@ import {
   PLATFORM_OPTIONS,
   REGION_OPTIONS,
   REGION_TO_TIMEZONES,
-  RANK_TIERS,
   TIMEZONE_OPTIONS,
 } from "@/lib/profiles/profile-options";
 import {
@@ -22,8 +21,6 @@ import { createClient } from "@/lib/supabase/server";
 type ParsedProfileUpdate = {
   battlenetHandle: string | null;
   bio: string | null;
-  currentRankDivision: number | null;
-  currentRankTier: (typeof RANK_TIERS)[number] | null;
   displayName: string | null;
   lookingFor: (typeof LOOKING_FOR_OPTIONS)[number][];
   platform: (typeof PLATFORM_OPTIONS)[number] | null;
@@ -82,52 +79,6 @@ function optionalEnumValue<T extends readonly string[]>(
   return parsed as T[number];
 }
 
-function parseRankDivision(
-  value: FormDataEntryValue | null,
-  fieldName: string,
-  returnTo?: string
-): number | null {
-  const parsed = optionalTrimmedString(value);
-
-  if (!parsed) {
-    return null;
-  }
-
-  const division = Number(parsed);
-
-  if (!Number.isInteger(division) || division < 1 || division > 5) {
-    accountRedirect(`Invalid ${fieldName}.`, returnTo);
-  }
-
-  return division;
-}
-
-function validateRankPair(
-  tier: (typeof RANK_TIERS)[number] | null,
-  division: number | null,
-  label: string,
-  returnTo?: string
-) {
-  if (!tier && division === null) {
-    return;
-  }
-
-  if (!tier && division !== null) {
-    accountRedirect(`${label} tier is required when a division is set.`, returnTo);
-  }
-
-  if (tier === "Unranked" && division !== null) {
-    accountRedirect(
-      `${label} division must be empty when rank is Unranked.`,
-      returnTo
-    );
-  }
-
-  if (tier && tier !== "Unranked" && division === null) {
-    accountRedirect(`${label} division is required.`, returnTo);
-  }
-}
-
 function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
   const returnTo = resolveReturnTo(formData);
   const displayName = optionalTrimmedString(formData.get("display_name"));
@@ -154,17 +105,6 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
     "platform",
     returnTo
   );
-  const currentRankTier = optionalEnumValue(
-    formData.get("current_rank_tier"),
-    RANK_TIERS,
-    "current rank tier",
-    returnTo
-  );
-  const currentRankDivision = parseRankDivision(
-    formData.get("current_rank_division"),
-    "current rank division",
-    returnTo
-  );
   const lookingFor = formData
     .getAll("looking_for")
     .map((value) => value.toString())
@@ -175,8 +115,6 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
   return {
     battlenetHandle,
     bio,
-    currentRankDivision,
-    currentRankTier,
     displayName,
     lookingFor,
     platform,
@@ -192,8 +130,6 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
 function validateProfileUpdate({
   battlenetHandle,
   bio,
-  currentRankDivision,
-  currentRankTier,
   displayName,
   region,
   returnTo,
@@ -247,8 +183,6 @@ function validateProfileUpdate({
       accountRedirect("Selected server does not match the chosen region.", returnTo);
     }
   }
-
-  validateRankPair(currentRankTier, currentRankDivision, "Current rank", returnTo);
 }
 
 export async function updateProfile(formData: FormData) {
@@ -258,8 +192,6 @@ export async function updateProfile(formData: FormData) {
   const {
     battlenetHandle,
     bio,
-    currentRankDivision,
-    currentRankTier,
     displayName,
     lookingFor,
     platform,
@@ -286,8 +218,6 @@ export async function updateProfile(formData: FormData) {
     .update({
       battlenet_handle: battlenetHandle,
       bio,
-      current_rank_division: currentRankDivision,
-      current_rank_tier: currentRankTier,
       display_name: displayName,
       looking_for: lookingFor,
       platform,

@@ -17,7 +17,6 @@ type ProfileHeaderProps = {
   currentRankTier?: string | null;
   currentRankIconSrc: string | null;
   currentRankPill: string;
-  currentRankDivision?: number | null;
   displayName: string;
   isOwner: boolean;
   lookingFor?: string[] | null;

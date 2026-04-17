@@ -6,7 +6,6 @@ import { FaDiscord, FaTwitch, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiBattledotnet } from "react-icons/si";
 
-import { RankSection } from "@/components/profile-editor/rank-section";
 import { SectionCard } from "@/components/profile-editor/section-card";
 import { SetupSection } from "@/components/profile-editor/setup-section";
 import { SocialsSection } from "@/components/profile-editor/socials-section";
@@ -18,22 +17,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   PLATFORM_OPTIONS,
-  RANK_TIERS,
   REGION_OPTIONS,
 } from "@/lib/profiles/profile-options";
 import { PROFILE_BIO_MAX_CHARACTERS } from "@/lib/profiles/profile-bio";
 
-import { RANK_DIVISION_OPTIONS } from "./use-profile-edit-form";
 import type { ProfileEditProfile } from "./profile-edit-types";
 
 type ProfileEditFormState = {
   battleNetHandle: string;
   bio: string;
-  currentRankDisplay: string;
   displayName: string;
   selectedPlatform: string;
-  selectedRankDivision: string;
-  selectedRankTier: string;
   selectedRegion: string;
   selectedTimezone: string;
   timezoneOptions: string[];
@@ -44,12 +38,10 @@ type ProfileEditFormState = {
   setBio: (value: string) => void;
   setDisplayName: (value: string) => void;
   setSelectedPlatform: (value: string) => void;
-  setSelectedRankDivision: (value: string) => void;
   setSelectedTimezone: (value: string) => void;
   setTwitchHandle: (value: string) => void;
   setXHandle: (value: string) => void;
   setYoutubeHandle: (value: string) => void;
-  handleRankTierSelect: (value: string) => void;
   handleRegionSelect: (value: string) => void;
 };
 
@@ -301,44 +293,6 @@ export function ProfileEditFormFields({
             options={PLATFORM_OPTIONS}
             onSelect={form.setSelectedPlatform}
           />
-        }
-      />
-
-      <RankSection
-        title="Rank"
-        currentLabel={`Current: ${form.currentRankDisplay}`}
-        current={null}
-        controls={
-          <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <ModalDropdownField
-              inputName="current_rank_tier"
-              hideLabel
-              label="Rank"
-              value={form.selectedRankTier}
-              placeholder="Select rank"
-              options={RANK_TIERS}
-              onSelect={form.handleRankTierSelect}
-            />
-
-            <ModalDropdownField
-              disabled={
-                !form.selectedRankTier || form.selectedRankTier === "Unranked"
-              }
-              inputName="current_rank_division"
-              hideLabel
-              label="Sub-rank"
-              value={form.selectedRankDivision}
-              placeholder={
-                form.selectedRankTier
-                  ? form.selectedRankTier === "Unranked"
-                    ? "No sub-rank"
-                    : "Select division"
-                  : "Choose rank first"
-              }
-              options={RANK_DIVISION_OPTIONS}
-              onSelect={form.setSelectedRankDivision}
-            />
-          </div>
         }
       />
     </div>
