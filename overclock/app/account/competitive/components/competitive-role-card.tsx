@@ -6,6 +6,7 @@ import type {
   CompetitiveRoleProfile,
 } from "@/lib/competitive/competitive-profile-types";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
+import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 type CompetitiveRoleCardProps = {
   heroIds: string[];
@@ -14,18 +15,6 @@ type CompetitiveRoleCardProps = {
   role: CompetitiveRole;
   roleProfile: CompetitiveRoleProfile | null;
 };
-
-function getRankLabel(roleProfile: CompetitiveRoleProfile | null) {
-  if (!roleProfile) {
-    return "Not listed";
-  }
-
-  if (roleProfile.rankTier === "Unranked") {
-    return "Unranked";
-  }
-
-  return `${roleProfile.rankTier} ${roleProfile.rankDivision ?? ""}`.trim();
-}
 
 export function CompetitiveRoleCard({
   heroIds,
@@ -66,7 +55,9 @@ export function CompetitiveRoleCard({
           Rank
         </p>
         <p className="mt-1 text-sm font-medium text-zinc-200">
-          {getRankLabel(roleProfile)}
+          {roleProfile
+            ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
+            : "Not listed"}
         </p>
       </div>
 

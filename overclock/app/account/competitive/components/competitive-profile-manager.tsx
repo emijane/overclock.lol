@@ -20,6 +20,9 @@ export function CompetitiveProfileManager({
   heroSelections,
 }: CompetitiveProfileManagerProps) {
   const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
+  const selectedRoleProfile =
+    competitiveProfile.roles.find((roleProfile) => roleProfile.role === selectedRole) ??
+    null;
 
   return (
     <>
@@ -31,8 +34,12 @@ export function CompetitiveProfileManager({
 
       {selectedRole ? (
         <CompetitiveRoleEditorShell
+          key={selectedRole}
+          heroIds={heroSelections[selectedRole]}
+          isMainRole={competitiveProfile.mainRole === selectedRole}
           onCancel={() => setSelectedRole(null)}
           role={selectedRole}
+          roleProfile={selectedRoleProfile}
         />
       ) : null}
     </>
