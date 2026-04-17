@@ -8,7 +8,7 @@ This file is a local working note for coding agents and should not be committed.
 - Update docs when behavior, setup steps, or architecture meaningfully change.
 - Prefer concise, practical documentation over vague summaries.
 - When introducing new flows, include the minimum needed context for future maintenance.
-- Read `PROJECT_CONTEXT_ROADMAP.md` before making substantial product or architecture changes, and keep it updated as the app evolves.
+- Read `docs/roadmap/PROJECT_CONTEXT_ROADMAP.md` before making substantial product or architecture changes, and keep it updated as the app evolves.
 
 ## Coding Standards
 
