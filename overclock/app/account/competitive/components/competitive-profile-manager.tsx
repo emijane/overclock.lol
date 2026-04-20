@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { CompetitiveProfileSettings } from "@/app/account/competitive/components/competitive-profile-settings";
 import { CompetitiveRoleCardList } from "@/app/account/competitive/components/competitive-role-card-list";
 import { CompetitiveRoleEditorShell } from "@/app/account/competitive/components/competitive-role-editor-shell";
 import type {
@@ -26,6 +27,8 @@ export function CompetitiveProfileManager({
 
   return (
     <>
+      <CompetitiveProfileSettings />
+
       <CompetitiveRoleCardList
         competitiveProfile={competitiveProfile}
         heroSelections={heroSelections}
