@@ -10,7 +10,6 @@ import type {
 } from "@/lib/competitive/competitive-profile-types";
 import {
   HERO_POOL_GROUPS,
-  HERO_POOL_LABELS,
   HERO_ROSTER,
   type HeroDefinition,
   type HeroPoolRole,
@@ -56,10 +55,8 @@ function getOrderedHeroPoolGroups(mainRole: CompetitiveRole | null) {
 }
 
 const roleStatusClassName = {
-  "Main role":
-    "border-sky-300/35 bg-sky-300/10 text-sky-100 shadow-[0_0_18px_rgba(56,189,248,0.12),inset_0_1px_0_rgba(255,255,255,0.08)]",
-  "Off role":
-    "border-amber-300/30 bg-amber-300/10 text-amber-100 shadow-[0_0_18px_rgba(251,191,36,0.1),inset_0_1px_0_rgba(255,255,255,0.08)]",
+  "Main role": "border-sky-300/35 bg-sky-300/10 text-sky-100",
+  "Off role": "border-amber-300/30 bg-amber-300/10 text-amber-100",
 } as const;
 
 function getHeroesForRole(
@@ -110,7 +107,7 @@ export function PreferredHeroPools({
         {isOwner ? (
           <Link
             href="/account/competitive"
-            className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-3.5 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_28px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 hover:shadow-[0_0_24px_rgba(56,189,248,0.16),inset_0_1px_0_rgba(255,255,255,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-3.5 text-sm font-semibold text-zinc-50 backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <PencilIcon className="h-4 w-4" />
             Edit
@@ -136,11 +133,9 @@ export function PreferredHeroPools({
                 : roleProfile
                   ? "Off role"
                   : null;
-            const visiblePools = group.pools.filter(
-              (pool) => derivedPools[pool].length > 0
-            );
+            const visibleHeroes = group.pools.flatMap((pool) => derivedPools[pool]);
 
-            if (visiblePools.length === 0) {
+            if (visibleHeroes.length === 0) {
               return null;
             }
 
@@ -161,7 +156,7 @@ export function PreferredHeroPools({
                         {roleStatus}
                       </span>
                       {roleProfile ? (
-                        <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                        <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-zinc-200">
                           {rankIconSrc ? (
                             <span className="relative h-5 w-5 shrink-0">
                               <Image
@@ -183,33 +178,24 @@ export function PreferredHeroPools({
                   ) : null}
                 </div>
 
-                <div className="mt-4 grid gap-4">
-                  {visiblePools.map((pool) => (
-                    <div key={pool} className="grid gap-2">
-                      <p className="text-[12px] font-medium text-zinc-500">
-                        {HERO_POOL_LABELS[pool]}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {derivedPools[pool].map((hero) => (
-                          <div
-                            key={hero.id}
-                            className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] pl-1.5 pr-3 text-sm font-medium text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-                          >
-                            <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-white/10 bg-zinc-900">
-                              <Image
-                                src={hero.imageSrc}
-                                alt={hero.label}
-                                fill
-                                className="object-cover"
-                                sizes="28px"
-                              />
-                            </div>
-                            <span>{hero.label}</span>
-                          </div>
-                        ))}
+                <div className="mt-4">
+                  <div className="flex flex-wrap gap-2">
+                    {visibleHeroes.map((hero) => (
+                      <div
+                        key={hero.id}
+                        title={hero.label}
+                        className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-900 sm:h-12 sm:w-12"
+                      >
+                        <Image
+                          src={hero.imageSrc}
+                          alt={hero.label}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 640px) 48px, 44px"
+                        />
                       </div>
+                    ))}
                     </div>
-                  ))}
                 </div>
               </section>
             );
