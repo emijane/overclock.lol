@@ -24,6 +24,11 @@ What heroes do they play on each role?
 Which role is their main competitive identity?
 ```
 
+The page should read as a lightweight preferences and setup layer, not as the
+place where users actively create LFG posts. Its preferences can prefill future
+LFG/LFD post composers, while role setup controls which playable competitive
+identities are available when posting.
+
 Recommended route:
 
 ```text

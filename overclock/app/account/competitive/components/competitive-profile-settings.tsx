@@ -1,21 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import { type FormEvent, useState } from "react";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, PlusCircleIcon } from "lucide-react";
 
 const GOAL_OPTIONS = [
-    "Casual",
+    "Chill",
     "Competitive",
-    "Climbing",
-    "Learning",
     "Scrims",
-    "Tournament",
 ] as const;
 
 const REQUIREMENT_OPTIONS = ["Mic Required", "18+ Only"] as const;
 
 type GoalOption = (typeof GOAL_OPTIONS)[number];
 type RequirementOption = (typeof REQUIREMENT_OPTIONS)[number];
+
+type CompetitiveProfileSettingsProps = {
+    configuredRoleCount: number;
+};
 
 type ToggleChipProps = {
     isDisabled?: boolean;
@@ -62,15 +64,17 @@ function toggleSelection<T extends string>(items: T[], item: T) {
         : [...items, item];
 }
 
-export function CompetitiveProfileSettings() {
+export function CompetitiveProfileSettings({
+    configuredRoleCount,
+}: CompetitiveProfileSettingsProps) {
     const [goals, setGoals] = useState<GoalOption[]>([]);
     const [requirements, setRequirements] = useState<RequirementOption[]>([]);
     const [isSaving, setIsSaving] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
+    const [showSavedToast, setShowSavedToast] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     function toggleGoal(goal: GoalOption) {
-        setIsSaved(false);
+        setShowSavedToast(false);
         setGoals((currentGoals) => {
             if (currentGoals.includes(goal)) {
                 setHasUnsavedChanges(true);
@@ -97,29 +101,56 @@ export function CompetitiveProfileSettings() {
         window.setTimeout(() => {
             setHasUnsavedChanges(false);
             setIsSaving(false);
-            setIsSaved(true);
-            window.setTimeout(() => setIsSaved(false), 1600);
+            setShowSavedToast(true);
+            window.setTimeout(() => setShowSavedToast(false), 1600);
         }, 500);
     }
 
     return (
-        <section className="border-t border-white/10 px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6">
+        <section className="border-t border-white/10 bg-white/[0.018] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-7">
             <form
                 onSubmit={handleSubmit}
-                className="rounded-[20px] border border-white/10 bg-white/[0.03] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-4"
+                className="relative rounded-[20px] border border-white/10 bg-white/[0.03] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-4"
             >
-                <p className="text-sm text-zinc-500">
-                    Choose how you want to appear in LFG
-                </p>
+                {showSavedToast ? (
+                    <div className="absolute right-4 top-4 z-10 inline-flex h-9 items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/12 px-3 text-sm font-semibold text-emerald-100 shadow-[0_12px_30px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)]">
+                        <CheckIcon className="h-4 w-4" />
+                        Preferences updated
+                    </div>
+                ) : null}
 
-                <div className="mt-4 grid gap-3.5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="max-w-2xl">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
+                                LFG Preferences
+                            </h2>
+                            <span className="inline-flex h-7 items-center rounded-full border border-white/10 bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300">
+                                Playable Roles: {configuredRoleCount}
+                            </span>
+                        </div>
+                        <p className="mt-1.5 text-sm leading-6 text-zinc-400">
+                            These preferences prefill your LFG and LFD posts. You can change them anytime when creating a post.
+                        </p>
+                    </div>
+
+                    <Link
+                        href="/duos"
+                        className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-sky-300/35 bg-sky-300/12 px-4 text-sm font-semibold text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition hover:border-sky-300/55 hover:bg-sky-300/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+                    >
+                        <PlusCircleIcon className="h-4 w-4" />
+                        Create Post
+                    </Link>
+                </div>
+
+                <div className="mt-5 grid gap-3.5">
                     <div className="grid gap-1.5">
                         <div className="grid gap-px">
                             <p className="text-sm font-semibold text-zinc-100">
-                                Goal
+                                Playstyle
                             </p>
-                            <p className="text-[10px] font-medium text-zinc-600/80">
-                                Select up to 2
+                            <p className="text-[11px] font-medium text-zinc-500">
+                                Used to match you with similar players
                             </p>
                         </div>
 
@@ -141,7 +172,7 @@ export function CompetitiveProfileSettings() {
                     <div className="grid gap-1.5">
                         <div className="flex items-baseline gap-1.5">
                             <p className="text-sm font-semibold text-zinc-100">
-                                Looking For
+                                Requirements
                             </p>
                             <p className="text-[10px] font-medium text-zinc-600/75">
                                 Optional
@@ -156,7 +187,7 @@ export function CompetitiveProfileSettings() {
                                     label={requirement}
                                     onToggle={() =>
                                         setRequirements((currentRequirements) => {
-                                            setIsSaved(false);
+                                            setShowSavedToast(false);
                                             setHasUnsavedChanges(true);
                                             return toggleSelection(
                                                 currentRequirements,
@@ -177,13 +208,8 @@ export function CompetitiveProfileSettings() {
                 >
                     {isSaving ? (
                         "Saving..."
-                    ) : isSaved ? (
-                        <>
-                            Saved
-                            <CheckIcon className="h-4 w-4" />
-                        </>
                     ) : (
-                        "Update Preferences"
+                        "Save Defaults"
                     )}
                 </button>
             </form>

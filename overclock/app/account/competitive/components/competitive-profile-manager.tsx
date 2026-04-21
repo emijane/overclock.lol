@@ -27,7 +27,9 @@ export function CompetitiveProfileManager({
 
   return (
     <>
-      <CompetitiveProfileSettings />
+      <CompetitiveProfileSettings
+        configuredRoleCount={competitiveProfile.roles.length}
+      />
 
       <CompetitiveRoleCardList
         competitiveProfile={competitiveProfile}

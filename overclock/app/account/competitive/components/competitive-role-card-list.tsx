@@ -25,8 +25,15 @@ export function CompetitiveRoleCardList({
     );
 
     return (
-        <section className="border-t border-white/10 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6">
-            <p className="mb-4 text-sm font-semibold text-zinc-100">Role Setup</p>
+        <section className="border-t-8 border-zinc-900/90 px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-7">
+            <div className="mb-5 max-w-2xl">
+                <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
+                    Competitive Roles
+                </h2>
+                <p className="mt-1.5 text-sm leading-6 text-zinc-400">
+                    Select the roles, ranks, and hero pools you want available when creating posts.
+                </p>
+            </div>
 
             <div className="grid items-stretch gap-3 sm:grid-cols-3">
                 {COMPETITIVE_ROLE_OPTIONS.map((role: CompetitiveRole) => (

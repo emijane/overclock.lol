@@ -58,6 +58,18 @@ export function CompetitiveRoleCard({
                 ) : null}
             </div>
 
+            <div className="mt-4">
+                <span
+                    className={`inline-flex h-7 items-center rounded-full border px-2.5 text-[11px] font-semibold ${
+                        isConfigured
+                            ? "border-emerald-300/25 bg-emerald-300/10 text-emerald-100"
+                            : "border-white/10 bg-white/[0.025] text-zinc-500"
+                    }`}
+                >
+                    Playable
+                </span>
+            </div>
+
             <div className="mt-5">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
                     Rank
