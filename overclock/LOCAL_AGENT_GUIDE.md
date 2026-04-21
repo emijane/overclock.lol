@@ -10,6 +10,13 @@ This file is a local working note for coding agents and should not be committed.
 - When introducing new flows, include the minimum needed context for future maintenance.
 - Read `docs/roadmap/PROJECT_CONTEXT_ROADMAP.md` before making substantial product or architecture changes, and keep it updated as the app evolves.
 
+## Roadmap Doc Map
+
+- `docs/roadmap/PROJECT_CONTEXT_ROADMAP.md` - Start here for current product shape, route map, architecture notes, gaps, and broad roadmap direction.
+- `docs/roadmap/LFG_ROLE_FLOW.md` - Use when working on future LFG surfaces, role-based posting contexts, hero pools, duos, stacks, teams, or scrims.
+- `docs/roadmap/RANK_VERIFICATION_SYSTEM.md` - Use when working on rank trust, verification status, reviewer flows, high-rank claims, or badge display.
+- `docs/roadmap/PUBLIC_PROFILE_PERFORMANCE.md` - Use when working on `/u/[username]` performance, public profile auth checks, public read RLS assumptions, or profile query shape.
+
 ## Coding Standards
 
 - Preserve existing project structure and naming unless there is a clear reason to improve it.

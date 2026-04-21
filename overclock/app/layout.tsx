@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Google_Sans_Flex } from "next/font/google";
+import { Geist } from "next/font/google";
 
 import { GlobalAuthBar } from "@/app/components/global-auth-bar";
 
 import "./globals.css";
 
-const googleSansFlex = Google_Sans_Flex({
-  variable: "--font-google-sans-flex",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -25,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${googleSansFlex.variable} h-full antialiased`}
+      className={`${geistSans.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning

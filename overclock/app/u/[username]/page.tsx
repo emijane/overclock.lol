@@ -4,7 +4,7 @@ import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
 import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getOptionalCurrentProfile } from "@/lib/profiles/get-optional-current-profile";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
@@ -38,16 +38,20 @@ export default async function ProfilePage({
   const query = searchParams ? await searchParams : {};
   const message = pickValue(query.message);
   const messageType = pickValue(query.type);
-  const profile = await getProfileByUsername(username);
-  const { profile: currentProfile } = await getCurrentProfile();
+  const [profile, currentProfile] = await Promise.all([
+    getProfileByUsername(username),
+    getOptionalCurrentProfile(),
+  ]);
 
   if (!profile) {
     notFound();
   }
 
-  const heroPools = await getProfileHeroPools(profile.id);
-  const competitiveProfile = await getCompetitiveProfile(profile.id);
-  const featuredClips = await getProfileFeaturedClips(profile.id);
+  const [heroPools, competitiveProfile, featuredClips] = await Promise.all([
+    getProfileHeroPools(profile.id),
+    getCompetitiveProfile(profile.id),
+    getProfileFeaturedClips(profile.id),
+  ]);
 
   // Keep route components focused on loading data while profile presentation
   // helpers stay colocated with the UI they support.
