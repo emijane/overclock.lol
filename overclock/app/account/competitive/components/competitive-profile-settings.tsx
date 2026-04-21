@@ -112,13 +112,6 @@ export function CompetitiveProfileSettings({
                 onSubmit={handleSubmit}
                 className="relative"
             >
-                {showSavedToast ? (
-                    <div className="absolute right-4 top-4 z-10 inline-flex h-9 items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/12 px-3 text-sm font-semibold text-emerald-100 shadow-[0_12px_30px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)]">
-                        <CheckIcon className="h-4 w-4" />
-                        Preferences updated
-                    </div>
-                ) : null}
-
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="max-w-2xl">
                         <div className="flex flex-wrap items-center gap-3">
@@ -142,6 +135,13 @@ export function CompetitiveProfileSettings({
                         Create Post
                     </Link>
                 </div>
+
+                {showSavedToast ? (
+                    <div className="mt-4 inline-flex h-9 items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/12 px-3 text-sm font-semibold text-emerald-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+                        <CheckIcon className="h-4 w-4" />
+                        Preferences updated
+                    </div>
+                ) : null}
 
                 <div className="mt-5 grid gap-3.5">
                     <div className="grid gap-1.5">
