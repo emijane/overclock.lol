@@ -155,6 +155,22 @@ User creates a post
 -> Submit post
 ```
 
+Initial route shells exist at:
+
+```text
+/lfg
+/duos
+/stacks
+/scrims
+/teams
+```
+
+These pages share one LFG architecture but should feel like standalone
+community spaces. Category navigation belongs in the global/top navigation, not
+as a repeated card row inside every page. Competitive, Unranked, LFG, and LFD
+should remain future filters or post-level labels inside these pages, not
+separate parent routes or page-level mode switches.
+
 Example post composer state:
 
 ```text

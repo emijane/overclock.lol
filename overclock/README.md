@@ -12,6 +12,8 @@ their public profile modal, and manage role-based hero pools.
 - `/account` is currently an empty placeholder settings route.
 - `/account/competitive` manages per-role Competitive Profile setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
+- `/lfg` is the main LFG shell.
+- `/duos`, `/stacks`, `/scrims`, and `/teams` are placeholder channel shells.
 
 ## Stack
 

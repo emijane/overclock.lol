@@ -18,6 +18,8 @@ The current product shape is profile-first rather than feed-first:
 - `/account/competitive` manages per-role rank and hero setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/u/[username]` renders the public player profile.
+- `/lfg`, `/duos`, `/stacks`, `/scrims`, and `/teams` are placeholder LFG
+  shells for future posting and browsing flows.
 
 The homepage currently redirects to `/login`.
 
@@ -30,6 +32,8 @@ The homepage currently redirects to `/login`.
    rank, and looking-for preferences from the edit modal on `/u/[username]`.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.
+7. Placeholder LFG pages provide the future channel structure for Duos, Stacks,
+   Scrims, and Teams.
 
 ## Technical Context
 

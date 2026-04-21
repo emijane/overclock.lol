@@ -10,8 +10,10 @@ The current product is focused on:
 - public player profiles at `/u/[username]`
 - owner-side profile editing from the public profile modal
 - hero pool setup by role
+- placeholder LFG channel shells for duos, stacks, scrims, and teams
 
-It is not yet the broader duo/team/scrim platform that earlier project notes described.
+The broader LFG posting system is still being built; current LFG pages are
+structure-only shells.
 
 ## Repo layout
 
@@ -43,7 +45,10 @@ callback route: `/auth/callback`.
 - `/onboarding` - profile creation
 - `/u/[username]` - public profile
 - `/account` - placeholder route for future settings
-- `/account/hero-pools` - hero pool editor
+- `/account/competitive` - saved LFG preferences and competitive role setup
+- `/account/hero-pools` - redirects to competitive setup
+- `/lfg` - main LFG shell
+- `/duos`, `/stacks`, `/scrims`, `/teams` - LFG channel shells
 
 ## Status
 
