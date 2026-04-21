@@ -4,7 +4,7 @@ import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
 import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
-import { getOptionalCurrentProfile } from "@/lib/profiles/get-optional-current-profile";
+import { getOptionalCurrentUserId } from "@/lib/profiles/get-optional-current-user-id";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
@@ -30,6 +30,25 @@ function pickValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+async function measureProfileStep<T>(
+  username: string,
+  label: string,
+  load: () => Promise<T>
+) {
+  if (process.env.NODE_ENV === "production") {
+    return load();
+  }
+
+  const startTime = performance.now();
+
+  try {
+    return await load();
+  } finally {
+    const duration = Math.round(performance.now() - startTime);
+    console.log(`[profile:${username}] ${label}: ${duration}ms`);
+  }
+}
+
 export default async function ProfilePage({
   params,
   searchParams,
@@ -38,9 +57,13 @@ export default async function ProfilePage({
   const query = searchParams ? await searchParams : {};
   const message = pickValue(query.message);
   const messageType = pickValue(query.type);
-  const [profile, currentProfile] = await Promise.all([
-    getProfileByUsername(username),
-    getOptionalCurrentProfile(),
+  const [profile, currentUserId] = await Promise.all([
+    measureProfileStep(username, "public profile", () =>
+      getProfileByUsername(username)
+    ),
+    measureProfileStep(username, "optional current user id", () =>
+      getOptionalCurrentUserId()
+    ),
   ]);
 
   if (!profile) {
@@ -48,9 +71,15 @@ export default async function ProfilePage({
   }
 
   const [heroPools, competitiveProfile, featuredClips] = await Promise.all([
-    getProfileHeroPools(profile.id),
-    getCompetitiveProfile(profile.id),
-    getProfileFeaturedClips(profile.id),
+    measureProfileStep(username, "hero pools", () =>
+      getProfileHeroPools(profile.id)
+    ),
+    measureProfileStep(username, "competitive profile", () =>
+      getCompetitiveProfile(profile.id)
+    ),
+    measureProfileStep(username, "featured clips", () =>
+      getProfileFeaturedClips(profile.id)
+    ),
   ]);
 
   // Keep route components focused on loading data while profile presentation
@@ -60,7 +89,7 @@ export default async function ProfilePage({
   const roleLabels = heroPools.roles.map((role) =>
     role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
   );
-  const isOwner = currentProfile?.id === profile.id;
+  const isOwner = currentUserId === profile.id;
   const mainRoleProfile = competitiveProfile.roles.find(
     (roleProfile) => roleProfile.role === competitiveProfile.mainRole
   );

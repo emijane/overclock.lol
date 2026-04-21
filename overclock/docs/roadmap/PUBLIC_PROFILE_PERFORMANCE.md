@@ -24,21 +24,23 @@ public profile row exists.
 
 ## Changes Made
 
-Added `lib/profiles/get-optional-current-profile.ts`.
+Added `lib/profiles/get-optional-current-user-id.ts`.
 
 This helper checks for a Supabase auth cookie before calling
-`getCurrentProfile()`. If no auth cookie exists, it returns `null` immediately.
-That lets anonymous public profile views skip an unnecessary Supabase auth/user
-lookup.
+Supabase auth. If no auth cookie exists, it returns `null` immediately. When a
+cookie exists, it reads the auth claim subject id instead of loading the full
+current profile row. That lets anonymous public profile views skip auth work and
+lets signed-in public profile views avoid owner-profile syncing when the route
+only needs `isOwner`.
 
 Updated `app/u/[username]/page.tsx`.
 
 The page now:
 
-- loads the public profile and optional current profile in parallel
+- loads the public profile and optional current user id in parallel
 - returns `notFound()` if the public profile does not exist
 - loads hero pools, competitive profile data, and featured clips in parallel
-- keeps owner detection based on `currentProfile?.id === profile.id`
+- keeps owner detection based on `currentUserId === profile.id`
 
 The intended behavior remains:
 
