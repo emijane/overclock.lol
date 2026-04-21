@@ -42,6 +42,19 @@ The page now:
 - loads hero pools, competitive profile data, and featured clips in parallel
 - keeps owner detection based on `currentUserId === profile.id`
 
+Updated `lib/competitive/competitive-profile.ts`.
+
+The competitive profile helper now loads `competitive_profiles` and
+`competitive_role_profiles` in parallel because both queries only depend on the
+same `profileId`.
+
+Updated `lib/profiles/get-profile-by-username.ts`.
+
+Usernames are normalized to lowercase during onboarding, so the public profile
+lookup now normalizes the route param and uses an exact `eq("username", value)`
+query instead of a case-insensitive `ilike`. This should make better use of the
+unique username lookup path.
+
 The intended behavior remains:
 
 - logged-out visitors can view public profiles without edit controls

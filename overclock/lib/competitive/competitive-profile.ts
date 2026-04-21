@@ -34,23 +34,27 @@ export async function getCompetitiveProfile(
 ): Promise<CompetitiveProfile> {
   const supabase = await createClient();
 
-  const { data: profileData, error: profileError } = await supabase
-    .from("competitive_profiles")
-    .select("main_role")
-    .eq("profile_id", profileId)
-    .maybeSingle();
+  const [profileResult, roleResult] = await Promise.all([
+    supabase
+      .from("competitive_profiles")
+      .select("main_role")
+      .eq("profile_id", profileId)
+      .maybeSingle(),
+    supabase
+      .from("competitive_role_profiles")
+      .select(
+        "id, profile_id, role, rank_tier, rank_division, enabled, created_at, updated_at"
+      )
+      .eq("profile_id", profileId)
+      .order("role", { ascending: true }),
+  ]);
+
+  const { data: profileData, error: profileError } = profileResult;
+  const { data: roleData, error: roleError } = roleResult;
 
   if (profileError) {
     throw profileError;
   }
-
-  const { data: roleData, error: roleError } = await supabase
-    .from("competitive_role_profiles")
-    .select(
-      "id, profile_id, role, rank_tier, rank_division, enabled, created_at, updated_at"
-    )
-    .eq("profile_id", profileId)
-    .order("role", { ascending: true });
 
   if (roleError) {
     throw roleError;
