@@ -107,10 +107,10 @@ export function CompetitiveProfileSettings({
     }
 
     return (
-        <section className="border-t border-white/10 bg-white/[0.018] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-7">
+        <section className="border-t border-white/10 px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-7">
             <form
                 onSubmit={handleSubmit}
-                className="relative rounded-[20px] border border-white/10 bg-white/[0.03] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-4"
+                className="relative"
             >
                 {showSavedToast ? (
                     <div className="absolute right-4 top-4 z-10 inline-flex h-9 items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/12 px-3 text-sm font-semibold text-emerald-100 shadow-[0_12px_30px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)]">
