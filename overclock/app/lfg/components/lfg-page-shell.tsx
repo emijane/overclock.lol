@@ -1,11 +1,16 @@
 import { FilterIcon, MessageSquarePlusIcon, SearchIcon } from "lucide-react";
 
 type LFGPageShellProps = {
+  createPostTitle?: string;
   description: string;
+  emptyStateDescription?: string;
+  emptyStateTitle?: string;
+  filtersDescription?: string;
+  helperText?: string;
   title: string;
 };
 
-function LFGFiltersBar() {
+function LFGFiltersBar({ description }: { description: string }) {
   return (
     <section className="border-t border-white/10 px-5 py-5 sm:px-6">
       <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-dashed border-white/12 bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
@@ -16,7 +21,7 @@ function LFGFiltersBar() {
           <div>
             <h2 className="text-sm font-semibold text-zinc-100">Filters</h2>
             <p className="mt-0.5 text-sm text-zinc-500">
-              Competitive, Unranked, role, rank, region, platform, LFG, and LFD filters will live here.
+              {description}
             </p>
           </div>
         </div>
@@ -25,7 +30,13 @@ function LFGFiltersBar() {
   );
 }
 
-function LFGFeedPlaceholder() {
+function LFGFeedPlaceholder({
+  description,
+  title,
+}: {
+  description: string;
+  title: string;
+}) {
   return (
     <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">
@@ -34,10 +45,10 @@ function LFGFeedPlaceholder() {
             <SearchIcon className="h-5 w-5" />
           </span>
           <h2 className="mt-4 text-base font-semibold text-zinc-100">
-            Feed placeholder
+            {title}
           </h2>
           <p className="mt-2 text-sm leading-6 text-zinc-500">
-            Posts for this community will render here once the posting system is connected.
+            {description}
           </p>
         </div>
       </div>
@@ -46,7 +57,12 @@ function LFGFeedPlaceholder() {
 }
 
 export function LFGPageShell({
+  createPostTitle = "Create Post",
   description,
+  emptyStateDescription = "Create a post to start the conversation.",
+  emptyStateTitle = "No posts yet",
+  filtersDescription = "Filter by rank, role, region, and playstyle.",
+  helperText,
   title,
 }: LFGPageShellProps) {
   return (
@@ -55,10 +71,7 @@ export function LFGPageShell({
         <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-                Community
-              </p>
-              <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
                     {title}
@@ -66,9 +79,17 @@ export function LFGPageShell({
                   <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
                     {description}
                   </p>
+                  {helperText ? (
+                    <p className="mt-1 text-sm leading-6 text-zinc-500">
+                      {helperText}
+                    </p>
+                  ) : null}
                 </div>
                 <button
                   type="button"
+                  aria-label={createPostTitle}
+                  title={createPostTitle}
+                  data-create-post-title={createPostTitle}
                   className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-4 text-sm font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-zinc-100"
                 >
                   <MessageSquarePlusIcon className="h-4 w-4" />
@@ -78,8 +99,11 @@ export function LFGPageShell({
 
             </header>
 
-            <LFGFiltersBar />
-            <LFGFeedPlaceholder />
+            <LFGFiltersBar description={filtersDescription} />
+            <LFGFeedPlaceholder
+              description={emptyStateDescription}
+              title={emptyStateTitle}
+            />
           </div>
         </section>
       </div>
