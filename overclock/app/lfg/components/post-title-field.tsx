@@ -15,13 +15,14 @@ export function PostTitleField() {
           <input
             id={inputId}
             type="text"
-          required
-          maxLength={MAX_POST_TITLE_LENGTH}
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder="Looking for hitscan duo for comp climb..."
-          className="h-8 min-w-0 flex-1 bg-transparent text-[15px] text-zinc-100 outline-none transition placeholder:text-zinc-500"
-        />
+            required
+            name="title"
+            maxLength={MAX_POST_TITLE_LENGTH}
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            placeholder="Looking for hitscan duo for comp climb..."
+            className="h-8 min-w-0 flex-1 bg-transparent text-[15px] text-zinc-100 outline-none transition placeholder:text-zinc-500"
+          />
           <span className="shrink-0 text-xs text-zinc-600">
             {value.length}/{MAX_POST_TITLE_LENGTH}
           </span>

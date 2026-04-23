@@ -101,6 +101,7 @@ export function LFGRolePicker({
       {selectedRoleOption ? (
         selectedRoleOption.isConfigured ? (
           <>
+            <input type="hidden" name="posting_role" value={selectedRoleOption.role} />
             <div className="mt-3 rounded-[18px] border border-white/8 bg-white/[0.02] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 gap-3.5">
@@ -146,9 +147,7 @@ export function LFGRolePicker({
               </div>
 
               <div className="mt-3 border-t border-white/8 pt-3">
-                <p className="text-xs font-medium text-zinc-500">
-                  Hero Pool
-                </p>
+                <p className="text-xs font-medium text-zinc-500">Hero Pool</p>
                 {selectedRoleOption.heroPool.length > 0 ? (
                   <div className="mt-2 flex flex-wrap gap-2.5">
                     {selectedRoleOption.heroPool.slice(0, 3).map((hero) => (
@@ -179,13 +178,13 @@ export function LFGRolePicker({
               <p className="text-sm text-zinc-400">
                 Posting as{" "}
                 <span className="font-medium text-zinc-100">{postingAsLabel}</span>
-                {" "}•{" "}
+                {" • "}
                 <span className="font-medium text-zinc-100">
                   {selectedRoleOption.rankLabel}
                 </span>
               </p>
               <button
-                type="button"
+                type="submit"
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
               >
                 <PlusIcon className="h-4 w-4" />

@@ -1,13 +1,18 @@
-import { FilterIcon, SearchIcon } from "lucide-react";
+import { FilterIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
+import { createLFGPost } from "@/app/lfg/actions";
+import { AuthMessage } from "@/app/login/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
+import type { LFGType } from "@/lib/lfg/lfg-post-types";
+import { getActiveLFGPosts } from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
+import { LFGPostList } from "./lfg-post-list";
 import { LFGRolePicker } from "./lfg-role-picker";
 import { PostTitleField } from "./post-title-field";
 
@@ -17,7 +22,10 @@ type LFGPageShellProps = {
   emptyStateTitle?: string;
   filtersDescription?: string;
   helperText?: string;
+  message?: string;
+  messageType?: string;
   title: string;
+  type: LFGType;
 };
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -40,68 +48,48 @@ function LFGFiltersBar({ description }: { description: string }) {
   );
 }
 
-function LFGFeedPlaceholder({
-  description,
-  title,
-}: {
-  description: string;
-  title: string;
-}) {
-  return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
-      <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">
-        <div className="max-w-sm">
-          <span className="mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-zinc-400">
-            <SearchIcon className="h-5 w-5" />
-          </span>
-          <h2 className="mt-4 text-base font-semibold text-zinc-100">
-            {title}
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-500">
-            {description}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export async function LFGPageShell({
   description,
   emptyStateDescription = "Create a post to start the conversation.",
   emptyStateTitle = "No posts yet",
   filtersDescription = "Filter by rank, role, region, and playstyle.",
   helperText,
+  message,
+  messageType,
   title,
+  type,
 }: LFGPageShellProps) {
   const { profile } = await getCurrentProfile();
-  const [competitiveProfile, heroPools] = profile
-    ? await Promise.all([
-        getCompetitiveProfile(profile.id),
-        getProfileHeroPools(profile.id),
-      ])
-    : [null, null];
+  const postsPromise = getActiveLFGPosts(type);
+  const profileDataPromise = profile
+    ? Promise.all([getCompetitiveProfile(profile.id), getProfileHeroPools(profile.id)])
+    : Promise.resolve([null, null] as const);
+  const [[competitiveProfile, heroPools], posts] = await Promise.all([
+    profileDataPromise,
+    postsPromise,
+  ]);
 
-  const roleOptions = competitiveProfile && heroPools
-    ? COMPETITIVE_ROLE_OPTIONS.map((role) => {
-        const roleProfile =
-          competitiveProfile.roles.find((candidate) => candidate.role === role) ??
-          null;
-        const heroPool = heroPools.heroPicks[role]
-          .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
-          .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
+  const roleOptions =
+    competitiveProfile && heroPools
+      ? COMPETITIVE_ROLE_OPTIONS.map((role) => {
+          const roleProfile =
+            competitiveProfile.roles.find((candidate) => candidate.role === role) ??
+            null;
+          const heroPool = heroPools.heroPicks[role]
+            .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
+            .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
 
-        return {
-          heroPool,
-          isConfigured: Boolean(roleProfile),
-          rankLabel: roleProfile
-            ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
-            : "Not set",
-          rankTier: roleProfile?.rankTier ?? null,
-          role,
-        };
-      })
-    : [];
+          return {
+            heroPool,
+            isConfigured: Boolean(roleProfile),
+            rankLabel: roleProfile
+              ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
+              : "Not set",
+            rankTier: roleProfile?.rankTier ?? null,
+            role,
+          };
+        })
+      : [];
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
@@ -109,6 +97,7 @@ export async function LFGPageShell({
         <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
+              <AuthMessage message={message} type={messageType} />
               <div>
                 <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
                   {title}
@@ -126,25 +115,28 @@ export async function LFGPageShell({
                 <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
                   Create a Post
                 </h2>
-                <PostTitleField />
                 {profile ? (
-                  <LFGRolePicker
-                    profileSummary={{
-                      region: profile.region ?? "Not set",
-                      timezone: profile.timezone ?? "Not set",
-                    }}
-                    roleOptions={roleOptions}
-                    setupHref="/account/competitive"
-                  />
+                  <form action={createLFGPost}>
+                    <input type="hidden" name="lfg_type" value={type} />
+                    <PostTitleField />
+                    <LFGRolePicker
+                      profileSummary={{
+                        region: profile.region ?? "Not set",
+                        timezone: profile.timezone ?? "Not set",
+                      }}
+                      roleOptions={roleOptions}
+                      setupHref="/account/competitive"
+                    />
+                  </form>
                 ) : null}
               </section>
-
             </header>
 
             <LFGFiltersBar description={filtersDescription} />
-            <LFGFeedPlaceholder
-              description={emptyStateDescription}
-              title={emptyStateTitle}
+            <LFGPostList
+              emptyStateDescription={emptyStateDescription}
+              emptyStateTitle={emptyStateTitle}
+              posts={posts}
             />
           </div>
         </section>
