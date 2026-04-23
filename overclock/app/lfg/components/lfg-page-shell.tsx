@@ -1,9 +1,16 @@
-import { FilterIcon, MessageSquarePlusIcon, SearchIcon } from "lucide-react";
+import { FilterIcon, SearchIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
+import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
+import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
+import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
+import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { formatCurrentRank } from "@/lib/profiles/profile-editor";
+
+import { LFGRolePicker } from "./lfg-role-picker";
 
 type LFGPageShellProps = {
-  createPostTitle?: string;
   description: string;
   emptyStateDescription?: string;
   emptyStateTitle?: string;
@@ -58,8 +65,7 @@ function LFGFeedPlaceholder({
   );
 }
 
-export function LFGPageShell({
-  createPostTitle = "Create Post",
+export async function LFGPageShell({
   description,
   emptyStateDescription = "Create a post to start the conversation.",
   emptyStateTitle = "No posts yet",
@@ -67,37 +73,71 @@ export function LFGPageShell({
   helperText,
   title,
 }: LFGPageShellProps) {
+  const { profile } = await getCurrentProfile();
+  const [competitiveProfile, heroPools] = profile
+    ? await Promise.all([
+        getCompetitiveProfile(profile.id),
+        getProfileHeroPools(profile.id),
+      ])
+    : [null, null];
+
+  const roleOptions = competitiveProfile && heroPools
+    ? COMPETITIVE_ROLE_OPTIONS.map((role) => {
+        const roleProfile =
+          competitiveProfile.roles.find((candidate) => candidate.role === role) ??
+          null;
+        const heroPool = heroPools.heroPicks[role]
+          .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
+          .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
+
+        return {
+          heroPool,
+          isConfigured: Boolean(roleProfile),
+          rankLabel: roleProfile
+            ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
+            : "Not set",
+          rankTier: roleProfile?.rankTier ?? null,
+          role,
+        };
+      })
+    : [];
+
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
       <PageContainer className="flex flex-col gap-4">
         <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
-                    {title}
-                  </h1>
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
-                    {description}
+              <div>
+                <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
+                  {title}
+                </h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+                  {description}
+                </p>
+                {helperText ? (
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">
+                    {helperText}
                   </p>
-                  {helperText ? (
-                    <p className="mt-1 text-sm leading-6 text-zinc-500">
-                      {helperText}
-                    </p>
-                  ) : null}
-                </div>
-                <button
-                  type="button"
-                  aria-label={createPostTitle}
-                  title={createPostTitle}
-                  data-create-post-title={createPostTitle}
-                  className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-4 text-sm font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-zinc-100"
-                >
-                  <MessageSquarePlusIcon className="h-4 w-4" />
-                  Create Post
-                </button>
+                ) : null}
               </div>
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="new post"
+                  className="h-11 w-full rounded-2xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 hover:border-zinc-700 focus:border-sky-400/60"
+                />
+              </div>
+              {profile ? (
+                <LFGRolePicker
+                  profileSummary={{
+                    region: profile.region ?? "Not set",
+                    timezone: profile.timezone ?? "Not set",
+                  }}
+                  roleOptions={roleOptions}
+                  setupHref="/account/competitive"
+                />
+              ) : null}
 
             </header>
 
