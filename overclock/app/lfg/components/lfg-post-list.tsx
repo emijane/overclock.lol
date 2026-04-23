@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
@@ -53,6 +54,9 @@ export function LFGPostList({
         {posts.map((post) => {
           const rankIconSrc = getRankIconSrc(post.rankTier);
           const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
+          const visibleName = post.author.username ?? post.author.displayName ?? "Player";
+          const profileHref = post.author.username ? `/u/${post.author.username}` : null;
+          const avatarFallback = visibleName.slice(0, 2).toUpperCase();
 
           return (
             <article
@@ -61,6 +65,40 @@ export function LFGPostList({
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                      {post.author.avatarUrl ? (
+                        <Image
+                          src={post.author.avatarUrl}
+                          alt={`${visibleName} avatar`}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      ) : (
+                        avatarFallback
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      {profileHref ? (
+                        <Link
+                          href={profileHref}
+                          className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-300"
+                        >
+                          @{post.author.username}
+                        </Link>
+                      ) : (
+                        <p className="truncate text-sm font-semibold text-zinc-100">
+                          {visibleName}
+                        </p>
+                      )}
+                      {post.author.displayName ? (
+                        <p className="truncate text-xs text-zinc-500">
+                          {post.author.displayName}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
                   <h2 className="text-base font-semibold text-zinc-50">
                     {post.title}
                   </h2>

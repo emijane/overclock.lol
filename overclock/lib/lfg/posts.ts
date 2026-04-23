@@ -40,6 +40,28 @@ function normalizeStatus(value: unknown): LFGPostStatus {
   return value === "closed" || value === "archived" ? value : "active";
 }
 
+function normalizeAuthor(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {
+      avatarUrl: null,
+      displayName: null,
+      username: null,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  return {
+    avatarUrl:
+      typeof candidate.discord_avatar_url === "string"
+        ? candidate.discord_avatar_url
+        : null,
+    displayName:
+      typeof candidate.display_name === "string" ? candidate.display_name : null,
+    username: typeof candidate.username === "string" ? candidate.username : null,
+  };
+}
+
 export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -57,6 +79,7 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
+        "profiles:profile_id(username,display_name,discord_avatar_url)",
       ].join(",")
     )
     .eq("lfg_type", lfgType)
@@ -69,6 +92,7 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
   }
 
   return (data ?? []).map((row) => ({
+    author: normalizeAuthor(row.profiles),
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",

@@ -24,6 +24,11 @@ export type CompetitiveProfileSnapshot = {
 };
 
 export type LFGPost = {
+  author: {
+    avatarUrl: string | null;
+    displayName: string | null;
+    username: string | null;
+  };
   createdAt: string;
   heroPool: LFGHeroSnapshot[];
   id: string;
