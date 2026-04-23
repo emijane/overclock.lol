@@ -127,7 +127,7 @@ export async function LFGPageShell({
                   Create a Post
                 </h2>
                 <p className="mt-1.5 text-sm leading-6 text-zinc-400">
-                  Find a duo partner by creating a matchmaking post.
+                  Create a post to find your next duo.
                 </p>
                 <PostTitleField />
                 {profile ? (

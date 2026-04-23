@@ -60,6 +60,9 @@ export function LFGRolePicker({
   const selectedRoleOption =
     roleOptions.find((roleOption) => roleOption.role === selectedRole) ?? null;
   const rankIconSrc = getRankIconSrc(selectedRoleOption?.rankTier);
+  const postingAsLabel = selectedRoleOption
+    ? COMPETITIVE_ROLE_LABELS[selectedRoleOption.role]
+    : null;
 
   return (
     <div className="mt-4">
@@ -95,6 +98,9 @@ export function LFGRolePicker({
           );
         })}
       </div>
+      {postingAsLabel ? (
+        <p className="mt-2 text-sm text-zinc-500">Posting as {postingAsLabel}</p>
+      ) : null}
 
       {selectedRoleOption ? (
         selectedRoleOption.isConfigured ? (
@@ -118,10 +124,10 @@ export function LFGRolePicker({
 
                   <div className="min-w-0">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                      Attached Profile
+                      Competitive Profile
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className="text-sm font-semibold text-zinc-100">
+                      <span className="text-[15px] font-bold text-zinc-50">
                         {selectedRoleOption.rankLabel}
                       </span>
                       <span className="text-zinc-600">&bull;</span>
@@ -152,7 +158,7 @@ export function LFGRolePicker({
                     {selectedRoleOption.heroPool.slice(0, 3).map((hero) => (
                       <span
                         key={hero.id}
-                        className="inline-flex h-8 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2.5 pr-3 text-sm font-medium text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                        className="inline-flex h-8 items-center gap-2 rounded-full border border-white/8 bg-white/[0.02] px-2.5 pr-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                       >
                         <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-zinc-900">
                           <Image
@@ -174,7 +180,15 @@ export function LFGRolePicker({
                 )}
               </div>
             </div>
-            <div className="mt-3 flex justify-end">
+            <div className="mt-3 flex items-center justify-between rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-3">
+              <p className="text-sm text-zinc-400">
+                Posting as{" "}
+                <span className="font-medium text-zinc-100">{postingAsLabel}</span>
+                {" "}•{" "}
+                <span className="font-medium text-zinc-100">
+                  {selectedRoleOption.rankLabel}
+                </span>
+              </p>
               <button
                 type="button"
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
