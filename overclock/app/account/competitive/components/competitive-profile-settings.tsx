@@ -4,15 +4,8 @@ import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
 
-const GOAL_OPTIONS = [
-    "Chill",
-    "Competitive",
-    "Scrims",
-] as const;
-
 const REQUIREMENT_OPTIONS = ["Mic Required", "18+ Only"] as const;
 
-type GoalOption = (typeof GOAL_OPTIONS)[number];
 type RequirementOption = (typeof REQUIREMENT_OPTIONS)[number];
 
 type CompetitiveProfileSettingsProps = {
@@ -67,28 +60,10 @@ function toggleSelection<T extends string>(items: T[], item: T) {
 export function CompetitiveProfileSettings({
     configuredRoleCount,
 }: CompetitiveProfileSettingsProps) {
-    const [goals, setGoals] = useState<GoalOption[]>([]);
     const [requirements, setRequirements] = useState<RequirementOption[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [showSavedToast, setShowSavedToast] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
-    function toggleGoal(goal: GoalOption) {
-        setShowSavedToast(false);
-        setGoals((currentGoals) => {
-            if (currentGoals.includes(goal)) {
-                setHasUnsavedChanges(true);
-                return currentGoals.filter((currentGoal) => currentGoal !== goal);
-            }
-
-            if (currentGoals.length >= 2) {
-                return currentGoals;
-            }
-
-            setHasUnsavedChanges(true);
-            return [...currentGoals, goal];
-        });
-    }
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -144,31 +119,6 @@ export function CompetitiveProfileSettings({
                 ) : null}
 
                 <div className="mt-5 grid gap-3.5">
-                    <div className="grid gap-1.5">
-                        <div className="grid gap-px">
-                            <p className="text-sm font-semibold text-zinc-100">
-                                Playstyle
-                            </p>
-                            <p className="text-[11px] font-medium text-zinc-500">
-                                Used to match you with similar players
-                            </p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5">
-                            {GOAL_OPTIONS.map((goal) => (
-                                <ToggleChip
-                                    key={goal}
-                                    isDisabled={
-                                        goals.length >= 2 && !goals.includes(goal)
-                                    }
-                                    isSelected={goals.includes(goal)}
-                                    label={goal}
-                                    onToggle={() => toggleGoal(goal)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
                     <div className="grid gap-1.5">
                         <div className="flex items-baseline gap-1.5">
                             <p className="text-sm font-semibold text-zinc-100">

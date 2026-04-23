@@ -11,24 +11,18 @@ export function PostTitleField() {
   return (
     <div className="mt-4">
       <div className="rounded-[22px] border border-zinc-800 bg-zinc-950/90 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-        <label
-          htmlFor={inputId}
-          className="mb-2 block text-sm font-semibold tracking-[-0.01em] text-zinc-100"
-        >
-          What are you looking for?
-        </label>
-        <input
-          id={inputId}
-          type="text"
+        <div className="flex items-center gap-3">
+          <input
+            id={inputId}
+            type="text"
+          required
           maxLength={MAX_POST_TITLE_LENGTH}
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          placeholder="Looking for chill Mercy duo for comp climb..."
-          className="h-8 w-full bg-transparent text-[15px] text-zinc-100 outline-none transition placeholder:text-zinc-500"
+          placeholder="Looking for hitscan duo for comp climb..."
+          className="h-8 min-w-0 flex-1 bg-transparent text-[15px] text-zinc-100 outline-none transition placeholder:text-zinc-500"
         />
-        <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
-          <span>Keep it short and specific.</span>
-          <span>
+          <span className="shrink-0 text-xs text-zinc-600">
             {value.length}/{MAX_POST_TITLE_LENGTH}
           </span>
         </div>

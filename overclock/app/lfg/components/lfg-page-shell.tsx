@@ -122,13 +122,10 @@ export async function LFGPageShell({
                   </p>
                 ) : null}
               </div>
-              <section className="mt-6 rounded-[24px] border border-sky-300/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <section className="mt-6 rounded-[24px] border border-white/8 p-5">
                 <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
                   Create a Post
                 </h2>
-                <p className="mt-1.5 text-sm leading-6 text-zinc-400">
-                  Create a post to find your next duo.
-                </p>
                 <PostTitleField />
                 {profile ? (
                   <LFGRolePicker

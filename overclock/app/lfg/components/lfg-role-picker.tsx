@@ -98,10 +98,6 @@ export function LFGRolePicker({
           );
         })}
       </div>
-      {postingAsLabel ? (
-        <p className="mt-2 text-sm text-zinc-500">Posting as {postingAsLabel}</p>
-      ) : null}
-
       {selectedRoleOption ? (
         selectedRoleOption.isConfigured ? (
           <>
@@ -123,7 +119,7 @@ export function LFGRolePicker({
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <p className="text-xs font-medium text-zinc-500">
                       Competitive Profile
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -150,27 +146,26 @@ export function LFGRolePicker({
               </div>
 
               <div className="mt-3 border-t border-white/8 pt-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+                <p className="text-xs font-medium text-zinc-500">
                   Hero Pool
                 </p>
                 {selectedRoleOption.heroPool.length > 0 ? (
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap gap-2.5">
                     {selectedRoleOption.heroPool.slice(0, 3).map((hero) => (
-                      <span
+                      <div
                         key={hero.id}
-                        className="inline-flex h-8 items-center gap-2 rounded-full border border-white/8 bg-white/[0.02] px-2.5 pr-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+                        title={hero.label}
+                        aria-label={hero.label}
+                        className="relative h-10 w-10 overflow-hidden rounded-[12px] border border-white/10 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                       >
-                        <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-zinc-900">
-                          <Image
-                            src={hero.imageSrc}
-                            alt={hero.label}
-                            fill
-                            className="object-cover"
-                            sizes="24px"
-                          />
-                        </span>
-                        {hero.label}
-                      </span>
+                        <Image
+                          src={hero.imageSrc}
+                          alt={hero.label}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -194,7 +189,7 @@ export function LFGRolePicker({
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
               >
                 <PlusIcon className="h-4 w-4" />
-                Post
+                Create Post
               </button>
             </div>
           </>
