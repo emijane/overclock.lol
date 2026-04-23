@@ -5,7 +5,7 @@ type PageContainerProps = {
   className?: string;
 };
 
-const baseClassName = "mx-auto w-full max-w-[58rem]";
+const baseClassName = "mx-auto w-full max-w-[68rem]";
 
 export function PageContainer({
   children,

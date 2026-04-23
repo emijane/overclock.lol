@@ -122,7 +122,7 @@ export async function LFGPageShell({
                   </p>
                 ) : null}
               </div>
-              <section className="mt-6 rounded-[24px] border border-white/8 p-5">
+              <section className="mt-6">
                 <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
                   Create a Post
                 </h2>
