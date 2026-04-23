@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { createProfile } from "@/app/onboarding/actions";
+import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { getDiscordProfile } from "@/lib/profiles/discord-profile";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
@@ -36,8 +37,8 @@ export default async function OnboardingPage({
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-xl items-center">
-        <section className="w-full rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
+      <PageContainer className="flex min-h-[calc(100vh-6rem)] items-center">
+        <section className="w-full max-w-xl rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
           <AuthMessage message={message} type={messageType} />
           <p className="text-sm font-medium uppercase tracking-[0.3em] text-sky-300">
             Onboarding
@@ -121,7 +122,7 @@ export default async function OnboardingPage({
             </button>
           </form>
         </section>
-      </div>
+      </PageContainer>
     </main>
   );
 }

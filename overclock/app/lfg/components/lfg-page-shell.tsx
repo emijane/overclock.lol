@@ -1,5 +1,7 @@
 import { FilterIcon, MessageSquarePlusIcon, SearchIcon } from "lucide-react";
 
+import { PageContainer } from "@/app/components/page-container";
+
 type LFGPageShellProps = {
   createPostTitle?: string;
   description: string;
@@ -67,7 +69,7 @@ export function LFGPageShell({
 }: LFGPageShellProps) {
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
+      <PageContainer className="flex flex-col gap-4">
         <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
@@ -106,7 +108,7 @@ export function LFGPageShell({
             />
           </div>
         </section>
-      </div>
+      </PageContainer>
     </main>
   );
 }

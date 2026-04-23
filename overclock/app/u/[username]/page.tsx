@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { PageContainer } from "@/app/components/page-container";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
@@ -140,7 +141,7 @@ export default async function ProfilePage({
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
-      <div className="mx-auto grid w-full max-w-4xl gap-3">
+      <PageContainer className="grid gap-3">
         {isOwner ? <AuthMessage message={message} type={messageType} /> : null}
         <div className={`rounded-[28px] p-px ${profileBorderClassName}`}>
           <div
@@ -177,7 +178,7 @@ export default async function ProfilePage({
             />
           </div>
         </div>
-      </div>
+      </PageContainer>
     </main>
   );
 }

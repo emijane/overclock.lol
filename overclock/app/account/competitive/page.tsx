@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { CompetitiveProfileHeader } from "@/app/account/competitive/components/competitive-profile-header";
 import { CompetitiveProfileManager } from "@/app/account/competitive/components/competitive-profile-manager";
+import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
@@ -36,7 +37,7 @@ export default async function CompetitiveProfilePage({
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
+      <PageContainer className="flex flex-col gap-4">
         <AuthMessage message={message} type={messageType} />
         <div className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
@@ -47,7 +48,7 @@ export default async function CompetitiveProfilePage({
             />
           </div>
         </div>
-      </div>
+      </PageContainer>
     </main>
   );
 }

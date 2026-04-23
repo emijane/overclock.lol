@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
@@ -27,7 +28,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+      <PageContainer className="flex flex-col gap-4">
         <AuthMessage message={message} type={messageType} />
 
         <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 px-5 py-5 sm:px-6">
@@ -46,7 +47,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             </p>
           </div>
         </section>
-      </div>
+      </PageContainer>
     </main>
   );
 }

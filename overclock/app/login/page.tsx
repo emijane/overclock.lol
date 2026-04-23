@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { PageContainer } from "@/app/components/page-container";
 import {
   AuthMessage,
   AuthenticatedPanel,
@@ -38,16 +39,20 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-xl flex-col justify-center gap-6">
+      <PageContainer className="flex min-h-[calc(100vh-6rem)] flex-col justify-center gap-6">
         <AuthMessage message={message} type={messageType} />
-        {isAuthenticated ? (
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
-            <AuthenticatedPanel email={user?.email ?? claims?.email?.toString()} />
-          </div>
-        ) : (
-          <UnauthenticatedPanel />
-        )}
-      </div>
+        <div className="w-full max-w-xl">
+          {isAuthenticated ? (
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
+              <AuthenticatedPanel
+                email={user?.email ?? claims?.email?.toString()}
+              />
+            </div>
+          ) : (
+            <UnauthenticatedPanel />
+          )}
+        </div>
+      </PageContainer>
     </main>
   );
 }

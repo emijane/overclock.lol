@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { PageContainer } from "@/app/components/page-container";
 import { UserMenu } from "@/app/components/user-menu";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
@@ -26,7 +27,7 @@ export async function GlobalAuthBar() {
 
   return (
     <header className="border-b border-zinc-800/80 bg-zinc-950/95 px-6 py-4 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
+      <PageContainer className="flex items-center justify-between gap-4">
         <Link href="/" className="text-xl font-bold tracking-tight text-red-700">
           overclock.lol
         </Link>
@@ -51,7 +52,7 @@ export async function GlobalAuthBar() {
             visibleName={visibleName}
           />
         </div>
-      </div>
+      </PageContainer>
     </header>
   );
 }
