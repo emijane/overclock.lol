@@ -9,6 +9,7 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import { LFGRolePicker } from "./lfg-role-picker";
+import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
   description: string;
@@ -121,23 +122,25 @@ export async function LFGPageShell({
                   </p>
                 ) : null}
               </div>
-              <div className="mt-4">
-                <input
-                  type="text"
-                  placeholder="new post"
-                  className="h-11 w-full rounded-2xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 hover:border-zinc-700 focus:border-sky-400/60"
-                />
-              </div>
-              {profile ? (
-                <LFGRolePicker
-                  profileSummary={{
-                    region: profile.region ?? "Not set",
-                    timezone: profile.timezone ?? "Not set",
-                  }}
-                  roleOptions={roleOptions}
-                  setupHref="/account/competitive"
-                />
-              ) : null}
+              <section className="mt-6 rounded-[24px] border border-sky-300/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
+                  Create a Post
+                </h2>
+                <p className="mt-1.5 text-sm leading-6 text-zinc-400">
+                  Find a duo partner by creating a matchmaking post.
+                </p>
+                <PostTitleField />
+                {profile ? (
+                  <LFGRolePicker
+                    profileSummary={{
+                      region: profile.region ?? "Not set",
+                      timezone: profile.timezone ?? "Not set",
+                    }}
+                    roleOptions={roleOptions}
+                    setupHref="/account/competitive"
+                  />
+                ) : null}
+              </section>
 
             </header>
 
