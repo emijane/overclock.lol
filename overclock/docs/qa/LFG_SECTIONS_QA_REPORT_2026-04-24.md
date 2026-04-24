@@ -104,26 +104,6 @@ Impact:
 Recommended fix:
 - Collapse the no-role-configured state into one clear CTA.
 
-### 4. Post creation gating depends on profile platform/region/timezone, but the UI does not explain all three requirements before submit
-Severity: Medium
-
-Why this matters:
-- The UI mostly emphasizes competitive role setup.
-- The server also blocks posting if platform, region, or server are missing.
-
-Evidence:
-- `app/lfg/actions.ts`
-  - `getRequiredProfileError()` blocks if platform, region, or timezone are missing
-- `app/lfg/components/lfg-page-shell.tsx`
-  - Main setup CTA points only to `/account/competitive`
-
-Impact:
-- User can reach a valid role selection state and still be rejected on submit
-- Confusing path to resolution
-
-Recommended fix:
-- Surface these profile requirements directly in the create flow before submit.
-
 ## Minor Issues
 
 ### 1. No explicit mobile wrapping safeguard in the bottom create CTA row
@@ -179,7 +159,6 @@ Recommended fix:
 ### 3. The post creation path is split across profile setup concepts
 - Competitive role setup lives under `/account/competitive`
 - Platform/region/server data appears to come from the broader profile editor
-- The page does not clearly explain the full checklist needed before posting
 
 ### 4. No edit/delete support creates a dead-end after posting
 - If a user makes a typo or changes plans, the LFG pages do not offer recovery
@@ -238,12 +217,10 @@ Recommendation:
 
 ### P1
 1. Add real loading and submit states.
-2. Make profile setup requirements explicit before submit, not only after server rejection.
 
 ### P2
 1. Either implement filters/search/sort or remove the misleading filter affordance/copy.
-2. Improve the partial-profile setup path so users know whether to go to competitive settings or profile editing.
-3. Add a more actionable feed error state.
+2. Add a more actionable feed error state.
 
 ### P3
 1. Add created-time metadata to main listing cards.

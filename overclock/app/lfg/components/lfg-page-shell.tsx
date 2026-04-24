@@ -35,6 +35,44 @@ type LFGPageData = {
   roleOptions: LFGRoleOption[];
 };
 
+function getMissingProfileRequirements(profile: {
+  platform: string | null;
+  region: string | null;
+  timezone: string | null;
+}) {
+  const missingFields: string[] = [];
+
+  if (!profile.platform) {
+    missingFields.push("platform");
+  }
+
+  if (!profile.region) {
+    missingFields.push("region");
+  }
+
+  if (!profile.timezone) {
+    missingFields.push("server");
+  }
+
+  return missingFields;
+}
+
+function formatMissingFields(fields: string[]) {
+  if (fields.length === 0) {
+    return "";
+  }
+
+  if (fields.length === 1) {
+    return fields[0];
+  }
+
+  if (fields.length === 2) {
+    return `${fields[0]} and ${fields[1]}`;
+  }
+
+  return `${fields.slice(0, -1).join(", ")}, and ${fields[fields.length - 1]}`;
+}
+
 function LFGFiltersBar({ description }: { description: string }) {
   return (
     <section className="border-t border-white/10 px-5 py-5 sm:px-6">
@@ -158,6 +196,15 @@ export async function LFGPageShell({
     region: profile?.region ?? "Not set",
     timezone: profile?.timezone ?? "Not set",
   };
+  const missingProfileRequirements = profile
+    ? getMissingProfileRequirements({
+        platform: profile.platform ?? null,
+        region: profile.region ?? null,
+        timezone: profile.timezone ?? null,
+      })
+    : [];
+  const profileSetupHref =
+    profile?.username ? `/u/${profile.username}?edit=profile` : "/account";
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
@@ -198,6 +245,15 @@ export async function LFGPageShell({
                       ctaLabel="Finish Onboarding"
                       description="Finish your overclock.lol profile first so your post can be attached to your public player page."
                       title="Complete your profile first"
+                    />
+                  ) : missingProfileRequirements.length > 0 ? (
+                    <LFGActionNotice
+                      ctaHref={profileSetupHref}
+                      ctaLabel="Open Profile Editor"
+                      description={`Add your ${formatMissingFields(
+                        missingProfileRequirements
+                      )} before creating a post in this section. This opens your profile editor directly.`}
+                      title="Complete your setup before posting"
                     />
                   ) : (
                     <form action={createLFGPost}>

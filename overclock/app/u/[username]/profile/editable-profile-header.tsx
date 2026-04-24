@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { ProfileHeader } from "./profile-header";
 import { ProfileEditModalShell } from "./profile-edit-modal-shell";
@@ -12,6 +12,8 @@ type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader>;
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const socials: SocialValues = {
     battlenet:
       props.socialLinks.find((link) => link.platform === "battlenet")?.value ?? "",
@@ -23,6 +25,16 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   };
   const discordUsername =
     props.socialLinks.find((link) => link.platform === "discord")?.value ?? null;
+  const shouldOpenEditModal = props.isOwner && searchParams.get("edit") === "profile";
+  const isModalOpen = isEditModalOpen || shouldOpenEditModal;
+
+  function handleCloseEditModal() {
+    setIsEditModalOpen(false);
+
+    if (searchParams.get("edit") === "profile") {
+      router.replace(pathname, { scroll: false });
+    }
+  }
 
   return (
     <>
@@ -30,10 +42,10 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
         {...props}
         onEditProfile={props.isOwner ? () => setIsEditModalOpen(true) : undefined}
       />
-      {isEditModalOpen ? (
+      {isModalOpen ? (
         <ProfileEditModalShell
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          isOpen={isModalOpen}
+          onClose={handleCloseEditModal}
         profile={{
           bio: props.bio,
           discordUsername,
@@ -44,7 +56,7 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
           returnTo: pathname,
           socials,
           timezone: props.timezone,
-          }}
+        }}
         />
       ) : null}
     </>
