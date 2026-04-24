@@ -2,6 +2,11 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
+import {
+  ACTIVE_LFG_POST_WINDOW_HOURS,
+  LFG_POST_RATE_LIMIT_MAX_POSTS,
+  LFG_POST_RATE_LIMIT_WINDOW_MINUTES,
+} from "./lfg-post-policy";
 import { isLFGType } from "./lfg-post-types";
 
 import type {
@@ -11,10 +16,6 @@ import type {
   LFGPostStatus,
   LFGType,
 } from "./lfg-post-types";
-
-export const ACTIVE_LFG_POST_WINDOW_HOURS = 12;
-export const LFG_POST_RATE_LIMIT_MAX_POSTS = 2;
-export const LFG_POST_RATE_LIMIT_WINDOW_MINUTES = 60;
 
 function getActivePostCutoffIso(now = new Date()) {
   return new Date(

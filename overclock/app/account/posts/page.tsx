@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { LFGPostCard } from "@/app/lfg/components/lfg-post-card";
+import { LFGPostStatusPill } from "@/app/lfg/components/lfg-post-status-pill";
+import { getLFGPostDisplayStatus } from "@/lib/lfg/lfg-post-display-status";
 import { getPostsByProfileId } from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
@@ -61,15 +63,21 @@ export default async function AccountPostsPage({
                 </div>
               ) : (
                 <div className="grid gap-3">
-                  {posts.map((post) => (
-                    <LFGPostCard
-                      key={post.id}
-                      currentProfileId={profile.id}
-                      post={post}
-                      returnPath="/account/posts"
-                      sectionLabel={post.lfgType}
-                    />
-                  ))}
+                  {posts.map((post) => {
+                    const displayStatus = getLFGPostDisplayStatus(post);
+
+                    return (
+                      <LFGPostCard
+                        key={post.id}
+                        currentProfileId={profile.id}
+                        post={post}
+                        returnPath="/account/posts"
+                        sectionLabel={post.lfgType}
+                        showActions={displayStatus === "active"}
+                        statusPill={<LFGPostStatusPill status={displayStatus} />}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </section>

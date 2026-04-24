@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,6 +14,8 @@ type LFGPostCardProps = {
   post: LFGPost;
   returnPath?: string;
   sectionLabel?: string | null;
+  showActions?: boolean;
+  statusPill?: ReactNode;
 };
 
 export function LFGPostCard({
@@ -20,6 +23,8 @@ export function LFGPostCard({
   post,
   returnPath,
   sectionLabel,
+  showActions = true,
+  statusPill,
 }: LFGPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
   const createdAtLabel = formatPostDate(post.createdAt);
@@ -32,10 +37,15 @@ export function LFGPostCard({
     <article className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          {sectionLabel ? (
-            <p className="mb-3 text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
-              {sectionLabel}
-            </p>
+          {sectionLabel || statusPill ? (
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              {sectionLabel ? (
+                <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
+                  {sectionLabel}
+                </p>
+              ) : null}
+              {statusPill}
+            </div>
           ) : (
             <div className="mb-3 flex items-center gap-3">
               <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
@@ -135,7 +145,7 @@ export function LFGPostCard({
           {createdAtLabel ? (
             <p className="text-xs font-medium text-zinc-500">{createdAtLabel}</p>
           ) : null}
-          {isOwner && returnPath ? (
+          {showActions && isOwner && returnPath ? (
             <LFGPostActionsMenu postId={post.id} returnPath={returnPath} />
           ) : null}
         </div>
