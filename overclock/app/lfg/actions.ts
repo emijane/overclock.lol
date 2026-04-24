@@ -214,27 +214,13 @@ export async function closeLFGPost(formData: FormData) {
     redirectWithMessage(fallbackPath, "Unable to close that post.");
   }
 
+  let result: Awaited<ReturnType<typeof closeOwnedActiveLFGPost>>;
+
   try {
-    const result = await closeOwnedActiveLFGPost({
+    result = await closeOwnedActiveLFGPost({
       postId,
       profileId: profile.id,
     });
-    const redirectPath = result.lfgType ? `/${result.lfgType}` : fallbackPath;
-    const returnPath =
-      fallbackPath.startsWith("/u/") || fallbackPath === "/lfg"
-        ? fallbackPath
-        : redirectPath;
-
-    if (!result.updated) {
-      redirectWithMessage(returnPath, "That post is no longer active.");
-    }
-
-    revalidatePath(redirectPath);
-    if (profile.username) {
-      revalidatePath(`/u/${profile.username}`);
-    }
-
-    redirectWithMessage(returnPath, "Post closed.", "success");
   } catch (error) {
     console.error("LFG post close failed", {
       error,
@@ -243,4 +229,21 @@ export async function closeLFGPost(formData: FormData) {
     });
     redirectWithMessage(fallbackPath, "Unable to close that post right now.");
   }
+
+  const redirectPath = result.lfgType ? `/${result.lfgType}` : fallbackPath;
+  const returnPath =
+    fallbackPath.startsWith("/u/") || fallbackPath === "/lfg"
+      ? fallbackPath
+      : redirectPath;
+
+  if (!result.updated) {
+    redirectWithMessage(returnPath, "That post is no longer active.");
+  }
+
+  revalidatePath(redirectPath);
+  if (profile.username) {
+    revalidatePath(`/u/${profile.username}`);
+  }
+
+  redirectWithMessage(returnPath, "Post closed.", "success");
 }

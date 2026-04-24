@@ -7,7 +7,6 @@ import { closeLFGPost } from "@/app/lfg/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -49,13 +48,11 @@ export function LFGPostActionsMenu({
         align="end"
         className="w-36 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
       >
-        <DropdownMenuItem asChild className="p-0 focus:bg-transparent">
-          <form action={closeLFGPost} className="w-full">
-            <input type="hidden" name="post_id" value={postId} />
-            <input type="hidden" name="return_path" value={returnPath} />
-            <ClosePostMenuItem />
-          </form>
-        </DropdownMenuItem>
+        <form action={closeLFGPost} className="w-full">
+          <input type="hidden" name="post_id" value={postId} />
+          <input type="hidden" name="return_path" value={returnPath} />
+          <ClosePostMenuItem />
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );
