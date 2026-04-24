@@ -205,6 +205,7 @@ export async function LFGPageShell({
     : [];
   const profileSetupHref =
     profile?.username ? `/u/${profile.username}?edit=profile` : "/account";
+  const sectionHref = type ? `/${type}` : "/lfg";
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
@@ -286,6 +287,7 @@ export async function LFGPageShell({
                   emptyStateTitle={emptyStateTitle}
                   errorMessage={pageData.postsErrorMessage}
                   posts={pageData.posts}
+                  retryHref={sectionHref}
                 />
               </>
             ) : null}

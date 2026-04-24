@@ -80,21 +80,7 @@ Evidence:
 Recommended fix:
 - Add responsive wrapping or stacked mobile layout for that row.
 
-### 2. Feed error state is generic and not actionable
-Severity: Minor
-
-Why this matters:
-- Users only see “Try refreshing in a moment.”
-- No retry button, no differentiation between auth/data/network failure.
-
-Evidence:
-- `app/lfg/components/lfg-page-shell.tsx`
-  - Feed fetch failure is collapsed into a generic placeholder message
-
-Recommended fix:
-- Add an explicit retry action or more specific messaging where practical.
-
-### 3. No timestamp shown on main section cards
+### 2. No timestamp shown on main section cards
 Severity: Minor
 
 Why this matters:
@@ -174,9 +160,6 @@ Recommendation:
 - Treat these as product gaps rather than hidden defects unless the product spec says they should already exist.
 
 ## Priority-Ranked Suggested Fixes
-
-### P2
-1. Add a more actionable feed error state.
 
 ### P3
 1. Add created-time metadata to main listing cards.

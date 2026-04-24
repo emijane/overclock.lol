@@ -12,12 +12,17 @@ type LFGPostListProps = {
   emptyStateTitle: string;
   errorMessage?: string | null;
   posts: LFGPost[];
+  retryHref?: string;
 };
 
 function LFGFeedPlaceholder({
+  ctaHref,
+  ctaLabel,
   description,
   title,
 }: {
+  ctaHref?: string;
+  ctaLabel?: string;
   description: string;
   title: string;
 }) {
@@ -29,6 +34,14 @@ function LFGFeedPlaceholder({
         </span>
         <h2 className="mt-4 text-base font-semibold text-zinc-100">{title}</h2>
         <p className="mt-2 text-sm leading-6 text-zinc-500">{description}</p>
+        {ctaHref && ctaLabel ? (
+          <Link
+            href={ctaHref}
+            className="mt-5 inline-flex h-10 items-center rounded-full border border-white/10 bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+          >
+            {ctaLabel}
+          </Link>
+        ) : null}
       </div>
     </div>
   );
@@ -39,13 +52,16 @@ export function LFGPostList({
   emptyStateTitle,
   errorMessage,
   posts,
+  retryHref,
 }: LFGPostListProps) {
   if (errorMessage) {
     return (
       <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
         <LFGFeedPlaceholder
-          description={errorMessage}
-          title="Unable to load posts"
+          ctaHref={retryHref}
+          ctaLabel="Reload Section"
+          description={`${errorMessage} Reload this section to try again.`}
+          title="Unable to load this feed"
         />
       </section>
     );
