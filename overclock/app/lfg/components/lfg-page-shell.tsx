@@ -82,7 +82,7 @@ function LFGFiltersBar({ description }: { description: string }) {
             <FilterIcon className="h-4 w-4" />
           </span>
           <div>
-            <h2 className="text-sm font-semibold text-zinc-100">Filters</h2>
+            <h2 className="text-sm font-semibold text-zinc-100">Browse Feed</h2>
             <p className="mt-0.5 text-sm text-zinc-500">{description}</p>
           </div>
         </div>
@@ -174,7 +174,7 @@ export async function LFGPageShell({
   description,
   emptyStateDescription = "Create a post to start the conversation.",
   emptyStateTitle = "No posts yet",
-  filtersDescription = "Filter by rank, role, region, and playstyle.",
+  filtersDescription = "New posts appear here as players create listings in this section.",
   helperText,
   message,
   messageType,

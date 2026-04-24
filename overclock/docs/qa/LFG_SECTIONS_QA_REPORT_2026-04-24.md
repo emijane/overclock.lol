@@ -43,29 +43,7 @@ There is no real edit/delete flow for LFG posts, no implemented filters/search/s
 
 ## Medium Issues
 
-### 1. Filters, sorting, and search are not implemented but the UI implies they are
-Severity: Medium
-
-Why this matters:
-- QA expectation and product expectation diverge from the actual feature.
-- The Stacks page explicitly promises filtering in its copy.
-
-Evidence:
-- `app/lfg/components/lfg-page-shell.tsx`
-  - Renders a Filters area that is informational only.
-- `app/stacks/page.tsx`
-  - `filtersDescription: "Filter by rank, role, region, and playstyle."`
-- No filter/search/sort controls or query handling exist in `app/lfg/*`.
-
-Impact:
-- Product confusion
-- False affordance
-- Launch reviewers will likely mark this as incomplete
-
-Recommended fix:
-- Either implement real filters/search/sort or change the copy to make it clear these are not live yet.
-
-### 2. Empty configured-role state can show two separate gating messages in the same create area
+### 1. Empty configured-role state can show two separate gating messages in the same create area
 Severity: Medium
 
 Why this matters:
@@ -133,7 +111,7 @@ Recommended fix:
 ## UX Concerns
 
 ### 1. The Filters bar creates a false expectation of interactivity
-- It reads like a live control surface but contains no controls.
+- This has been softened, but true filtering/search still does not exist yet.
 
 ### 2. Missing submit/loading feedback increases perceived instability
 - The no-role-configured path still has overlapping setup guidance.
@@ -198,8 +176,7 @@ Recommendation:
 ## Priority-Ranked Suggested Fixes
 
 ### P2
-1. Either implement filters/search/sort or remove the misleading filter affordance/copy.
-2. Add a more actionable feed error state.
+1. Add a more actionable feed error state.
 
 ### P3
 1. Add created-time metadata to main listing cards.
