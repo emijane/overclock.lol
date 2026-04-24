@@ -80,20 +80,6 @@ Evidence:
 Recommended fix:
 - Add responsive wrapping or stacked mobile layout for that row.
 
-### 2. No timestamp shown on main section cards
-Severity: Minor
-
-Why this matters:
-- Freshness matters in LFG listings.
-- Profile sidebar cards show age, but main section cards do not.
-
-Evidence:
-- `app/lfg/components/lfg-post-list.tsx`
-  - Does not render `createdAt`
-
-Recommended fix:
-- Consider surfacing created time to help users judge stale posts.
-
 ## UX Concerns
 
 ### 1. The Filters bar creates a false expectation of interactivity
@@ -162,9 +148,8 @@ Recommendation:
 ## Priority-Ranked Suggested Fixes
 
 ### P3
-1. Add created-time metadata to main listing cards.
-2. Review mobile layout resilience of the bottom create CTA row.
-3. Consider future edit/delete/close-post controls if the product expects posts to be self-managed.
+1. Review mobile layout resilience of the bottom create CTA row.
+2. Consider future edit/delete/close-post controls if the product expects posts to be self-managed.
 
 ## Release Recommendation
 

@@ -15,6 +15,48 @@ type LFGPostListProps = {
   retryHref?: string;
 };
 
+function formatPostDate(value: string) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  const now = Date.now();
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const diffMs = now - date.getTime();
+
+  if (diffMs < 60_000) {
+    return "just now";
+  }
+
+  const minutes = Math.floor(diffMs / 60_000);
+
+  if (minutes < 60) {
+    return `${minutes}m ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+
+  if (hours < 24) {
+    return `${hours}h ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+
+  if (days < 7) {
+    return `${days}d ago`;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 function LFGFeedPlaceholder({
   ctaHref,
   ctaLabel,
@@ -84,6 +126,7 @@ export function LFGPostList({
         {posts.map((post) => {
           const rankIconSrc = getRankIconSrc(post.rankTier);
           const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
+          const createdAtLabel = formatPostDate(post.createdAt);
           const visibleName = post.author.username ?? post.author.displayName ?? "Player";
           const profileHref = post.author.username ? `/u/${post.author.username}` : null;
           const avatarFallback = visibleName.slice(0, 2).toUpperCase();
@@ -189,7 +232,12 @@ export function LFGPostList({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                  {createdAtLabel ? (
+                    <p className="text-xs font-medium text-zinc-500">
+                      {createdAtLabel}
+                    </p>
+                  ) : null}
                   {rankIconSrc ? (
                     <Image
                       src={rankIconSrc}
