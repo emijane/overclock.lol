@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { getBadgeAssetSrc } from "@/lib/badges/badge-assets";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
@@ -80,18 +81,47 @@ export function LFGPostList({
                       )}
                     </div>
                     <div className="min-w-0">
-                      {profileHref ? (
-                        <Link
-                          href={profileHref}
-                          className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-300"
-                        >
-                          @{post.author.username}
-                        </Link>
-                      ) : (
-                        <p className="truncate text-sm font-semibold text-zinc-100">
-                          {visibleName}
-                        </p>
-                      )}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {profileHref ? (
+                          <Link
+                            href={profileHref}
+                            className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-300"
+                          >
+                            @{post.author.username}
+                          </Link>
+                        ) : (
+                          <p className="truncate text-sm font-semibold text-zinc-100">
+                            {visibleName}
+                          </p>
+                        )}
+                        {post.author.badges.map((badge) => {
+                          const badgeAssetSrc = getBadgeAssetSrc(badge.slug, badge.icon);
+
+                          return badgeAssetSrc ? (
+                            <span
+                              key={badge.id}
+                              title={badge.label}
+                              aria-label={badge.label}
+                              className="inline-flex h-6 items-center"
+                            >
+                              <Image
+                                src={badgeAssetSrc}
+                                alt={badge.label}
+                                width={66}
+                                height={24}
+                                className="h-6 w-auto object-contain"
+                              />
+                            </span>
+                          ) : (
+                            <span
+                              key={badge.id}
+                              className="inline-flex h-6 items-center rounded-full border border-white/10 bg-white/[0.035] px-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-300"
+                            >
+                              {badge.label}
+                            </span>
+                          );
+                        })}
+                      </div>
                       {post.author.displayName ? (
                         <p className="truncate text-xs text-zinc-500">
                           {post.author.displayName}

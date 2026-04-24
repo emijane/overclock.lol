@@ -35,6 +35,24 @@ async function requireAdminProfile() {
   return profile;
 }
 
+function createBadgeClient() {
+  try {
+    return createAdminClient();
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Supabase admin client is missing required environment variables."
+    ) {
+      redirectToAdmin(
+        "Badge admin requires SUPABASE_SERVICE_ROLE_KEY in .env.local.",
+        "error"
+      );
+    }
+
+    throw error;
+  }
+}
+
 export async function assignBadgeToUsername(formData: FormData) {
   const adminProfile = await requireAdminProfile();
   const username = formData.get("username")?.toString().trim().toLowerCase() ?? "";
@@ -48,12 +66,12 @@ export async function assignBadgeToUsername(formData: FormData) {
     redirectToAdmin("Choose a badge before assigning it.", "error", username);
   }
 
-  const supabase = createAdminClient();
+  const supabase = createBadgeClient();
   const [{ data: targetProfile, error: profileError }, { data: badge, error: badgeError }] =
     await Promise.all([
-      supabase.from("profiles").select("id,username").eq("username", username).maybeSingle(),
-      supabase.from("badges").select("id,slug,label").eq("slug", badgeSlug).maybeSingle(),
-    ]);
+    supabase.from("profiles").select("id,username").eq("username", username).maybeSingle(),
+    supabase.from("badges").select("id,slug,label").eq("slug", badgeSlug).maybeSingle(),
+  ]);
 
   if (profileError) {
     throw profileError;
@@ -116,7 +134,7 @@ export async function removeBadgeFromUsername(formData: FormData) {
     redirectToAdmin("Choose a badge to remove.", "error", username || undefined);
   }
 
-  const supabase = createAdminClient();
+  const supabase = createBadgeClient();
   const [{ data: targetProfile, error: profileError }, { data: badge, error: badgeError }] =
     await Promise.all([
       supabase.from("profiles").select("id,username").eq("username", username).maybeSingle(),
@@ -149,4 +167,3 @@ export async function removeBadgeFromUsername(formData: FormData) {
   revalidatePath("/admin/badges");
   redirectToAdmin(`${badge.label} removed from @${targetProfile.username}.`, "success", username);
 }
-

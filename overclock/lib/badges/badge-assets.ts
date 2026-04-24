@@ -1,6 +1,6 @@
 const BADGE_ASSET_BY_SLUG: Record<string, string> = {
-  founder: "/badges/founder-badge.png",
-  staff: "/badges/staff-badge.png",
+  "founder-badge": "/badges/founder-badge.png",
+  "staff-badge": "/badges/staff-badge.png",
 };
 
 export function getBadgeAssetSrc(slug: string, icon: string | null) {
@@ -10,4 +10,3 @@ export function getBadgeAssetSrc(slug: string, icon: string | null) {
 
   return BADGE_ASSET_BY_SLUG[slug] ?? null;
 }
-

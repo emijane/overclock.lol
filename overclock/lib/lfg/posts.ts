@@ -1,4 +1,5 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
+import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { createClient } from "@/lib/supabase/server";
 
 import type {
@@ -8,6 +9,34 @@ import type {
   LFGPostStatus,
   LFGType,
 } from "./lfg-post-types";
+
+function normalizeBadgeDefinition(value: unknown): ProfileBadge | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  if (
+    typeof candidate.id !== "string" ||
+    typeof candidate.slug !== "string" ||
+    typeof candidate.label !== "string"
+  ) {
+    return null;
+  }
+
+  return {
+    color: typeof candidate.color === "string" ? candidate.color : null,
+    description:
+      typeof candidate.description === "string" ? candidate.description : null,
+    grantedAt:
+      typeof candidate.granted_at === "string" ? candidate.granted_at : null,
+    icon: typeof candidate.icon === "string" ? candidate.icon : null,
+    id: candidate.id,
+    label: candidate.label,
+    slug: candidate.slug,
+  };
+}
 
 function normalizeHeroPoolSnapshot(value: unknown): LFGHeroSnapshot[] {
   if (!Array.isArray(value)) {
@@ -40,10 +69,11 @@ function normalizeStatus(value: unknown): LFGPostStatus {
   return value === "closed" || value === "archived" ? value : "active";
 }
 
-function normalizeAuthor(value: unknown) {
+function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {
       avatarUrl: null,
+      badges,
       displayName: null,
       username: null,
     };
@@ -56,6 +86,7 @@ function normalizeAuthor(value: unknown) {
       typeof candidate.discord_avatar_url === "string"
         ? candidate.discord_avatar_url
         : null,
+    badges,
     displayName:
       typeof candidate.display_name === "string" ? candidate.display_name : null,
     username: typeof candidate.username === "string" ? candidate.username : null,
@@ -91,8 +122,57 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     throw error;
   }
 
+  const profileIds = Array.from(
+    new Set(
+      (data ?? [])
+        .map((row) => (typeof row.profile_id === "string" ? row.profile_id : null))
+        .filter((profileId): profileId is string => Boolean(profileId))
+    )
+  );
+  const badgesByProfileId = new Map<string, ProfileBadge[]>();
+
+  if (profileIds.length > 0) {
+    const { data: badgeRows, error: badgeError } = await supabase
+      .from("profile_badges")
+      .select(
+        "profile_id,granted_at,badge:badge_id(id,slug,label,description,icon,color)"
+      )
+      .in("profile_id", profileIds)
+      .order("granted_at", { ascending: true });
+
+    if (badgeError) {
+      throw badgeError;
+    }
+
+    for (const row of badgeRows ?? []) {
+      if (typeof row.profile_id !== "string") {
+        continue;
+      }
+
+      const badge = normalizeBadgeDefinition({
+        ...(row.badge && typeof row.badge === "object" && !Array.isArray(row.badge)
+          ? (row.badge as Record<string, unknown>)
+          : {}),
+        granted_at: row.granted_at,
+      });
+
+      if (!badge) {
+        continue;
+      }
+
+      const existingBadges = badgesByProfileId.get(row.profile_id) ?? [];
+      existingBadges.push(badge);
+      badgesByProfileId.set(row.profile_id, existingBadges);
+    }
+  }
+
   return (data ?? []).map((row) => ({
-    author: normalizeAuthor(row.profiles),
+    author: normalizeAuthor(
+      row.profiles,
+      typeof row.profile_id === "string"
+        ? badgesByProfileId.get(row.profile_id) ?? []
+        : []
+    ),
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",

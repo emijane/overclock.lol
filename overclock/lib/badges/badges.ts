@@ -46,21 +46,48 @@ export async function getBadgeDefinitions(): Promise<BadgeDefinition[]> {
 
 export async function getProfileBadges(profileId: string): Promise<ProfileBadge[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data: assignments, error: assignmentsError } = await supabase
     .from("profile_badges")
-    .select(
-      "granted_at,badge:badge_id(id,slug,label,description,icon,color)"
-    )
+    .select("badge_id,granted_at")
     .eq("profile_id", profileId)
     .order("granted_at", { ascending: true });
 
-  if (error) {
-    throw error;
+  if (assignmentsError) {
+    throw assignmentsError;
   }
 
-  return (data ?? [])
+  const rows = assignments ?? [];
+  const badgeIds = rows
+    .map((row) => (typeof row.badge_id === "string" ? row.badge_id : null))
+    .filter((badgeId): badgeId is string => Boolean(badgeId));
+
+  if (badgeIds.length === 0) {
+    return [];
+  }
+
+  const { data: badges, error: badgesError } = await supabase
+    .from("badges")
+    .select("id,slug,label,description,icon,color")
+    .in("id", badgeIds);
+
+  if (badgesError) {
+    throw badgesError;
+  }
+
+  const badgeById = new Map(
+    (badges ?? [])
+      .map((row) => normalizeBadgeDefinition(row))
+      .filter((badge): badge is BadgeDefinition => Boolean(badge))
+      .map((badge) => [badge.id, badge] as const)
+  );
+
+  return rows
     .map((row) => {
-      const badge = normalizeBadgeDefinition(row.badge);
+      if (typeof row.badge_id !== "string") {
+        return null;
+      }
+
+      const badge = badgeById.get(row.badge_id);
 
       if (!badge) {
         return null;
@@ -73,4 +100,3 @@ export async function getProfileBadges(profileId: string): Promise<ProfileBadge[
     })
     .filter((badge): badge is ProfileBadge => Boolean(badge));
 }
-

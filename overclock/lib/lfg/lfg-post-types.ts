@@ -1,4 +1,5 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
+import type { ProfileBadge } from "@/lib/badges/badge-types";
 
 export const LFG_TYPE_OPTIONS = ["duos", "stacks", "scrims", "teams"] as const;
 export type LFGType = (typeof LFG_TYPE_OPTIONS)[number];
@@ -26,6 +27,7 @@ export type CompetitiveProfileSnapshot = {
 export type LFGPost = {
   author: {
     avatarUrl: string | null;
+    badges: ProfileBadge[];
     displayName: string | null;
     username: string | null;
   };
