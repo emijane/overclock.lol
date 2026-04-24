@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   LogOutIcon,
+  MessageSquareIcon,
   SettingsIcon,
   TrophyIcon,
   UserIcon,
@@ -88,6 +89,15 @@ export function UserMenu({
             <Link href="/account/competitive">
               <TrophyIcon />
               Competitive Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+          >
+            <Link href="/account/posts">
+              <MessageSquareIcon />
+              My Posts
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
