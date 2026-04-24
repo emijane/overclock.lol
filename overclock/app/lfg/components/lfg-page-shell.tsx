@@ -8,6 +8,7 @@ import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
+import type { LFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import { getActiveLFGPosts } from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
@@ -25,6 +26,7 @@ type LFGPageShellProps = {
   helperText?: string;
   message?: string;
   messageType?: string;
+  feedFilters?: LFGFeedFilters;
   title: string;
   type?: LFGType;
 };
@@ -141,9 +143,10 @@ function buildRoleOptions(
 
 async function getLFGPageData(
   type: LFGType,
-  profileId: string | null
+  profileId: string | null,
+  feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
-  const postsResult = await getActiveLFGPosts(type)
+  const postsResult = await getActiveLFGPosts(type, feedFilters)
     .then((posts) => ({ posts, postsErrorMessage: null }))
     .catch(() => ({
       posts: [],
@@ -178,12 +181,13 @@ export async function LFGPageShell({
   helperText,
   message,
   messageType,
+  feedFilters,
   title,
   type,
 }: LFGPageShellProps) {
   const { profile, user } = await getCurrentProfile();
   const pageData = type
-    ? await getLFGPageData(type, profile?.id ?? null)
+    ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
     : {
         posts: [],
         postsErrorMessage: null,

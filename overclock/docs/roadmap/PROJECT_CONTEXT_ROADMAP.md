@@ -90,6 +90,8 @@ These are already visible in the codebase today:
   automatic expiry.
 - Add a private `/account/posts` management page for active, closed, and
   expired LFG listings.
+- Add first-pass server-rendered filters for `/duos`, starting with role, rank,
+  and region.
 
 ### Later
 

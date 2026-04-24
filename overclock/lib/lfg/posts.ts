@@ -2,6 +2,7 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
+import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import {
   ACTIVE_LFG_POST_WINDOW_HOURS,
   LFG_POST_RATE_LIMIT_MAX_POSTS,
@@ -152,10 +153,13 @@ function normalizeLFGPostRow(
   };
 }
 
-export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
+export async function getActiveLFGPosts(
+  lfgType: LFGType,
+  filters?: LFGFeedFilters
+): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
-  const { data, error } = await supabase
+  let query = supabase
     .from("lfg_posts")
     .select(
       [
@@ -177,8 +181,21 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     .eq("lfg_type", lfgType)
     .eq("status", "active")
     .gte("created_at", activePostCutoffIso)
-    .order("created_at", { ascending: false })
-    .limit(30);
+    .order("created_at", { ascending: false });
+
+  if (filters?.role) {
+    query = query.eq("posting_role", filters.role);
+  }
+
+  if (filters?.region) {
+    query = query.eq("snapshot_region", filters.region);
+  }
+
+  if (filters?.rank) {
+    query = query.in("snapshot_rank_tier", getRankBracketTiers(filters.rank));
+  }
+
+  const { data, error } = await query.limit(30);
 
   if (error) {
     throw error;

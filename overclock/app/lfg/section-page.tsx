@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { LFGPageShell } from "@/app/lfg/components/lfg-page-shell";
+import { parseLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 
 type LFGSectionPageProps = {
@@ -41,12 +42,21 @@ export async function LFGSectionPage({
   const params = searchParams ? await searchParams : {};
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
+  const feedFilters =
+    config.type === "duos"
+      ? parseLFGFeedFilters({
+          rank: pickValue(params.rank),
+          region: pickValue(params.region),
+          role: pickValue(params.role),
+        })
+      : undefined;
 
   return (
     <LFGPageShell
       description={config.description}
       emptyStateDescription={config.emptyStateDescription}
       emptyStateTitle={config.emptyStateTitle}
+      feedFilters={feedFilters}
       filtersDescription={config.filtersDescription}
       helperText={config.helperText}
       message={message}
