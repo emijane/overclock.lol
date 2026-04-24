@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { getBadgeAssetSrc } from "@/lib/badges/badge-assets";
+import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
@@ -95,20 +95,30 @@ export function LFGPostList({
                           </p>
                         )}
                         {post.author.badges.map((badge) => {
+                          const badgePreset = getBadgePreset(badge.slug);
                           const badgeAssetSrc = getBadgeAssetSrc(badge.slug, badge.icon);
 
-                          return badgeAssetSrc ? (
+                          return badgePreset ? (
+                            <span
+                              key={badge.id}
+                              className={`inline-flex items-center gap-1.5 rounded-full border ${badgePreset.lfgClassName}`}
+                            >
+                              <badgePreset.Icon
+                                className={`h-3.5 w-3.5 shrink-0 ${badgePreset.iconClassName}`}
+                              />
+                              {badge.label}
+                            </span>
+                          ) : badgeAssetSrc ? (
                             <span
                               key={badge.id}
                               title={badge.label}
                               aria-label={badge.label}
                               className="inline-flex h-6 items-center"
                             >
-                              <Image
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
                                 src={badgeAssetSrc}
                                 alt={badge.label}
-                                width={66}
-                                height={24}
                                 className="h-6 w-auto object-contain"
                               />
                             </span>

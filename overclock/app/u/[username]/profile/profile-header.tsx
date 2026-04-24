@@ -7,14 +7,11 @@ import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfileSocialLinks } from "./profile-social-links";
-import { getBadgeAssetSrc } from "@/lib/badges/badge-assets";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
-import type { ProfileBadge as ProfileBadgeType } from "@/lib/badges/badge-types";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
   bio: string | null;
-  badges: ProfileBadgeType[];
   coverImageUrl: string | null;
   currentRank: string | null;
   currentRankTier?: string | null;
@@ -59,7 +56,6 @@ const rankBadgeClassNameByTier: Record<string, string> = {
 export function ProfileHeader({
   avatarUrl,
   bio,
-  badges,
   coverImageUrl,
   currentRank,
   currentRankIconSrc,
@@ -166,33 +162,6 @@ export function ProfileHeader({
                     className="h-7 w-7 object-contain"
                   />
                 ) : null}
-                {badges.map((badge) => {
-                  const badgeAssetSrc = getBadgeAssetSrc(badge.slug, badge.icon);
-
-                  return badgeAssetSrc ? (
-                    <span
-                      key={badge.id}
-                      title={badge.label}
-                      aria-label={badge.label}
-                      className="inline-flex h-8 items-center"
-                    >
-                      <Image
-                        src={badgeAssetSrc}
-                        alt={badge.label}
-                        width={88}
-                        height={32}
-                        className="h-8 w-auto object-contain"
-                      />
-                    </span>
-                  ) : (
-                    <ProfileBadge
-                      key={badge.id}
-                      className="h-7 border-white/10 bg-white/[0.035] px-3 text-[11px] font-medium text-zinc-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-                    >
-                      {badge.label}
-                    </ProfileBadge>
-                  );
-                })}
               </div>
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
