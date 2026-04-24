@@ -16,7 +16,7 @@ Audit method:
 
 ## Executive Summary
 
-The section routing problem was already corrected before this audit, and the current code now routes create/list behavior by `lfg_type` correctly. The biggest remaining launch risks are around incomplete feature surfaces being presented as real features, duplicate post creation, weak UX around loading/submission states, and stale downstream data after a new post is created.
+The section routing problem was already corrected before this audit, and the current code now routes create/list behavior by `lfg_type` correctly. The biggest remaining launch risks are around incomplete feature surfaces being presented as real features, weak UX around loading states, and a few setup/accessibility gaps in the create flow.
 
 There is no real edit/delete flow for LFG posts, no implemented filters/search/sorting despite a visible Filters section, and no pagination/infinite scroll. Those are not hidden from a QA perspective because the current UI strongly suggests more functionality than actually exists.
 
@@ -40,31 +40,6 @@ There is no real edit/delete flow for LFG posts, no implemented filters/search/s
 - Search
 - Sorting
 - Pagination / infinite scroll
-- Submit pending state / duplicate submission protection
-
-## Critical Bugs
-
-### 2. New posts may not invalidate all dependent surfaces
-Severity: Critical
-
-Why this matters:
-- Creating a post only revalidates the section page path.
-- The public profile route also renders recent active listings and may stay stale after a new post is created.
-
-Evidence:
-- `app/lfg/actions.ts`
-  - `revalidatePath(\`/${lfgTypeValue}\`)`
-- `app/u/[username]/page.tsx`
-  - Uses `getRecentPostsByProfileId(profile.id)`
-- `app/u/[username]/profile/recent-profile-posts.tsx`
-  - Displays active listings on the profile page
-
-Impact:
-- User creates a post successfully but may not see it on their profile immediately
-- Perceived data loss / trust issue
-
-Recommended fix:
-- Revalidate the owner profile path after create as well.
 
 ## Medium Issues
 
@@ -90,27 +65,23 @@ Impact:
 Recommended fix:
 - Either implement real filters/search/sort or change the copy to make it clear these are not live yet.
 
-### 2. No loading state for page data or post submission
+### 2. No loading state for page data
 Severity: Medium
 
 Why this matters:
 - Slow network behavior will feel broken.
-- Users get no feedback that feed data is loading or that a post is being submitted.
+- Users get no feedback that feed data is loading.
 
 Evidence:
 - `app/lfg/components/lfg-page-shell.tsx`
-  - No skeleton/loading branch for feed or create form.
-- `app/lfg/components/lfg-role-picker.tsx`
-  - Submit button has no pending state.
+  - No skeleton/loading branch for feed.
 
 Impact:
-- Double submissions
 - Unclear perceived performance
 - Poor resilience under latency
 
 Recommended fix:
 - Add loading/skeleton UI for feed fetch.
-- Add pending UI and disable submit during create.
 
 ### 3. Empty configured-role state can show two separate gating messages in the same create area
 Severity: Medium
@@ -171,22 +142,6 @@ Impact:
 Recommended fix:
 - Surface these profile requirements directly in the create flow before submit.
 
-### 6. Refresh/retry flow can still cause ambiguous outcomes
-Severity: Medium
-
-Why this matters:
-- Without pending state or request tracking, a user who refreshes during submission cannot tell whether the insert succeeded.
-
-Evidence:
-- No submission state or request token handling in `app/lfg/components/lfg-role-picker.tsx` or `app/lfg/actions.ts`
-
-Impact:
-- Duplicate retries
-- User uncertainty
-
-Recommended fix:
-- Add pending state and idempotency protection.
-
 ## Minor Issues
 
 ### 1. No explicit mobile wrapping safeguard in the bottom create CTA row
@@ -237,7 +192,7 @@ Recommended fix:
 - It reads like a live control surface but contains no controls.
 
 ### 2. Missing submit/loading feedback increases perceived instability
-- Users are likely to click more than once.
+- Feed loading still has no real skeleton or progressive state.
 
 ### 3. The post creation path is split across profile setup concepts
 - Competitive role setup lives under `/account/competitive`
@@ -256,11 +211,11 @@ Recommended fix:
 ### 1. Good: server-side gating is present
 - `app/lfg/actions.ts` validates `lfg_type`, `posting_role`, auth, onboarding, role existence, and required profile fields on the server.
 
-### 2. Remaining concern: no anti-duplication / anti-spam protection
+### 2. Remaining concern: no anti-spam or posting-frequency protection
 Severity: Medium
 
 - This is not a secret leak issue, but it is still a practical abuse vector.
-- A logged-in user can likely create many duplicate posts rapidly.
+- A logged-in user can still likely create many different posts rapidly.
 
 Recommended fix:
 - Add rate limiting, dedupe logic, or an active-post-per-type policy if that matches product rules.
@@ -283,8 +238,6 @@ Recommended fix:
   - Rank, role, region, timezone, platform, and hero pool snapshot are written during create
 
 ### Remaining integrity risks
-- Duplicate records due to repeated submit
-- Potential stale profile-side recent listing surface due to narrow revalidation
 - No filtering/sorting features to validate record selection beyond basic section isolation
 
 ## Unsupported Test Areas
@@ -300,9 +253,6 @@ Recommendation:
 - Treat these as product gaps rather than hidden defects unless the product spec says they should already exist.
 
 ## Priority-Ranked Suggested Fixes
-
-### P0
-1. Revalidate all dependent post surfaces after create, especially the public profile recent listings area.
 
 ### P1
 1. Add real loading and submit states.

@@ -168,5 +168,8 @@ export async function createLFGPost(formData: FormData) {
   }
 
   revalidatePath(`/${lfgTypeValue}`);
+  if (profile.username) {
+    revalidatePath(`/u/${profile.username}`);
+  }
   lfgRedirect(lfgTypeValue, "Post successfully uploaded.", "success");
 }
