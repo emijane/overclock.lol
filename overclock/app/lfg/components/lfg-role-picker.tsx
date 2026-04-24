@@ -59,7 +59,7 @@ function CreatePostButton() {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
+      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 sm:w-auto disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
     >
       <PlusIcon className="h-4 w-4" />
       {pending ? "Creating..." : "Create Post"}
@@ -193,8 +193,8 @@ export function LFGRolePicker({
                 )}
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-between rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-3">
-              <p className="text-sm text-zinc-400">
+            <div className="mt-3 flex flex-col gap-3 rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="min-w-0 text-sm text-zinc-400">
                 Posting as{" "}
                 <span className="font-medium text-zinc-100">{postingAsLabel}</span>{" "}
                 <span className="text-zinc-500">&bull;</span>{" "}

@@ -64,28 +64,12 @@ Impact:
 Recommended fix:
 - Collapse the no-role-configured state into one clear CTA.
 
-## Minor Issues
-
-### 1. No explicit mobile wrapping safeguard in the bottom create CTA row
-Severity: Minor
-
-Why this matters:
-- The “Posting as …” summary and button share a single horizontal row.
-- On narrower widths or longer localized copy, this may compress awkwardly.
-
-Evidence:
-- `app/lfg/components/lfg-role-picker.tsx`
-  - Bottom CTA row uses `justify-between` without explicit wrap behavior
-
-Recommended fix:
-- Add responsive wrapping or stacked mobile layout for that row.
-
 ## UX Concerns
 
 ### 1. The Filters bar creates a false expectation of interactivity
 - This has been softened, but true filtering/search still does not exist yet.
 
-### 2. Missing submit/loading feedback increases perceived instability
+### 2. The no-role-configured path still has overlapping setup guidance
 - The no-role-configured path still has overlapping setup guidance.
 
 ### 3. The post creation path is split across profile setup concepts
@@ -148,13 +132,12 @@ Recommendation:
 ## Priority-Ranked Suggested Fixes
 
 ### P3
-1. Review mobile layout resilience of the bottom create CTA row.
-2. Consider future edit/delete/close-post controls if the product expects posts to be self-managed.
+1. Consider future edit/delete/close-post controls if the product expects posts to be self-managed.
 
 ## Release Recommendation
 
-Current recommendation: Core section behavior is in much better shape now, but these pages still need the remaining P2 and P3 polish items before they feel fully launch-ready.
+Current recommendation: Core section behavior is in much better shape now, but these pages still need the remaining polish items before they feel fully launch-ready.
 
 Reason:
 - Core create/list functionality is present and section isolation appears correct.
-- The biggest remaining risk is operational and UX quality: duplicate posts, stale data, and UI affordances that promise more than the feature actually delivers.
+- The biggest remaining risk is product completeness and edge-case UX, especially around self-managing posts after they are created.
