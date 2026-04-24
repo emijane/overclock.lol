@@ -292,3 +292,28 @@ export async function insertLFGPost(input: {
     throw error;
   }
 }
+
+export async function hasMatchingActiveLFGPost(input: {
+  lfgType: LFGType;
+  postingRole: CompetitiveRole;
+  profileId: string;
+  title: string;
+}) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lfg_posts")
+    .select("id")
+    .eq("profile_id", input.profileId)
+    .eq("lfg_type", input.lfgType)
+    .eq("posting_role", input.postingRole)
+    .eq("title", input.title)
+    .eq("status", "active")
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return Boolean(data?.id);
+}

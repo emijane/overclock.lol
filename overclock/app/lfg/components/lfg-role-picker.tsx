@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import {
   ArrowRightIcon,
   ChevronRightIcon,
@@ -50,12 +51,29 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
   return <SparklesIcon className={className} />;
 }
 
+function CreatePostButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-disabled={pending}
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
+    >
+      <PlusIcon className="h-4 w-4" />
+      {pending ? "Creating..." : "Create Post"}
+    </button>
+  );
+}
+
 export function LFGRolePicker({
   profileSummary,
   roleOptions,
   setupHref,
 }: LFGRolePickerProps) {
   const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
+  const { pending } = useFormStatus();
 
   const selectedRoleOption =
     roleOptions.find((roleOption) => roleOption.role === selectedRole) ?? null;
@@ -76,12 +94,13 @@ export function LFGRolePicker({
               key={roleOption.role}
               type="button"
               aria-pressed={isSelected}
+              disabled={pending}
               onClick={() => setSelectedRole(roleOption.role)}
               className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition ${
                 isSelected
                   ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                   : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
-              }`}
+              } disabled:cursor-not-allowed disabled:opacity-60`}
             >
               {getRoleIcon(
                 roleOption.role,
@@ -183,13 +202,7 @@ export function LFGRolePicker({
                   {selectedRoleOption.rankLabel}
                 </span>
               </p>
-              <button
-                type="submit"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
-              >
-                <PlusIcon className="h-4 w-4" />
-                Create Post
-              </button>
+              <CreatePostButton />
             </div>
           </>
         ) : (

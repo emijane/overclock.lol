@@ -12,7 +12,7 @@ import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { isLFGType, type CompetitiveProfileSnapshot } from "@/lib/lfg/lfg-post-types";
-import { insertLFGPost } from "@/lib/lfg/posts";
+import { hasMatchingActiveLFGPost, insertLFGPost } from "@/lib/lfg/posts";
 
 function lfgRedirect(
   lfgType: string,
@@ -127,6 +127,21 @@ export async function createLFGPost(formData: FormData) {
     region: profile.region ?? null,
     timezone: profile.timezone ?? null,
   };
+
+  const hasDuplicateActivePost = await hasMatchingActiveLFGPost({
+    lfgType: lfgTypeValue,
+    postingRole,
+    profileId: profile.id,
+    title,
+  });
+
+  if (hasDuplicateActivePost) {
+    lfgRedirect(
+      lfgTypeValue,
+      "You already have an active post in this section with this title.",
+      "success"
+    );
+  }
 
   try {
     await insertLFGPost({
