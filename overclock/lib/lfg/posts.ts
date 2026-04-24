@@ -280,6 +280,45 @@ export async function getRecentPostsByProfileId(
   return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
 }
 
+export async function getPostsByProfileId(
+  profileId: string,
+  limit = 30
+): Promise<LFGPost[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lfg_posts")
+    .select(
+      [
+        "id",
+        "profile_id",
+        "lfg_type",
+        "title",
+        "status",
+        "posting_role",
+        "snapshot_rank_tier",
+        "snapshot_rank_division",
+        "snapshot_region",
+        "snapshot_timezone",
+        "hero_pool_snapshot",
+        "created_at",
+        "profiles:profile_id(username,display_name,discord_avatar_url)",
+      ].join(",")
+    )
+    .eq("profile_id", profileId)
+    .neq("status", "archived")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw error;
+  }
+
+  const profileBadges = await getProfileBadges(profileId);
+  const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+
+  return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
+}
+
 export async function insertLFGPost(input: {
   competitiveProfileSnapshot: CompetitiveProfileSnapshot;
   heroPoolSnapshot: LFGHeroSnapshot[];
