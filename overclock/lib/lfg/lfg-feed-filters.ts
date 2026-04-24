@@ -2,6 +2,7 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import { isCompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { REGION_OPTIONS } from "@/lib/profiles/profile-options";
 
+export const LFG_REGION_OPTIONS = REGION_OPTIONS;
 export const LFG_RANK_BRACKET_OPTIONS = [
   "bronze-silver",
   "gold-plat",
@@ -52,4 +53,20 @@ export function getRankBracketTiers(rankBracket: LFGRankBracket) {
   }
 
   return ["Grandmaster", "Champion"];
+}
+
+export function getRankBracketLabel(rankBracket: LFGRankBracket) {
+  if (rankBracket === "bronze-silver") {
+    return "Bronze-Silver";
+  }
+
+  if (rankBracket === "gold-plat") {
+    return "Gold-Plat";
+  }
+
+  if (rankBracket === "diamond-master") {
+    return "Diamond-Master";
+  }
+
+  return "GM-Champion";
 }

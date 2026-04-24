@@ -15,6 +15,7 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import { LFGPostList } from "./lfg-post-list";
+import { DuosFeedFilters } from "./duos-feed-filters";
 import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
 import { PostTitleField } from "./post-title-field";
 
@@ -288,7 +289,14 @@ export async function LFGPageShell({
 
             {type ? (
               <>
-                <LFGFiltersBar description={filtersDescription} />
+                {type === "duos" ? (
+                  <DuosFeedFilters
+                    description={filtersDescription}
+                    selectedFilters={feedFilters}
+                  />
+                ) : (
+                  <LFGFiltersBar description={filtersDescription} />
+                )}
                 <LFGPostList
                   currentProfileId={profile?.id ?? null}
                   emptyStateDescription={emptyStateDescription}
