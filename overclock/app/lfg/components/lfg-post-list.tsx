@@ -135,24 +135,31 @@ export function LFGPostList({
 
               {post.heroPool.length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-2.5 border-t border-white/8 pt-3">
-                  {post.heroPool.slice(0, 5).map((hero) => (
-                    <div
-                      key={`${post.id}-${hero.id}`}
-                      title={hero.label}
-                      aria-label={hero.label}
-                      className="relative h-10 w-10 overflow-hidden rounded-[12px] border border-white/10 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                    >
-                      {hero.imageSrc ? (
-                        <Image
-                          src={hero.imageSrc}
-                          alt={hero.label}
-                          fill
-                          className="object-cover"
-                          sizes="40px"
-                        />
-                      ) : null}
+                  <div className="w-full">
+                    <p className="mb-2 text-xs font-medium text-zinc-500">
+                      Hero Pool
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                      {post.heroPool.slice(0, 5).map((hero) => (
+                        <div
+                          key={`${post.id}-${hero.id}`}
+                          title={hero.label}
+                          aria-label={hero.label}
+                          className="relative h-10 w-10 overflow-hidden rounded-[12px] border border-white/10 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                        >
+                          {hero.imageSrc ? (
+                            <Image
+                              src={hero.imageSrc}
+                              alt={hero.label}
+                              fill
+                              className="object-cover"
+                              sizes="40px"
+                            />
+                          ) : null}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               ) : null}
             </article>

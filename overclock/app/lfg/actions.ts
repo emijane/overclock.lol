@@ -119,5 +119,5 @@ export async function createLFGPost(formData: FormData) {
   }
 
   revalidatePath(`/${lfgTypeValue}`);
-  lfgRedirect(lfgTypeValue, "Post created.", "success");
+  lfgRedirect(lfgTypeValue, "Post successfully uploaded.", "success");
 }

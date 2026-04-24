@@ -7,6 +7,7 @@ import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
 import { getOptionalCurrentUserId } from "@/lib/profiles/get-optional-current-user-id";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { getProfileBadges } from "@/lib/badges/badges";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
@@ -70,7 +71,7 @@ export default async function ProfilePage({
     notFound();
   }
 
-  const [heroPools, competitiveProfile, featuredClips] = await Promise.all([
+  const [heroPools, competitiveProfile, featuredClips, badges] = await Promise.all([
     measureProfileStep(username, "hero pools", () =>
       getProfileHeroPools(profile.id)
     ),
@@ -80,6 +81,7 @@ export default async function ProfilePage({
     measureProfileStep(username, "featured clips", () =>
       getProfileFeaturedClips(profile.id)
     ),
+    measureProfileStep(username, "badges", () => getProfileBadges(profile.id)),
   ]);
 
   // Keep route components focused on loading data while profile presentation
@@ -150,6 +152,7 @@ export default async function ProfilePage({
             <EditableProfileHeader
               avatarUrl={profile.discord_avatar_url}
               bio={profile.bio}
+              badges={badges}
               coverImageUrl={coverImageUrl}
               currentRank={currentRank}
               currentRankTier={profileRankTier}
