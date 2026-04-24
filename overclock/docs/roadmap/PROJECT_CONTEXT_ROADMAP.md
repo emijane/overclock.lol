@@ -86,6 +86,8 @@ These are already visible in the codebase today:
 - Add a compact "looking for" summary near the top of the public profile.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Support featured Twitch clips or similar profile highlights.
+- Finalize LFG post lifecycle rules for rate limits, close behavior, and
+  automatic expiry.
 
 ### Later
 
