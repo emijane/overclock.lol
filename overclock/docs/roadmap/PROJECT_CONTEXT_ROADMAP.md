@@ -88,6 +88,8 @@ These are already visible in the codebase today:
 - Support featured Twitch clips or similar profile highlights.
 - Finalize LFG post lifecycle rules for rate limits, close behavior, and
   automatic expiry.
+- Add a private `/account/posts` management page for active, closed, and
+  expired LFG listings.
 
 ### Later
 
