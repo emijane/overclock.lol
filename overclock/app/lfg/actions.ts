@@ -14,6 +14,7 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { isLFGType, type CompetitiveProfileSnapshot } from "@/lib/lfg/lfg-post-types";
 import {
   closeOwnedActiveLFGPost,
+  hasReachedLFGPostRateLimit,
   hasMatchingActiveLFGPost,
   insertLFGPost,
 } from "@/lib/lfg/posts";
@@ -163,6 +164,18 @@ export async function createLFGPost(formData: FormData) {
       lfgTypeValue,
       "You already have an active post in this section with this title.",
       "success"
+    );
+  }
+
+  const hasReachedRateLimit = await hasReachedLFGPostRateLimit({
+    lfgType: lfgTypeValue,
+    profileId: profile.id,
+  });
+
+  if (hasReachedRateLimit) {
+    lfgRedirect(
+      lfgTypeValue,
+      "You can only create 2 posts in this section per hour. Try again a little later."
     );
   }
 

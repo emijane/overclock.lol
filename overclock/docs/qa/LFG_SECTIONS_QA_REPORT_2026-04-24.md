@@ -88,14 +88,10 @@ Recommended fix:
 ### 1. Good: server-side gating is present
 - `app/lfg/actions.ts` validates `lfg_type`, `posting_role`, auth, onboarding, role existence, and required profile fields on the server.
 
-### 2. Remaining concern: no anti-spam or posting-frequency protection
-Severity: Medium
-
-- This is not a secret leak issue, but it is still a practical abuse vector.
-- A logged-in user can still likely create many different posts rapidly.
-
-Recommended fix:
-- Add rate limiting, dedupe logic, or an active-post-per-type policy if that matches product rules.
+### 2. Good: posting frequency protection is now present
+- LFG post creation is now limited server-side to `2` posts per section per
+  rolling `60` minutes.
+- This limit is based on creation events, not whether the posts remain active.
 
 ### 3. Good: feed select only pulls public-facing profile fields
 - `lib/lfg/posts.ts` fetches `username`, `display_name`, and `discord_avatar_url` only.

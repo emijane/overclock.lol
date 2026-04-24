@@ -13,10 +13,18 @@ import type {
 } from "./lfg-post-types";
 
 export const ACTIVE_LFG_POST_WINDOW_HOURS = 12;
+export const LFG_POST_RATE_LIMIT_MAX_POSTS = 2;
+export const LFG_POST_RATE_LIMIT_WINDOW_MINUTES = 60;
 
 function getActivePostCutoffIso(now = new Date()) {
   return new Date(
     now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
+  ).toISOString();
+}
+
+function getRateLimitCutoffIso(now = new Date()) {
+  return new Date(
+    now.getTime() - LFG_POST_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000
   ).toISOString();
 }
 
@@ -332,6 +340,26 @@ export async function hasMatchingActiveLFGPost(input: {
   }
 
   return Boolean(data?.id);
+}
+
+export async function hasReachedLFGPostRateLimit(input: {
+  lfgType: LFGType;
+  profileId: string;
+}) {
+  const supabase = await createClient();
+  const rateLimitCutoffIso = getRateLimitCutoffIso();
+  const { count, error } = await supabase
+    .from("lfg_posts")
+    .select("id", { count: "exact", head: true })
+    .eq("profile_id", input.profileId)
+    .eq("lfg_type", input.lfgType)
+    .gte("created_at", rateLimitCutoffIso);
+
+  if (error) {
+    throw error;
+  }
+
+  return (count ?? 0) >= LFG_POST_RATE_LIMIT_MAX_POSTS;
 }
 
 export async function closeOwnedActiveLFGPost(input: {
