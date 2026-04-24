@@ -16,7 +16,7 @@ Audit method:
 
 ## Executive Summary
 
-The section routing problem was already corrected before this audit, and the current code now routes create/list behavior by `lfg_type` correctly. The biggest remaining launch risks are around incomplete feature surfaces being presented as real features, weak UX around loading states, and a few setup/accessibility gaps in the create flow.
+The section routing problem was already corrected before this audit, and the current code now routes create/list behavior by `lfg_type` correctly. The biggest remaining launch risks are around incomplete feature surfaces being presented as real features and a few setup/UX gaps in the create flow.
 
 There is no real edit/delete flow for LFG posts, no implemented filters/search/sorting despite a visible Filters section, and no pagination/infinite scroll. Those are not hidden from a QA perspective because the current UI strongly suggests more functionality than actually exists.
 
@@ -65,25 +65,7 @@ Impact:
 Recommended fix:
 - Either implement real filters/search/sort or change the copy to make it clear these are not live yet.
 
-### 2. No loading state for page data
-Severity: Medium
-
-Why this matters:
-- Slow network behavior will feel broken.
-- Users get no feedback that feed data is loading.
-
-Evidence:
-- `app/lfg/components/lfg-page-shell.tsx`
-  - No skeleton/loading branch for feed.
-
-Impact:
-- Unclear perceived performance
-- Poor resilience under latency
-
-Recommended fix:
-- Add loading/skeleton UI for feed fetch.
-
-### 3. Empty configured-role state can show two separate gating messages in the same create area
+### 2. Empty configured-role state can show two separate gating messages in the same create area
 Severity: Medium
 
 Why this matters:
@@ -154,7 +136,7 @@ Recommended fix:
 - It reads like a live control surface but contains no controls.
 
 ### 2. Missing submit/loading feedback increases perceived instability
-- Feed loading still has no real skeleton or progressive state.
+- The no-role-configured path still has overlapping setup guidance.
 
 ### 3. The post creation path is split across profile setup concepts
 - Competitive role setup lives under `/account/competitive`
@@ -215,9 +197,6 @@ Recommendation:
 
 ## Priority-Ranked Suggested Fixes
 
-### P1
-1. Add real loading and submit states.
-
 ### P2
 1. Either implement filters/search/sort or remove the misleading filter affordance/copy.
 2. Add a more actionable feed error state.
@@ -229,7 +208,7 @@ Recommendation:
 
 ## Release Recommendation
 
-Current recommendation: Do not treat these pages as fully launch-ready for a polished pre-launch release without at least the P0 and P1 items above.
+Current recommendation: Core section behavior is in much better shape now, but these pages still need the remaining P2 and P3 polish items before they feel fully launch-ready.
 
 Reason:
 - Core create/list functionality is present and section isolation appears correct.
