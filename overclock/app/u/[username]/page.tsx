@@ -183,7 +183,11 @@ export default async function ProfilePage({
               isOwner={isOwner}
               roles={heroPools.roles}
             />
-            <RecentProfilePosts isOwner={isOwner} posts={recentPosts} />
+            <RecentProfilePosts
+              isOwner={isOwner}
+              posts={recentPosts}
+              profileUsername={profile.username}
+            />
           </div>
         </div>
       </div>

@@ -125,6 +125,7 @@ function normalizeLFGPostRow(
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",
     lfgType: normalizeLFGType(row.lfg_type),
+    profileId: typeof row.profile_id === "string" ? row.profile_id : null,
     postingRole: normalizeCompetitiveRole(row.posting_role),
     rankDivision:
       typeof row.snapshot_rank_division === "number"
@@ -241,6 +242,7 @@ export async function getRecentPostsByProfileId(
     .select(
       [
         "id",
+        "profile_id",
         "lfg_type",
         "title",
         "status",
@@ -330,4 +332,31 @@ export async function hasMatchingActiveLFGPost(input: {
   }
 
   return Boolean(data?.id);
+}
+
+export async function closeOwnedActiveLFGPost(input: {
+  postId: string;
+  profileId: string;
+}) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lfg_posts")
+    .update({ status: "closed" })
+    .eq("id", input.postId)
+    .eq("profile_id", input.profileId)
+    .eq("status", "active")
+    .select("lfg_type")
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    lfgType:
+      typeof data?.lfg_type === "string" && isLFGType(data.lfg_type)
+        ? data.lfg_type
+        : null,
+    updated: Boolean(data),
+  };
 }

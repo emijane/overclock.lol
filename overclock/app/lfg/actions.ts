@@ -12,7 +12,11 @@ import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { isLFGType, type CompetitiveProfileSnapshot } from "@/lib/lfg/lfg-post-types";
-import { hasMatchingActiveLFGPost, insertLFGPost } from "@/lib/lfg/posts";
+import {
+  closeOwnedActiveLFGPost,
+  hasMatchingActiveLFGPost,
+  insertLFGPost,
+} from "@/lib/lfg/posts";
 
 function lfgRedirect(
   lfgType: string,
@@ -22,6 +26,25 @@ function lfgRedirect(
   const path = lfgType === "duos" ? "/duos" : `/${lfgType}`;
   const params = new URLSearchParams({ message, type });
   redirect(`${path}?${params.toString()}`);
+}
+
+function redirectWithMessage(
+  path: string,
+  message: string,
+  type: "error" | "success" = "error"
+): never {
+  const params = new URLSearchParams({ message, type });
+  redirect(`${path}?${params.toString()}`);
+}
+
+function getSafeReturnPath(value: FormDataEntryValue | null) {
+  const path = value?.toString().trim() ?? "";
+
+  if (!path.startsWith("/") || path.startsWith("//")) {
+    return null;
+  }
+
+  return path;
 }
 
 function buildHeroPoolSnapshot(heroIds: string[]) {
@@ -172,4 +195,52 @@ export async function createLFGPost(formData: FormData) {
     revalidatePath(`/u/${profile.username}`);
   }
   lfgRedirect(lfgTypeValue, "Post successfully uploaded.", "success");
+}
+
+export async function closeLFGPost(formData: FormData) {
+  const postId = formData.get("post_id")?.toString().trim() ?? "";
+  const fallbackPath = getSafeReturnPath(formData.get("return_path")) ?? "/duos";
+  const { user, profile } = await getCurrentProfile();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (!profile) {
+    redirect("/onboarding");
+  }
+
+  if (!postId) {
+    redirectWithMessage(fallbackPath, "Unable to close that post.");
+  }
+
+  try {
+    const result = await closeOwnedActiveLFGPost({
+      postId,
+      profileId: profile.id,
+    });
+    const redirectPath = result.lfgType ? `/${result.lfgType}` : fallbackPath;
+    const returnPath =
+      fallbackPath.startsWith("/u/") || fallbackPath === "/lfg"
+        ? fallbackPath
+        : redirectPath;
+
+    if (!result.updated) {
+      redirectWithMessage(returnPath, "That post is no longer active.");
+    }
+
+    revalidatePath(redirectPath);
+    if (profile.username) {
+      revalidatePath(`/u/${profile.username}`);
+    }
+
+    redirectWithMessage(returnPath, "Post closed.", "success");
+  } catch (error) {
+    console.error("LFG post close failed", {
+      error,
+      postId,
+      profileId: profile.id,
+    });
+    redirectWithMessage(fallbackPath, "Unable to close that post right now.");
+  }
 }

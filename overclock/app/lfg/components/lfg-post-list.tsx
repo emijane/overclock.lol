@@ -3,11 +3,12 @@ import Link from "next/link";
 
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
-import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
+import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
 
 type LFGPostListProps = {
+  currentProfileId?: string | null;
   emptyStateDescription: string;
   emptyStateTitle: string;
   errorMessage?: string | null;
@@ -90,6 +91,7 @@ function LFGFeedPlaceholder({
 }
 
 export function LFGPostList({
+  currentProfileId,
   emptyStateDescription,
   emptyStateTitle,
   errorMessage,
@@ -124,12 +126,12 @@ export function LFGPostList({
     <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="grid gap-3">
         {posts.map((post) => {
-          const rankIconSrc = getRankIconSrc(post.rankTier);
           const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
           const createdAtLabel = formatPostDate(post.createdAt);
           const visibleName = post.author.username ?? post.author.displayName ?? "Player";
           const profileHref = post.author.username ? `/u/${post.author.username}` : null;
           const avatarFallback = visibleName.slice(0, 2).toUpperCase();
+          const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
           return (
             <article
@@ -232,27 +234,24 @@ export function LFGPostList({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                <div className="flex items-center gap-2 self-end sm:self-auto">
                   {createdAtLabel ? (
                     <p className="text-xs font-medium text-zinc-500">
                       {createdAtLabel}
                     </p>
                   ) : null}
-                  {rankIconSrc ? (
-                    <Image
-                      src={rankIconSrc}
-                      alt={`${rankLabel} rank icon`}
-                      width={36}
-                      height={36}
-                      className="h-9 w-9 object-contain"
+                  {isOwner ? (
+                    <LFGPostActionsMenu
+                      postId={post.id}
+                      returnPath={`/${post.lfgType}`}
                     />
                   ) : null}
                 </div>
               </div>
 
-              {post.heroPool.length > 0 ? (
-                <div className="mt-3 flex flex-wrap gap-2.5 border-t border-white/8 pt-3">
-                  <div className="w-full">
+              <div className="mt-3 border-t border-white/8 pt-3">
+                {post.heroPool.length > 0 ? (
+                  <div>
                     <p className="mb-2 text-xs font-medium text-zinc-500">
                       Hero Pool
                     </p>
@@ -277,8 +276,8 @@ export function LFGPostList({
                       ))}
                     </div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
             </article>
           );
         })}

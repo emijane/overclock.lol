@@ -35,6 +35,7 @@ export type LFGPost = {
   heroPool: LFGHeroSnapshot[];
   id: string;
   lfgType: LFGType;
+  profileId: string | null;
   postingRole: CompetitiveRole;
   rankDivision: number | null;
   rankTier: string;

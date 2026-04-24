@@ -77,7 +77,7 @@ Recommended fix:
 - Platform/region/server data appears to come from the broader profile editor
 
 ### 4. No edit/delete support creates a dead-end after posting
-- If a user makes a typo or changes plans, the LFG pages do not offer recovery
+- Manual post closing now exists for owners, but edit/delete still do not.
 
 ### 5. Logged-out and onboarding-gated users are handled clearly, but partially configured users are not
 - The blocking rule is valid
@@ -132,7 +132,7 @@ Recommendation:
 ## Priority-Ranked Suggested Fixes
 
 ### P3
-1. Consider future edit/delete/close-post controls if the product expects posts to be self-managed.
+1. Consider whether hard delete is ever needed, or whether owner-only close is the permanent lifecycle control.
 
 ## Release Recommendation
 

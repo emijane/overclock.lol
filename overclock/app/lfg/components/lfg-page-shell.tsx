@@ -283,6 +283,7 @@ export async function LFGPageShell({
               <>
                 <LFGFiltersBar description={filtersDescription} />
                 <LFGPostList
+                  currentProfileId={profile?.id ?? null}
                   emptyStateDescription={emptyStateDescription}
                   emptyStateTitle={emptyStateTitle}
                   errorMessage={pageData.postsErrorMessage}

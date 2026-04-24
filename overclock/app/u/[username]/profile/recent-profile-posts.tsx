@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { ShieldIcon, SparklesIcon, SwordsIcon } from "lucide-react";
 
+import { closeLFGPost } from "@/app/lfg/actions";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
+import { ClosePostButton } from "@/app/lfg/components/close-post-button";
 
 type RecentProfilePostsProps = {
   isOwner: boolean;
   posts: LFGPost[];
+  profileUsername: string;
 };
 
 function formatPostDate(value: string) {
@@ -66,6 +69,7 @@ function getRoleIcon(role: LFGPost["postingRole"]) {
 export function RecentProfilePosts({
   isOwner,
   posts,
+  profileUsername,
 }: RecentProfilePostsProps) {
   if (posts.length === 0 && !isOwner) {
     return null;
@@ -132,12 +136,25 @@ export function RecentProfilePosts({
                 ) : null}
 
                 <div className="mt-auto pt-3">
-                  <Link
-                    href={`/${post.lfgType}`}
-                    className="inline-flex text-xs font-semibold text-sky-300 transition hover:text-sky-200"
-                  >
-                    View Listing
-                  </Link>
+                  <div className="flex items-center justify-between gap-3">
+                    <Link
+                      href={`/${post.lfgType}`}
+                      className="inline-flex text-xs font-semibold text-sky-300 transition hover:text-sky-200"
+                    >
+                      View Listing
+                    </Link>
+                    {isOwner ? (
+                      <form action={closeLFGPost}>
+                        <input type="hidden" name="post_id" value={post.id} />
+                        <input
+                          type="hidden"
+                          name="return_path"
+                          value={`/u/${profileUsername}`}
+                        />
+                        <ClosePostButton />
+                      </form>
+                    ) : null}
+                  </div>
                 </div>
               </article>
             );
