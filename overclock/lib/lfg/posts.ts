@@ -12,6 +12,14 @@ import type {
   LFGType,
 } from "./lfg-post-types";
 
+export const ACTIVE_LFG_POST_WINDOW_HOURS = 12;
+
+function getActivePostCutoffIso(now = new Date()) {
+  return new Date(
+    now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
+  ).toISOString();
+}
+
 function normalizeBadgeDefinition(value: unknown): ProfileBadge | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return null;
@@ -136,6 +144,7 @@ function normalizeLFGPostRow(
 
 export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
   const supabase = await createClient();
+  const activePostCutoffIso = getActivePostCutoffIso();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -157,6 +166,7 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     )
     .eq("lfg_type", lfgType)
     .eq("status", "active")
+    .gte("created_at", activePostCutoffIso)
     .order("created_at", { ascending: false })
     .limit(30);
 
@@ -225,6 +235,7 @@ export async function getRecentPostsByProfileId(
   limit = 2
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
+  const activePostCutoffIso = getActivePostCutoffIso();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -244,7 +255,8 @@ export async function getRecentPostsByProfileId(
       ].join(",")
     )
     .eq("profile_id", profileId)
-    .neq("status", "archived")
+    .eq("status", "active")
+    .gte("created_at", activePostCutoffIso)
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -300,6 +312,7 @@ export async function hasMatchingActiveLFGPost(input: {
   title: string;
 }) {
   const supabase = await createClient();
+  const activePostCutoffIso = getActivePostCutoffIso();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("id")
@@ -308,6 +321,7 @@ export async function hasMatchingActiveLFGPost(input: {
     .eq("posting_role", input.postingRole)
     .eq("title", input.title)
     .eq("status", "active")
+    .gte("created_at", activePostCutoffIso)
     .limit(1)
     .maybeSingle();
 
