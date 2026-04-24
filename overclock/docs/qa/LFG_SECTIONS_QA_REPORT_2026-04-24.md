@@ -104,25 +104,7 @@ Impact:
 Recommended fix:
 - Collapse the no-role-configured state into one clear CTA.
 
-### 4. Title field is required but has no visible label
-Severity: Medium
-
-Why this matters:
-- Placeholder text is not a substitute for a label.
-- Screen reader and accessibility quality are weaker than they should be.
-
-Evidence:
-- `app/lfg/components/post-title-field.tsx`
-  - Text input has no `<label>` and no `aria-label`
-
-Impact:
-- Accessibility gap
-- Harder keyboard/screen-reader usability
-
-Recommended fix:
-- Add a visible or screen-reader-only label for the title field.
-
-### 5. Post creation gating depends on profile platform/region/timezone, but the UI does not explain all three requirements before submit
+### 4. Post creation gating depends on profile platform/region/timezone, but the UI does not explain all three requirements before submit
 Severity: Medium
 
 Why this matters:
@@ -257,7 +239,6 @@ Recommendation:
 ### P1
 1. Add real loading and submit states.
 2. Make profile setup requirements explicit before submit, not only after server rejection.
-3. Add accessible labeling to the title input.
 
 ### P2
 1. Either implement filters/search/sort or remove the misleading filter affordance/copy.
