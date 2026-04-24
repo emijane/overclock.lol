@@ -260,6 +260,13 @@ export async function LFGPageShell({
                       )} before creating a post in this section. This opens your profile editor directly.`}
                       title="Complete your setup before posting"
                     />
+                  ) : !hasConfiguredRole ? (
+                    <LFGActionNotice
+                      ctaHref="/account/competitive"
+                      ctaLabel="Set Up Competitive Profile"
+                      description="Set up at least one competitive role before creating a post in this section."
+                      title="Competitive profile required"
+                    />
                   ) : (
                     <form action={createLFGPost}>
                       <input type="hidden" name="lfg_type" value={type} />
@@ -269,14 +276,6 @@ export async function LFGPageShell({
                         roleOptions={pageData.roleOptions}
                         setupHref="/account/competitive"
                       />
-                      {!hasConfiguredRole ? (
-                        <LFGActionNotice
-                          ctaHref="/account/competitive"
-                          ctaLabel="Set Up Competitive Profile"
-                          description="Add at least one ranked role before creating a post in this section."
-                          title="Competitive profile required"
-                        />
-                      ) : null}
                     </form>
                   )}
                 </section>

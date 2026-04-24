@@ -41,45 +41,19 @@ There is no real edit/delete flow for LFG posts, no implemented filters/search/s
 - Sorting
 - Pagination / infinite scroll
 
-## Medium Issues
-
-### 1. Empty configured-role state can show two separate gating messages in the same create area
-Severity: Medium
-
-Why this matters:
-- If the user has no configured role, the page still renders the role picker plus an additional generic “Competitive profile required” notice below it.
-- That creates redundant guidance and extra friction.
-
-Evidence:
-- `app/lfg/components/lfg-page-shell.tsx`
-  - Shows `LFGRolePicker`
-  - Also shows `LFGActionNotice` when `!hasConfiguredRole`
-- `app/lfg/components/lfg-role-picker.tsx`
-  - Already shows role-specific setup messaging once a non-configured role is selected
-
-Impact:
-- Cluttered create flow
-- Repeated messaging
-
-Recommended fix:
-- Collapse the no-role-configured state into one clear CTA.
-
 ## UX Concerns
 
 ### 1. The Filters bar creates a false expectation of interactivity
 - This has been softened, but true filtering/search still does not exist yet.
 
-### 2. The no-role-configured path still has overlapping setup guidance
-- The no-role-configured path still has overlapping setup guidance.
-
-### 3. The post creation path is split across profile setup concepts
+### 2. The post creation path is split across profile setup concepts
 - Competitive role setup lives under `/account/competitive`
 - Platform/region/server data appears to come from the broader profile editor
 
-### 4. No edit/delete support creates a dead-end after posting
+### 3. No edit/delete support creates a dead-end after posting
 - Manual post closing now exists for owners, but edit/delete still do not.
 
-### 5. Logged-out and onboarding-gated users are handled clearly, but partially configured users are not
+### 4. Logged-out and onboarding-gated users are handled clearly, but partially configured users are not
 - The blocking rule is valid
 - The remediation path is still too opaque
 
