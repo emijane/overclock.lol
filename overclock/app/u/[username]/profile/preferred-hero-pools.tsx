@@ -96,7 +96,7 @@ export function PreferredHeroPools({
   );
 
   return (
-    <section className="border-t px-5 pb-6 pt-4 shadow-[inset_0_1px_0_var(--profile-rank-glow)] [border-top-color:var(--profile-rank-border)] sm:px-6 sm:pb-7">
+    <section className="border-t border-white/10 px-5 pb-6 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-6 sm:pb-7">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
@@ -142,7 +142,7 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="border-t pt-4 shadow-[inset_0_1px_0_var(--profile-rank-glow)] [border-top-color:var(--profile-rank-border)] first:border-t-0 first:pt-0 first:shadow-none lg:border-l lg:border-t-0 lg:px-4 lg:pt-0 lg:shadow-[inset_1px_0_0_var(--profile-rank-glow)] lg:[border-left-color:var(--profile-rank-border)] lg:first:border-l-0 lg:first:pl-0 lg:first:shadow-none lg:last:pr-0"
+                className="border-t border-white/10 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] first:border-t-0 first:pt-0 first:shadow-none lg:border-l lg:border-t-0 lg:px-4 lg:pt-0 lg:shadow-[inset_1px_0_0_rgba(255,255,255,0.05)] lg:[border-left-color:rgba(255,255,255,0.10)] lg:first:border-l-0 lg:first:pl-0 lg:first:shadow-none lg:last:pr-0"
               >
                 <div className="grid gap-2">
                   <h3 className="text-sm font-semibold tracking-[-0.01em] text-zinc-100">

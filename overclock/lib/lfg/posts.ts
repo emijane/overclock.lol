@@ -1,5 +1,6 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
+import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
 
 import type {
@@ -177,6 +178,74 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",
     lfgType: row.lfg_type === lfgType ? lfgType : lfgType,
+    postingRole:
+      row.posting_role === "tank" ||
+      row.posting_role === "dps" ||
+      row.posting_role === "support"
+        ? (row.posting_role as CompetitiveRole)
+        : "support",
+    rankDivision:
+      typeof row.snapshot_rank_division === "number"
+        ? row.snapshot_rank_division
+        : null,
+    rankTier:
+      typeof row.snapshot_rank_tier === "string"
+        ? row.snapshot_rank_tier
+        : "Unranked",
+    region: typeof row.snapshot_region === "string" ? row.snapshot_region : null,
+    status: normalizeStatus(row.status),
+    timezone:
+      typeof row.snapshot_timezone === "string" ? row.snapshot_timezone : null,
+    title: typeof row.title === "string" ? row.title : "",
+  }));
+}
+
+export async function getRecentPostsByProfileId(
+  profileId: string,
+  limit = 2
+): Promise<LFGPost[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lfg_posts")
+    .select(
+      [
+        "id",
+        "lfg_type",
+        "title",
+        "status",
+        "posting_role",
+        "snapshot_rank_tier",
+        "snapshot_rank_division",
+        "snapshot_region",
+        "snapshot_timezone",
+        "hero_pool_snapshot",
+        "created_at",
+        "profiles:profile_id(username,display_name,discord_avatar_url)",
+      ].join(",")
+    )
+    .eq("profile_id", profileId)
+    .neq("status", "archived")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw error;
+  }
+
+  const profileBadges = await getProfileBadges(profileId);
+
+  return (data ?? []).map((row) => ({
+    author: normalizeAuthor(row.profiles, profileBadges),
+    createdAt: typeof row.created_at === "string" ? row.created_at : "",
+    heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
+    id: typeof row.id === "string" ? row.id : "",
+    lfgType:
+      row.lfg_type === "duos" ||
+      row.lfg_type === "stacks" ||
+      row.lfg_type === "scrims" ||
+      row.lfg_type === "teams"
+        ? row.lfg_type
+        : "duos",
     postingRole:
       row.posting_role === "tank" ||
       row.posting_role === "dps" ||

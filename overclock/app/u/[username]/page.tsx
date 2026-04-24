@@ -8,12 +8,14 @@ import { getOptionalCurrentUserId } from "@/lib/profiles/get-optional-current-us
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
+import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
   type FeaturedClip,
 } from "./profile/featured-clips";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
+import { RecentProfilePosts } from "./profile/recent-profile-posts";
 import {
   getRankAccentStyle,
   getRankBorderClassName,
@@ -71,7 +73,7 @@ export default async function ProfilePage({
     notFound();
   }
 
-  const [heroPools, competitiveProfile, featuredClips, badges] = await Promise.all([
+  const [heroPools, competitiveProfile, featuredClips, badges, recentPosts] = await Promise.all([
     measureProfileStep(username, "hero pools", () =>
       getProfileHeroPools(profile.id)
     ),
@@ -82,6 +84,9 @@ export default async function ProfilePage({
       getProfileFeaturedClips(profile.id)
     ),
     measureProfileStep(username, "badges", () => getProfileBadges(profile.id)),
+    measureProfileStep(username, "recent posts", () =>
+      getRecentPostsByProfileId(profile.id)
+    ),
   ]);
 
   // Keep route components focused on loading data while profile presentation
@@ -178,6 +183,7 @@ export default async function ProfilePage({
               isOwner={isOwner}
               roles={heroPools.roles}
             />
+            <RecentProfilePosts isOwner={isOwner} posts={recentPosts} />
           </div>
         </div>
       </div>
