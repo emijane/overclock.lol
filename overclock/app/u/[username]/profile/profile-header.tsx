@@ -34,23 +34,15 @@ type ProfileHeaderProps = {
 };
 
 const rankBadgeClassNameByTier: Record<string, string> = {
-  Bronze:
-    "border-[#D08050]/30 bg-[#A05030]/15 shadow-[0_0_24px_rgba(160,80,48,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Silver:
-    "border-[#D0E0E8]/25 bg-[#A0B0C0]/12 shadow-[0_0_24px_rgba(160,176,192,0.16),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Gold: "border-[#F0E080]/30 bg-[#D0A030]/15 shadow-[0_0_24px_rgba(208,160,48,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Platinum:
-    "border-[#D0FFFF]/30 bg-[#A0C0D0]/14 shadow-[0_0_24px_rgba(208,255,255,0.16),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Diamond:
-    "border-[#80B0F0]/30 bg-[#4060A0]/18 shadow-[0_0_24px_rgba(128,176,240,0.2),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Master:
-    "border-[#C0E0D0]/30 bg-[#306040]/18 shadow-[0_0_24px_rgba(144,176,160,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Grandmaster:
-    "border-[#F0E0FF]/30 bg-[#403070]/20 shadow-[0_0_24px_rgba(192,192,224,0.2),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  Champion:
-    "border-[#F0ABFC]/35 bg-[#A855F7]/18 shadow-[0_0_26px_rgba(168,85,247,0.24),inset_0_1px_0_rgba(255,255,255,0.14)]",
-  "Top 500":
-    "border-[#F0E090]/35 bg-[#E0B040]/16 shadow-[0_0_26px_rgba(224,176,64,0.22),inset_0_1px_0_rgba(255,255,255,0.14)]",
+  Bronze: "border-[#D08050]/30 bg-[#A05030]/15",
+  Silver: "border-[#D0E0E8]/25 bg-[#A0B0C0]/12",
+  Gold: "border-[#F0E080]/30 bg-[#D0A030]/15",
+  Platinum: "border-[#D0FFFF]/30 bg-[#A0C0D0]/14",
+  Diamond: "border-[#80B0F0]/30 bg-[#4060A0]/18",
+  Master: "border-[#C0E0D0]/30 bg-[#306040]/18",
+  Grandmaster: "border-[#F0E0FF]/30 bg-[#403070]/20",
+  Champion: "border-[#F0ABFC]/35 bg-[#A855F7]/18",
+  "Top 500": "border-[#F0E090]/35 bg-[#E0B040]/16",
 };
 
 export function ProfileHeader({
@@ -178,7 +170,7 @@ export function ProfileHeader({
                     <button
                       type="button"
                       onClick={onEditProfile}
-                      className="inline-flex h-10 items-center rounded-full border border-white/12 bg-white/[0.055] px-4 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_28px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 hover:shadow-[0_0_24px_rgba(56,189,248,0.16),inset_0_1px_0_rgba(255,255,255,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                      className="inline-flex h-10 items-center rounded-full border border-white/12 bg-white/[0.055] px-4 text-sm font-semibold text-zinc-50 backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                     >
                       Edit profile
                     </button>

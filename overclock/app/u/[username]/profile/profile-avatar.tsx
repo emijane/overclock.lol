@@ -11,7 +11,10 @@ export function ProfileAvatar({
   currentRankTier,
   displayName,
 }: ProfileAvatarProps) {
-  const borderClassName = getRankBorderClassName(currentRankTier);
+  const borderClassName = getRankBorderClassName(currentRankTier).replace(
+    /\s*shadow-\[[^\]]+\]/g,
+    ""
+  );
 
   return (
     <div className="relative h-28 w-28 rounded-full sm:h-32 sm:w-32">

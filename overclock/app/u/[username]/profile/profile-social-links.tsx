@@ -37,15 +37,11 @@ const ICON_COLORS = {
 } as const;
 
 const BUTTON_ACCENTS = {
-  discord:
-    "hover:border-[#5865F2]/45 hover:bg-[#5865F2]/12 hover:shadow-[0_0_24px_rgba(88,101,242,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  battlenet:
-    "hover:border-[#00AEF0]/45 hover:bg-[#00AEF0]/12 hover:shadow-[0_0_24px_rgba(0,174,240,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  twitch:
-    "hover:border-[#9146FF]/45 hover:bg-[#9146FF]/12 hover:shadow-[0_0_24px_rgba(145,70,255,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  x: "hover:border-white/20 hover:bg-white/[0.075] hover:shadow-[0_0_24px_rgba(255,255,255,0.1),inset_0_1px_0_rgba(255,255,255,0.12)]",
-  youtube:
-    "hover:border-[#FF0033]/45 hover:bg-[#FF0033]/12 hover:shadow-[0_0_24px_rgba(255,0,51,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]",
+  discord: "hover:border-[#5865F2]/45 hover:bg-[#5865F2]/12",
+  battlenet: "hover:border-[#00AEF0]/45 hover:bg-[#00AEF0]/12",
+  twitch: "hover:border-[#9146FF]/45 hover:bg-[#9146FF]/12",
+  x: "hover:border-white/20 hover:bg-white/[0.075]",
+  youtube: "hover:border-[#FF0033]/45 hover:bg-[#FF0033]/12",
 } as const;
 
 function isExternalUrl(value: string) {
@@ -108,9 +104,9 @@ export function ProfileSocialLinks({
           const Icon = ICONS[link.platform];
           const isActive = activeLabel === link.label;
           const shouldOpen = isExternalUrl(link.value);
-          const buttonClassName = `group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_28px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+          const buttonClassName = `group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border text-zinc-200 backdrop-blur-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             isActive
-              ? "border-sky-400/60 bg-sky-400/12 shadow-[0_0_24px_rgba(56,189,248,0.2),inset_0_1px_0_rgba(255,255,255,0.12)]"
+              ? "border-sky-400/60 bg-sky-400/12"
               : `border-white/10 bg-white/[0.045] ${BUTTON_ACCENTS[link.platform]}`
           }`;
           const icon = (
@@ -152,7 +148,7 @@ export function ProfileSocialLinks({
 
       {statusMessage ? (
         <div
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.055] px-2.5 py-1 text-[12px] font-medium tracking-[-0.01em] text-zinc-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md"
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.055] px-2.5 py-1 text-[12px] font-medium tracking-[-0.01em] text-zinc-300 backdrop-blur-md"
           aria-live="polite"
         >
           <CheckIcon className="h-3.5 w-3.5 text-emerald-400" />
