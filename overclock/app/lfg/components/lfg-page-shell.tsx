@@ -233,6 +233,10 @@ export async function LFGPageShell({
                   <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
                     Create a Post
                   </h2>
+                  <p className="mt-2 text-sm leading-6 text-zinc-500">
+                    To reduce spam, you can create up to 2 posts in this section per
+                    hour.
+                  </p>
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
