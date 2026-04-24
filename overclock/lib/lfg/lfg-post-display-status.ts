@@ -1,7 +1,18 @@
 import type { LFGPostStatus } from "./lfg-post-types";
 import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
 
+export const LFG_POST_DISPLAY_STATUS_OPTIONS = [
+  "active",
+  "closed",
+  "expired",
+] as const;
 export type LFGPostDisplayStatus = "active" | "closed" | "expired";
+
+export function isLFGPostDisplayStatus(
+  value: string
+): value is LFGPostDisplayStatus {
+  return LFG_POST_DISPLAY_STATUS_OPTIONS.includes(value as LFGPostDisplayStatus);
+}
 
 export function isLFGPostExpired(createdAt: string, now = new Date()) {
   if (!createdAt) {
