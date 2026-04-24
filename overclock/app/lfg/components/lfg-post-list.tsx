@@ -10,6 +10,7 @@ import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 type LFGPostListProps = {
   emptyStateDescription: string;
   emptyStateTitle: string;
+  errorMessage?: string | null;
   posts: LFGPost[];
 };
 
@@ -36,8 +37,20 @@ function LFGFeedPlaceholder({
 export function LFGPostList({
   emptyStateDescription,
   emptyStateTitle,
+  errorMessage,
   posts,
 }: LFGPostListProps) {
+  if (errorMessage) {
+    return (
+      <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+        <LFGFeedPlaceholder
+          description={errorMessage}
+          title="Unable to load posts"
+        />
+      </section>
+    );
+  }
+
   if (posts.length === 0) {
     return (
       <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">

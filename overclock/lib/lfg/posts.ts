@@ -2,6 +2,7 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
+import { isLFGType } from "./lfg-post-types";
 
 import type {
   CompetitiveProfileSnapshot,
@@ -44,26 +45,28 @@ function normalizeHeroPoolSnapshot(value: unknown): LFGHeroSnapshot[] {
     return [];
   }
 
-  return value
-    .map((item) => {
-      if (!item || typeof item !== "object" || Array.isArray(item)) {
-        return null;
-      }
+  const snapshots: LFGHeroSnapshot[] = [];
 
-      const candidate = item as Record<string, unknown>;
+  for (const item of value) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      continue;
+    }
 
-      if (typeof candidate.id !== "string" || typeof candidate.label !== "string") {
-        return null;
-      }
+    const candidate = item as Record<string, unknown>;
 
-      return {
-        id: candidate.id,
-        imageSrc:
-          typeof candidate.imageSrc === "string" ? candidate.imageSrc : null,
-        label: candidate.label,
-      } satisfies LFGHeroSnapshot;
-    })
-    .filter((hero): hero is LFGHeroSnapshot => Boolean(hero));
+    if (typeof candidate.id !== "string" || typeof candidate.label !== "string") {
+      continue;
+    }
+
+    snapshots.push({
+      id: candidate.id,
+      imageSrc:
+        typeof candidate.imageSrc === "string" ? candidate.imageSrc : null,
+      label: candidate.label,
+    });
+  }
+
+  return snapshots;
 }
 
 function normalizeStatus(value: unknown): LFGPostStatus {
@@ -94,6 +97,43 @@ function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
   };
 }
 
+function normalizeCompetitiveRole(value: unknown): CompetitiveRole {
+  return value === "tank" || value === "dps" || value === "support"
+    ? value
+    : "support";
+}
+
+function normalizeLFGType(value: unknown): LFGType {
+  return typeof value === "string" && isLFGType(value) ? value : "duos";
+}
+
+function normalizeLFGPostRow(
+  row: Record<string, unknown>,
+  badges: ProfileBadge[]
+): LFGPost {
+  return {
+    author: normalizeAuthor(row.profiles, badges),
+    createdAt: typeof row.created_at === "string" ? row.created_at : "",
+    heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
+    id: typeof row.id === "string" ? row.id : "",
+    lfgType: normalizeLFGType(row.lfg_type),
+    postingRole: normalizeCompetitiveRole(row.posting_role),
+    rankDivision:
+      typeof row.snapshot_rank_division === "number"
+        ? row.snapshot_rank_division
+        : null,
+    rankTier:
+      typeof row.snapshot_rank_tier === "string"
+        ? row.snapshot_rank_tier
+        : "Unranked",
+    region: typeof row.snapshot_region === "string" ? row.snapshot_region : null,
+    status: normalizeStatus(row.status),
+    timezone:
+      typeof row.snapshot_timezone === "string" ? row.snapshot_timezone : null,
+    title: typeof row.title === "string" ? row.title : "",
+  };
+}
+
 export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -101,6 +141,7 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     .select(
       [
         "id",
+        "profile_id",
         "lfg_type",
         "title",
         "status",
@@ -123,9 +164,11 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     throw error;
   }
 
+  const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+
   const profileIds = Array.from(
     new Set(
-      (data ?? [])
+      postRows
         .map((row) => (typeof row.profile_id === "string" ? row.profile_id : null))
         .filter((profileId): profileId is string => Boolean(profileId))
     )
@@ -145,7 +188,7 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
       throw badgeError;
     }
 
-    for (const row of badgeRows ?? []) {
+    for (const row of (badgeRows ?? []) as Array<Record<string, unknown>>) {
       if (typeof row.profile_id !== "string") {
         continue;
       }
@@ -167,37 +210,14 @@ export async function getActiveLFGPosts(lfgType: LFGType): Promise<LFGPost[]> {
     }
   }
 
-  return (data ?? []).map((row) => ({
-    author: normalizeAuthor(
-      row.profiles,
+  return postRows.map((row) =>
+    normalizeLFGPostRow(
+      row,
       typeof row.profile_id === "string"
         ? badgesByProfileId.get(row.profile_id) ?? []
         : []
-    ),
-    createdAt: typeof row.created_at === "string" ? row.created_at : "",
-    heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
-    id: typeof row.id === "string" ? row.id : "",
-    lfgType: row.lfg_type === lfgType ? lfgType : lfgType,
-    postingRole:
-      row.posting_role === "tank" ||
-      row.posting_role === "dps" ||
-      row.posting_role === "support"
-        ? (row.posting_role as CompetitiveRole)
-        : "support",
-    rankDivision:
-      typeof row.snapshot_rank_division === "number"
-        ? row.snapshot_rank_division
-        : null,
-    rankTier:
-      typeof row.snapshot_rank_tier === "string"
-        ? row.snapshot_rank_tier
-        : "Unranked",
-    region: typeof row.snapshot_region === "string" ? row.snapshot_region : null,
-    status: normalizeStatus(row.status),
-    timezone:
-      typeof row.snapshot_timezone === "string" ? row.snapshot_timezone : null,
-    title: typeof row.title === "string" ? row.title : "",
-  }));
+    )
+  );
 }
 
 export async function getRecentPostsByProfileId(
@@ -233,39 +253,9 @@ export async function getRecentPostsByProfileId(
   }
 
   const profileBadges = await getProfileBadges(profileId);
+  const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
 
-  return (data ?? []).map((row) => ({
-    author: normalizeAuthor(row.profiles, profileBadges),
-    createdAt: typeof row.created_at === "string" ? row.created_at : "",
-    heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
-    id: typeof row.id === "string" ? row.id : "",
-    lfgType:
-      row.lfg_type === "duos" ||
-      row.lfg_type === "stacks" ||
-      row.lfg_type === "scrims" ||
-      row.lfg_type === "teams"
-        ? row.lfg_type
-        : "duos",
-    postingRole:
-      row.posting_role === "tank" ||
-      row.posting_role === "dps" ||
-      row.posting_role === "support"
-        ? (row.posting_role as CompetitiveRole)
-        : "support",
-    rankDivision:
-      typeof row.snapshot_rank_division === "number"
-        ? row.snapshot_rank_division
-        : null,
-    rankTier:
-      typeof row.snapshot_rank_tier === "string"
-        ? row.snapshot_rank_tier
-        : "Unranked",
-    region: typeof row.snapshot_region === "string" ? row.snapshot_region : null,
-    status: normalizeStatus(row.status),
-    timezone:
-      typeof row.snapshot_timezone === "string" ? row.snapshot_timezone : null,
-    title: typeof row.title === "string" ? row.title : "",
-  }));
+  return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
 }
 
 export async function insertLFGPost(input: {

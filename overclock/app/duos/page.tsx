@@ -1,25 +1,20 @@
-import { LFGPageShell } from "@/app/lfg/components/lfg-page-shell";
+import {
+  buildLFGSectionMetadata,
+  LFGSectionPage,
+  type LFGSectionConfig,
+  type LFGSectionPageProps,
+} from "@/app/lfg/section-page";
 
-type DuosPageProps = {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
+const DUOS_PAGE_CONFIG = {
+  title: "Duos",
+  description: "Find one teammate for ranked or casual queue.",
+  metadataDescription:
+    "Browse duo posts and create a duo listing for ranked or casual queue.",
+  type: "duos",
+} satisfies LFGSectionConfig;
 
-function pickValue(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
+export const metadata = buildLFGSectionMetadata(DUOS_PAGE_CONFIG);
 
-export default async function DuosPage({ searchParams }: DuosPageProps) {
-  const params = searchParams ? await searchParams : {};
-  const message = pickValue(params.message);
-  const messageType = pickValue(params.type);
-
-  return (
-    <LFGPageShell
-      title="Duos"
-      description="Find one teammate for ranked or casual queue."
-      message={message}
-      messageType={messageType}
-      type="duos"
-    />
-  );
+export default function DuosPage(props: LFGSectionPageProps) {
+  return <LFGSectionPage config={DUOS_PAGE_CONFIG} {...props} />;
 }

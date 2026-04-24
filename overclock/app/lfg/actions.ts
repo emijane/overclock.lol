@@ -35,6 +35,30 @@ function buildHeroPoolSnapshot(heroIds: string[]) {
     }));
 }
 
+function getRequiredProfileError({
+  platform,
+  region,
+  timezone,
+}: {
+  platform: string | null;
+  region: string | null;
+  timezone: string | null;
+}) {
+  if (!platform) {
+    return "Choose your platform in your profile before posting.";
+  }
+
+  if (!region) {
+    return "Choose your region in your profile before posting.";
+  }
+
+  if (!timezone) {
+    return "Choose your server in your profile before posting.";
+  }
+
+  return null;
+}
+
 export async function createLFGPost(formData: FormData) {
   const lfgTypeValue = formData.get("lfg_type")?.toString().trim() ?? "";
   const title = formData.get("title")?.toString().trim() ?? "";
@@ -64,6 +88,16 @@ export async function createLFGPost(formData: FormData) {
 
   if (!profile) {
     redirect("/onboarding");
+  }
+
+  const requiredProfileError = getRequiredProfileError({
+    platform: profile.platform ?? null,
+    region: profile.region ?? null,
+    timezone: profile.timezone ?? null,
+  });
+
+  if (requiredProfileError) {
+    lfgRedirect(lfgTypeValue, requiredProfileError);
   }
 
   const [competitiveProfile, heroPools] = await Promise.all([

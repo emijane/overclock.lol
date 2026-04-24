@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FilterIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
@@ -13,7 +14,7 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import { LFGPostList } from "./lfg-post-list";
-import { LFGRolePicker } from "./lfg-role-picker";
+import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
 import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
@@ -25,7 +26,13 @@ type LFGPageShellProps = {
   message?: string;
   messageType?: string;
   title: string;
-  type: LFGType;
+  type?: LFGType;
+};
+
+type LFGPageData = {
+  posts: Awaited<ReturnType<typeof getActiveLFGPosts>>;
+  postsErrorMessage: string | null;
+  roleOptions: LFGRoleOption[];
 };
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -38,14 +45,91 @@ function LFGFiltersBar({ description }: { description: string }) {
           </span>
           <div>
             <h2 className="text-sm font-semibold text-zinc-100">Filters</h2>
-            <p className="mt-0.5 text-sm text-zinc-500">
-              {description}
-            </p>
+            <p className="mt-0.5 text-sm text-zinc-500">{description}</p>
           </div>
         </div>
       </div>
     </section>
   );
+}
+
+function LFGActionNotice({
+  ctaHref,
+  ctaLabel,
+  description,
+  title,
+}: {
+  ctaHref: string;
+  ctaLabel: string;
+  description: string;
+  title: string;
+}) {
+  return (
+    <div className="mt-4 rounded-[20px] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+      <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
+      <Link
+        href={ctaHref}
+        className="mt-4 inline-flex h-10 items-center rounded-full border border-white/10 bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+      >
+        {ctaLabel}
+      </Link>
+    </div>
+  );
+}
+
+function buildRoleOptions(
+  competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>>,
+  heroPools: Awaited<ReturnType<typeof getProfileHeroPools>>
+): LFGRoleOption[] {
+  return COMPETITIVE_ROLE_OPTIONS.map((role) => {
+    const roleProfile =
+      competitiveProfile.roles.find((candidate) => candidate.role === role) ?? null;
+    const heroPool = heroPools.heroPicks[role]
+      .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
+      .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
+
+    return {
+      heroPool,
+      isConfigured: Boolean(roleProfile),
+      rankLabel: roleProfile
+        ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
+        : "Not set",
+      rankTier: roleProfile?.rankTier ?? null,
+      role,
+    };
+  });
+}
+
+async function getLFGPageData(
+  type: LFGType,
+  profileId: string | null
+): Promise<LFGPageData> {
+  const postsResult = await getActiveLFGPosts(type)
+    .then((posts) => ({ posts, postsErrorMessage: null }))
+    .catch(() => ({
+      posts: [],
+      postsErrorMessage: "Try refreshing in a moment.",
+    }));
+
+  if (!profileId) {
+    return {
+      posts: postsResult.posts,
+      postsErrorMessage: postsResult.postsErrorMessage,
+      roleOptions: [],
+    };
+  }
+
+  const [competitiveProfile, heroPools] = await Promise.all([
+    getCompetitiveProfile(profileId),
+    getProfileHeroPools(profileId),
+  ]);
+
+  return {
+    posts: postsResult.posts,
+    postsErrorMessage: postsResult.postsErrorMessage,
+    roleOptions: buildRoleOptions(competitiveProfile, heroPools),
+  };
 }
 
 export async function LFGPageShell({
@@ -59,37 +143,21 @@ export async function LFGPageShell({
   title,
   type,
 }: LFGPageShellProps) {
-  const { profile } = await getCurrentProfile();
-  const postsPromise = getActiveLFGPosts(type);
-  const profileDataPromise = profile
-    ? Promise.all([getCompetitiveProfile(profile.id), getProfileHeroPools(profile.id)])
-    : Promise.resolve([null, null] as const);
-  const [[competitiveProfile, heroPools], posts] = await Promise.all([
-    profileDataPromise,
-    postsPromise,
-  ]);
-
-  const roleOptions =
-    competitiveProfile && heroPools
-      ? COMPETITIVE_ROLE_OPTIONS.map((role) => {
-          const roleProfile =
-            competitiveProfile.roles.find((candidate) => candidate.role === role) ??
-            null;
-          const heroPool = heroPools.heroPicks[role]
-            .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
-            .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
-
-          return {
-            heroPool,
-            isConfigured: Boolean(roleProfile),
-            rankLabel: roleProfile
-              ? formatCurrentRank(roleProfile.rankTier, roleProfile.rankDivision)
-              : "Not set",
-            rankTier: roleProfile?.rankTier ?? null,
-            role,
-          };
-        })
-      : [];
+  const { profile, user } = await getCurrentProfile();
+  const pageData = type
+    ? await getLFGPageData(type, profile?.id ?? null)
+    : {
+        posts: [],
+        postsErrorMessage: null,
+        roleOptions: [],
+      };
+  const hasConfiguredRole = pageData.roleOptions.some(
+    (roleOption) => roleOption.isConfigured
+  );
+  const profileSummary = {
+    region: profile?.region ?? "Not set",
+    timezone: profile?.timezone ?? "Not set",
+  };
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
@@ -111,33 +179,60 @@ export async function LFGPageShell({
                   </p>
                 ) : null}
               </div>
-              <section className="mt-6">
-                <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
-                  Create a Post
-                </h2>
-                {profile ? (
-                  <form action={createLFGPost}>
-                    <input type="hidden" name="lfg_type" value={type} />
-                    <PostTitleField />
-                    <LFGRolePicker
-                      profileSummary={{
-                        region: profile.region ?? "Not set",
-                        timezone: profile.timezone ?? "Not set",
-                      }}
-                      roleOptions={roleOptions}
-                      setupHref="/account/competitive"
+
+              {type ? (
+                <section className="mt-6">
+                  <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
+                    Create a Post
+                  </h2>
+                  {!user ? (
+                    <LFGActionNotice
+                      ctaHref="/login"
+                      ctaLabel="Log In"
+                      description="Sign in with Discord to create a post in this section."
+                      title="Log in to post"
                     />
-                  </form>
-                ) : null}
-              </section>
+                  ) : !profile ? (
+                    <LFGActionNotice
+                      ctaHref="/onboarding"
+                      ctaLabel="Finish Onboarding"
+                      description="Finish your overclock.lol profile first so your post can be attached to your public player page."
+                      title="Complete your profile first"
+                    />
+                  ) : (
+                    <form action={createLFGPost}>
+                      <input type="hidden" name="lfg_type" value={type} />
+                      <PostTitleField />
+                      <LFGRolePicker
+                        profileSummary={profileSummary}
+                        roleOptions={pageData.roleOptions}
+                        setupHref="/account/competitive"
+                      />
+                      {!hasConfiguredRole ? (
+                        <LFGActionNotice
+                          ctaHref="/account/competitive"
+                          ctaLabel="Set Up Competitive Profile"
+                          description="Add at least one ranked role before creating a post in this section."
+                          title="Competitive profile required"
+                        />
+                      ) : null}
+                    </form>
+                  )}
+                </section>
+              ) : null}
             </header>
 
-            <LFGFiltersBar description={filtersDescription} />
-            <LFGPostList
-              emptyStateDescription={emptyStateDescription}
-              emptyStateTitle={emptyStateTitle}
-              posts={posts}
-            />
+            {type ? (
+              <>
+                <LFGFiltersBar description={filtersDescription} />
+                <LFGPostList
+                  emptyStateDescription={emptyStateDescription}
+                  emptyStateTitle={emptyStateTitle}
+                  errorMessage={pageData.postsErrorMessage}
+                  posts={pageData.posts}
+                />
+              </>
+            ) : null}
           </div>
         </section>
       </PageContainer>

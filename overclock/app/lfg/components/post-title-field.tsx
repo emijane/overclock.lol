@@ -1,11 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 
 const MAX_POST_TITLE_LENGTH = 80;
 
 export function PostTitleField() {
-  const inputId = useId();
   const [value, setValue] = useState("");
 
   return (
@@ -13,7 +12,6 @@ export function PostTitleField() {
       <div className="rounded-[22px] border border-zinc-800 bg-zinc-950/90 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="flex items-center gap-3">
           <input
-            id={inputId}
             type="text"
             required
             name="title"

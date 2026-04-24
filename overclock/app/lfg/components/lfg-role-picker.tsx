@@ -177,8 +177,8 @@ export function LFGRolePicker({
             <div className="mt-3 flex items-center justify-between rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-3">
               <p className="text-sm text-zinc-400">
                 Posting as{" "}
-                <span className="font-medium text-zinc-100">{postingAsLabel}</span>
-                {" • "}
+                <span className="font-medium text-zinc-100">{postingAsLabel}</span>{" "}
+                <span className="text-zinc-500">&bull;</span>{" "}
                 <span className="font-medium text-zinc-100">
                   {selectedRoleOption.rankLabel}
                 </span>
