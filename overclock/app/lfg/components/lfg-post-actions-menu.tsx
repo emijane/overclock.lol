@@ -18,7 +18,7 @@ function ClosePostMenuItem() {
     <button
       type="submit"
       disabled={pending}
-      className="flex w-full items-center rounded-lg px-2 py-1.5 text-left text-sm text-amber-300 outline-none transition hover:bg-zinc-900 hover:text-amber-200 disabled:cursor-not-allowed disabled:text-zinc-500"
+      className="flex w-full cursor-pointer items-center rounded-md px-2 py-1.5 text-left text-sm font-medium text-zinc-200 outline-none transition hover:text-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-500"
     >
       {pending ? "Closing..." : "Close Post"}
     </button>
@@ -40,14 +40,14 @@ export function LFGPostActionsMenu({
         <button
           type="button"
           aria-label="Post actions"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-zinc-400 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-100"
+          className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-zinc-500 transition hover:text-zinc-100"
         >
-          <MoreHorizontalIcon className="h-4 w-4" />
+          <MoreHorizontalIcon className="h-3.5 w-3.5" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-40 border border-zinc-800 bg-zinc-950 text-zinc-100"
+        className="w-36 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
       >
         <DropdownMenuItem asChild className="p-0 focus:bg-transparent">
           <form action={closeLFGPost} className="w-full">
