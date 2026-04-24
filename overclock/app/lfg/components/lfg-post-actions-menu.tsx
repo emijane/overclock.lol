@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MoreHorizontalIcon } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
@@ -7,6 +8,7 @@ import { closeLFGPost } from "@/app/lfg/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -27,11 +29,15 @@ function ClosePostMenuItem() {
 type LFGPostActionsMenuProps = {
   postId: string;
   returnPath: string;
+  viewHref?: string;
+  viewLabel?: string;
 };
 
 export function LFGPostActionsMenu({
   postId,
   returnPath,
+  viewHref,
+  viewLabel = "View Section",
 }: LFGPostActionsMenuProps) {
   return (
     <DropdownMenu>
@@ -48,6 +54,14 @@ export function LFGPostActionsMenu({
         align="end"
         className="w-36 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
       >
+        {viewHref ? (
+          <DropdownMenuItem
+            asChild
+            className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+          >
+            <Link href={viewHref}>{viewLabel}</Link>
+          </DropdownMenuItem>
+        ) : null}
         <form action={closeLFGPost} className="w-full">
           <input type="hidden" name="post_id" value={postId} />
           <input type="hidden" name="return_path" value={returnPath} />

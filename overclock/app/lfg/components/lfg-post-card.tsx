@@ -16,6 +16,8 @@ type LFGPostCardProps = {
   sectionLabel?: string | null;
   showActions?: boolean;
   statusPill?: ReactNode;
+  viewHref?: string;
+  viewLabel?: string;
 };
 
 export function LFGPostCard({
@@ -25,6 +27,8 @@ export function LFGPostCard({
   sectionLabel,
   showActions = true,
   statusPill,
+  viewHref,
+  viewLabel,
 }: LFGPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
   const createdAtLabel = formatPostDate(post.createdAt);
@@ -146,7 +150,12 @@ export function LFGPostCard({
             <p className="text-xs font-medium text-zinc-500">{createdAtLabel}</p>
           ) : null}
           {showActions && isOwner && returnPath ? (
-            <LFGPostActionsMenu postId={post.id} returnPath={returnPath} />
+            <LFGPostActionsMenu
+              postId={post.id}
+              returnPath={returnPath}
+              viewHref={viewHref}
+              viewLabel={viewLabel}
+            />
           ) : null}
         </div>
       </div>

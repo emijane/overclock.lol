@@ -136,6 +136,8 @@ export default async function AccountPostsPage({
                         sectionLabel={post.lfgType}
                         showActions={displayStatus === "active"}
                         statusPill={<LFGPostStatusPill status={displayStatus} />}
+                        viewHref={`/${post.lfgType}`}
+                        viewLabel={`Open ${post.lfgType.charAt(0).toUpperCase()}${post.lfgType.slice(1)}`}
                       />
                     );
                   })}
