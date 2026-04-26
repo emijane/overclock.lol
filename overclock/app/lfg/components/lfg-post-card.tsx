@@ -110,15 +110,13 @@ export function LFGPostCard({
             </div>
 
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
-              <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-200">
-                {gameModeLabel}
-              </span>
+              <span className="font-medium text-zinc-300">{gameModeLabel}</span>
               <span className="text-zinc-600">&bull;</span>
-              <span>{rankLabel}</span>
+              <span className="text-zinc-300">{rankLabel}</span>
               {post.region ? (
                 <>
                   <span className="text-zinc-600">&bull;</span>
-                  <span>
+                  <span className="text-zinc-400">
                     {post.region}
                     {post.timezone ? ` (${post.timezone})` : ""}
                   </span>
