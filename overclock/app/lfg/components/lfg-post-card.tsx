@@ -39,7 +39,7 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <article className="rounded-[22px] bg-white/[0.035] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           {sectionLabel || statusPill ? (
@@ -53,7 +53,7 @@ export function LFGPostCard({
             </div>
           ) : (
             <div className="mb-3 flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.22)]">
                 {post.author.avatarUrl ? (
                   <Image
                     src={post.author.avatarUrl}
@@ -111,7 +111,7 @@ export function LFGPostCard({
                     ) : (
                       <span
                         key={badge.id}
-                        className="inline-flex h-6 items-center rounded-full border border-white/10 bg-white/[0.035] px-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-300"
+                        className="inline-flex h-6 items-center rounded-full bg-white/[0.06] px-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-300"
                       >
                         {badge.label}
                       </span>
@@ -129,7 +129,7 @@ export function LFGPostCard({
 
           <h2 className="text-base font-semibold text-zinc-50">{post.title}</h2>
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
-            <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-300">
+            <span className="rounded-full bg-white/[0.07] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-300">
               {gameModeLabel}
             </span>
             <span className="text-zinc-600">&bull;</span>
@@ -165,7 +165,7 @@ export function LFGPostCard({
         </div>
       </div>
 
-      <div className="mt-3 border-t border-white/8 pt-3">
+      <div className="mt-3 pt-3">
         {post.heroPool.length > 0 ? (
           <div>
             <p className="mb-2 text-xs font-medium text-zinc-500">Hero Pool</p>
@@ -175,7 +175,7 @@ export function LFGPostCard({
                   key={`${post.id}-${hero.id}`}
                   title={hero.label}
                   aria-label={hero.label}
-                  className="relative h-10 w-10 overflow-hidden rounded-[12px] border border-white/10 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                  className="relative h-10 w-10 overflow-hidden rounded-[12px] bg-zinc-900 shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                 >
                   {hero.imageSrc ? (
                     <Image

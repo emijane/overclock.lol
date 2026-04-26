@@ -157,12 +157,12 @@ export function LFGFeedFiltersPanel({
     : "Any Region";
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6">
-      <div className="rounded-[18px] border border-white/10 bg-white/[0.02] px-4 py-4">
+    <section className="px-5 py-5 sm:px-6">
+      <div className="rounded-[18px] bg-white/[0.02] px-4 py-4">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-zinc-400">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
                 <FilterIcon className="h-4 w-4" />
               </span>
               <div>
@@ -173,7 +173,7 @@ export function LFGFeedFiltersPanel({
             {hasActiveFilters ? (
               <Link
                 href={pathname}
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-3 text-xs font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+                className="inline-flex h-9 items-center gap-2 rounded-full bg-white/[0.06] px-3 text-xs font-semibold text-zinc-300 transition hover:bg-white/[0.1] hover:text-zinc-50"
               >
                 <XIcon className="h-3.5 w-3.5" />
                 Clear Filters

@@ -79,10 +79,10 @@ function formatMissingFields(fields: string[]) {
 
 function LFGFiltersBar({ description }: { description: string }) {
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6">
-      <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-dashed border-white/12 bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="px-5 py-5 sm:px-6">
+      <div className="flex min-h-16 flex-col justify-center rounded-[18px] bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-zinc-400">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
             <FilterIcon className="h-4 w-4" />
           </span>
           <div>
@@ -107,12 +107,12 @@ function LFGActionNotice({
   title: string;
 }) {
   return (
-    <div className="mt-4 rounded-[20px] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div className="mt-4 rounded-[20px] bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
       <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
       <Link
         href={ctaHref}
-        className="mt-4 inline-flex h-10 items-center rounded-full border border-white/10 bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+        className="mt-4 inline-flex h-10 items-center rounded-full bg-white/[0.07] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
       >
         {ctaLabel}
       </Link>
@@ -222,8 +222,8 @@ export async function LFGPageShell({
         <AuthMessage message={message} type={messageType} variant="toast" />
       ) : null}
       <PageContainer className="flex flex-col gap-4">
-        <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-          <div className="overflow-hidden rounded-[27px] bg-zinc-950">
+        <section className="rounded-[28px] bg-white/[0.025] shadow-[0_30px_120px_rgba(0,0,0,0.28)]">
+          <div className="overflow-hidden rounded-[28px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
               <AuthMessage message={inlineMessage} type={messageType} />
               <div className="space-y-4">
@@ -285,7 +285,7 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[22px] bg-zinc-950/70 px-4 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-6"
+                      className="rounded-[22px] bg-white/[0.04] px-4 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.2)] sm:px-5 sm:py-6"
                     >
                       <h2 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-[2rem]">
                         Create a Post

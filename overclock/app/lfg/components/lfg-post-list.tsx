@@ -24,9 +24,9 @@ function LFGFeedPlaceholder({
   title: string;
 }) {
   return (
-    <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">
+    <div className="grid min-h-[280px] place-items-center rounded-[20px] bg-white/[0.02] px-5 py-10 text-center">
       <div className="max-w-sm">
-        <span className="mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-zinc-400">
+        <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
           <span className="text-lg">?</span>
         </span>
         <h2 className="mt-4 text-base font-semibold text-zinc-100">{title}</h2>
@@ -34,7 +34,7 @@ function LFGFeedPlaceholder({
         {ctaHref && ctaLabel ? (
           <Link
             href={ctaHref}
-            className="mt-5 inline-flex h-10 items-center rounded-full border border-white/10 bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+            className="mt-5 inline-flex h-10 items-center rounded-full bg-white/[0.07] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
           >
             {ctaLabel}
           </Link>
@@ -54,7 +54,7 @@ export function LFGPostList({
 }: LFGPostListProps) {
   if (errorMessage) {
     return (
-      <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+      <section className="px-5 py-5 sm:px-6 sm:py-6">
         <LFGFeedPlaceholder
           ctaHref={retryHref}
           ctaLabel="Reload Section"
@@ -67,7 +67,7 @@ export function LFGPostList({
 
   if (posts.length === 0) {
     return (
-      <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+      <section className="px-5 py-5 sm:px-6 sm:py-6">
         <LFGFeedPlaceholder
           description={emptyStateDescription}
           title={emptyStateTitle}
@@ -77,7 +77,7 @@ export function LFGPostList({
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+    <section className="px-5 py-5 sm:px-6 sm:py-6">
       <div className="grid gap-3">
         {posts.map((post) => {
           return (
