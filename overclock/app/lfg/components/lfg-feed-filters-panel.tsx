@@ -66,7 +66,7 @@ function FilterDropdown({
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition hover:border-white/[0.12] hover:bg-white/[0.045] hover:text-zinc-50"
         >
           <span className="text-zinc-500">{label}:</span>
           <span>{selectedLabel}</span>
@@ -158,7 +158,7 @@ export function LFGFeedFiltersPanel({
 
   return (
     <section className="px-5 py-5 sm:px-6">
-      <div className="rounded-[18px] bg-white/[0.02] px-4 py-4">
+      <div className="rounded-[18px] border border-white/[0.07] bg-white/[0.02] px-4 py-4 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-center gap-3">

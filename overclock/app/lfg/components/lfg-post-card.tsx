@@ -39,7 +39,7 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="rounded-[22px] bg-white/[0.035] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+    <article className="rounded-[22px] border border-white/[0.07] bg-white/[0.035] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           {sectionLabel || statusPill ? (

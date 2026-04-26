@@ -80,7 +80,7 @@ function formatMissingFields(fields: string[]) {
 function LFGFiltersBar({ description }: { description: string }) {
   return (
     <section className="px-5 py-5 sm:px-6">
-      <div className="flex min-h-16 flex-col justify-center rounded-[18px] bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-white/[0.07] bg-white/[0.02] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
             <FilterIcon className="h-4 w-4" />
@@ -107,7 +107,7 @@ function LFGActionNotice({
   title: string;
 }) {
   return (
-    <div className="mt-4 rounded-[20px] bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+    <div className="mt-4 rounded-[20px] border border-white/[0.07] bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
       <Link
@@ -222,7 +222,7 @@ export async function LFGPageShell({
         <AuthMessage message={message} type={messageType} variant="toast" />
       ) : null}
       <PageContainer className="flex flex-col gap-4">
-        <section className="rounded-[28px] bg-white/[0.025] shadow-[0_30px_120px_rgba(0,0,0,0.28)]">
+        <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
               <AuthMessage message={inlineMessage} type={messageType} />
@@ -285,7 +285,7 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[22px] bg-white/[0.04] px-4 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.2)] sm:px-5 sm:py-6"
+                      className="rounded-[22px] border border-white/[0.07] bg-white/[0.04] px-4 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-6"
                     >
                       <h2 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-[2rem]">
                         Create a Post
