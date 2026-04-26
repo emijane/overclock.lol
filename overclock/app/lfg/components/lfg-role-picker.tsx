@@ -96,9 +96,9 @@ export function LFGRolePicker({
     : null;
 
   return (
-    <div className="mt-4">
+    <div className="mt-3">
       <h2 className="text-sm font-semibold text-zinc-100">Role</h2>
-      <div className="mt-2.5 flex flex-wrap gap-2.5">
+      <div className="mt-2 flex flex-wrap gap-2">
         {roleOptions.map((roleOption) => {
           const isSelected = roleOption.role === selectedRole;
 
@@ -109,7 +109,7 @@ export function LFGRolePicker({
               aria-pressed={isSelected}
               disabled={pending}
               onClick={() => setSelectedRole(roleOption.role)}
-              className={`inline-flex h-10 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold transition ${
+              className={`inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition ${
                 isSelected
                   ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                   : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
@@ -134,7 +134,7 @@ export function LFGRolePicker({
         selectedRoleOption.isConfigured ? (
           <>
             <input type="hidden" name="posting_role" value={selectedRoleOption.role} />
-            <div className="mt-3 rounded-[18px] border border-white/8 bg-white/[0.02] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="mt-2.5 rounded-[18px] border border-white/8 bg-white/[0.02] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 gap-3.5">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-zinc-950/80 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
@@ -206,7 +206,7 @@ export function LFGRolePicker({
                 )}
               </div>
             </div>
-            <div className="mt-3 flex flex-col gap-3 rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-2.5 flex flex-col gap-2.5 rounded-[16px] border border-white/8 bg-white/[0.02] px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
               <p className="min-w-0 text-sm text-zinc-400">
                 Posting as{" "}
                 <span className="font-medium text-zinc-100">{postingAsLabel}</span>{" "}
@@ -219,7 +219,7 @@ export function LFGRolePicker({
             </div>
           </>
         ) : (
-          <div className="mt-3 rounded-[18px] border border-amber-300/20 bg-amber-300/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+          <div className="mt-2.5 rounded-[18px] border border-amber-300/20 bg-amber-300/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             <p className="text-sm leading-6 text-amber-100">
               Set up your {COMPETITIVE_ROLE_LABELS[selectedRoleOption.role].toLowerCase()}{" "}
               competitive profile before posting with this role.

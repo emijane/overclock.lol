@@ -280,9 +280,9 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.03))] px-4 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5 sm:py-6"
+                      className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.03))] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5 sm:py-4.5"
                     >
-                      <h2 className="text-[2rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2.2rem]">
+                      <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
                         Create a Post
                       </h2>
                       <input type="hidden" name="lfg_type" value={type} />

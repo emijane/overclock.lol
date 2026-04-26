@@ -9,14 +9,14 @@ export function PostTitleField() {
   const [value, setValue] = useState("");
 
   return (
-    <div className="mt-4">
+    <div className="mt-3">
       <label
         htmlFor={inputId}
-        className="mb-2 block text-sm font-medium text-zinc-200"
+        className="mb-1.5 block text-sm font-medium text-zinc-200"
       >
         Post title
       </label>
-      <div className="rounded-[20px] border border-zinc-800 bg-zinc-950/90 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+      <div className="rounded-[18px] border border-zinc-800 bg-zinc-950/90 px-3.5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="flex items-center gap-3">
           <input
             id={inputId}
