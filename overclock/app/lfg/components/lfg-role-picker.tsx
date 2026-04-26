@@ -70,7 +70,7 @@ function CreatePostButton() {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-sky-400 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 sm:w-auto disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
+      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))] px-4 text-sm font-semibold text-zinc-50 shadow-[0_12px_28px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:border-white/[0.12] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.05))] hover:text-white sm:w-auto disabled:cursor-not-allowed disabled:border-white/[0.05] disabled:bg-white/[0.04] disabled:text-zinc-500 disabled:shadow-none"
     >
       <PlusIcon className="h-4 w-4" />
       {pending ? "Creating..." : "Create Post"}
