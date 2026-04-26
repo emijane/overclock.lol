@@ -7,7 +7,7 @@ import {
 
 const DUOS_PAGE_CONFIG = {
   title: "Duos",
-  description: "Find one teammate for ranked or casual queue.",
+  description: "",
   metadataDescription:
     "Browse duo posts and create a duo listing for ranked or casual queue.",
   type: "duos",

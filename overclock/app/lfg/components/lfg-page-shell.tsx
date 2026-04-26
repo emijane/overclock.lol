@@ -251,10 +251,7 @@ export async function LFGPageShell({
               </div>
 
               {type ? (
-                <section className="mt-6">
-                  <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
-                    Create a Post
-                  </h2>
+                <section className="mt-10">
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
@@ -286,7 +283,13 @@ export async function LFGPageShell({
                       title="Competitive profile required"
                     />
                   ) : (
-                    <form action={createLFGPost}>
+                    <form
+                      action={createLFGPost}
+                      className="rounded-[22px] bg-zinc-950/70 px-4 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-6"
+                    >
+                      <h2 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-[2rem]">
+                        Create a Post
+                      </h2>
                       <input type="hidden" name="lfg_type" value={type} />
                       <PostTitleField />
                       {(type === "duos" || type === "stacks") ? (
