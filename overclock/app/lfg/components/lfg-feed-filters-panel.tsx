@@ -103,8 +103,10 @@ function FilterDropdown({
 }
 
 export function LFGFeedFiltersPanel({
+  activeCount,
   selectedFilters,
 }: {
+  activeCount: number;
   selectedFilters?: LFGFeedFilters;
 }) {
   const pathname = usePathname();
@@ -188,15 +190,20 @@ export function LFGFeedFiltersPanel({
             selectedLabel={selectedRegionLabel}
           />
         </div>
-        {hasActiveFilters ? (
-          <Link
-            href={pathname}
-            className="inline-flex h-9 items-center gap-2 self-start rounded-full bg-white/[0.06] px-3 text-xs font-semibold text-zinc-300 transition hover:bg-white/[0.1] hover:text-zinc-50 sm:self-auto"
-          >
-            <XIcon className="h-3.5 w-3.5" />
-            Clear Filters
-          </Link>
-        ) : null}
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            {activeCount} active listings
+          </p>
+          {hasActiveFilters ? (
+            <Link
+              href={pathname}
+              className="inline-flex h-9 items-center gap-2 rounded-full bg-white/[0.06] px-3 text-xs font-semibold text-zinc-300 transition hover:bg-white/[0.1] hover:text-zinc-50"
+            >
+              <XIcon className="h-3.5 w-3.5" />
+              Clear Filters
+            </Link>
+          ) : null}
+        </div>
       </div>
     </section>
   );

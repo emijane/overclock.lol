@@ -235,11 +235,6 @@ export async function LFGPageShell({
                     {displayTitle}
                   </h1>
                 </div>
-                {type ? (
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium uppercase tracking-[0.14em] text-zinc-500">
-                    <span>{visiblePostCount} active listings</span>
-                  </div>
-                ) : null}
                 <p className="max-w-xl text-sm leading-6 text-zinc-400">
                   {description}
                 </p>
@@ -310,6 +305,7 @@ export async function LFGPageShell({
               <>
                 {type === "duos" || type === "stacks" ? (
                   <LFGFeedFiltersPanel
+                    activeCount={visiblePostCount}
                     selectedFilters={feedFilters}
                   />
                 ) : (
