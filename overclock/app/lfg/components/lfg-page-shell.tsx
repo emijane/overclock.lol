@@ -212,6 +212,8 @@ export async function LFGPageShell({
   const profileSetupHref =
     profile?.username ? `/u/${profile.username}?edit=profile` : "/account";
   const sectionHref = type ? `/${type}` : "/lfg";
+  const visiblePostCount = pageData.posts.length;
+  const displayTitle = type ? `/ ${title}` : title;
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
@@ -220,15 +222,25 @@ export async function LFGPageShell({
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
               <AuthMessage message={message} type={messageType} />
-              <div>
-                <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
-                  {title}
-                </h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
+                    LFG Channel
+                  </p>
+                  <h1 className="text-4xl font-semibold tracking-[-0.06em] text-zinc-50 sm:text-5xl">
+                    {displayTitle}
+                  </h1>
+                </div>
+                {type ? (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium uppercase tracking-[0.14em] text-zinc-500">
+                    <span>{visiblePostCount} active listings</span>
+                  </div>
+                ) : null}
+                <p className="max-w-xl text-sm leading-6 text-zinc-400">
                   {description}
                 </p>
                 {helperText ? (
-                  <p className="mt-1 text-sm leading-6 text-zinc-500">
+                  <p className="text-sm leading-6 text-zinc-500">
                     {helperText}
                   </p>
                 ) : null}
@@ -239,10 +251,6 @@ export async function LFGPageShell({
                   <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
                     Create a Post
                   </h2>
-                  <p className="mt-2 text-sm leading-6 text-zinc-500">
-                    To reduce spam, you can create up to 2 posts in this section per
-                    hour.
-                  </p>
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
