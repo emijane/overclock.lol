@@ -54,7 +54,7 @@ export function LFGPostList({
 }: LFGPostListProps) {
   if (errorMessage) {
     return (
-      <section className="px-5 py-5 sm:px-6 sm:py-6">
+      <section className="px-5 py-2 sm:px-6 sm:py-3">
         <LFGFeedPlaceholder
           ctaHref={retryHref}
           ctaLabel="Reload Section"
@@ -67,7 +67,7 @@ export function LFGPostList({
 
   if (posts.length === 0) {
     return (
-      <section className="px-5 py-5 sm:px-6 sm:py-6">
+      <section className="px-5 py-2 sm:px-6 sm:py-3">
         <LFGFeedPlaceholder
           description={emptyStateDescription}
           title={emptyStateTitle}
@@ -77,7 +77,7 @@ export function LFGPostList({
   }
 
   return (
-    <section className="px-5 py-5 sm:px-6 sm:py-6">
+    <section className="px-5 py-2 sm:px-6 sm:py-3">
       <div className="grid gap-3">
         {posts.map((post) => {
           return (

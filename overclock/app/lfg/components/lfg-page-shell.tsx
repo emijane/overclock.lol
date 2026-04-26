@@ -221,7 +221,7 @@ export async function LFGPageShell({
       {messageType === "success" ? (
         <AuthMessage message={message} type={messageType} variant="toast" />
       ) : null}
-      <PageContainer className="flex flex-col gap-4">
+      <PageContainer className="flex flex-col gap-2.5">
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
@@ -251,7 +251,7 @@ export async function LFGPageShell({
               </div>
 
               {type ? (
-                <section className="mt-10">
+                <section className="mt-7">
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
@@ -310,9 +310,7 @@ export async function LFGPageShell({
               <>
                 {type === "duos" || type === "stacks" ? (
                   <LFGFeedFiltersPanel
-                    description={filtersDescription}
                     selectedFilters={feedFilters}
-                    title={`Filter ${title}`}
                   />
                 ) : (
                   <LFGFiltersBar description={filtersDescription} />
