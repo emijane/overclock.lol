@@ -142,7 +142,7 @@ export function LFGPostCard({
                 )}
               </div>
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                   {profileHref ? (
                     <Link
                       href={profileHref}
@@ -155,11 +155,6 @@ export function LFGPostCard({
                       {visibleName}
                     </p>
                   )}
-                  {createdAtLabel ? (
-                    <p className="whitespace-nowrap text-xs font-medium text-zinc-500">
-                      {createdAtLabel}
-                    </p>
-                  ) : null}
                   {post.author.badges.map((badge) => {
                     const badgePreset = getBadgePreset(badge.slug);
                     const badgeAssetSrc = getBadgeAssetSrc(badge.slug, badge.icon);
@@ -197,12 +192,12 @@ export function LFGPostCard({
                       </span>
                     );
                   })}
+                  {createdAtLabel ? (
+                    <p className="whitespace-nowrap text-xs font-medium text-zinc-500">
+                      {createdAtLabel}
+                    </p>
+                  ) : null}
                 </div>
-                {post.author.displayName ? (
-                  <p className="truncate text-xs text-zinc-500">
-                    {post.author.displayName}
-                  </p>
-                ) : null}
               </div>
             </div>
 
