@@ -58,5 +58,5 @@ export function isLFGGameMode(value: string): value is LFGGameMode {
 }
 
 export function getLFGGameModeLabel(gameMode: LFGGameMode) {
-  return gameMode === "quick_play" ? "Quick Play" : "Ranked";
+  return gameMode === "quick_play" ? "Quick Play" : "Competitive";
 }

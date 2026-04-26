@@ -99,19 +99,22 @@ export function LFGPostCard({
                 </h2>
               </div>
 
-              {showActions && isOwner && returnPath ? (
-                <LFGPostActionsMenu
-                  postId={post.id}
-                  returnPath={returnPath}
-                  viewHref={viewHref}
-                  viewLabel={viewLabel}
-                />
-              ) : null}
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+                  {gameModeLabel}
+                </span>
+                {showActions && isOwner && returnPath ? (
+                  <LFGPostActionsMenu
+                    postId={post.id}
+                    returnPath={returnPath}
+                    viewHref={viewHref}
+                    viewLabel={viewLabel}
+                  />
+                ) : null}
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
-              <span className="font-medium text-zinc-300">{gameModeLabel}</span>
-              <span className="text-zinc-600">&bull;</span>
               <span className="text-zinc-300">{rankLabel}</span>
               {post.region ? (
                 <>
