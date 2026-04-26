@@ -66,7 +66,7 @@ function FilterDropdown({
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.025] px-4 text-sm font-semibold text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition hover:border-white/[0.12] hover:bg-white/[0.045] hover:text-zinc-50"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 text-sm font-semibold text-zinc-100 shadow-[0_10px_24px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.03)] transition hover:border-white/[0.13] hover:bg-white/[0.05] hover:text-zinc-50"
         >
           <span>{selectedLabel}</span>
           <ChevronDownIcon className="h-4 w-4 text-zinc-500" />
@@ -191,13 +191,13 @@ export function LFGFeedFiltersPanel({
           />
         </div>
         <div className="flex items-center gap-3 self-start sm:self-auto">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
             {activeCount} active listings
           </p>
           {hasActiveFilters ? (
             <Link
               href={pathname}
-              className="inline-flex h-9 items-center gap-2 rounded-full bg-white/[0.06] px-3 text-xs font-semibold text-zinc-300 transition hover:bg-white/[0.1] hover:text-zinc-50"
+              className="inline-flex h-9 items-center gap-2 rounded-full bg-white/[0.07] px-3 text-xs font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
             >
               <XIcon className="h-3.5 w-3.5" />
               Clear Filters

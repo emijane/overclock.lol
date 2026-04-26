@@ -1,63 +1,72 @@
-Redesign and refine the Duos page UI with a stronger visual hierarchy inspired by Heist.lol (minimal, atmospheric, spacious, high-contrast dark UI). Do not change functionality—focus on structure, hierarchy, spacing, and presentation.
+Refine the listings feed UI to make posts feel like lightweight live LFG listings rather than large profile cards. Focus on hierarchy, density, and feed readability inspired by Heist.lol. Do not change functionality—improve structure and presentation.
 
-1. Rework the page header so “Duos” feels like a destination/channel header, not a form label.
-- Increase title prominence.
-- Add subtle community metadata beneath it (example: active listings count, post limit).
-- Keep supporting copy minimal and concise.
+1. Reduce post card height significantly.
+- Compress vertical padding.
+- Eliminate large empty space inside each listing.
+- Posts should feel denser and faster to scan.
 
-2. Convert the green “Post successfully uploaded” inline banner into a floating toast notification (top-right or non-blocking overlay).
-- It should not interrupt page hierarchy or push content down.
+2. Restructure each post into a tighter content-first hierarchy.
 
-3. Redesign the Create Post section as its own elevated composer card, visually separate from the feed.
-- Group:
-  - Post title input
-  - Queue mode selection
-  - Role selection
-  - Primary post action
-- Use stronger spacing and make it feel like a distinct surface.
+Use this order:
+- Post title (primary emphasis)
+- Metadata row (Queue • Rank • Region)
+- User identity row (@handle + badges + timestamp)
+- Hero icons row
 
-4. Refine the Queue Mode selector (Ranked / Quick Play).
-- Make Ranked feel like the default primary path.
-- Improve selected state styling.
-- Reduce explanatory copy substantially (ex: “Uses your saved profile.”)
+The post should read as a live listing, not a stacked profile panel.
 
-5. Reduce visual noise from excessive borders.
-- Remove unnecessary outlines where spacing can create separation.
-- Avoid border-on-border stacking.
-- Use softer surfaces and negative space instead.
+3. Move the role icon (tank/dps/support) into a structural left gutter position as part of the post layout.
+- Treat it as a post marker, not a floating decorative badge.
 
-6. Turn the filter section into a lightweight toolbar above the feed instead of a boxed section.
-- Present filters inline:
-  [Mode] [Role] [Rank] [Region] [Sort]
-- Remove or minimize the “Filter Duos” section treatment.
+4. Remove the “Hero Pool” text label.
+- Show hero icons only.
+- The label adds unnecessary visual noise.
 
-7. Improve spacing and rhythm across the whole page.
-- Increase vertical breathing room between sections.
-- Add clearer separation between composer and listings feed.
+5. Rework metadata styling.
+- Reduce emphasis on pills like “RANKED” and “QUICK PLAY.”
+- Prefer lighter inline metadata:
+Competitive • Diamond 2 • Americas
 
-8. Add a clear transition into the listings section.
-- Example: subtle divider + “Recent Listings” heading.
+Avoid heavy taxonomy chips overpowering the title.
 
-9. Improve post card information hierarchy.
-Prioritize:
-- Post title first (largest emphasis)
-- Metadata second (Role • Queue • Rank • Region)
-- Username/time tertiary
-- Hero pool as supporting info
+6. Tighten identity layout.
+- Put username, badges, and supporting profile metadata on one row where possible.
 
-10. Simplify labeling/copy throughout.
-Update wording like:
-- “Choose a mode” → “Queue”
-- “Pick a role” → “Role”
-- “Any Mode” → “All Queues”
-- Remove unnecessary helper text where possible.
+Example:
+@emi  Founder  Staff
 
-11. Push the visual language closer to Heist.lol:
-- larger typography
-- more whitespace
-- fewer hard boundaries
-- stronger contrast between primary and secondary elements
-- less dashboard/admin feel, more living community feed
+Reduce detached elements.
+
+7. Move the timestamp closer to the title row.
+- It should feel associated with the post, not floating separately.
+
+8. Make the feed feel like a board of listings, not profile cards.
+- Reduce card heaviness.
+- Increase scannability.
+- Favor lightweight thread-style presentation.
+
+9. Reduce border and surface weight inside listings.
+- Softer cards.
+- Less outline emphasis.
+- Use spacing rather than borders to separate content.
+
+10. Ensure very short titles (example: “hi”) and long titles both work gracefully in the same layout.
+- The layout should be resilient regardless of title length.
+
+11. Keep badges like Founder and Staff subtle and Discord-like.
+- Small footprint.
+- Incidental, not dominant.
+
+12. Preserve and refine the “Active Listings” header treatment.
+- Keep this as lightweight utility chrome.
+- Optionally support sort control beside it (Newest, Recent, etc.)
+
+13. Push the visual language closer to Heist.lol:
+- denser feed rhythm
+- content-first layout
+- fewer oversized cards
+- less dashboard feel
+- more living community board feel
 
 Goal:
-Make the page feel premium, minimal, and community-driven, with stronger hierarchy and much less form-heavy visual weight.
+Transform the posts from tall empty profile cards into compact, premium-feeling LFG listings that feel active, readable, and community-driven.

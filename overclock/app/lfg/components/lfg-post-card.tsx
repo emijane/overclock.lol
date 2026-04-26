@@ -67,12 +67,12 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="rounded-[22px] border border-white/[0.07] bg-white/[0.035] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-start justify-between gap-4">
+    <article className="rounded-[22px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.028))] px-4 py-3.5 shadow-[0_18px_44px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.045)]">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             {sectionLabel || statusPill ? (
-              <div className="mb-3 flex flex-wrap items-center gap-2">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
                 {sectionLabel ? (
                   <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
                     {sectionLabel}
@@ -86,16 +86,16 @@ export function LFGPostCard({
               <span
                 title={COMPETITIVE_ROLE_LABELS[post.postingRole]}
                 aria-label={COMPETITIVE_ROLE_LABELS[post.postingRole]}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.08] text-zinc-200"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.09] text-zinc-100"
               >
                 {getRoleIcon(post.postingRole, "h-3.5 w-3.5")}
               </span>
-              <h2 className="text-xl font-semibold tracking-[-0.035em] text-zinc-50">
+              <h2 className="text-[1.2rem] font-semibold tracking-[-0.04em] text-zinc-50">
                 {post.title}
               </h2>
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
-              <span className="rounded-full bg-white/[0.07] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-300">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
+              <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-200">
                 {gameModeLabel}
               </span>
               <span className="text-zinc-600">&bull;</span>
@@ -129,15 +129,15 @@ export function LFGPostCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.22)]">
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-xs font-semibold text-zinc-100 shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
             {post.author.avatarUrl ? (
               <Image
                 src={post.author.avatarUrl}
                 alt={`${visibleName} avatar`}
                 fill
                 className="object-cover"
-                sizes="40px"
+                sizes="36px"
               />
             ) : (
               avatarFallback
@@ -148,7 +148,7 @@ export function LFGPostCard({
               {profileHref ? (
                 <Link
                   href={profileHref}
-                  className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-300"
+                  className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-200"
                 >
                   @{post.author.username}
                 </Link>
@@ -204,17 +204,16 @@ export function LFGPostCard({
         </div>
       </div>
 
-      <div className="mt-3 pt-3">
+      <div className="mt-2.5 pt-1">
         {post.heroPool.length > 0 ? (
           <div>
-            <p className="mb-2 text-xs font-medium text-zinc-500">Hero Pool</p>
             <div className="flex flex-wrap gap-2.5">
               {post.heroPool.slice(0, 5).map((hero) => (
                 <div
                   key={`${post.id}-${hero.id}`}
                   title={hero.label}
                   aria-label={hero.label}
-                  className="relative h-10 w-10 overflow-hidden rounded-[12px] bg-zinc-900 shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                  className="relative h-9 w-9 overflow-hidden rounded-[11px] bg-zinc-900 shadow-[0_8px_20px_rgba(0,0,0,0.18)]"
                 >
                   {hero.imageSrc ? (
                     <Image
@@ -222,7 +221,7 @@ export function LFGPostCard({
                       alt={hero.label}
                       fill
                       className="object-cover"
-                      sizes="40px"
+                      sizes="36px"
                     />
                   ) : null}
                 </div>

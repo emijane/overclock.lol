@@ -217,21 +217,21 @@ export async function LFGPageShell({
   const displayTitle = type ? `/ ${title}` : title;
 
   return (
-    <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
       {messageType === "success" ? (
         <AuthMessage message={message} type={messageType} variant="toast" />
       ) : null}
-      <PageContainer className="flex flex-col gap-2.5">
+      <PageContainer className="flex flex-col gap-3">
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px] bg-zinc-950">
-            <header className="px-5 py-5 sm:px-6 sm:py-6">
+            <header className="px-5 py-5 sm:px-6 sm:py-7">
               <AuthMessage message={inlineMessage} type={messageType} />
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="space-y-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
                     LFG Channel
                   </p>
-                  <h1 className="text-4xl font-semibold tracking-[-0.06em] text-zinc-50 sm:text-5xl">
+                  <h1 className="text-5xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-6xl">
                     {displayTitle}
                   </h1>
                 </div>
@@ -246,7 +246,7 @@ export async function LFGPageShell({
               </div>
 
               {type ? (
-                <section className="mt-7">
+                <section className="mt-8">
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
@@ -280,9 +280,9 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[22px] border border-white/[0.07] bg-white/[0.04] px-4 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-6"
+                      className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.03))] px-4 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5 sm:py-6"
                     >
-                      <h2 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-[2rem]">
+                      <h2 className="text-[2rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2.2rem]">
                         Create a Post
                       </h2>
                       <input type="hidden" name="lfg_type" value={type} />
