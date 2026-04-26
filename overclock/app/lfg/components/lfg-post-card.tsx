@@ -69,19 +69,19 @@ export function LFGPostCard({
   return (
     <article className="rounded-[22px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.028))] px-4 py-3.5 shadow-[0_18px_44px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.045)]">
       <div className="flex flex-col gap-3">
+        {sectionLabel || statusPill ? (
+          <div className="flex flex-wrap items-center gap-2">
+            {sectionLabel ? (
+              <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
+                {sectionLabel}
+              </p>
+            ) : null}
+            {statusPill}
+          </div>
+        ) : null}
+
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            {sectionLabel || statusPill ? (
-              <div className="mb-2 flex flex-wrap items-center gap-2">
-                {sectionLabel ? (
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
-                    {sectionLabel}
-                  </p>
-                ) : null}
-                {statusPill}
-              </div>
-            ) : null}
-
             <div className="flex flex-wrap items-center gap-2">
               <span
                 title={COMPETITIVE_ROLE_LABELS[post.postingRole]}
@@ -94,39 +94,33 @@ export function LFGPostCard({
                 {post.title}
               </h2>
             </div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
-              <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-200">
-                {gameModeLabel}
-              </span>
-              <span className="text-zinc-600">&bull;</span>
-              <span>{rankLabel}</span>
-              {post.region ? (
-                <>
-                  <span className="text-zinc-600">&bull;</span>
-                  <span>
-                    {post.region}
-                    {post.timezone ? ` (${post.timezone})` : ""}
-                  </span>
-                </>
-              ) : null}
-            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {createdAtLabel ? (
-              <p className="whitespace-nowrap text-xs font-medium text-zinc-500">
-                {createdAtLabel}
-              </p>
-            ) : null}
-            {showActions && isOwner && returnPath ? (
-              <LFGPostActionsMenu
-                postId={post.id}
-                returnPath={returnPath}
-                viewHref={viewHref}
-                viewLabel={viewLabel}
-              />
-            ) : null}
-          </div>
+          {showActions && isOwner && returnPath ? (
+            <LFGPostActionsMenu
+              postId={post.id}
+              returnPath={returnPath}
+              viewHref={viewHref}
+              viewLabel={viewLabel}
+            />
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
+          <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-200">
+            {gameModeLabel}
+          </span>
+          <span className="text-zinc-600">&bull;</span>
+          <span>{rankLabel}</span>
+          {post.region ? (
+            <>
+              <span className="text-zinc-600">&bull;</span>
+              <span>
+                {post.region}
+                {post.timezone ? ` (${post.timezone})` : ""}
+              </span>
+            </>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -157,6 +151,11 @@ export function LFGPostCard({
                   {visibleName}
                 </p>
               )}
+              {createdAtLabel ? (
+                <p className="whitespace-nowrap text-xs font-medium text-zinc-500">
+                  {createdAtLabel}
+                </p>
+              ) : null}
               {post.author.badges.map((badge) => {
                 const badgePreset = getBadgePreset(badge.slug);
                 const badgeAssetSrc = getBadgeAssetSrc(badge.slug, badge.icon);
