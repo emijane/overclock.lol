@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldIcon, SparklesIcon, SwordsIcon } from "lucide-react";
+import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { closeLFGPost } from "@/app/lfg/actions";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
@@ -11,6 +11,20 @@ type RecentProfilePostsProps = {
   posts: LFGPost[];
   profileUsername: string;
 };
+
+function SupportPlusIcon({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <rect x="9.25" y="3.75" width="5.5" height="16.5" rx="1.2" />
+      <rect x="3.75" y="9.25" width="16.5" height="5.5" rx="1.2" />
+    </svg>
+  );
+}
 
 function formatPostDate(value: string) {
   if (!value) {
@@ -63,7 +77,7 @@ function getRoleIcon(role: LFGPost["postingRole"]) {
     return <SwordsIcon className="h-3.5 w-3.5 text-rose-300" />;
   }
 
-  return <SparklesIcon className="h-3.5 w-3.5 text-emerald-300" />;
+  return <SupportPlusIcon className="h-3.5 w-3.5 text-emerald-300" />;
 }
 
 export function RecentProfilePosts({
