@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
+import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
@@ -19,6 +21,32 @@ type LFGPostCardProps = {
   viewHref?: string;
   viewLabel?: string;
 };
+
+function SupportPlusIcon({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <rect x="9.25" y="3.75" width="5.5" height="16.5" rx="1.2" />
+      <rect x="3.75" y="9.25" width="16.5" height="5.5" rx="1.2" />
+    </svg>
+  );
+}
+
+function getRoleIcon(role: CompetitiveRole, className: string) {
+  if (role === "tank") {
+    return <ShieldIcon className={className} />;
+  }
+
+  if (role === "dps") {
+    return <SwordsIcon className={className} />;
+  }
+
+  return <SupportPlusIcon className={className} />;
+}
 
 export function LFGPostCard({
   currentProfileId,
@@ -55,8 +83,12 @@ export function LFGPostCard({
             ) : null}
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-white/[0.08] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-200">
-                {COMPETITIVE_ROLE_LABELS[post.postingRole]}
+              <span
+                title={COMPETITIVE_ROLE_LABELS[post.postingRole]}
+                aria-label={COMPETITIVE_ROLE_LABELS[post.postingRole]}
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.08] text-zinc-200"
+              >
+                {getRoleIcon(post.postingRole, "h-3.5 w-3.5")}
               </span>
               <h2 className="text-xl font-semibold tracking-[-0.035em] text-zinc-50">
                 {post.title}
