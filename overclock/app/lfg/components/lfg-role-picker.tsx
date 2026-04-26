@@ -59,7 +59,7 @@ function CreatePostButton() {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 sm:w-auto disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
+      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-sky-400 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 sm:w-auto disabled:cursor-not-allowed disabled:bg-sky-400/50 disabled:text-zinc-800"
     >
       <PlusIcon className="h-4 w-4" />
       {pending ? "Creating..." : "Create Post"}
@@ -84,8 +84,8 @@ export function LFGRolePicker({
 
   return (
     <div className="mt-4">
-      <h2 className="text-sm font-semibold text-zinc-100">Pick a role</h2>
-      <div className="mt-3 flex flex-wrap gap-3">
+      <h2 className="text-sm font-semibold text-zinc-100">Role</h2>
+      <div className="mt-2.5 flex flex-wrap gap-2.5">
         {roleOptions.map((roleOption) => {
           const isSelected = roleOption.role === selectedRole;
 
@@ -96,7 +96,7 @@ export function LFGRolePicker({
               aria-pressed={isSelected}
               disabled={pending}
               onClick={() => setSelectedRole(roleOption.role)}
-              className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition ${
+              className={`inline-flex h-10 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold transition ${
                 isSelected
                   ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                   : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
@@ -158,7 +158,7 @@ export function LFGRolePicker({
 
                 <Link
                   href={setupHref}
-                  className="inline-flex h-8 shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.025] px-3 text-xs font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-100"
+                  className="inline-flex h-7 shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.025] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-100"
                 >
                   Edit Profile
                   <ChevronRightIcon className="h-4 w-4" />
@@ -213,7 +213,7 @@ export function LFGRolePicker({
             </p>
             <Link
               href={setupHref}
-              className="mt-3 inline-flex h-10 items-center gap-2 rounded-full border border-amber-200/20 bg-black/10 px-4 text-sm font-semibold text-amber-100 transition hover:bg-black/15"
+              className="mt-3 inline-flex h-9 items-center gap-2 rounded-full border border-amber-200/20 bg-black/10 px-3.5 text-sm font-semibold text-amber-100 transition hover:bg-black/15"
             >
               Open Competitive Profile
               <ArrowRightIcon className="h-4 w-4" />
