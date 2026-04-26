@@ -14,9 +14,10 @@ import { getActiveLFGPosts } from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
-import { LFGPostList } from "./lfg-post-list";
-import { DuosFeedFilters } from "./duos-feed-filters";
+import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
+import { LFGGameModePicker } from "./lfg-game-mode-picker";
 import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
+import { LFGPostList } from "./lfg-post-list";
 import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
@@ -276,6 +277,9 @@ export async function LFGPageShell({
                     <form action={createLFGPost}>
                       <input type="hidden" name="lfg_type" value={type} />
                       <PostTitleField />
+                      {(type === "duos" || type === "stacks") ? (
+                        <LFGGameModePicker />
+                      ) : null}
                       <LFGRolePicker
                         profileSummary={profileSummary}
                         roleOptions={pageData.roleOptions}
@@ -289,10 +293,11 @@ export async function LFGPageShell({
 
             {type ? (
               <>
-                {type === "duos" ? (
-                  <DuosFeedFilters
+                {type === "duos" || type === "stacks" ? (
+                  <LFGFeedFiltersPanel
                     description={filtersDescription}
                     selectedFilters={feedFilters}
+                    title={`Filter ${title}`}
                   />
                 ) : (
                   <LFGFiltersBar description={filtersDescription} />

@@ -11,7 +11,12 @@ import {
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-import { isLFGType, type CompetitiveProfileSnapshot } from "@/lib/lfg/lfg-post-types";
+import {
+  isLFGGameMode,
+  isLFGType,
+  type CompetitiveProfileSnapshot,
+  type LFGGameMode,
+} from "@/lib/lfg/lfg-post-types";
 import {
   closeOwnedActiveLFGPost,
   hasReachedLFGPostRateLimit,
@@ -84,6 +89,7 @@ function getRequiredProfileError({
 }
 
 export async function createLFGPost(formData: FormData) {
+  const gameModeValue = formData.get("game_mode")?.toString().trim() ?? "";
   const lfgTypeValue = formData.get("lfg_type")?.toString().trim() ?? "";
   const title = formData.get("title")?.toString().trim() ?? "";
   const postingRoleValue = formData.get("posting_role")?.toString().trim() ?? "";
@@ -98,6 +104,10 @@ export async function createLFGPost(formData: FormData) {
 
   if (!isCompetitiveRole(postingRoleValue)) {
     lfgRedirect(lfgTypeValue, "Choose a role before posting.");
+  }
+
+  if (!isLFGGameMode(gameModeValue)) {
+    lfgRedirect(lfgTypeValue, "Choose a mode before posting.");
   }
 
   if (title.length > 80) {
@@ -130,6 +140,7 @@ export async function createLFGPost(formData: FormData) {
   ]);
 
   const postingRole = postingRoleValue as CompetitiveRole;
+  const gameMode = gameModeValue as LFGGameMode;
   const roleProfile =
     competitiveProfile.roles.find((role) => role.role === postingRole) ?? null;
 
@@ -153,6 +164,7 @@ export async function createLFGPost(formData: FormData) {
   };
 
   const hasDuplicateActivePost = await hasMatchingActiveLFGPost({
+    gameMode,
     lfgType: lfgTypeValue,
     postingRole,
     profileId: profile.id,
@@ -182,6 +194,7 @@ export async function createLFGPost(formData: FormData) {
   try {
     await insertLFGPost({
       competitiveProfileSnapshot,
+      gameMode,
       heroPoolSnapshot,
       lfgType: lfgTypeValue,
       platform: profile.platform ?? null,

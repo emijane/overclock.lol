@@ -15,13 +15,18 @@ import {
   type LFGRegion,
 } from "@/lib/lfg/lfg-feed-filters";
 import {
+  getLFGGameModeLabel,
+  LFG_GAME_MODE_OPTIONS,
+  type LFGGameMode,
+} from "@/lib/lfg/lfg-post-types";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type FilterKey = "role" | "rank" | "region";
+type FilterKey = "mode" | "role" | "rank" | "region";
 
 function buildFilterHref(
   pathname: string,
@@ -98,20 +103,30 @@ function FilterDropdown({
   );
 }
 
-export function DuosFeedFilters({
+export function LFGFeedFiltersPanel({
   description,
   selectedFilters,
+  title,
 }: {
   description: string;
   selectedFilters?: LFGFeedFilters;
+  title: string;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const hasActiveFilters = Boolean(
-    selectedFilters?.role || selectedFilters?.rank || selectedFilters?.region
+    selectedFilters?.mode ||
+      selectedFilters?.role ||
+      selectedFilters?.rank ||
+      selectedFilters?.region
   );
 
+  const modeItems = LFG_GAME_MODE_OPTIONS.map((mode) => ({
+    href: buildFilterHref(pathname, params, "mode", mode),
+    label: getLFGGameModeLabel(mode),
+    selected: selectedFilters?.mode === mode,
+  }));
   const roleItems = COMPETITIVE_ROLE_OPTIONS.map((role) => ({
     href: buildFilterHref(pathname, params, "role", role),
     label: COMPETITIVE_ROLE_LABELS[role],
@@ -128,6 +143,9 @@ export function DuosFeedFilters({
     selected: selectedFilters?.region === region,
   }));
 
+  const selectedModeLabel = selectedFilters?.mode
+    ? getLFGGameModeLabel(selectedFilters.mode as LFGGameMode)
+    : "Any Mode";
   const selectedRoleLabel = selectedFilters?.role
     ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
     : "All Roles";
@@ -148,7 +166,7 @@ export function DuosFeedFilters({
                 <FilterIcon className="h-4 w-4" />
               </span>
               <div>
-                <h2 className="text-sm font-semibold text-zinc-100">Filter Duos</h2>
+                <h2 className="text-sm font-semibold text-zinc-100">{title}</h2>
                 <p className="mt-0.5 text-sm text-zinc-500">{description}</p>
               </div>
             </div>
@@ -164,6 +182,14 @@ export function DuosFeedFilters({
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <FilterDropdown
+              items={modeItems}
+              label="Mode"
+              pathname={pathname}
+              paramKey="mode"
+              searchParams={params}
+              selectedLabel={selectedModeLabel}
+            />
             <FilterDropdown
               items={roleItems}
               label="Role"

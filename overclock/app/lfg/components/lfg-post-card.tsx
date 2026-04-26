@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
-import type { LFGPost } from "@/lib/lfg/lfg-post-types";
+import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
@@ -32,6 +32,7 @@ export function LFGPostCard({
 }: LFGPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
   const createdAtLabel = formatPostDate(post.createdAt);
+  const gameModeLabel = getLFGGameModeLabel(post.gameMode);
   const visibleName = post.author.username ?? post.author.displayName ?? "Player";
   const profileHref = post.author.username ? `/u/${post.author.username}` : null;
   const avatarFallback = visibleName.slice(0, 2).toUpperCase();
@@ -128,6 +129,10 @@ export function LFGPostCard({
 
           <h2 className="text-base font-semibold text-zinc-50">{post.title}</h2>
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-400">
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-xs font-medium uppercase tracking-[0.08em] text-zinc-300">
+              {gameModeLabel}
+            </span>
+            <span className="text-zinc-600">&bull;</span>
             <span className="font-medium text-zinc-200">
               {COMPETITIVE_ROLE_LABELS[post.postingRole]}
             </span>

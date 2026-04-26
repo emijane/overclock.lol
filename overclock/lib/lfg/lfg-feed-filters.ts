@@ -1,6 +1,7 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { isCompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { REGION_OPTIONS } from "@/lib/profiles/profile-options";
+import { isLFGGameMode, type LFGGameMode } from "./lfg-post-types";
 
 export const LFG_REGION_OPTIONS = REGION_OPTIONS;
 export const LFG_RANK_BRACKET_OPTIONS = [
@@ -14,6 +15,7 @@ export type LFGRankBracket = (typeof LFG_RANK_BRACKET_OPTIONS)[number];
 export type LFGRegion = (typeof REGION_OPTIONS)[number];
 
 export type LFGFeedFilters = {
+  mode?: LFGGameMode;
   rank?: LFGRankBracket;
   region?: LFGRegion;
   role?: CompetitiveRole;
@@ -28,11 +30,13 @@ export function isLFGRegion(value: string): value is LFGRegion {
 }
 
 export function parseLFGFeedFilters(input: {
+  mode?: string;
   rank?: string;
   region?: string;
   role?: string;
 }): LFGFeedFilters {
   return {
+    mode: input.mode && isLFGGameMode(input.mode) ? input.mode : undefined,
     rank: input.rank && isLFGRankBracket(input.rank) ? input.rank : undefined,
     region: input.region && isLFGRegion(input.region) ? input.region : undefined,
     role: input.role && isCompetitiveRole(input.role) ? input.role : undefined,

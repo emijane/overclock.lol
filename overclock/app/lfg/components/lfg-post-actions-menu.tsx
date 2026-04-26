@@ -27,6 +27,7 @@ function ClosePostMenuItem() {
 }
 
 type LFGPostActionsMenuProps = {
+  manageHref?: string;
   postId: string;
   returnPath: string;
   viewHref?: string;
@@ -34,6 +35,7 @@ type LFGPostActionsMenuProps = {
 };
 
 export function LFGPostActionsMenu({
+  manageHref = "/account/posts",
   postId,
   returnPath,
   viewHref,
@@ -62,6 +64,12 @@ export function LFGPostActionsMenu({
             <Link href={viewHref}>{viewLabel}</Link>
           </DropdownMenuItem>
         ) : null}
+        <DropdownMenuItem
+          asChild
+          className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+        >
+          <Link href={manageHref}>Manage My Posts</Link>
+        </DropdownMenuItem>
         <form action={closeLFGPost} className="w-full">
           <input type="hidden" name="post_id" value={postId} />
           <input type="hidden" name="return_path" value={returnPath} />

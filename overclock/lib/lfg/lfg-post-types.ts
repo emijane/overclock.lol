@@ -7,6 +7,9 @@ export type LFGType = (typeof LFG_TYPE_OPTIONS)[number];
 export const LFG_POST_STATUS_OPTIONS = ["active", "closed", "archived"] as const;
 export type LFGPostStatus = (typeof LFG_POST_STATUS_OPTIONS)[number];
 
+export const LFG_GAME_MODE_OPTIONS = ["ranked", "quick_play"] as const;
+export type LFGGameMode = (typeof LFG_GAME_MODE_OPTIONS)[number];
+
 export type LFGHeroSnapshot = {
   id: string;
   imageSrc?: string | null;
@@ -32,6 +35,7 @@ export type LFGPost = {
     username: string | null;
   };
   createdAt: string;
+  gameMode: LFGGameMode;
   heroPool: LFGHeroSnapshot[];
   id: string;
   lfgType: LFGType;
@@ -47,4 +51,12 @@ export type LFGPost = {
 
 export function isLFGType(value: string): value is LFGType {
   return LFG_TYPE_OPTIONS.includes(value as LFGType);
+}
+
+export function isLFGGameMode(value: string): value is LFGGameMode {
+  return LFG_GAME_MODE_OPTIONS.includes(value as LFGGameMode);
+}
+
+export function getLFGGameModeLabel(gameMode: LFGGameMode) {
+  return gameMode === "quick_play" ? "Quick Play" : "Ranked";
 }

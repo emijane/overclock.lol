@@ -1,13 +1,14 @@
 # Competitive Profile and LFG Flow
 
 This note captures the intended competitive profile and LFG model for the
-current product scope: Overwatch role queue, 5v5 ranked.
+current product scope: Overwatch role queue identity used across ranked and
+quick play LFG posts.
 
 ## Product Scope
 
-The current LFG experience supports ranked role queue only. Because of that, a
-player's competitive identity should be based on the role they play, the rank
-they have on that role, and their hero pool for that role.
+The current LFG experience supports both ranked and quick play posts for Duos
+and Stacks. A player's competitive identity should still be based on the role
+they play, the rank they have on that role, and their hero pool for that role.
 
 LFG sections such as Duos, Stacks, Teams, and Scrims are posting contexts. They
 should not require separate registration.
@@ -175,6 +176,7 @@ Example post composer state:
 
 ```text
 Create Duo Post
+Mode: Ranked / Quick Play
 Posting as: Support - Champion 3
 Hero pool: Ana, Kiriko, Juno
 [Change role]
@@ -236,8 +238,8 @@ duplicate LFG-only hero lists.
 
 ## Posting Model
 
-The LFG post stores where the user is posting and which registered competitive
-role identity they are using.
+The LFG post stores where the user is posting, which queue mode they want, and
+which registered competitive role identity they are using.
 
 Example:
 
@@ -245,6 +247,7 @@ Example:
 lfg_posts
 - profile_id
 - lfg_type: "duos"
+- game_mode: "ranked" | "quick_play"
 - role: "support"
 - rank_tier: "Champion"
 - rank_division: 3
@@ -267,7 +270,8 @@ Competitive role registration answers:
 An LFG post answers:
 
 ```text
-"I want to use my Champion 3 Support identity in Duos right now."
+"I want to use my Champion 3 Support identity in Duos right now, and I want to
+queue Ranked or Quick Play."
 ```
 
 That means `queue_types` are not needed in role registration for the current

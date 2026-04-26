@@ -95,7 +95,7 @@ export function ProfileHeader({
             aria-hidden="true"
           />
           <div
-            className="absolute inset-x-0 bottom-0 h-px bg-[var(--profile-rank-border)] shadow-[0_0_16px_var(--profile-rank-glow)]"
+            className="absolute inset-x-0 bottom-0 h-px bg-[var(--profile-rank-border)]"
             aria-hidden="true"
           />
 

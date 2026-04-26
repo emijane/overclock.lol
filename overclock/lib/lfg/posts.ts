@@ -8,10 +8,11 @@ import {
   LFG_POST_RATE_LIMIT_MAX_POSTS,
   LFG_POST_RATE_LIMIT_WINDOW_MINUTES,
 } from "./lfg-post-policy";
-import { isLFGType } from "./lfg-post-types";
+import { isLFGGameMode, isLFGType } from "./lfg-post-types";
 
 import type {
   CompetitiveProfileSnapshot,
+  LFGGameMode,
   LFGHeroSnapshot,
   LFGPost,
   LFGPostStatus,
@@ -125,6 +126,10 @@ function normalizeLFGType(value: unknown): LFGType {
   return typeof value === "string" && isLFGType(value) ? value : "duos";
 }
 
+function normalizeLFGGameMode(value: unknown): LFGGameMode {
+  return typeof value === "string" && isLFGGameMode(value) ? value : "ranked";
+}
+
 function normalizeLFGPostRow(
   row: Record<string, unknown>,
   badges: ProfileBadge[]
@@ -132,6 +137,7 @@ function normalizeLFGPostRow(
   return {
     author: normalizeAuthor(row.profiles, badges),
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
+    gameMode: normalizeLFGGameMode(row.game_mode),
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",
     lfgType: normalizeLFGType(row.lfg_type),
@@ -166,6 +172,7 @@ export async function getActiveLFGPosts(
         "id",
         "profile_id",
         "lfg_type",
+        "game_mode",
         "title",
         "status",
         "posting_role",
@@ -185,6 +192,10 @@ export async function getActiveLFGPosts(
 
   if (filters?.role) {
     query = query.eq("posting_role", filters.role);
+  }
+
+  if (filters?.mode) {
+    query = query.eq("game_mode", filters.mode);
   }
 
   if (filters?.region) {
@@ -270,6 +281,7 @@ export async function getRecentPostsByProfileId(
         "id",
         "profile_id",
         "lfg_type",
+        "game_mode",
         "title",
         "status",
         "posting_role",
@@ -310,6 +322,7 @@ export async function getPostsByProfileId(
         "id",
         "profile_id",
         "lfg_type",
+        "game_mode",
         "title",
         "status",
         "posting_role",
@@ -339,6 +352,7 @@ export async function getPostsByProfileId(
 
 export async function insertLFGPost(input: {
   competitiveProfileSnapshot: CompetitiveProfileSnapshot;
+  gameMode: LFGGameMode;
   heroPoolSnapshot: LFGHeroSnapshot[];
   lfgType: LFGType;
   platform: string | null;
@@ -354,6 +368,7 @@ export async function insertLFGPost(input: {
 
   const { error } = await supabase.from("lfg_posts").insert({
     competitive_profile_snapshot: input.competitiveProfileSnapshot,
+    game_mode: input.gameMode,
     hero_pool_snapshot: input.heroPoolSnapshot,
     lfg_type: input.lfgType,
     posting_role: input.postingRole,
@@ -373,6 +388,7 @@ export async function insertLFGPost(input: {
 }
 
 export async function hasMatchingActiveLFGPost(input: {
+  gameMode: LFGGameMode;
   lfgType: LFGType;
   postingRole: CompetitiveRole;
   profileId: string;
@@ -384,6 +400,7 @@ export async function hasMatchingActiveLFGPost(input: {
     .from("lfg_posts")
     .select("id")
     .eq("profile_id", input.profileId)
+    .eq("game_mode", input.gameMode)
     .eq("lfg_type", input.lfgType)
     .eq("posting_role", input.postingRole)
     .eq("title", input.title)
