@@ -188,6 +188,7 @@ export async function LFGPageShell({
   type,
 }: LFGPageShellProps) {
   const { profile, user } = await getCurrentProfile();
+  const inlineMessage = messageType === "success" ? undefined : message;
   const pageData = type
     ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
     : {
@@ -217,11 +218,14 @@ export async function LFGPageShell({
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-7">
+      {messageType === "success" ? (
+        <AuthMessage message={message} type={messageType} variant="toast" />
+      ) : null}
       <PageContainer className="flex flex-col gap-4">
         <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
-              <AuthMessage message={message} type={messageType} />
+              <AuthMessage message={inlineMessage} type={messageType} />
               <div className="space-y-4">
                 <div className="space-y-3">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-zinc-500">

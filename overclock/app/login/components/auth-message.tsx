@@ -5,10 +5,15 @@ import { useEffect, useState } from "react";
 
 type AuthMessageProps = {
   message?: string;
+  variant?: "inline" | "toast";
   type?: string;
 };
 
-export function AuthMessage({ message, type }: AuthMessageProps) {
+export function AuthMessage({
+  message,
+  variant = "inline",
+  type,
+}: AuthMessageProps) {
   const [isVisible, setIsVisible] = useState(Boolean(message));
 
   useEffect(() => {
@@ -19,14 +24,17 @@ export function AuthMessage({ message, type }: AuthMessageProps) {
     return null;
   }
 
+  const toneClassName =
+    type === "success"
+      ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
+      : "border-rose-400/40 bg-rose-400/10 text-rose-100";
+  const containerClassName =
+    variant === "toast"
+      ? "fixed right-4 top-4 z-50 w-[min(420px,calc(100vw-2rem))] rounded-[18px] border px-4 py-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:right-6 sm:top-6"
+      : "mb-5 rounded-[18px] border px-4 py-2 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-4.5";
+
   return (
-    <div
-      className={`mb-5 rounded-[18px] border px-4 py-2 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-4.5 ${
-        type === "success"
-          ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
-          : "border-rose-400/40 bg-rose-400/10 text-rose-100"
-      }`}
-    >
+    <div className={`${containerClassName} ${toneClassName}`}>
       <div className="flex items-center justify-between gap-3">
         <p className="min-w-0 flex-1 leading-6">{message}</p>
         <button
