@@ -1,12 +1,39 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
+
+function SupportPlusIcon({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <rect x="9.25" y="3.75" width="5.5" height="16.5" rx="1.2" />
+      <rect x="3.75" y="9.25" width="16.5" height="5.5" rx="1.2" />
+    </svg>
+  );
+}
+
+function getRoleIcon(role: LFGPost["postingRole"]) {
+  if (role === "tank") {
+    return <ShieldIcon className="h-4 w-4 text-sky-300" />;
+  }
+
+  if (role === "dps") {
+    return <SwordsIcon className="h-4 w-4 text-rose-300" />;
+  }
+
+  return <SupportPlusIcon className="h-4 w-4 text-emerald-300" />;
+}
 
 type LFGPostCardProps = {
   currentProfileId?: string | null;
@@ -142,8 +169,11 @@ export function LFGPostCard({
             </div>
           </div>
 
-          <div className="min-w-0">
-            <h2 className="text-[1.18rem] font-semibold leading-6 tracking-[-0.04em] text-zinc-50">
+          <div className="flex min-w-0 items-start gap-1.5">
+            <span className="mt-0.5 inline-flex h-[1.15rem] w-[1.15rem] shrink-0 items-center justify-center">
+              {getRoleIcon(post.postingRole)}
+            </span>
+            <h2 className="min-w-0 text-[1.18rem] font-semibold leading-6 tracking-[-0.04em] text-zinc-50">
               {post.title}
             </h2>
           </div>
