@@ -277,7 +277,7 @@ This page should follow `docs/roadmap/LFG_POST_LIFECYCLE_POLICY.md`.
 
 Important aligned rules:
 
-- 2 posts per section per rolling 60 minutes
+- 4 posts per section per rolling 60 minutes
 - active posts expire after 12 hours
 - owner can close active posts
 - close is permanent

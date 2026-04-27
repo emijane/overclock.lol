@@ -6,6 +6,8 @@ import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import {
   ACTIVE_LFG_POST_WINDOW_HOURS,
   LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION,
+  LFG_CREATE_RATE_LIMIT_PER_SECTION,
+  LFG_CREATE_RATE_LIMIT_WINDOW_MINUTES,
 } from "./lfg-post-policy";
 import { isLFGGameMode, isLFGType } from "./lfg-post-types";
 
@@ -23,6 +25,12 @@ export type ActiveLFGPostCountsByRole = Record<CompetitiveRole, number>;
 function getActivePostCutoffIso(now = new Date()) {
   return new Date(
     now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
+  ).toISOString();
+}
+
+function getPostCreationCutoffIso(now = new Date()) {
+  return new Date(
+    now.getTime() - LFG_CREATE_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000
   ).toISOString();
 }
 
@@ -475,6 +483,26 @@ export async function hasReachedActiveLFGPostLimit(input: {
   }
 
   return (count ?? 0) >= LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION;
+}
+
+export async function hasReachedLFGPostCreationLimit(input: {
+  lfgType: LFGType;
+  profileId: string;
+}) {
+  const supabase = await createClient();
+  const postCreationCutoffIso = getPostCreationCutoffIso();
+  const { count, error } = await supabase
+    .from("lfg_posts")
+    .select("id", { count: "exact", head: true })
+    .eq("profile_id", input.profileId)
+    .eq("lfg_type", input.lfgType)
+    .gte("created_at", postCreationCutoffIso);
+
+  if (error) {
+    throw error;
+  }
+
+  return (count ?? 0) >= LFG_CREATE_RATE_LIMIT_PER_SECTION;
 }
 
 export async function closeOwnedActiveLFGPost(input: {

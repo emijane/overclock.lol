@@ -20,6 +20,7 @@ import {
 import {
   closeOwnedActiveLFGPost,
   hasReachedActiveLFGPostLimit,
+  hasReachedLFGPostCreationLimit,
   hasMatchingActiveLFGPost,
   insertLFGPost,
 } from "@/lib/lfg/posts";
@@ -179,16 +180,28 @@ export async function createLFGPost(formData: FormData) {
     );
   }
 
-  const hasReachedRateLimit = await hasReachedActiveLFGPostLimit({
+  const hasReachedActiveSlotLimit = await hasReachedActiveLFGPostLimit({
     lfgType: lfgTypeValue,
     postingRole,
+    profileId: profile.id,
+  });
+
+  if (hasReachedActiveSlotLimit) {
+    lfgRedirect(
+      lfgTypeValue,
+      `You can only keep 2 active ${postingRole.toUpperCase()} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
+    );
+  }
+
+  const hasReachedRateLimit = await hasReachedLFGPostCreationLimit({
+    lfgType: lfgTypeValue,
     profileId: profile.id,
   });
 
   if (hasReachedRateLimit) {
     lfgRedirect(
       lfgTypeValue,
-      "You can have up to 2 active posts per role in each section. Try a different role, or wait for one of your posts in this section to expire after 12 hours."
+      "You can create up to 4 posts in this section per rolling 60 minutes. Closing or removing a post does not reset that limit, so wait until one of your recent post timestamps ages out before posting again."
     );
   }
 

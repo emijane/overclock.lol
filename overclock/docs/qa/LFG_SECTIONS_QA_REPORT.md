@@ -14,6 +14,12 @@ Method:
 - Adversarial review from three angles: spammer, impatient user, normal player
 - No production database access or authenticated browser session was available in this workspace, so database-policy findings are limited to what is verifiable from source control
 
+## Status Update
+
+- Finding 1: Fixed in application code on 2026-04-27
+- Finding 2: Fixed in application code on 2026-04-27
+- Findings 3-7: Still open
+
 ## Finding 1
 
 1. Severity: Critical

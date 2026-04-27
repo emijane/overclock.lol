@@ -29,7 +29,7 @@ The product goals are:
 Each user can create up to:
 
 ```text
-2 posts per section per rolling 60-minute window
+4 posts per section per rolling 60-minute window
 ```
 
 This limit is section-specific, not global.
@@ -37,10 +37,11 @@ This limit is section-specific, not global.
 Examples:
 
 - A user could post twice in `Duos` within one hour.
+- A user could post up to four times in `Duos` within one hour.
 - That same user could also still post in `Stacks`, because the limit is per
   section.
-- A user who creates posts at `1:00 PM` and `1:20 PM` in `Duos` cannot create a
-  third `Duos` post until `2:00 PM`.
+- A user who creates posts at `1:00 PM`, `1:10 PM`, `1:20 PM`, and `1:30 PM`
+  in `Duos` cannot create a fifth `Duos` post until `2:00 PM`.
 
 Important behavior:
 
@@ -148,7 +149,7 @@ Before creating a new post, validate:
 - Requested `lfg_type` is valid
 - Requested role is valid and configured
 - Required profile fields are present
-- The user has not exceeded `2` created posts in that section within the last
+- The user has not exceeded `4` created posts in that section within the last
   `60` minutes
 
 Client-side UI may explain the rule, but the server must be the source of
@@ -218,7 +219,7 @@ If you do nothing, it expires on its own.
 
 ## Recommended implementation order
 
-1. Add server-side rate limiting: `2 posts per section per rolling hour`
+1. Add server-side rate limiting: `4 posts per section per rolling hour`
 2. Add owner-only `Close Post`
 3. Hide closed posts from profile active listings and section feeds
 4. Enforce 12-hour expiry in active-post queries
