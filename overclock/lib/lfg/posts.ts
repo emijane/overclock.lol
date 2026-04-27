@@ -3,12 +3,7 @@ import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
 import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
-import {
-  ACTIVE_LFG_POST_WINDOW_HOURS,
-  LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION,
-  LFG_CREATE_RATE_LIMIT_PER_SECTION,
-  LFG_CREATE_RATE_LIMIT_WINDOW_MINUTES,
-} from "./lfg-post-policy";
+import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
 import { isLFGGameMode, isLFGType } from "./lfg-post-types";
 
 import type {
@@ -25,12 +20,6 @@ export type ActiveLFGPostCountsByRole = Record<CompetitiveRole, number>;
 function getActivePostCutoffIso(now = new Date()) {
   return new Date(
     now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
-  ).toISOString();
-}
-
-function getPostCreationCutoffIso(now = new Date()) {
-  return new Date(
-    now.getTime() - LFG_CREATE_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000
   ).toISOString();
 }
 
@@ -396,7 +385,57 @@ export async function getActiveLFGPostCountsByRole(input: {
   return counts;
 }
 
-export async function insertLFGPost(input: {
+function normalizeLFGCreateResult(value: unknown) {
+  if (typeof value === "string") {
+    try {
+      return normalizeLFGCreateResult(JSON.parse(value));
+    } catch {
+      return {
+        created: false,
+        errorCode: "invalid_response",
+        postId: null,
+      };
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0
+      ? normalizeLFGCreateResult(value[0])
+      : {
+          created: false,
+          errorCode: "invalid_response",
+          postId: null,
+        };
+  }
+
+  if (!value || typeof value !== "object") {
+    return {
+      created: false,
+      errorCode: "invalid_response",
+      postId: null,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const nestedCandidate =
+    candidate.create_lfg_post_atomic &&
+    typeof candidate.create_lfg_post_atomic === "object" &&
+    !Array.isArray(candidate.create_lfg_post_atomic)
+      ? (candidate.create_lfg_post_atomic as Record<string, unknown>)
+      : candidate;
+
+  return {
+    created: nestedCandidate.created === true,
+    errorCode:
+      typeof nestedCandidate.error_code === "string"
+        ? nestedCandidate.error_code
+        : null,
+    postId:
+      typeof nestedCandidate.post_id === "string" ? nestedCandidate.post_id : null,
+  };
+}
+
+export async function createLFGPostAtomically(input: {
   competitiveProfileSnapshot: CompetitiveProfileSnapshot;
   gameMode: LFGGameMode;
   heroPoolSnapshot: LFGHeroSnapshot[];
@@ -411,26 +450,26 @@ export async function insertLFGPost(input: {
   title: string;
 }) {
   const supabase = await createClient();
-
-  const { error } = await supabase.from("lfg_posts").insert({
-    competitive_profile_snapshot: input.competitiveProfileSnapshot,
-    game_mode: input.gameMode,
-    hero_pool_snapshot: input.heroPoolSnapshot,
-    lfg_type: input.lfgType,
-    posting_role: input.postingRole,
-    profile_id: input.profileId,
-    snapshot_main_role: input.competitiveProfileSnapshot.main_role,
-    snapshot_platform: input.platform,
-    snapshot_rank_division: input.rankDivision,
-    snapshot_rank_tier: input.rankTier,
-    snapshot_region: input.region,
-    snapshot_timezone: input.timezone,
-    title: input.title,
+  const { data, error } = await supabase.rpc("create_lfg_post_atomic", {
+    p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
+    p_game_mode: input.gameMode,
+    p_hero_pool_snapshot: input.heroPoolSnapshot,
+    p_lfg_type: input.lfgType,
+    p_platform: input.platform,
+    p_posting_role: input.postingRole,
+    p_profile_id: input.profileId,
+    p_rank_division: input.rankDivision,
+    p_rank_tier: input.rankTier,
+    p_region: input.region,
+    p_timezone: input.timezone,
+    p_title: input.title,
   });
 
   if (error) {
     throw error;
   }
+
+  return normalizeLFGCreateResult(data);
 }
 
 export async function hasMatchingActiveLFGPost(input: {
@@ -482,7 +521,7 @@ export async function hasReachedActiveLFGPostLimit(input: {
     throw error;
   }
 
-  return (count ?? 0) >= LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION;
+  return (count ?? 0) >= 2;
 }
 
 export async function hasReachedLFGPostCreationLimit(input: {
@@ -490,7 +529,9 @@ export async function hasReachedLFGPostCreationLimit(input: {
   profileId: string;
 }) {
   const supabase = await createClient();
-  const postCreationCutoffIso = getPostCreationCutoffIso();
+  const postCreationCutoffIso = new Date(
+    Date.now() - 60 * 60 * 1000
+  ).toISOString();
   const { count, error } = await supabase
     .from("lfg_posts")
     .select("id", { count: "exact", head: true })
@@ -502,7 +543,7 @@ export async function hasReachedLFGPostCreationLimit(input: {
     throw error;
   }
 
-  return (count ?? 0) >= LFG_CREATE_RATE_LIMIT_PER_SECTION;
+  return (count ?? 0) >= 4;
 }
 
 export async function closeOwnedActiveLFGPost(input: {

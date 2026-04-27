@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import {
   isCompetitiveRole,
   type CompetitiveRole,
@@ -19,10 +20,10 @@ import {
 } from "@/lib/lfg/lfg-post-types";
 import {
   closeOwnedActiveLFGPost,
+  createLFGPostAtomically,
+  hasMatchingActiveLFGPost,
   hasReachedActiveLFGPostLimit,
   hasReachedLFGPostCreationLimit,
-  hasMatchingActiveLFGPost,
-  insertLFGPost,
 } from "@/lib/lfg/posts";
 
 function lfgRedirect(
@@ -148,7 +149,7 @@ export async function createLFGPost(formData: FormData) {
   if (!roleProfile) {
     lfgRedirect(
       lfgTypeValue,
-      `${postingRoleValue.toUpperCase()} is not set up in your Competitive Profile yet.`
+      `${COMPETITIVE_ROLE_LABELS[postingRole]} is not set up in your Competitive Profile yet.`
     );
   }
 
@@ -164,49 +165,8 @@ export async function createLFGPost(formData: FormData) {
     timezone: profile.timezone ?? null,
   };
 
-  const hasDuplicateActivePost = await hasMatchingActiveLFGPost({
-    gameMode,
-    lfgType: lfgTypeValue,
-    postingRole,
-    profileId: profile.id,
-    title,
-  });
-
-  if (hasDuplicateActivePost) {
-    lfgRedirect(
-      lfgTypeValue,
-      "You already have an active post in this section with this title.",
-      "success"
-    );
-  }
-
-  const hasReachedActiveSlotLimit = await hasReachedActiveLFGPostLimit({
-    lfgType: lfgTypeValue,
-    postingRole,
-    profileId: profile.id,
-  });
-
-  if (hasReachedActiveSlotLimit) {
-    lfgRedirect(
-      lfgTypeValue,
-      `You can only keep 2 active ${postingRole.toUpperCase()} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
-    );
-  }
-
-  const hasReachedRateLimit = await hasReachedLFGPostCreationLimit({
-    lfgType: lfgTypeValue,
-    profileId: profile.id,
-  });
-
-  if (hasReachedRateLimit) {
-    lfgRedirect(
-      lfgTypeValue,
-      "You can create up to 4 posts in this section per rolling 60 minutes. Closing or removing a post does not reset that limit, so wait until one of your recent post timestamps ages out before posting again."
-    );
-  }
-
   try {
-    await insertLFGPost({
+    const result = await createLFGPostAtomically({
       competitiveProfileSnapshot,
       gameMode,
       heroPoolSnapshot,
@@ -220,6 +180,39 @@ export async function createLFGPost(formData: FormData) {
       timezone: profile.timezone ?? null,
       title,
     });
+
+    if (!result.created) {
+      if (result.errorCode === "duplicate_active_post") {
+        lfgRedirect(
+          lfgTypeValue,
+          "You already have an active post in this section with this title.",
+          "success"
+        );
+      }
+
+      if (result.errorCode === "active_slot_limit") {
+        lfgRedirect(
+          lfgTypeValue,
+          `You can only keep 2 active ${COMPETITIVE_ROLE_LABELS[postingRole]} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
+        );
+      }
+
+      if (result.errorCode === "create_rate_limit") {
+        lfgRedirect(
+          lfgTypeValue,
+          "You can create up to 4 posts in this section per rolling 60 minutes. Closing or removing a post does not reset that limit, so wait until one of your recent post timestamps ages out before posting again."
+        );
+      }
+
+      if (
+        result.errorCode === "unauthenticated" ||
+        result.errorCode === "forbidden"
+      ) {
+        redirect("/login");
+      }
+
+      lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
+    }
   } catch (error) {
     console.error("LFG post creation failed", {
       error,
@@ -227,6 +220,61 @@ export async function createLFGPost(formData: FormData) {
       postingRole,
       profileId: profile.id,
     });
+
+    let hasDuplicateActivePost = false;
+    let hasReachedActiveSlotLimit = false;
+    let hasReachedRateLimit = false;
+
+    try {
+      [hasDuplicateActivePost, hasReachedActiveSlotLimit, hasReachedRateLimit] =
+        await Promise.all([
+          hasMatchingActiveLFGPost({
+            gameMode,
+            lfgType: lfgTypeValue,
+            postingRole,
+            profileId: profile.id,
+            title,
+          }),
+          hasReachedActiveLFGPostLimit({
+            lfgType: lfgTypeValue,
+            postingRole,
+            profileId: profile.id,
+          }),
+          hasReachedLFGPostCreationLimit({
+            lfgType: lfgTypeValue,
+            profileId: profile.id,
+          }),
+        ]);
+    } catch (diagnosticError) {
+      console.error("LFG post creation diagnostics failed", {
+        diagnosticError,
+        lfgType: lfgTypeValue,
+        postingRole,
+        profileId: profile.id,
+      });
+    }
+
+    if (hasDuplicateActivePost) {
+      lfgRedirect(
+        lfgTypeValue,
+        "You already have an active post in this section with this title."
+      );
+    }
+
+    if (hasReachedActiveSlotLimit) {
+      lfgRedirect(
+        lfgTypeValue,
+        `You can only keep 2 active ${COMPETITIVE_ROLE_LABELS[postingRole]} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
+      );
+    }
+
+    if (hasReachedRateLimit) {
+      lfgRedirect(
+        lfgTypeValue,
+        "You can create up to 4 posts in this section per rolling 60 minutes. Closing or removing a post does not reset that limit, so wait until one of your recent post timestamps ages out before posting again."
+      );
+    }
+
     lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
   }
 
