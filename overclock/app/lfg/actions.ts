@@ -186,8 +186,7 @@ export async function createLFGPost(formData: FormData) {
       if (result.errorCode === "duplicate_active_post") {
         lfgRedirect(
           lfgTypeValue,
-          "You already have an active post in this section with this title.",
-          "success"
+          "You already have an active post in this section with this title."
         );
       }
 

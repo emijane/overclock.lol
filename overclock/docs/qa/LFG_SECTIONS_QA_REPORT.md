@@ -23,7 +23,9 @@ Method:
 - Finding 2: Fixed and QA'd on 2026-04-27
 - Finding 3: Fixed in source and database on 2026-04-27, pending live concurrency QA
 - Finding 4: Fixed in source on 2026-04-27, pending migration apply and live QA
-- Findings 5-7: Still open
+- Finding 6: Fixed and QA'd on 2026-04-27
+- Finding 7: Fixed in source on 2026-04-27, pending migration apply and live security QA
+- Finding 5: Still open
 
 ## Completed
 
@@ -31,6 +33,7 @@ Method:
 
 - Finding 1: `/teams` and `/scrims` create flow now submits `game_mode` correctly.
 - Finding 2: Active-slot limits, creation-rate limits, and expiration timing are now separated in application code.
+- Finding 6: Duplicate-post rejection now uses the error toast path instead of a success state.
 
 ## Pending Verification
 
@@ -64,6 +67,21 @@ Method:
   - Attempt duplicate posts that differ only by casing, repeated spaces, or trailing spaces.
   - Confirm they are blocked as duplicates while genuinely different titles still succeed.
 
+### Finding 7
+
+- Status: Fixed in source, pending migration deployment and live security QA
+- Files:
+  - `lib/lfg/posts.ts`
+  - `supabase/migrations/20260427201500_secure_lfg_posts_rls_and_rpc.sql`
+  - `docs/qa/LFG_SECURITY_AUDIT_REPORT.md`
+- Summary:
+  - `lfg_posts` now has a source-controlled security migration that enables RLS, adds public and owner read policies, blocks direct raw table writes for `anon` and `authenticated`, and moves close actions behind an RPC-backed write path.
+  - `create_lfg_post_atomic(...)` is now redefined as `security definer` so the app can preserve RPC-only creation without opening direct insert policies.
+  - Supporting indexes and defensive `NOT VALID` constraints are now committed in source control.
+- Live regression test still required:
+  - Push the migration and confirm raw direct `insert`, `update`, and `delete` against `lfg_posts` are blocked for `anon` and `authenticated`.
+  - Confirm public active feed reads still work, owner history reads still work, and both create/close RPCs still succeed for the owning user.
+
 ## Finding 5
 
 1. Severity: Medium
@@ -87,58 +105,12 @@ Method:
    - Confirm only the enabled role appears in the picker.
    - Confirm a forged form submission using the disabled role is rejected server-side.
 
-## Finding 6
-
-1. Severity: Minor
-2. File path: `app/lfg/actions.ts`
-3. What is wrong: A blocked duplicate submission is shown as a success state even though no post is created.
-4. How to reproduce it:
-   - Create a valid post.
-   - Submit the same payload again while the first post is still active.
-   - The redirect uses the success toast style for `You already have an active post in this section with this title.`
-5. Why it happens:
-   - The duplicate branch calls `lfgRedirect(..., "success")`.
-6. Exact recommended fix:
-   - Change the duplicate branch to use the error variant.
-   - Keep the message explicit that no new post was created.
-7. Regression test to run after fixing:
-   - Re-submit an active duplicate.
-   - Confirm the UI shows an error-state toast/banner and the database row count stays unchanged.
-
-## Finding 7
-
-1. Severity: Medium
-2. File path: `docs/roadmap/PUBLIC_PROFILE_PERFORMANCE.md`
-3. What is wrong: The repo gives source-controlled RLS status for public profile tables, but there is no checked-in Supabase SQL or migration file for `lfg_posts`. That means the most sensitive LFG protections, constraints, and owner-write rules are not reviewable from this codebase.
-4. How to reproduce it:
-   - Search the repo for Supabase migration or SQL files for `lfg_posts` policies/constraints.
-   - You will find application code that reads/writes `lfg_posts`, but no repo-visible policy definition to verify who can insert, update, or select rows.
-5. Why it happens:
-   - Database rules appear to be managed out-of-band instead of being committed alongside the app code.
-   - The code assumes RLS and constraints exist, but the repo cannot prove they do.
-6. Exact recommended fix:
-   - Add source-controlled Supabase migrations for `lfg_posts` and related indexes/constraints.
-   - At minimum, check in:
-     - `ENABLE ROW LEVEL SECURITY`
-     - public read policy for intended feed fields
-     - authenticated insert policy scoped to `profile_id = auth.uid()`
-     - owner-only update policy for close actions
-     - any duplicate/rate-limit supporting indexes or RPC definitions
-7. Regression test to run after fixing:
-   - Add policy tests or scripted verification that:
-     - anonymous users cannot insert/update/delete LFG posts
-     - authenticated users cannot create posts for another `profile_id`
-     - authenticated users cannot close another user's post
-     - public feed reads still work for intended viewers
-
 ## Highest-Priority Fix Order
 
-1. Lock down and source-control `lfg_posts` RLS/constraints.
-2. Tighten role enablement enforcement.
-3. Fix duplicate-post success-state messaging.
-4. Clear Finding 3 and Finding 4 with live QA after migrations are applied.
+1. Tighten role enablement enforcement.
+2. Clear Findings 3, 4, and 7 with live QA after migrations are applied.
 
 ## Notes
 
-- I did not rewrite application code for this task.
-- The report is based on repository inspection only; no live Supabase policy console or seeded E2E session was available in this workspace.
+- The original audit was based on repository inspection only; live Supabase policy console and seeded E2E session access were not available in this workspace.
+- Findings 1, 2, 3, 4, 6, and 7 now have corresponding source changes in this repo and still require the live verification called out above where marked.

@@ -436,6 +436,58 @@ function normalizeLFGCreateResult(value: unknown) {
   };
 }
 
+function normalizeLFGCloseResult(value: unknown) {
+  if (typeof value === "string") {
+    try {
+      return normalizeLFGCloseResult(JSON.parse(value));
+    } catch {
+      return {
+        errorCode: "invalid_response",
+        lfgType: null,
+        updated: false,
+      };
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0
+      ? normalizeLFGCloseResult(value[0])
+      : {
+          errorCode: "invalid_response",
+          lfgType: null,
+          updated: false,
+        };
+  }
+
+  if (!value || typeof value !== "object") {
+    return {
+      errorCode: "invalid_response",
+      lfgType: null,
+      updated: false,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const nestedCandidate =
+    candidate.close_owned_lfg_post &&
+    typeof candidate.close_owned_lfg_post === "object" &&
+    !Array.isArray(candidate.close_owned_lfg_post)
+      ? (candidate.close_owned_lfg_post as Record<string, unknown>)
+      : candidate;
+
+  return {
+    errorCode:
+      typeof nestedCandidate.error_code === "string"
+        ? nestedCandidate.error_code
+        : null,
+    lfgType:
+      typeof nestedCandidate.lfg_type === "string" && isLFGType(nestedCandidate.lfg_type)
+        ? nestedCandidate.lfg_type
+        : null,
+    updated: nestedCandidate.updated === true,
+  };
+}
+
 export async function createLFGPostAtomically(input: {
   competitiveProfileSnapshot: CompetitiveProfileSnapshot;
   gameMode: LFGGameMode;
@@ -557,24 +609,13 @@ export async function closeOwnedActiveLFGPost(input: {
   profileId: string;
 }) {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("lfg_posts")
-    .update({ status: "closed" })
-    .eq("id", input.postId)
-    .eq("profile_id", input.profileId)
-    .eq("status", "active")
-    .select("lfg_type")
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("close_owned_lfg_post", {
+    p_post_id: input.postId,
+  });
 
   if (error) {
     throw error;
   }
 
-  return {
-    lfgType:
-      typeof data?.lfg_type === "string" && isLFGType(data.lfg_type)
-        ? data.lfg_type
-        : null,
-    updated: Boolean(data),
-  };
+  return normalizeLFGCloseResult(data);
 }
