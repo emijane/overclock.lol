@@ -286,9 +286,17 @@ export async function LFGPageShell({
                       action={createLFGPost}
                       className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.025))] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5"
                     >
-                      <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
-                        Create a Post
-                      </h2>
+                      <div className="flex items-center justify-between gap-3">
+                        <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
+                          Create a Post
+                        </h2>
+                        <Link
+                          href="/account/posts"
+                          className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/[0.07] bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:border-white/[0.1] hover:bg-white/[0.04] hover:text-zinc-200"
+                        >
+                          Manage Posts
+                        </Link>
+                      </div>
                       <input type="hidden" name="lfg_type" value={type} />
                       <PostTitleField />
                       <LFGGameModePicker />
