@@ -120,7 +120,7 @@ export function PreferredHeroPools({
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
-        <div className="mt-4 grid gap-4 lg:grid-cols-3 lg:gap-0">
+        <div className="mt-3 grid gap-3 lg:grid-cols-3 lg:gap-0">
           {getOrderedHeroPoolGroups(competitiveProfile.mainRole).map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
             const roleProfile = competitiveProfile.roles.find(
@@ -142,29 +142,29 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="border-t border-white/10 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] first:border-t-0 first:pt-0 first:shadow-none lg:border-l lg:border-t-0 lg:px-4 lg:pt-0 lg:shadow-[inset_1px_0_0_rgba(255,255,255,0.05)] lg:[border-left-color:rgba(255,255,255,0.10)] lg:first:border-l-0 lg:first:pl-0 lg:first:shadow-none lg:last:pr-0"
+                className="border-t border-white/10 pt-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] first:border-t-0 first:pt-0 first:shadow-none lg:border-l lg:border-t-0 lg:px-3 lg:pt-0 lg:shadow-[inset_1px_0_0_rgba(255,255,255,0.05)] lg:[border-left-color:rgba(255,255,255,0.10)] lg:first:border-l-0 lg:first:pl-0 lg:first:shadow-none lg:last:pr-0"
               >
-                <div className="grid gap-2">
-                  <h3 className="text-sm font-semibold tracking-[-0.01em] text-zinc-100">
+                <div className="grid gap-1.5">
+                  <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
                     {COMPETITIVE_ROLE_LABELS[groupRole]}
                   </h3>
                   {roleStatus ? (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <span
-                        className={`inline-flex h-7 items-center rounded-full border px-3 text-xs font-semibold ${roleStatusClassName[roleStatus]}`}
+                        className={`inline-flex h-6 items-center rounded-full border px-2.5 text-[11px] font-semibold ${roleStatusClassName[roleStatus]}`}
                       >
                         {roleStatus}
                       </span>
                       {roleProfile ? (
-                        <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-zinc-200">
+                        <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.035] px-3 text-[11px] font-semibold text-zinc-200">
                           {rankIconSrc ? (
-                            <span className="relative h-5 w-5 shrink-0">
+                            <span className="relative h-4 w-4 shrink-0">
                               <Image
                                 src={rankIconSrc}
                                 alt={`${roleProfile.rankTier} rank icon`}
                                 fill
                                 className="object-contain"
-                                sizes="20px"
+                                sizes="16px"
                               />
                             </span>
                           ) : null}
@@ -178,20 +178,20 @@ export function PreferredHeroPools({
                   ) : null}
                 </div>
 
-                <div className="mt-4">
-                  <div className="flex flex-wrap gap-2">
+                <div className="mt-3">
+                  <div className="flex flex-wrap gap-1.5">
                     {visibleHeroes.map((hero) => (
                       <div
                         key={hero.id}
                         title={hero.label}
-                        className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-900 sm:h-12 sm:w-12"
+                        className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-zinc-900 sm:h-10 sm:w-10"
                       >
                         <Image
                           src={hero.imageSrc}
                           alt={hero.label}
                           fill
                           className="object-cover"
-                          sizes="(min-width: 640px) 48px, 44px"
+                          sizes="(min-width: 640px) 40px, 36px"
                         />
                       </div>
                     ))}

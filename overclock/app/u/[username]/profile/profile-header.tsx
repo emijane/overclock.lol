@@ -158,7 +158,7 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <p className="mt-3 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>
@@ -182,7 +182,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
+        <div className="mt-4 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
           <ProfileBadge className={rankBadgeClassName}>
             {currentRankIconSrc && currentRank ? (
               <Image
