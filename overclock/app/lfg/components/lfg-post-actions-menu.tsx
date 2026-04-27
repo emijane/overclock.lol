@@ -27,7 +27,9 @@ function ClosePostMenuItem() {
 }
 
 type LFGPostActionsMenuProps = {
+  allowClose?: boolean;
   manageHref?: string;
+  manageLabel?: string;
   postId: string;
   returnPath: string;
   viewHref?: string;
@@ -35,7 +37,9 @@ type LFGPostActionsMenuProps = {
 };
 
 export function LFGPostActionsMenu({
+  allowClose = true,
   manageHref = "/account/posts",
+  manageLabel = "Manage My Posts",
   postId,
   returnPath,
   viewHref,
@@ -68,13 +72,15 @@ export function LFGPostActionsMenu({
           asChild
           className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
         >
-          <Link href={manageHref}>Manage My Posts</Link>
+          <Link href={manageHref}>{manageLabel}</Link>
         </DropdownMenuItem>
-        <form action={closeLFGPost} className="w-full">
-          <input type="hidden" name="post_id" value={postId} />
-          <input type="hidden" name="return_path" value={returnPath} />
-          <ClosePostMenuItem />
-        </form>
+        {allowClose ? (
+          <form action={closeLFGPost} className="w-full">
+            <input type="hidden" name="post_id" value={postId} />
+            <input type="hidden" name="return_path" value={returnPath} />
+            <ClosePostMenuItem />
+          </form>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );

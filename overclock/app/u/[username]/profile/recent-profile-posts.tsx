@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { ShieldIcon, SwordsIcon } from "lucide-react";
 
-import { closeLFGPost } from "@/app/lfg/actions";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
-import { ClosePostButton } from "@/app/lfg/components/close-post-button";
+import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
 
 type RecentProfilePostsProps = {
   isOwner: boolean;
@@ -108,16 +106,27 @@ export function RecentProfilePosts({
           {posts.map((post) => {
             const rankLabel = post.rankTier;
             const createdAtLabel = formatPostDate(post.createdAt);
-            const visibleHeroes = post.heroPool.slice(0, 3);
 
             return (
               <article
                 key={post.id}
                 className="flex h-full min-h-[154px] flex-col rounded-[18px] border border-white/10 bg-white/[0.03] px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
               >
-                <h3 className="truncate text-sm font-medium text-zinc-100">
-                  {post.title}
-                </h3>
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="truncate pr-2 text-sm font-medium text-zinc-100">
+                    {post.title}
+                  </h3>
+                  {isOwner ? (
+                    <LFGPostActionsMenu
+                      allowClose={false}
+                      manageLabel="Manage Posts"
+                      postId={post.id}
+                      returnPath={`/u/${profileUsername}`}
+                      viewHref={`/${post.lfgType}`}
+                      viewLabel="View Post"
+                    />
+                  ) : null}
+                </div>
 
                 <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                   <span
@@ -134,41 +143,6 @@ export function RecentProfilePosts({
                       <span className="text-zinc-500">{createdAtLabel}</span>
                     </>
                   ) : null}
-                </div>
-
-                {visibleHeroes.length > 0 ? (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {visibleHeroes.map((hero) => (
-                      <span
-                        key={`${post.id}-${hero.id}`}
-                        className="inline-flex h-7 items-center rounded-full border border-white/[0.05] bg-white/[0.02] px-3 text-xs font-medium text-zinc-400"
-                      >
-                        {hero.label}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-
-                <div className="mt-auto pt-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <Link
-                      href={`/${post.lfgType}`}
-                      className="inline-flex text-xs font-semibold text-sky-300 transition hover:text-sky-200"
-                    >
-                      View Listing
-                    </Link>
-                    {isOwner ? (
-                      <form action={closeLFGPost}>
-                        <input type="hidden" name="post_id" value={post.id} />
-                        <input
-                          type="hidden"
-                          name="return_path"
-                          value={`/u/${profileUsername}`}
-                        />
-                        <ClosePostButton />
-                      </form>
-                    ) : null}
-                  </div>
                 </div>
               </article>
             );
