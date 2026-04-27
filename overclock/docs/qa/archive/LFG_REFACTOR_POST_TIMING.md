@@ -1,3 +1,7 @@
+> Archived on 2026-04-27.
+> Completed implementation note retained for historical context.
+> The active QA backlog now lives in `docs/qa/LFG_SECTIONS_QA_REPORT.md`.
+
 # LFG Refactor Post Timing
 
 Date: 2026-04-27

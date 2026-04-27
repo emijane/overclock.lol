@@ -43,3 +43,6 @@ next-env.d.ts
 #supabase
 supabase/.temp/
 supabase-backups/
+
+# local notes
+LOCAL_AGENT_GUIDE.md

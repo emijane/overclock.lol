@@ -21,7 +21,8 @@ Method:
 
 - Finding 1: Fixed and QA'd on 2026-04-27
 - Finding 2: Fixed and QA'd on 2026-04-27
-- Findings 3-7: Still open
+- Finding 3: Fixed in source and database on 2026-04-27, pending live concurrency QA
+- Findings 4-7: Still open
 
 ## Completed
 
@@ -30,28 +31,21 @@ Method:
 - Finding 1: `/teams` and `/scrims` create flow now submits `game_mode` correctly.
 - Finding 2: Active-slot limits, creation-rate limits, and expiration timing are now separated in application code.
 
-## Finding 3
+## Pending Verification
 
-1. Severity: Critical
-2. File path: `app/lfg/actions.ts`
-3. What is wrong: Duplicate prevention and post-limit checks are raceable. Two near-simultaneous submissions can both pass validation and insert duplicate or over-limit rows.
-4. How to reproduce it:
-   - Use two tabs or script two parallel POSTs to the create action with the same payload.
-   - Fire them at nearly the same time.
-   - Both requests can pass `hasMatchingActiveLFGPost()` and `hasReachedActiveLFGPostLimit()` before either `insertLFGPost()` commits.
-5. Why it happens:
-   - The create flow does three separate steps: read duplicate state, read count state, then insert.
-   - There is no transaction, lock, RPC, or database constraint making the check-and-insert atomic.
-6. Exact recommended fix:
-   - Move LFG creation into one database-enforced operation.
-   - Recommended shape:
-     - create a Postgres function/RPC that acquires a per-user-per-section advisory lock,
-     - re-checks duplicate/rate-limit conditions inside the function,
-     - inserts only if all checks still pass.
-   - Add supporting constraints/indexes where possible so failures are deterministic even under concurrency.
-7. Regression test to run after fixing:
-   - Fire 5 parallel create requests with identical payloads for one user/section.
-   - Confirm exactly one row is inserted when duplicate rules should block the rest, and that rate-limit caps are still respected under concurrency.
+### Finding 3
+
+- Status: Fixed in source and database, pending live concurrency QA
+- Files:
+  - `app/lfg/actions.ts`
+  - `lib/lfg/posts.ts`
+  - `supabase/migrations/20260427172000_create_lfg_post_atomic.sql`
+- Summary:
+  - The create flow now routes through an atomic database function instead of relying on separate read-check-then-insert steps in application code.
+  - The database function takes an advisory lock per `profile_id + section`, re-checks duplicate, active-slot, and creation-rate rules, and inserts atomically.
+- Live regression test still required:
+  - Fire 5 parallel create requests with identical payloads for one user/section.
+  - Confirm exactly one row is inserted when duplicate rules should block the rest, and that rate-limit caps are still respected under concurrency.
 
 ## Finding 4
 
@@ -142,10 +136,10 @@ Method:
 
 ## Highest-Priority Fix Order
 
-1. Move creation enforcement into one atomic database operation.
-2. Lock down and source-control `lfg_posts` RLS/constraints.
-3. Normalize duplicate-title handling.
-4. Tighten role enablement enforcement.
+1. Lock down and source-control `lfg_posts` RLS/constraints.
+2. Normalize duplicate-title handling further.
+3. Tighten role enablement enforcement.
+4. Fix duplicate-post success-state messaging.
 
 ## Notes
 

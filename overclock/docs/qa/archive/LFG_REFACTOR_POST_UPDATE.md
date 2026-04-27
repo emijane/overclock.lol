@@ -1,3 +1,7 @@
+> Archived on 2026-04-27.
+> This was a completed implementation prompt/spec for the LFG post-limit refactor.
+> The active QA backlog now lives in `docs/qa/LFG_SECTIONS_QA_REPORT.md`.
+
 Update the LFG posting policy from the previous refactor.
 
 Important change:
