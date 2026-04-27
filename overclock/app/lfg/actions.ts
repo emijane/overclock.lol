@@ -12,6 +12,7 @@ import {
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { normalizeLFGPostTitle } from "@/lib/lfg/lfg-post-title";
 import {
   isLFGGameMode,
   isLFGType,
@@ -93,7 +94,7 @@ function getRequiredProfileError({
 export async function createLFGPost(formData: FormData) {
   const gameModeValue = formData.get("game_mode")?.toString().trim() ?? "";
   const lfgTypeValue = formData.get("lfg_type")?.toString().trim() ?? "";
-  const title = formData.get("title")?.toString().trim() ?? "";
+  const title = normalizeLFGPostTitle(formData.get("title")?.toString() ?? "");
   const postingRoleValue = formData.get("posting_role")?.toString().trim() ?? "";
 
   if (!isLFGType(lfgTypeValue)) {

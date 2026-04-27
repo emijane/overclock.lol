@@ -22,7 +22,8 @@ Method:
 - Finding 1: Fixed and QA'd on 2026-04-27
 - Finding 2: Fixed and QA'd on 2026-04-27
 - Finding 3: Fixed in source and database on 2026-04-27, pending live concurrency QA
-- Findings 4-7: Still open
+- Finding 4: Fixed in source on 2026-04-27, pending migration apply and live QA
+- Findings 5-7: Still open
 
 ## Completed
 
@@ -47,25 +48,21 @@ Method:
   - Fire 5 parallel create requests with identical payloads for one user/section.
   - Confirm exactly one row is inserted when duplicate rules should block the rest, and that rate-limit caps are still respected under concurrency.
 
-## Finding 4
+### Finding 4
 
-1. Severity: Medium
-2. File path: `lib/lfg/posts.ts`
-3. What is wrong: Duplicate detection is easy to bypass with cosmetic title changes. It only blocks exact string equality on `title`.
-4. How to reproduce it:
-   - Create a post titled `Need duo`.
-   - Create another with `need duo`, `Need  duo`, or `Need duo ` plus a harmless variation.
-   - The second submission is treated as distinct.
-5. Why it happens:
-   - `hasMatchingActiveLFGPost()` compares `.eq("title", input.title)` and does not normalize case, internal whitespace, or Unicode variants.
-   - Only leading/trailing whitespace is trimmed in `createLFGPost()`.
-6. Exact recommended fix:
-   - Normalize titles server-side before checking/storing them.
-   - Store a canonical `normalized_title` value using trim + whitespace collapse + lowercase + Unicode normalization.
-   - Compare duplicate rules against `normalized_title`, not raw display text.
-7. Regression test to run after fixing:
-   - Attempt duplicate posts that differ only by casing, repeated spaces, trailing spaces, or Unicode-normalization variants.
-   - Confirm they are blocked as duplicates while genuinely different titles still succeed.
+- Status: Fixed in source, pending migration deployment and live QA
+- Files:
+  - `app/lfg/actions.ts`
+  - `lib/lfg/lfg-post-title.ts`
+  - `lib/lfg/posts.ts`
+  - `supabase/migrations/20260427190500_normalize_lfg_duplicate_title_check.sql`
+- Summary:
+  - Titles are now normalized in application code before validation and insert using Unicode normalization, trim, and whitespace collapse.
+  - Duplicate-title fallback checks in application code now compare normalized titles instead of exact raw strings.
+  - The atomic database function has a follow-up migration that normalizes casing and repeated outer/internal whitespace during duplicate matching.
+- Live regression test still required:
+  - Attempt duplicate posts that differ only by casing, repeated spaces, or trailing spaces.
+  - Confirm they are blocked as duplicates while genuinely different titles still succeed.
 
 ## Finding 5
 
@@ -137,9 +134,9 @@ Method:
 ## Highest-Priority Fix Order
 
 1. Lock down and source-control `lfg_posts` RLS/constraints.
-2. Normalize duplicate-title handling further.
-3. Tighten role enablement enforcement.
-4. Fix duplicate-post success-state messaging.
+2. Tighten role enablement enforcement.
+3. Fix duplicate-post success-state messaging.
+4. Clear Finding 3 and Finding 4 with live QA after migrations are applied.
 
 ## Notes
 

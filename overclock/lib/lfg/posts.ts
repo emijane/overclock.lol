@@ -4,6 +4,7 @@ import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
 import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
+import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
 import { isLFGGameMode, isLFGType } from "./lfg-post-types";
 
 import type {
@@ -483,22 +484,27 @@ export async function hasMatchingActiveLFGPost(input: {
   const activePostCutoffIso = getActivePostCutoffIso();
   const { data, error } = await supabase
     .from("lfg_posts")
-    .select("id")
+    .select("id,title")
     .eq("profile_id", input.profileId)
     .eq("game_mode", input.gameMode)
     .eq("lfg_type", input.lfgType)
     .eq("posting_role", input.postingRole)
-    .eq("title", input.title)
     .eq("status", "active")
     .gte("created_at", activePostCutoffIso)
-    .limit(1)
-    .maybeSingle();
+    .limit(20);
 
   if (error) {
     throw error;
   }
 
-  return Boolean(data?.id);
+  const normalizedTitle = normalizeLFGPostTitleForComparison(input.title);
+
+  return ((data ?? []) as Array<Record<string, unknown>>).some((row) => {
+    return (
+      typeof row.title === "string" &&
+      normalizeLFGPostTitleForComparison(row.title) === normalizedTitle
+    );
+  });
 }
 
 export async function hasReachedActiveLFGPostLimit(input: {
