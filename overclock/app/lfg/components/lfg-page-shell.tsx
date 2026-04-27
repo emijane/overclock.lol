@@ -291,9 +291,7 @@ export async function LFGPageShell({
                       </h2>
                       <input type="hidden" name="lfg_type" value={type} />
                       <PostTitleField />
-                      {(type === "duos" || type === "stacks") ? (
-                        <LFGGameModePicker />
-                      ) : null}
+                      <LFGGameModePicker />
                       <LFGRolePicker
                         profileSummary={profileSummary}
                         roleOptions={pageData.roleOptions}
