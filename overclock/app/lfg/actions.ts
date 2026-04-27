@@ -19,7 +19,7 @@ import {
 } from "@/lib/lfg/lfg-post-types";
 import {
   closeOwnedActiveLFGPost,
-  hasReachedLFGPostRateLimit,
+  hasReachedActiveLFGPostLimit,
   hasMatchingActiveLFGPost,
   insertLFGPost,
 } from "@/lib/lfg/posts";
@@ -179,15 +179,16 @@ export async function createLFGPost(formData: FormData) {
     );
   }
 
-  const hasReachedRateLimit = await hasReachedLFGPostRateLimit({
+  const hasReachedRateLimit = await hasReachedActiveLFGPostLimit({
     lfgType: lfgTypeValue,
+    postingRole,
     profileId: profile.id,
   });
 
   if (hasReachedRateLimit) {
     lfgRedirect(
       lfgTypeValue,
-      "You can only create 2 posts in this section per hour. Try again a little later."
+      "You can have up to 2 active posts per role in each section. Try a different role, or wait for one of your posts in this section to expire after 12 hours."
     );
   }
 

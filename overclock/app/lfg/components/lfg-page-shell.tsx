@@ -10,7 +10,10 @@ import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import type { LFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
-import { getActiveLFGPosts } from "@/lib/lfg/posts";
+import {
+  getActiveLFGPostCountsByRole,
+  getActiveLFGPosts,
+} from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -34,6 +37,7 @@ type LFGPageShellProps = {
 };
 
 type LFGPageData = {
+  activePostCounts: Awaited<ReturnType<typeof getActiveLFGPostCountsByRole>>;
   posts: Awaited<ReturnType<typeof getActiveLFGPosts>>;
   postsErrorMessage: string | null;
   roleOptions: LFGRoleOption[];
@@ -157,18 +161,21 @@ async function getLFGPageData(
 
   if (!profileId) {
     return {
+      activePostCounts: { tank: 0, dps: 0, support: 0 },
       posts: postsResult.posts,
       postsErrorMessage: postsResult.postsErrorMessage,
       roleOptions: [],
     };
   }
 
-  const [competitiveProfile, heroPools] = await Promise.all([
+  const [activePostCounts, competitiveProfile, heroPools] = await Promise.all([
+    getActiveLFGPostCountsByRole({ lfgType: type, profileId }),
     getCompetitiveProfile(profileId),
     getProfileHeroPools(profileId),
   ]);
 
   return {
+    activePostCounts,
     posts: postsResult.posts,
     postsErrorMessage: postsResult.postsErrorMessage,
     roleOptions: buildRoleOptions(competitiveProfile, heroPools),
@@ -188,10 +195,10 @@ export async function LFGPageShell({
   type,
 }: LFGPageShellProps) {
   const { profile, user } = await getCurrentProfile();
-  const inlineMessage = messageType === "success" ? undefined : message;
   const pageData = type
     ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
     : {
+        activePostCounts: { tank: 0, dps: 0, support: 0 },
         posts: [],
         postsErrorMessage: null,
         roleOptions: [],
@@ -218,14 +225,11 @@ export async function LFGPageShell({
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
-      {messageType === "success" ? (
-        <AuthMessage message={message} type={messageType} variant="toast" />
-      ) : null}
+      <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer className="flex flex-col gap-3">
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-7">
-              <AuthMessage message={inlineMessage} type={messageType} />
               <div className="space-y-5">
                 <div className="space-y-3">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">

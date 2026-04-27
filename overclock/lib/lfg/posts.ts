@@ -5,8 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import {
   ACTIVE_LFG_POST_WINDOW_HOURS,
-  LFG_POST_RATE_LIMIT_MAX_POSTS,
-  LFG_POST_RATE_LIMIT_WINDOW_MINUTES,
+  LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION,
 } from "./lfg-post-policy";
 import { isLFGGameMode, isLFGType } from "./lfg-post-types";
 
@@ -19,15 +18,11 @@ import type {
   LFGType,
 } from "./lfg-post-types";
 
+export type ActiveLFGPostCountsByRole = Record<CompetitiveRole, number>;
+
 function getActivePostCutoffIso(now = new Date()) {
   return new Date(
     now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
-  ).toISOString();
-}
-
-function getRateLimitCutoffIso(now = new Date()) {
-  return new Date(
-    now.getTime() - LFG_POST_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000
   ).toISOString();
 }
 
@@ -128,6 +123,14 @@ function normalizeLFGType(value: unknown): LFGType {
 
 function normalizeLFGGameMode(value: unknown): LFGGameMode {
   return typeof value === "string" && isLFGGameMode(value) ? value : "ranked";
+}
+
+function createEmptyRoleCountMap(): ActiveLFGPostCountsByRole {
+  return {
+    tank: 0,
+    dps: 0,
+    support: 0,
+  };
 }
 
 function normalizeLFGPostRow(
@@ -350,6 +353,41 @@ export async function getPostsByProfileId(
   return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
 }
 
+export async function getActiveLFGPostCountsByRole(input: {
+  lfgType: LFGType;
+  profileId: string;
+}): Promise<ActiveLFGPostCountsByRole> {
+  const supabase = await createClient();
+  const activePostCutoffIso = getActivePostCutoffIso();
+  const { data, error } = await supabase
+    .from("lfg_posts")
+    .select("posting_role")
+    .eq("profile_id", input.profileId)
+    .eq("lfg_type", input.lfgType)
+    .eq("status", "active")
+    .gte("created_at", activePostCutoffIso);
+
+  if (error) {
+    throw error;
+  }
+
+  const counts = createEmptyRoleCountMap();
+
+  for (const row of (data ?? []) as Array<Record<string, unknown>>) {
+    const postingRole = row.posting_role;
+
+    if (
+      postingRole === "tank" ||
+      postingRole === "dps" ||
+      postingRole === "support"
+    ) {
+      counts[postingRole] += 1;
+    }
+  }
+
+  return counts;
+}
+
 export async function insertLFGPost(input: {
   competitiveProfileSnapshot: CompetitiveProfileSnapshot;
   gameMode: LFGGameMode;
@@ -416,24 +454,27 @@ export async function hasMatchingActiveLFGPost(input: {
   return Boolean(data?.id);
 }
 
-export async function hasReachedLFGPostRateLimit(input: {
+export async function hasReachedActiveLFGPostLimit(input: {
   lfgType: LFGType;
+  postingRole: CompetitiveRole;
   profileId: string;
 }) {
   const supabase = await createClient();
-  const rateLimitCutoffIso = getRateLimitCutoffIso();
+  const activePostCutoffIso = getActivePostCutoffIso();
   const { count, error } = await supabase
     .from("lfg_posts")
     .select("id", { count: "exact", head: true })
     .eq("profile_id", input.profileId)
     .eq("lfg_type", input.lfgType)
-    .gte("created_at", rateLimitCutoffIso);
+    .eq("posting_role", input.postingRole)
+    .eq("status", "active")
+    .gte("created_at", activePostCutoffIso);
 
   if (error) {
     throw error;
   }
 
-  return (count ?? 0) >= LFG_POST_RATE_LIMIT_MAX_POSTS;
+  return (count ?? 0) >= LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION;
 }
 
 export async function closeOwnedActiveLFGPost(input: {
