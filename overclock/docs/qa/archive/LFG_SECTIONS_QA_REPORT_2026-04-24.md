@@ -1,3 +1,7 @@
+> Archived on 2026-04-27.
+> Superseded by `docs/qa/LFG_SECTIONS_QA_REPORT.md`.
+> This snapshot is retained only for historical context and contains outdated conclusions.
+
 # LFG Sections QA Report
 
 Date: 2026-04-24

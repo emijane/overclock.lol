@@ -2,6 +2,9 @@
 
 Date: 2026-04-27
 
+This report supersedes the older archived snapshot at
+`docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`.
+
 Scope audited:
 - `/duos`
 - `/stacks`
@@ -16,59 +19,16 @@ Method:
 
 ## Status Update
 
-- Finding 1: Fixed in application code on 2026-04-27
-- Finding 2: Fixed in application code on 2026-04-27
+- Finding 1: Fixed and QA'd on 2026-04-27
+- Finding 2: Fixed and QA'd on 2026-04-27
 - Findings 3-7: Still open
 
-## Finding 1
+## Completed
 
-1. Severity: Critical
-2. File path: `app/lfg/components/lfg-page-shell.tsx`
-3. What is wrong: `/teams` and `/scrims` expose the create-post form, but the form only renders `game_mode` for `duos` and `stacks`. The server action still requires `game_mode` for every section, so team and scrim posts cannot be created successfully.
-4. How to reproduce it:
-   - Log in with a fully onboarded profile that has a configured competitive role.
-   - Open `/teams` or `/scrims`.
-   - Fill in a title, pick a role, and submit.
-   - The server redirects back with `Choose a mode before posting.`
-5. Why it happens:
-   - `app/lfg/components/lfg-page-shell.tsx` only renders `<LFGGameModePicker />` when `type === "duos" || type === "stacks"`.
-   - `app/lfg/actions.ts` always reads `game_mode` and hard-fails when `isLFGGameMode(gameModeValue)` is false.
-6. Exact recommended fix:
-   - Make the contract section-aware.
-   - Either:
-     - render a hidden default `game_mode` for `teams` and `scrims`, or
-     - change `createLFGPost` so `game_mode` is only required for sections that actually use it.
-   - If `teams` and `scrims` truly do not need queue mode, update the data model/UI so those posts do not pretend to carry one.
-7. Regression test to run after fixing:
-   - Submit one valid post from each section: `/duos`, `/stacks`, `/teams`, `/scrims`.
-   - Confirm all four create successfully and the resulting feed row shows the expected section-specific data.
+### Removed From Active Queue
 
-## Finding 2
-
-1. Severity: Critical
-2. File path: `lib/lfg/posts.ts`
-3. What is wrong: The anti-spam limit is not enforcing a rolling "2 created posts per section per 60 minutes" rule. It currently enforces "2 active posts per role per section within the last 12 hours."
-4. How to reproduce it:
-   - Create two `/duos` posts as `tank`.
-   - Close one immediately.
-   - Create another `/duos` `tank` post right away. It is allowed because the closed post no longer counts.
-   - Repeat with `dps` and `support` to hold up to six simultaneous posts in one section.
-5. Why it happens:
-   - `getActivePostCutoffIso()` uses `ACTIVE_LFG_POST_WINDOW_HOURS = 12` for both feed visibility and abuse checks.
-   - `hasReachedActiveLFGPostLimit()` filters by `status = "active"` and `posting_role`, so closed posts stop counting and each role gets its own bucket.
-   - `LFG_ACTIVE_POST_LIMIT_PER_ROLE_PER_SECTION = 2` bakes the per-role loophole into the policy layer.
-6. Exact recommended fix:
-   - Split feed-expiry logic from rate-limit logic.
-   - Add a dedicated rolling rate-limit window of 60 minutes.
-   - Count post creation events regardless of current status.
-   - If product intent is "per section," remove `posting_role` from the limiter.
-   - Enforce this in the database path used for creation, not just in UI copy.
-   - If deletion will ever exist, use soft-delete or a post-event table so abuse history is not erased.
-7. Regression test to run after fixing:
-   - Create two posts in the same section within 60 minutes, close both, then attempt a third.
-   - Verify the third is blocked.
-   - Verify creating in another section still works if that is intended.
-   - Verify role swapping does not grant extra slots in the same section if the policy is section-wide.
+- Finding 1: `/teams` and `/scrims` create flow now submits `game_mode` correctly.
+- Finding 2: Active-slot limits, creation-rate limits, and expiration timing are now separated in application code.
 
 ## Finding 3
 
@@ -182,10 +142,10 @@ Method:
 
 ## Highest-Priority Fix Order
 
-1. Fix the `/teams` and `/scrims` create-path breakage.
-2. Replace the current active-post limiter with a real rolling creation-event limiter.
-3. Move creation enforcement into one atomic database operation.
-4. Lock down and source-control `lfg_posts` RLS/constraints.
+1. Move creation enforcement into one atomic database operation.
+2. Lock down and source-control `lfg_posts` RLS/constraints.
+3. Normalize duplicate-title handling.
+4. Tighten role enablement enforcement.
 
 ## Notes
 
