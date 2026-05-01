@@ -38,12 +38,9 @@ export function FeaturedClipsSection({
     <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
+          <h2 className="text-sm font-semibold text-white/85">
             Featured videos
           </h2>
-          <p className="mt-0.5 text-sm leading-5 text-zinc-400">
-            Clips and highlights worth showing first.
-          </p>
         </div>
 
         {isOwner ? (
@@ -52,7 +49,7 @@ export function FeaturedClipsSection({
       </div>
 
       {clips.length > 0 ? (
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="mt-6 grid gap-3 md:grid-cols-2">
           {clips.map((clip, index) => (
             <FeaturedClipCard key={clip.id} clip={clip} priority={index === 0} />
           ))}

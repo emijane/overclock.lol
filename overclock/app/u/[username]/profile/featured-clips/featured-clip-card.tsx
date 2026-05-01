@@ -21,7 +21,7 @@ export function FeaturedClipCard({
 
   return (
     <div
-      className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.04] transition-all duration-200 hover:bg-white/[0.06]"
+      className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.02] transition-all duration-200 hover:border-white/20"
     >
       <div className="relative aspect-video overflow-hidden bg-zinc-900">
         {isPlaying && embedUrl ? (
@@ -39,26 +39,26 @@ export function FeaturedClipCard({
                 src={clip.thumbnailUrl}
                 alt={clip.title || "Featured YouTube thumbnail"}
                 fill
-                className="object-cover"
+                className="object-cover transition-all duration-200 group-hover:scale-[1.02]"
                 sizes="(min-width: 768px) 50vw, 100vw"
                 loading={priority ? "eager" : "lazy"}
               />
             ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/12 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/24 to-transparent" />
 
             <button
               type="button"
               onClick={() => setIsPlaying(true)}
               aria-label="Play featured video"
-              className="absolute inset-0 z-10 flex items-center justify-center transition-all duration-200"
+              className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center transition-all duration-200"
             >
-              <span className="inline-flex h-15 w-15 items-center justify-center rounded-full border border-white/12 bg-black/50 text-zinc-100 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition group-hover:scale-105 group-hover:bg-black/58">
-                <PlayIcon className="ml-0.5 h-5.5 w-5.5" />
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-zinc-100 backdrop-blur-sm transition-all duration-200 group-hover:scale-105">
+                <PlayIcon className="ml-0.5 h-4 w-4" />
               </span>
             </button>
 
-            <div className="absolute inset-x-5 bottom-5 z-20">
-              <p className="text-base font-semibold leading-6 tracking-[-0.015em] text-zinc-100">
+            <div className="absolute inset-x-5 bottom-0 z-20 px-5 pb-6 pt-5">
+              <p className="text-sm font-medium leading-5 tracking-[-0.015em] text-white/90">
                 {clip.title || "Featured video"}
               </p>
             </div>
