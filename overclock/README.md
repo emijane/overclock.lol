@@ -2,7 +2,8 @@
 
 `overclock.lol` is a profile-first Overwatch player app built with Next.js and Supabase.
 Users sign in with Discord, create an app-specific username, edit profile details from
-their public profile modal, and manage role-based hero pools.
+their public profile modal, manage role-based hero pools, save social links, and add
+featured videos.
 
 ## Current product
 
@@ -12,8 +13,9 @@ their public profile modal, and manage role-based hero pools.
 - `/account` is currently an empty placeholder settings route.
 - `/account/competitive` manages per-role Competitive Profile setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
-- `/lfg` is the main LFG shell.
-- `/duos`, `/stacks`, `/scrims`, and `/teams` are placeholder channel shells.
+- `/account/posts` is the private LFG management page for active and past posts.
+- `/lfg` is the main LFG hub.
+- `/duos`, `/stacks`, `/scrims`, and `/teams` support creating and browsing posts.
 
 ## Stack
 

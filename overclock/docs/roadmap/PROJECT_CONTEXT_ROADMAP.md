@@ -8,7 +8,8 @@ next sensible product steps look like based on the current codebase and `TODO`.
 
 `overclock.lol` is a Next.js App Router app for Overwatch players to create a
 public profile, connect through Discord auth, and share matchmaking-relevant
-details such as rank, platform, preferred server, bio, and preferred hero pools.
+details such as rank, platform, preferred server, bio, preferred hero pools,
+social links, and featured videos.
 
 The current product shape is profile-first rather than feed-first:
 
@@ -69,8 +70,6 @@ The homepage currently redirects to `/login`.
 
 These are already visible in the codebase today:
 
-- Public profile social links are partly placeholder values rather than
-  user-managed data.
 - The public profile experience depends heavily on users filling things out, so
   sparse profiles likely feel unfinished.
 - There are no tests yet for the main profile editing, hero-pool, and LFG post
@@ -93,11 +92,9 @@ These are already visible in the codebase today:
 
 ### Next
 
-- Add editable social links for Battle.net, Twitch, X, and YouTube.
 - Add profile completion prompts and guided setup cues in account settings.
 - Add a compact "looking for" summary near the top of the public profile.
 - Add validation helpers for external profile URLs and richer profile fields.
-- Support featured Twitch clips or similar profile highlights.
 - Build rank verification for high-rank role claims and related trust display.
 - Decide whether `/teams` and `/scrims` should get first-pass filters similar
   to `/duos` and `/stacks`.
