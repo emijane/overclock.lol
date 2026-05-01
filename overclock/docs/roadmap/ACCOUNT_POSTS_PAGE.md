@@ -1,12 +1,12 @@
 # Account Posts Page
 
-This note captures the intended owner-only post management page at:
+This note captures the current owner-only post management page at:
 
 ```text
 /account/posts
 ```
 
-It exists so the product shape is clear before implementation begins.
+It exists so the shipped behavior and the remaining follow-up work stay clear.
 
 ## Goals
 
@@ -132,17 +132,17 @@ Recommended first filter:
 - `Closed`
 - `Expired`
 
-Recommended default:
+Current default:
 
 ```text
-Active
+All Posts
 ```
 
-Why:
+Why this is acceptable today:
 
-- active posts are the highest-value management surface
-- most users come here to see what is currently live
-- older history should be available, but not dominate the first view
+- it lets owners quickly confirm both what is live and what has already aged out
+- it keeps the first release simple because all filtering still happens from one list
+- the dropdown can still narrow to active posts when the user wants a management-only view
 
 Section filters can come later if needed:
 
@@ -184,11 +184,11 @@ Recommended reuse:
 - Reuse the owner actions menu pattern where it fits
 - Reuse shared LFG post types and status helpers
 
-Recommended new shared helpers:
+Shared helpers now in use:
 
 - A derived post status helper for `active / closed / expired`
-- A shared account/posts query helper
-- A reusable status pill component if the same pill language may appear elsewhere
+- Shared post query helpers under `lib/lfg/posts`
+- A reusable status pill component shared with the public LFG cards
 
 Avoid:
 
@@ -222,17 +222,21 @@ The page will also need a derived display status based on:
 
 ## Query Model
 
-Recommended behavior:
+Current behavior:
 
 - Fetch the current user's posts by `profile_id`
 - Order by `created_at desc`
 - Derive display status server-side before rendering
 
-Recommended first query scope:
+Current query scope:
 
 - recent active posts
 - recent closed posts
 - recent expired posts
+
+Current implementation note:
+
+- the route currently caps the list at the most recent `30` non-archived posts
 
 There is no need for pagination in the first version unless a seeded account
 already shows a large history problem.
@@ -263,13 +267,13 @@ My Posts
 single filtered list
 ```
 
-My recommendation:
+Current implementation:
 
-- start with one filtered list
-- default it to `Active`
-- show status pill on every card
+- one filtered list
+- default filter of `All Posts`
+- status pill on every card
 
-That is the lightest first version.
+That keeps the page lightweight while still exposing active-only filtering.
 
 ## Relationship To Existing LFG Lifecycle Policy
 
@@ -285,54 +289,16 @@ Important aligned rules:
 
 The account page is the private management surface for that lifecycle.
 
-## Baby-Step Implementation Order
+## Current Implementation Status
 
-### Step 1
+The current route already includes:
 
-Create the route shell at:
-
-```text
-/account/posts
-```
-
-Include:
-
-- auth gating
-- page heading
-- empty state
-
-### Step 2
-
-Add a server query for the current user's posts and render a single-column list.
-
-### Step 3
-
-Reuse the LFG card design for the account posts list.
-
-### Step 4
-
-Add derived status pills:
-
-- `Active`
-- `Closed`
-- `Expired`
-
-### Step 5
-
-Add status filter controls:
-
-- `All`
-- `Active`
-- `Closed`
-- `Expired`
-
-### Step 6
-
-Wire owner actions into the account page for active posts only.
-
-### Step 7
-
-Polish empty states and wording for filtered views.
+- auth gating to `/login` and `/onboarding`
+- page heading and empty states
+- a single-column filtered list of the owner's posts
+- shared LFG card reuse with status pills
+- `All / Active / Closed / Expired` status filtering
+- owner close actions for active posts only
 
 ## Non-Goals For First Version
 
@@ -350,7 +316,13 @@ Explicit non-goals:
 
 ## Recommendation
 
-This is the right next feature because it gives the LFG lifecycle a proper home.
+This page now gives the LFG lifecycle a proper private management home.
+
+Useful follow-up work, if needed later:
+
+- add section filters
+- add pagination if real histories start growing
+- improve filtered empty-state wording further if users get confused
 
 In short:
 

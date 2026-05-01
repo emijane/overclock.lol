@@ -1,13 +1,12 @@
 # Duos Filters
 
-This note captures the recommended first-pass filter design for:
+This note captures the current first-pass filter design for:
 
 ```text
 /duos
 ```
 
-It exists so the Duos filter work has a clear scope before implementation
-begins.
+It exists so the shipped behavior and follow-up work stay clear.
 
 ## Goals
 
@@ -24,31 +23,49 @@ The product goals are:
 
 ## Why Start With Duos
 
-Duos is the best LFG section to filter first because the decision-making is
+Duos was the best LFG section to filter first because the decision-making is
 usually simple:
 
+- What mode are they queueing?
 - What role are they playing?
 - Are they around my rank?
 - Are they in my region?
 
-That makes Duos a good place to validate the filter model before applying it to:
+That made Duos a good place to validate the filter model before applying it to:
 
 - `/stacks`
 - `/teams`
 - `/scrims`
 
-## Recommended First Filters
+The same first-pass filter model is now also used on `/stacks`.
 
-The first version should support only the highest-value filters:
+## Current Filters
 
+The current implementation supports these filters:
+
+- `Mode`
 - `Role`
 - `Rank`
 - `Region`
 
-These are enough to improve discovery meaningfully without overcomplicating the
-interface.
+These are enough to improve discovery meaningfully without turning the feed into
+an overbuilt search UI.
 
 ## Filter Details
+
+### Mode
+
+Options:
+
+- `Any Mode`
+- `Ranked`
+- `Quick Play`
+
+Why it shipped in the first pass:
+
+- the feed already stores `game_mode`
+- it is a high-signal distinction for duo searching
+- it reuses existing LFG posting data cleanly
 
 ### Role
 
@@ -59,15 +76,15 @@ Options:
 - `DPS`
 - `Support`
 
-Why this should be first:
+Why this shipped in the first pass:
 
-- It is the fastest way to remove irrelevant posts
-- It maps directly to the post’s `posting_role`
-- It is already core to the LFG identity model
+- it is the fastest way to remove irrelevant posts
+- it maps directly to the post's `posting_role`
+- it is already core to the LFG identity model
 
 ### Rank
 
-Recommended first-pass options:
+Current grouped options:
 
 - `Any Rank`
 - `Bronze-Silver`
@@ -87,13 +104,13 @@ Future versions could support:
 - "around my rank"
 - one-tier-above / one-tier-below logic
 
-But that should not be part of the first release.
+But that should not be part of the current release.
 
 ### Region
 
-Options should be based on the app’s existing region values.
+Options are based on the app's existing region values.
 
-Recommended pattern:
+Current pattern:
 
 - `Any Region`
 - `NA`
@@ -103,12 +120,12 @@ Recommended pattern:
 Why it matters:
 
 - Queue quality
-- ping
-- likely schedule overlap
+- Ping
+- Likely schedule overlap
 
-## Filters Not Recommended For First Version
+## Filters Not Recommended For This Version
 
-These should stay out of the first Duos filter release:
+These still stay out of the current filter release:
 
 - hero pool
 - platform, unless cross-platform rules make it essential
@@ -122,40 +139,33 @@ Why:
 
 - They add complexity quickly
 - They are lower-signal for the first pass
-- Some of them rely on profile data that may not be consistently helpful for
-  fast Duos matching
+- Some rely on profile data that may not be consistently helpful for fast Duos
+  matching
 
 ## Sorting
 
-The first version should keep sorting simple:
+The current release keeps sorting simple:
 
 ```text
 Newest first
 ```
 
-No user-facing sort controls are needed initially.
+No user-facing sort controls are included yet.
 
 Reason:
 
 - freshness matters most in LFG
-- more sort options will dilute the value of the first filter release
+- more sort options would dilute the value of the first filter release
 
 ## UX Recommendation
 
 The filter bar should stay compact and readable.
 
-Recommended layout:
+Current layout:
 
 ```text
 Browse Feed
-[Role dropdown] [Rank dropdown] [Region dropdown]
-```
-
-Or:
-
-```text
-Filter Duos
-[Role] [Rank] [Region]
+[Mode dropdown] [Role dropdown] [Rank dropdown] [Region dropdown]
 ```
 
 The important thing is that the controls clearly read as real filters, not
@@ -163,9 +173,9 @@ placeholder copy.
 
 ## Query Model
 
-The filters should be handled on the server where possible.
+The filters are handled on the server.
 
-Recommended request shape:
+Current request shape:
 
 - URL query params on `/duos`
 - server-rendered filtering based on those params
@@ -173,10 +183,10 @@ Recommended request shape:
 Example:
 
 ```text
-/duos?role=support&rank=diamond-master&region=na
+/duos?mode=ranked&role=support&rank=diamond-master&region=NA
 ```
 
-Why URL-based filters are better here:
+Why URL-based filters are a good fit here:
 
 - shareable
 - refresh-safe
@@ -187,17 +197,18 @@ Why URL-based filters are better here:
 
 The current Duos posts already expose the main fields needed for these filters:
 
+- `game_mode`
 - `posting_role`
 - `snapshot_rank_tier`
 - `snapshot_rank_division`
 - `snapshot_region`
 
-That means the first Duos filter release should not require a major data model
+That means the current Duos filter release did not require a major data model
 change.
 
 ## Recommended Rank Mapping
 
-For the grouped filter, map tiers like this:
+For the grouped filter, the current mapping is:
 
 ```text
 Bronze-Silver
@@ -213,7 +224,7 @@ GM-Champion
   Grandmaster, Champion
 ```
 
-`Unranked` should usually fall under:
+`Unranked` currently falls under:
 
 ```text
 Any Rank only
@@ -223,60 +234,50 @@ unless product rules later decide otherwise.
 
 ## Empty States
 
-Filtered empty states should be explicit.
+Filtered empty states are not yet specialized.
 
-Examples:
+Current behavior:
 
-- `No duos match these filters.`
-- `Try clearing one or more filters to broaden the feed.`
+- the feed falls back to the section's normal empty-state copy
+- clearing filters is available from the filter bar
 
-This matters because a filtered empty state is different from:
+Useful follow-up:
 
-- no Duos posts existing at all
+- add filter-aware empty-state messaging so filtered zero states read differently
+  from an empty section with no posts at all
 
-## Non-Goals For First Version
+## Non-Goals For This Version
 
-The first Duos filter release should not include:
+The current filter release still does not include:
 
 - search
 - section-wide filters reused everywhere
 - advanced sort controls
 - personalized "best match" ranking
 - exact division-level matching
-- section filters beyond Duos
+- filters on routes that have not adopted the current model yet
 
-## Baby-Step Implementation Order
+## Current Implementation Status
 
-### Step 1
+The current filter release already includes:
 
-Create a small Duos filter spec and lock the first-pass filter set.
+- URL query parsing
+- server-side filtering
+- shared dropdown controls in the feed header
+- clear-filter behavior
+- reuse on both `/duos` and `/stacks`
 
-### Step 2
+Follow-up work that still makes sense:
 
-Add URL query parsing for Duos filter params.
-
-### Step 3
-
-Add server-side filtering in the Duos feed query.
-
-### Step 4
-
-Replace the current Duos feed helper copy with real filter controls.
-
-### Step 5
-
-Add filtered empty-state messaging.
-
-### Step 6
-
-Polish the mobile layout and reset/clear behavior.
+- add filter-aware empty-state messaging
+- polish mobile spacing and readability further as the filter bar evolves
 
 ## Recommendation
 
-The best first Duos filter release is:
+The current first-pass Duos filter release is:
 
 ```text
-Role + Rank + Region
+Mode + Role + Rank + Region
 Newest first
 URL-based
 Server-rendered

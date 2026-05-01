@@ -17,9 +17,12 @@ The current product shape is profile-first rather than feed-first:
 - `/account` is currently a placeholder settings route.
 - `/account/competitive` manages per-role rank and hero setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
+- `/account/posts` is the private owner-only surface for managing LFG posts.
 - `/u/[username]` renders the public player profile.
-- `/lfg`, `/duos`, `/stacks`, `/scrims`, and `/teams` are placeholder LFG
-  shells for future posting and browsing flows.
+- `/lfg` is the top-level LFG hub.
+- `/duos`, `/stacks`, `/scrims`, and `/teams` support browsing and creating LFG
+  posts, with first-pass URL-based filters currently enabled on `/duos` and
+  `/stacks`.
 
 The homepage currently redirects to `/login`.
 
@@ -32,8 +35,10 @@ The homepage currently redirects to `/login`.
    rank, and looking-for preferences from the edit modal on `/u/[username]`.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.
-7. Placeholder LFG pages provide the future channel structure for Duos, Stacks,
-   Scrims, and Teams.
+7. Once their profile and Competitive Profile are set up, they can create LFG
+   posts in Duos, Stacks, Scrims, and Teams.
+8. Active posts appear in section feeds and on the public profile.
+9. They can review active, closed, and expired posts from `/account/posts`.
 
 ## Technical Context
 
@@ -55,6 +60,8 @@ The homepage currently redirects to `/login`.
 - Public profile rendering is split into route-local components under
   `app/u/[username]/profile`.
 - Hero pool logic is isolated in `lib/heroes/*` and the dedicated account route.
+- Shared LFG policy, query, and display helpers live under `lib/lfg/*`, while
+  reusable section UI lives under `app/lfg/*`.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 
@@ -66,7 +73,12 @@ These are already visible in the codebase today:
   user-managed data.
 - The public profile experience depends heavily on users filling things out, so
   sparse profiles likely feel unfinished.
-- There are no tests yet for the main profile editing and hero-pool flows.
+- There are no tests yet for the main profile editing, hero-pool, and LFG post
+  flows.
+- `/teams` and `/scrims` do not yet have the first-pass feed filters now used
+  on `/duos` and `/stacks`.
+- Rank verification remains a roadmap-only trust system rather than a shipped
+  feature.
 
 ## Roadmap
 
@@ -86,12 +98,11 @@ These are already visible in the codebase today:
 - Add a compact "looking for" summary near the top of the public profile.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Support featured Twitch clips or similar profile highlights.
-- Finalize LFG post lifecycle rules for rate limits, close behavior, and
-  automatic expiry.
-- Add a private `/account/posts` management page for active, closed, and
-  expired LFG listings.
-- Add first-pass server-rendered filters for `/duos` and `/stacks`, including
-  mode, role, rank, and region.
+- Build rank verification for high-rank role claims and related trust display.
+- Decide whether `/teams` and `/scrims` should get first-pass filters similar
+  to `/duos` and `/stacks`.
+- Add optional cleanup or backfill for expired LFG posts if explicit closed
+  status becomes important for analytics, moderation, or history.
 
 ### Later
 
@@ -102,8 +113,8 @@ These are already visible in the codebase today:
 
 ### Quality Track
 
-- Add tests for bio validation, onboarding edge cases, hero-pool save flows, and
-  any clear-all or skip behavior.
+- Add tests for bio validation, onboarding edge cases, hero-pool save flows,
+  LFG creation and close behavior, and any clear-all or skip behavior.
 - Add lightweight verification around auth redirects and public profile loading.
 
 ## Working Assumptions

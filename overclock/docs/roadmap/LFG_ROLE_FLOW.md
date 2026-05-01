@@ -6,9 +6,10 @@ quick play LFG posts.
 
 ## Product Scope
 
-The current LFG experience supports both ranked and quick play posts for Duos
-and Stacks. A player's competitive identity should still be based on the role
-they play, the rank they have on that role, and their hero pool for that role.
+The current LFG experience supports ranked and quick play posting across Duos,
+Stacks, Teams, and Scrims. A player's competitive identity should still be
+based on the role they play, the rank they have on that role, and their hero
+pool for that role.
 
 LFG sections such as Duos, Stacks, Teams, and Scrims are posting contexts. They
 should not require separate registration.
@@ -156,7 +157,7 @@ User creates a post
 -> Submit post
 ```
 
-Initial route shells exist at:
+Current routes exist at:
 
 ```text
 /lfg
@@ -168,15 +169,15 @@ Initial route shells exist at:
 
 These pages share one LFG architecture but should feel like standalone
 community spaces. Category navigation belongs in the global/top navigation, not
-as a repeated card row inside every page. Competitive, Unranked, LFG, and LFD
-should remain future filters or post-level labels inside these pages, not
-separate parent routes or page-level mode switches.
+as a repeated card row inside every page. Queue mode should remain a post-level
+attribute and filter inside these pages, not a separate parent route or
+page-level route split.
 
 Example post composer state:
 
 ```text
 Create Duo Post
-Mode: Ranked / Quick Play
+Mode: Competitive / Quick Play
 Posting as: Support - Champion 3
 Hero pool: Ana, Kiriko, Juno
 [Change role]
@@ -248,10 +249,10 @@ lfg_posts
 - profile_id
 - lfg_type: "duos"
 - game_mode: "ranked" | "quick_play"
-- role: "support"
-- rank_tier: "Champion"
-- rank_division: 3
-- body
+- posting_role: "support"
+- snapshot_rank_tier: "Champion"
+- snapshot_rank_division: 3
+- title
 - status
 ```
 
