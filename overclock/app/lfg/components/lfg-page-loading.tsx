@@ -5,10 +5,12 @@ function SkeletonBlock({ className }: { className: string }) {
 }
 
 export function LFGPageLoading({
+  composerCta = false,
   composerOnly = false,
   helperText,
   title,
 }: {
+  composerCta?: boolean;
   composerOnly?: boolean;
   helperText?: string;
   title: string;
@@ -29,66 +31,87 @@ export function LFGPageLoading({
                 composerOnly ? "py-3 sm:py-4" : "py-5 sm:py-6"
               }`}
             >
-              <div>
-                <SkeletonBlock className="h-3 w-28 rounded-full" />
-                <h1
-                  className={`mt-3 font-semibold tracking-[-0.04em] text-zinc-50 ${
-                    composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
-                  }`}
-                >
-                  {title}
-                </h1>
-                <SkeletonBlock className="mt-3 h-4 w-full max-w-2xl" />
-                <SkeletonBlock className="mt-2 h-4 w-full max-w-xl" />
-                {helperText ? (
-                  <SkeletonBlock className="mt-2 h-4 w-full max-w-lg" />
+              <div className={composerCta ? "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" : undefined}>
+                <div>
+                  <SkeletonBlock className="h-3 w-28 rounded-full" />
+                  <h1
+                    className={`mt-3 font-semibold tracking-[-0.04em] text-zinc-50 ${
+                      composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
+                    }`}
+                  >
+                    {title}
+                  </h1>
+                  <SkeletonBlock className="mt-3 h-4 w-full max-w-2xl" />
+                  <SkeletonBlock className="mt-2 h-4 w-full max-w-xl" />
+                  {helperText ? (
+                    <SkeletonBlock className="mt-2 h-4 w-full max-w-lg" />
+                  ) : null}
+                </div>
+                {composerCta ? (
+                  <SkeletonBlock className="h-9 w-28 shrink-0 rounded-full" />
                 ) : null}
               </div>
 
-              <section className={composerOnly ? "mt-4" : "mt-6"}>
-                <div className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
-                      Create a Post
-                    </h2>
-                    <SkeletonBlock className="h-8 w-28 rounded-full" />
-                  </div>
-                  <SkeletonBlock className="mt-6 h-4 w-20" />
-                  <SkeletonBlock className="mt-2 h-[54px] w-full rounded-[18px]" />
+              {composerOnly ? (
+                <section className="mt-4">
+                  <div className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
+                        Create a Post
+                      </h2>
+                      <SkeletonBlock className="h-8 w-28 rounded-full" />
+                    </div>
+                    <SkeletonBlock className="mt-6 h-4 w-20" />
+                    <SkeletonBlock className="mt-2 h-[54px] w-full rounded-[18px]" />
 
-                  <SkeletonBlock className="mt-4 h-4 w-16" />
-                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                    <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
-                    <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
-                  </div>
+                    <SkeletonBlock className="mt-4 h-4 w-16" />
+                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                      <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
+                      <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
+                    </div>
 
-                  <SkeletonBlock className="mt-4 h-4 w-10" />
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <SkeletonBlock className="h-8 w-20 rounded-full" />
-                    <SkeletonBlock className="h-8 w-18 rounded-full" />
-                    <SkeletonBlock className="h-8 w-24 rounded-full" />
-                  </div>
+                    <SkeletonBlock className="mt-4 h-4 w-10" />
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <SkeletonBlock className="h-8 w-20 rounded-full" />
+                      <SkeletonBlock className="h-8 w-18 rounded-full" />
+                      <SkeletonBlock className="h-8 w-24 rounded-full" />
+                    </div>
 
-                  <SkeletonBlock className="mt-4 h-4 w-20" />
-                  <SkeletonBlock className="mt-2 h-3 w-44" />
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <SkeletonBlock className="h-8 w-20 rounded-full" />
-                    <SkeletonBlock className="h-8 w-18 rounded-full" />
-                    <SkeletonBlock className="h-8 w-24 rounded-full" />
-                    <SkeletonBlock className="h-8 w-14 rounded-full border border-dashed border-white/10 bg-white/[0.03]" />
+                    <SkeletonBlock className="mt-4 h-4 w-20" />
+                    <SkeletonBlock className="mt-2 h-3 w-44" />
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <SkeletonBlock className="h-8 w-20 rounded-full" />
+                      <SkeletonBlock className="h-8 w-18 rounded-full" />
+                      <SkeletonBlock className="h-8 w-24 rounded-full" />
+                      <SkeletonBlock className="h-8 w-14 rounded-full border border-dashed border-white/10 bg-white/[0.03]" />
+                    </div>
                   </div>
-                </div>
-              </section>
+                </section>
+              ) : null}
             </header>
 
             {composerOnly ? null : (
               <>
-                <section className="border-t border-white/10 px-5 py-5 sm:px-6">
-                  <div className="rounded-[18px] border border-dashed border-white/12 bg-[#05070b] px-4 py-4">
-                    <SkeletonBlock className="h-4 w-20" />
-                    <SkeletonBlock className="mt-3 h-4 w-full max-w-md" />
-                  </div>
-                </section>
+                {composerCta ? (
+                  <section className="px-5 py-1.5 sm:px-6 sm:py-2">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
+                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
+                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
+                        <SkeletonBlock className="h-7.5 w-24 rounded-full" />
+                      </div>
+                      <SkeletonBlock className="h-3.5 w-28" />
+                    </div>
+                  </section>
+                ) : (
+                  <section className="border-t border-white/10 px-5 py-5 sm:px-6">
+                    <div className="rounded-[18px] border border-dashed border-white/12 bg-[#05070b] px-4 py-4">
+                      <SkeletonBlock className="h-4 w-20" />
+                      <SkeletonBlock className="mt-3 h-4 w-full max-w-md" />
+                    </div>
+                  </section>
+                )}
 
                 <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
                   <div className="grid gap-3">

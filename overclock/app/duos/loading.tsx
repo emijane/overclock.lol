@@ -1,5 +1,5 @@
 import { LFGPageLoading } from "@/app/lfg/components/lfg-page-loading";
 
 export default function Loading() {
-  return <LFGPageLoading title="Duos" />;
+  return <LFGPageLoading composerCta title="/ Duos" />;
 }
