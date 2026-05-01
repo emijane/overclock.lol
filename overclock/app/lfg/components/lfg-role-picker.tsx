@@ -146,38 +146,40 @@ export function LFGRolePicker({
 
   return (
     <div className="mt-3">
-      <h2 className="text-sm font-semibold text-zinc-100">Role</h2>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {roleOptions.map((roleOption) => {
-          const isSelected = roleOption.role === selectedRole;
+      <div>
+        <h2 className="text-sm font-semibold text-zinc-50">Role</h2>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {roleOptions.map((roleOption) => {
+            const isSelected = roleOption.role === selectedRole;
 
-          return (
-            <button
-              key={roleOption.role}
-              type="button"
-              aria-pressed={isSelected}
-              disabled={pending}
-              onClick={() => setSelectedRole(roleOption.role)}
-              className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
-            >
-              {getRoleIcon(
-                roleOption.role,
-                `h-4.5 w-4.5 ${
-                  roleOption.role === "tank"
-                    ? "text-sky-300"
-                    : roleOption.role === "dps"
-                      ? "text-rose-300"
-                      : "text-emerald-300"
-                }`
-              )}
-              {COMPETITIVE_ROLE_LABELS[roleOption.role]}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={roleOption.role}
+                type="button"
+                aria-pressed={isSelected}
+                disabled={pending}
+                onClick={() => setSelectedRole(roleOption.role)}
+                className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
+              >
+                {getRoleIcon(
+                  roleOption.role,
+                  `h-4.5 w-4.5 ${
+                    roleOption.role === "tank"
+                      ? "text-sky-300"
+                      : roleOption.role === "dps"
+                        ? "text-rose-300"
+                        : "text-emerald-300"
+                  }`
+                )}
+                {COMPETITIVE_ROLE_LABELS[roleOption.role]}
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <div className="mt-3">
-        <h2 className="text-sm font-semibold text-zinc-100">Looking for</h2>
-        <p className="mt-1 text-xs text-white/40">
+      <div className="mt-2.5">
+        <h2 className="text-sm font-medium text-zinc-400">Looking for</h2>
+        <p className="mt-1 text-xs text-white/35">
           Pick up to two roles, or choose All.
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -224,10 +226,11 @@ export function LFGRolePicker({
         selectedRoleOption.isConfigured ? (
           <>
             <input type="hidden" name="posting_role" value={selectedRoleOption.role} />
-            <div className="mt-2.5 border-t border-white/8 pt-3">
+            <div className="mt-2.5 border-t border-white/[0.04] pt-2.5">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-300">
+                    <span className="text-zinc-500">Posting as</span>
                     <span className="inline-flex h-4.5 w-4.5 items-center justify-center">
                       {getRoleIcon(
                         selectedRoleOption.role,
@@ -238,9 +241,9 @@ export function LFGRolePicker({
                             : "h-4 w-4 text-emerald-300"
                       )}
                     </span>
-                    <span className="font-medium text-zinc-100">{postingAsLabel}</span>
+                    <span className="font-semibold text-zinc-100">{postingAsLabel}</span>
                     <span className="text-zinc-600">&bull;</span>
-                    <span className="font-medium text-zinc-100">
+                    <span className="font-semibold text-zinc-100">
                       {selectedRoleOption.rankLabel}
                     </span>
                     <span className="text-zinc-600">&bull;</span>
@@ -251,6 +254,31 @@ export function LFGRolePicker({
                         : ""}
                     </span>
                   </div>
+
+                  {selectedRoleOption.heroPool.length > 0 ? (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedRoleOption.heroPool.slice(0, 3).map((hero) => (
+                        <div
+                          key={hero.id}
+                          title={hero.label}
+                          aria-label={hero.label}
+                          className="relative h-9 w-9 overflow-hidden rounded-[10px] border border-white/8 bg-zinc-900/90"
+                        >
+                          <Image
+                            src={hero.imageSrc}
+                            alt={hero.label}
+                            fill
+                            className="object-cover"
+                            sizes="36px"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-sm text-zinc-500">
+                      No hero pool selected for this role yet.
+                    </p>
+                  )}
                 </div>
 
                 <Link
@@ -261,43 +289,8 @@ export function LFGRolePicker({
                   <ChevronRightIcon className="h-4 w-4" />
                 </Link>
               </div>
-
-              <div className="mt-2.5">
-                {selectedRoleOption.heroPool.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedRoleOption.heroPool.slice(0, 3).map((hero) => (
-                      <div
-                        key={hero.id}
-                        title={hero.label}
-                        aria-label={hero.label}
-                        className="relative h-9 w-9 overflow-hidden rounded-[10px] border border-white/8 bg-zinc-900/90"
-                      >
-                        <Image
-                          src={hero.imageSrc}
-                          alt={hero.label}
-                          fill
-                          className="object-cover"
-                          sizes="36px"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-zinc-500">
-                    No hero pool selected for this role yet.
-                  </p>
-                )}
-              </div>
             </div>
-            <div className="mt-3 flex flex-col gap-2.5 border-t border-white/8 pt-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="min-w-0 text-sm text-zinc-300">
-                Posting as{" "}
-                <span className="font-medium text-zinc-100">{postingAsLabel}</span>{" "}
-                <span className="text-zinc-500">&bull;</span>{" "}
-                <span className="font-medium text-zinc-100">
-                  {selectedRoleOption.rankLabel}
-                </span>
-              </p>
+            <div className="mt-2.5 flex flex-col gap-2.5 border-t border-white/[0.04] pt-2.5 sm:flex-row sm:items-center sm:justify-end">
               <CreatePostButton />
             </div>
           </>
