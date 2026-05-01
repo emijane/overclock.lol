@@ -106,10 +106,11 @@ export function PreferredHeroPools({
         {isOwner ? (
           <Link
             href="/account/competitive"
-            className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3.5 text-sm font-semibold text-zinc-50 backdrop-blur-md transition-all duration-200 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            aria-label="Edit competitive roles"
+            title="Edit competitive roles"
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.02] text-zinc-50 backdrop-blur-md transition-all duration-200 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <PencilIcon className="h-4 w-4" />
-            Edit
           </Link>
         ) : null}
       </div>
