@@ -24,7 +24,7 @@ function LFGFeedPlaceholder({
   title: string;
 }) {
   return (
-    <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-white/[0.07] bg-white/[0.02] px-5 py-10 text-center shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-white/[0.07] bg-[#05070b] px-5 py-10 text-center shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="max-w-sm">
         <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
           <span className="text-lg">?</span>

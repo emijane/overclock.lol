@@ -36,6 +36,8 @@ type LFGRolePickerProps = {
   setupHref: string;
 };
 
+const LOOKING_FOR_ALL_VALUE = "all";
+
 function SupportPlusIcon({ className }: { className: string }) {
   return (
     <svg
@@ -62,6 +64,14 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
   return <SupportPlusIcon className={className} />;
 }
 
+function getRoleButtonClassName(isSelected: boolean) {
+  return `inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition-all duration-200 ${
+    isSelected
+      ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+      : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
+  }`;
+}
+
 function CreatePostButton() {
   const { pending } = useFormStatus();
 
@@ -84,6 +94,9 @@ export function LFGRolePicker({
   setupHref,
 }: LFGRolePickerProps) {
   const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
+  const [lookingForRoles, setLookingForRoles] = useState<string[]>([
+    LOOKING_FOR_ALL_VALUE,
+  ]);
   const { pending } = useFormStatus();
 
   const selectedRoleOption =
@@ -91,6 +104,29 @@ export function LFGRolePicker({
   const postingAsLabel = selectedRoleOption
     ? COMPETITIVE_ROLE_LABELS[selectedRoleOption.role]
     : null;
+
+  function toggleLookingForRole(role: CompetitiveRole | typeof LOOKING_FOR_ALL_VALUE) {
+    setLookingForRoles((currentRoles) => {
+      if (role === LOOKING_FOR_ALL_VALUE) {
+        return [LOOKING_FOR_ALL_VALUE];
+      }
+
+      const nextRoles = currentRoles.filter(
+        (currentRole) => currentRole !== LOOKING_FOR_ALL_VALUE
+      );
+
+      if (nextRoles.includes(role)) {
+        const filteredRoles = nextRoles.filter((currentRole) => currentRole !== role);
+        return filteredRoles.length > 0 ? filteredRoles : [LOOKING_FOR_ALL_VALUE];
+      }
+
+      if (nextRoles.length >= 2) {
+        return nextRoles;
+      }
+
+      return [...nextRoles, role];
+    });
+  }
 
   return (
     <div className="mt-3">
@@ -106,11 +142,7 @@ export function LFGRolePicker({
               aria-pressed={isSelected}
               disabled={pending}
               onClick={() => setSelectedRole(roleOption.role)}
-              className={`inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition ${
-                isSelected
-                  ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                  : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
-              } disabled:cursor-not-allowed disabled:opacity-60`}
+              className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
             >
               {getRoleIcon(
                 roleOption.role,
@@ -126,6 +158,48 @@ export function LFGRolePicker({
             </button>
           );
         })}
+      </div>
+      <div className="mt-3">
+        <h2 className="text-sm font-semibold text-zinc-100">Looking for</h2>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {roleOptions.map((roleOption) => {
+            const isSelected = lookingForRoles.includes(roleOption.role);
+
+            return (
+              <button
+                key={`looking-for-${roleOption.role}`}
+                type="button"
+                aria-pressed={isSelected}
+                disabled={pending}
+                onClick={() => toggleLookingForRole(roleOption.role)}
+                className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
+              >
+                {getRoleIcon(
+                  roleOption.role,
+                  `h-4.5 w-4.5 ${
+                    roleOption.role === "tank"
+                      ? "text-sky-300"
+                      : roleOption.role === "dps"
+                        ? "text-rose-300"
+                        : "text-emerald-300"
+                  }`
+                )}
+                {COMPETITIVE_ROLE_LABELS[roleOption.role]}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            aria-pressed={lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)}
+            disabled={pending}
+            onClick={() => toggleLookingForRole(LOOKING_FOR_ALL_VALUE)}
+            className={`${getRoleButtonClassName(
+              lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)
+            )} disabled:cursor-not-allowed disabled:opacity-60`}
+          >
+            All
+          </button>
+        </div>
       </div>
       {selectedRoleOption ? (
         selectedRoleOption.isConfigured ? (

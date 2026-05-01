@@ -84,7 +84,7 @@ function formatMissingFields(fields: string[]) {
 function LFGFiltersBar({ description }: { description: string }) {
   return (
     <section className="px-5 py-5 sm:px-6">
-      <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-white/[0.07] bg-white/[0.02] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
             <FilterIcon className="h-4 w-4" />
@@ -111,7 +111,7 @@ function LFGActionNotice({
   title: string;
 }) {
   return (
-    <div className="mt-4 rounded-[20px] border border-white/[0.07] bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="mt-4 rounded-[20px] border border-white/[0.07] bg-[#05070b] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
       <Link
@@ -228,7 +228,7 @@ export async function LFGPageShell({
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer className="flex flex-col gap-3">
         <section className="rounded-[28px]">
-          <div className="overflow-hidden rounded-[28px] bg-zinc-950">
+          <div className="overflow-hidden rounded-[28px]">
             <header className="px-5 py-5 sm:px-6 sm:py-7">
               <div className="space-y-5">
                 <div className="space-y-3">
@@ -284,7 +284,7 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.025))] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5"
+                      className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">

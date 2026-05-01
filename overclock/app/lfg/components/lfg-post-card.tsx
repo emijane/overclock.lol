@@ -65,7 +65,7 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="rounded-[18px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.025))] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <article className="rounded-[18px] border border-white/[0.08] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="min-w-0 flex-1">
         <div className="flex flex-col gap-2.5">
           {sectionLabel || statusPill ? (
