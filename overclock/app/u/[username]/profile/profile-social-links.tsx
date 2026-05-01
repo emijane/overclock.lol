@@ -97,21 +97,21 @@ export function ProfileSocialLinks({
   }
 
   return (
-    <div className="relative flex flex-col items-start gap-2 sm:items-end">
-      <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+    <div className="relative flex flex-col items-start gap-1.5 sm:items-end">
+      <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
         {leadingAction}
         {links.map((link) => {
           const Icon = ICONS[link.platform];
           const isActive = activeLabel === link.label;
           const shouldOpen = isExternalUrl(link.value);
-          const buttonClassName = `group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border text-zinc-200 backdrop-blur-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+          const buttonClassName = `group inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border text-zinc-200 backdrop-blur-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             isActive
               ? "border-sky-400/60 bg-sky-400/12"
-              : `border-white/10 bg-white/[0.02] ${BUTTON_ACCENTS[link.platform]}`
+              : `border-white/10 bg-white/5 ${BUTTON_ACCENTS[link.platform]}`
           }`;
           const icon = (
             <Icon
-              className={`h-[17px] w-[17px] shrink-0 transition group-hover:scale-105 ${ICON_COLORS[link.platform]}`}
+              className={`h-4 w-4 shrink-0 transition group-hover:scale-105 ${ICON_COLORS[link.platform]}`}
             />
           );
 

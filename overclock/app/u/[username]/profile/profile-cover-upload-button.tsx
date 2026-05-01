@@ -136,7 +136,7 @@ export function ProfileCoverUploadButton() {
         type="button"
         onClick={handleOpenPicker}
         disabled={isSubmitting}
-        className="inline-flex items-center gap-2 rounded-full border border-zinc-700/80 bg-zinc-950/70 px-3.5 py-2 text-xs font-medium tracking-[-0.01em] text-zinc-100 backdrop-blur-sm transition hover:border-zinc-600 hover:bg-zinc-900/80 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium tracking-[-0.01em] text-zinc-100 backdrop-blur-sm transition-all duration-200 hover:bg-white/10 disabled:cursor-wait disabled:opacity-70"
       >
         <CameraIcon className="h-3.5 w-3.5 shrink-0" />
         {isSubmitting ? "Uploading..." : "Update cover"}
