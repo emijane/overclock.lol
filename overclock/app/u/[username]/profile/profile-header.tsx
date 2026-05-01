@@ -94,11 +94,6 @@ export function ProfileHeader({
             className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent"
             aria-hidden="true"
           />
-          <div
-            className="absolute inset-x-0 bottom-0 h-px bg-white/5"
-            aria-hidden="true"
-          />
-
           <div className="relative z-10 flex items-start justify-between gap-3">
             <div>
               {isOwner ? <ProfileCoverUploadButton /> : null}
@@ -158,7 +153,7 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <p className="mt-3 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>
@@ -182,7 +177,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
+        <div className="mt-4 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
           <ProfileBadge className={rankBadgeClassName}>
             {currentRankIconSrc && currentRank ? (
               <Image
