@@ -88,7 +88,7 @@ export function RecentProfilePosts({
   }
 
   return (
-    <section className="border-t border-white/10 px-5 pb-6 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-6 sm:pb-7">
+    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
@@ -98,7 +98,7 @@ export function RecentProfilePosts({
       </div>
 
       {posts.length === 0 ? (
-        <div className="mt-3 rounded-[18px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="mt-4 rounded-[18px] border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
           Your active LFG listings will show up here.
         </div>
       ) : (
@@ -110,7 +110,7 @@ export function RecentProfilePosts({
             return (
               <article
                 key={post.id}
-                className="flex h-full min-h-[154px] flex-col rounded-[18px] border border-white/10 bg-white/[0.03] px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                className="flex h-full min-h-[154px] flex-col rounded-[18px] border border-white/10 bg-white/[0.04] px-4 py-3.5 transition-all duration-200 hover:bg-white/[0.06]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="truncate pr-2 text-sm font-medium text-zinc-100">

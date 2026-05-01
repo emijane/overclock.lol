@@ -155,7 +155,9 @@ export default async function ProfilePage({
                 {isOwner ? (
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
-                <div className={`rounded-[28px] p-px ${profileBorderClassName}`}>
+                <div
+                    className={`rounded-[28px] p-px shadow-[0_0_32px_var(--profile-rank-glow)] ${profileBorderClassName}`}
+                >
                     <div
                         className="overflow-hidden rounded-[27px] bg-zinc-950"
                         style={profileAccentStyle}
@@ -189,11 +191,11 @@ export default async function ProfilePage({
                             isOwner={isOwner}
                             roles={heroPools.roles}
                         />
-            <RecentProfilePosts
-              isOwner={isOwner}
-              posts={recentPosts}
-              profileUsername={profile.username}
-            />
+                        <RecentProfilePosts
+                            isOwner={isOwner}
+                            posts={recentPosts}
+                            profileUsername={profile.username}
+                        />
                     </div>
                 </div>
             </div>

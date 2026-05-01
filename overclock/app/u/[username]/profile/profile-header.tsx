@@ -66,7 +66,7 @@ export function ProfileHeader({
   const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
   const rankBadgeClassName =
     rankBadgeClassNameByTier[currentRankTier ?? ""] ??
-    "border-white/12 bg-white/[0.055]";
+    "border-white/10 bg-white/[0.02]";
 
   return (
     <section className="bg-zinc-950">
@@ -104,7 +104,7 @@ export function ProfileHeader({
               {isOwner ? <ProfileCoverUploadButton /> : null}
             </div>
 
-            <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2">
               {region ? (
                 <ProfileBadge
                   Icon={Globe2Icon}
@@ -138,7 +138,7 @@ export function ProfileHeader({
         </div>
 
         <div className="mt-7 px-4 sm:-mt-10 sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
             <div className="min-w-0 flex-1">
               <div className="sm:h-14" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2.5">
@@ -170,7 +170,7 @@ export function ProfileHeader({
                     <button
                       type="button"
                       onClick={onEditProfile}
-                      className="inline-flex h-10 items-center rounded-full border border-white/12 bg-white/[0.055] px-4 text-sm font-semibold text-zinc-50 backdrop-blur-md transition-all duration-200 hover:border-sky-300/35 hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                      className="inline-flex h-10 items-center rounded-full border border-white/10 bg-white/[0.02] px-4 text-sm font-semibold text-zinc-50 backdrop-blur-md transition-all duration-200 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                     >
                       Edit profile
                     </button>
@@ -182,7 +182,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
+        <div className="mt-5 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
           <ProfileBadge className={rankBadgeClassName}>
             {currentRankIconSrc && currentRank ? (
               <Image
