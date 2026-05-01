@@ -65,10 +65,26 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
 }
 
 function getRoleButtonClassName(isSelected: boolean) {
-  return `inline-flex h-9 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition-all duration-200 ${
+  return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
       ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
       : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
+  }`;
+}
+
+function getLookingForButtonClassName(isSelected: boolean) {
+  return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+    isSelected
+      ? "border-sky-400/45 bg-sky-400/8 text-sky-100"
+      : "border-white/5 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.045] hover:text-zinc-200"
+  }`;
+}
+
+function getLookingForAllButtonClassName(isSelected: boolean) {
+  return `inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+    isSelected
+      ? "border-sky-400/35 bg-sky-400/[0.07] text-sky-100"
+      : "border-white/6 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:bg-white/[0.035] hover:text-zinc-300"
   }`;
 }
 
@@ -161,6 +177,9 @@ export function LFGRolePicker({
       </div>
       <div className="mt-3">
         <h2 className="text-sm font-semibold text-zinc-100">Looking for</h2>
+        <p className="mt-1 text-xs text-white/40">
+          Pick up to two roles, or choose All.
+        </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {roleOptions.map((roleOption) => {
             const isSelected = lookingForRoles.includes(roleOption.role);
@@ -172,7 +191,7 @@ export function LFGRolePicker({
                 aria-pressed={isSelected}
                 disabled={pending}
                 onClick={() => toggleLookingForRole(roleOption.role)}
-                className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
+                className={`${getLookingForButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 {getRoleIcon(
                   roleOption.role,
@@ -193,7 +212,7 @@ export function LFGRolePicker({
             aria-pressed={lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)}
             disabled={pending}
             onClick={() => toggleLookingForRole(LOOKING_FOR_ALL_VALUE)}
-            className={`${getRoleButtonClassName(
+            className={`${getLookingForAllButtonClassName(
               lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)
             )} disabled:cursor-not-allowed disabled:opacity-60`}
           >
@@ -205,7 +224,7 @@ export function LFGRolePicker({
         selectedRoleOption.isConfigured ? (
           <>
             <input type="hidden" name="posting_role" value={selectedRoleOption.role} />
-            <div className="mt-3 border-t border-white/8 pt-3">
+            <div className="mt-2.5 border-t border-white/8 pt-3">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-300">
@@ -271,7 +290,7 @@ export function LFGRolePicker({
               </div>
             </div>
             <div className="mt-3 flex flex-col gap-2.5 border-t border-white/8 pt-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="min-w-0 text-sm text-zinc-400">
+              <p className="min-w-0 text-sm text-zinc-300">
                 Posting as{" "}
                 <span className="font-medium text-zinc-100">{postingAsLabel}</span>{" "}
                 <span className="text-zinc-500">&bull;</span>{" "}
