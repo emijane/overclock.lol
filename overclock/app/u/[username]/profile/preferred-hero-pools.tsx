@@ -140,7 +140,7 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/10 bg-white/[0.015] p-3.5 transition-all duration-200 hover:bg-white/[0.04]"
+                className="rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

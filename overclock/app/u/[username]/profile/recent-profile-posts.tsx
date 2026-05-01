@@ -91,7 +91,7 @@ export function RecentProfilePosts({
     <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-50">
+          <h2 className="text-sm font-semibold text-white/85">
             Active Listings
           </h2>
         </div>
@@ -110,10 +110,10 @@ export function RecentProfilePosts({
             return (
               <article
                 key={post.id}
-                className="flex h-full min-h-[154px] flex-col rounded-[18px] border border-white/10 bg-white/[0.04] px-4 py-3.5 transition-all duration-200 hover:bg-white/[0.06]"
+                className="rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="truncate pr-2 text-sm font-medium text-zinc-100">
+                  <h3 className="truncate pr-1.5 text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">
                     {post.title}
                   </h3>
                   {isOwner ? (
@@ -128,7 +128,7 @@ export function RecentProfilePosts({
                   ) : null}
                 </div>
 
-                <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-white/65">
                   <span
                     className="inline-flex items-center gap-1.5 font-medium text-zinc-200"
                     title={COMPETITIVE_ROLE_LABELS[post.postingRole]}
@@ -136,10 +136,10 @@ export function RecentProfilePosts({
                   >
                     {getRoleIcon(post.postingRole)}
                   </span>
-                  <span className="text-zinc-400">{rankLabel}</span>
+                  <span>{rankLabel}</span>
                   {createdAtLabel ? (
                     <>
-                      <span className="text-zinc-600">&bull;</span>
+                      <span className="text-zinc-700">&bull;</span>
                       <span className="text-zinc-500">{createdAtLabel}</span>
                     </>
                   ) : null}
