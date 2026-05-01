@@ -55,7 +55,7 @@ function getOrderedHeroPoolGroups(mainRole: CompetitiveRole | null) {
 }
 
 const roleStatusClassName = {
-  "Main role": "text-zinc-500",
+  "Main role": "text-white/50",
 } as const;
 
 function getHeroesForRole(
@@ -98,7 +98,7 @@ export function PreferredHeroPools({
     <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-base font-semibold tracking-[-0.02em] text-zinc-300">
+          <h2 className="text-sm font-semibold text-white/85">
             Competitive Roles
           </h2>
         </div>
@@ -139,11 +139,11 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/10 bg-white/[0.015] p-3 transition-all duration-200 hover:bg-white/[0.04]"
+                className="rounded-[18px] border border-white/10 bg-white/[0.015] p-3.5 transition-all duration-200 hover:bg-white/[0.04]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <h3 className="text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">
                         {COMPETITIVE_ROLE_LABELS[groupRole]}
                       </h3>
@@ -156,7 +156,7 @@ export function PreferredHeroPools({
                       ) : null}
                     </div>
                     {roleProfile ? (
-                      <div className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-zinc-400">
+                      <div className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-white/65">
                         {rankIconSrc ? (
                           <span className="relative h-3.5 w-3.5 shrink-0">
                             <Image
@@ -180,12 +180,12 @@ export function PreferredHeroPools({
                 </div>
 
                 <div className="mt-3">
-                  <div className="flex flex-wrap items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     {visibleHeroes.map((hero) => (
                       <div
                         key={hero.id}
                         title={hero.label}
-                        className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[9px] border border-white/10 bg-zinc-900"
+                        className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[9px] border border-white/12 bg-zinc-900"
                       >
                         <Image
                           src={hero.imageSrc}
