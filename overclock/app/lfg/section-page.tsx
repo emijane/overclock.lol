@@ -9,12 +9,15 @@ type LFGSectionPageProps = {
 };
 
 type LFGSectionConfig = {
+  composerMode?: "cta" | "inline" | "none";
+  createPostHref?: string;
   description: string;
   emptyStateDescription?: string;
   emptyStateTitle?: string;
   filtersDescription?: string;
   helperText?: string;
   metadataDescription?: string;
+  showFeed?: boolean;
   title: string;
   type: LFGType;
 };
@@ -55,6 +58,8 @@ export async function LFGSectionPage({
   return (
     <LFGPageShell
       description={config.description}
+      composerMode={config.composerMode}
+      createPostHref={config.createPostHref}
       emptyStateDescription={config.emptyStateDescription}
       emptyStateTitle={config.emptyStateTitle}
       feedFilters={feedFilters}
@@ -62,6 +67,7 @@ export async function LFGSectionPage({
       helperText={config.helperText}
       message={message}
       messageType={messageType}
+      showFeed={config.showFeed}
       title={config.title}
       type={config.type}
     />

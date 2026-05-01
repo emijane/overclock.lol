@@ -21,9 +21,10 @@ The current product shape is profile-first rather than feed-first:
 - `/account/posts` is the private owner-only surface for managing LFG posts.
 - `/u/[username]` renders the public player profile.
 - `/lfg` is the top-level LFG hub.
-- `/duos`, `/stacks`, `/scrims`, and `/teams` support browsing and creating LFG
-  posts, with first-pass URL-based filters currently enabled on `/duos` and
-  `/stacks`.
+- `/duos` is now a browse-first LFG feed with first-pass URL-based filters and
+  a dedicated create route at `/duos/create`.
+- `/stacks`, `/scrims`, and `/teams` still support inline browsing and creating
+  LFG posts, with first-pass URL-based filters currently enabled on `/stacks`.
 
 The homepage currently redirects to `/login`.
 
@@ -37,7 +38,8 @@ The homepage currently redirects to `/login`.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.
 7. Once their profile and Competitive Profile are set up, they can create LFG
-   posts in Duos, Stacks, Scrims, and Teams.
+   posts in Duos, Stacks, Scrims, and Teams, with Duos now using a dedicated
+   post-creation route instead of an inline feed composer.
 8. Active posts appear in section feeds and on the public profile.
 9. They can review active, closed, and expired posts from `/account/posts`.
 

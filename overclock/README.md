@@ -15,7 +15,8 @@ featured videos.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private LFG management page for active and past posts.
 - `/lfg` is the main LFG hub.
-- `/duos`, `/stacks`, `/scrims`, and `/teams` support creating and browsing posts.
+- `/duos` is the browse-first duo feed, with post creation moved to `/duos/create`.
+- `/stacks`, `/scrims`, and `/teams` currently support inline creating and browsing posts.
 
 ## Stack
 

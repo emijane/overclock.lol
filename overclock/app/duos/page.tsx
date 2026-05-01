@@ -6,6 +6,8 @@ import {
 } from "@/app/lfg/section-page";
 
 const DUOS_PAGE_CONFIG = {
+  composerMode: "cta",
+  createPostHref: "/duos/create",
   title: "Duos",
   description: "",
   metadataDescription:

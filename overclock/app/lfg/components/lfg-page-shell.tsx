@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FilterIcon } from "lucide-react";
+import { FilterIcon, PlusIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
 import { createLFGPost } from "@/app/lfg/actions";
@@ -24,6 +24,8 @@ import { LFGPostList } from "./lfg-post-list";
 import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
+  composerMode?: "cta" | "inline" | "none";
+  createPostHref?: string;
   description: string;
   emptyStateDescription?: string;
   emptyStateTitle?: string;
@@ -32,6 +34,7 @@ type LFGPageShellProps = {
   message?: string;
   messageType?: string;
   feedFilters?: LFGFeedFilters;
+  showFeed?: boolean;
   title: string;
   type?: LFGType;
 };
@@ -183,6 +186,8 @@ async function getLFGPageData(
 }
 
 export async function LFGPageShell({
+  composerMode = "inline",
+  createPostHref,
   description,
   emptyStateDescription = "Create a post to start the conversation.",
   emptyStateTitle = "No posts yet",
@@ -191,19 +196,31 @@ export async function LFGPageShell({
   message,
   messageType,
   feedFilters,
+  showFeed = true,
   title,
   type,
 }: LFGPageShellProps) {
   const { profile, user } = await getCurrentProfile();
-  const pageData = type
-    ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
-    : {
-        activePostCounts: { tank: 0, dps: 0, support: 0 },
-        posts: [],
-        postsErrorMessage: null,
-        roleOptions: [],
-      };
-  const hasConfiguredRole = pageData.roleOptions.some(
+  const shouldShowComposer = Boolean(type && composerMode === "inline");
+  const shouldShowFeed = Boolean(type && showFeed);
+  const emptyPageData: LFGPageData = {
+    activePostCounts: { tank: 0, dps: 0, support: 0 },
+    posts: [],
+    postsErrorMessage: null,
+    roleOptions: [],
+  };
+  const pageData =
+    type && shouldShowFeed
+      ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
+      : emptyPageData;
+  const composerRoleOptions =
+    shouldShowComposer && !shouldShowFeed && profile?.id
+      ? buildRoleOptions(
+          await getCompetitiveProfile(profile.id),
+          await getProfileHeroPools(profile.id)
+        )
+      : pageData.roleOptions;
+  const hasConfiguredRole = composerRoleOptions.some(
     (roleOption) => roleOption.isConfigured
   );
   const profileSummary = {
@@ -222,6 +239,7 @@ export async function LFGPageShell({
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;
+  const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
@@ -231,13 +249,24 @@ export async function LFGPageShell({
           <div className="overflow-hidden rounded-[28px]">
             <header className="px-5 py-5 sm:px-6 sm:py-7">
               <div className="space-y-5">
-                <div className="space-y-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
-                    LFG Channel
-                  </p>
-                  <h1 className="text-5xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-6xl">
-                    {displayTitle}
-                  </h1>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
+                      LFG Channel
+                    </p>
+                    <h1 className="text-5xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-6xl">
+                      {displayTitle}
+                    </h1>
+                  </div>
+                  {type && composerMode === "cta" ? (
+                    <Link
+                      href={resolvedCreatePostHref}
+                      className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border border-white/[0.08] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                      Create Post
+                    </Link>
+                  ) : null}
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-zinc-400">
                   {description}
@@ -249,7 +278,7 @@ export async function LFGPageShell({
                 ) : null}
               </div>
 
-              {type ? (
+              {type && shouldShowComposer ? (
                 <section className="mt-8">
                   {!user ? (
                     <LFGActionNotice
@@ -302,7 +331,7 @@ export async function LFGPageShell({
                       <LFGGameModePicker />
                       <LFGRolePicker
                         profileSummary={profileSummary}
-                        roleOptions={pageData.roleOptions}
+                        roleOptions={composerRoleOptions}
                         setupHref="/account/competitive"
                       />
                     </form>
@@ -311,7 +340,7 @@ export async function LFGPageShell({
               ) : null}
             </header>
 
-            {type ? (
+            {shouldShowFeed ? (
               <>
                 {type === "duos" || type === "stacks" ? (
                   <LFGFeedFiltersPanel
