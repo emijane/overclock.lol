@@ -26,7 +26,7 @@ export async function GlobalAuthBar() {
   ] as const;
 
   return (
-    <header className="border-b border-zinc-800/80 bg-zinc-950/95 px-6 py-4 backdrop-blur">
+    <header className="border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
       <PageContainer className="flex items-center justify-between gap-4">
         <Link href="/" className="text-xl font-bold tracking-tight text-red-700">
           overclock.lol

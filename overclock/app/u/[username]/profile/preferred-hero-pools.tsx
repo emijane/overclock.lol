@@ -55,8 +55,7 @@ function getOrderedHeroPoolGroups(mainRole: CompetitiveRole | null) {
 }
 
 const roleStatusClassName = {
-  "Main role": "border-sky-300/35 bg-sky-300/10 text-sky-100",
-  "Off role": "border-amber-300/30 bg-amber-300/10 text-amber-100",
+  "Main role": "text-sky-200/80",
 } as const;
 
 function getHeroesForRole(
@@ -130,9 +129,7 @@ export function PreferredHeroPools({
             const roleStatus =
               competitiveProfile.mainRole === groupRole
                 ? "Main role"
-                : roleProfile
-                  ? "Off role"
-                  : null;
+                : null;
             const visibleHeroes = group.pools.flatMap((pool) => derivedPools[pool]);
 
             if (visibleHeroes.length === 0) {
@@ -142,49 +139,52 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/10 bg-white/[0.02] p-4"
+                className="rounded-[18px] border border-white/10 bg-white/[0.02] p-3.5 transition-all duration-200 hover:bg-white/[0.04]"
               >
-                <div className="grid gap-2">
-                  <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
-                    {COMPETITIVE_ROLE_LABELS[groupRole]}
-                  </h3>
-                  {roleStatus ? (
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span
-                        className={`inline-flex h-6 items-center rounded-full border px-2.5 text-[11px] font-semibold ${roleStatusClassName[roleStatus]}`}
-                      >
-                        {roleStatus}
-                      </span>
-                      {roleProfile ? (
-                        <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.02] px-3 text-[11px] font-semibold text-zinc-200">
-                          {rankIconSrc ? (
-                            <span className="relative h-4 w-4 shrink-0">
-                              <Image
-                                src={rankIconSrc}
-                                alt={`${roleProfile.rankTier} rank icon`}
-                                fill
-                                className="object-contain"
-                                sizes="16px"
-                              />
-                            </span>
-                          ) : null}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">
+                      {COMPETITIVE_ROLE_LABELS[groupRole]}
+                    </h3>
+                    {roleProfile ? (
+                      <div className="mt-1 flex items-center gap-1.5 text-[12px] font-medium text-zinc-300">
+                        {rankIconSrc ? (
+                          <span className="relative h-3.5 w-3.5 shrink-0">
+                            <Image
+                              src={rankIconSrc}
+                              alt={`${roleProfile.rankTier} rank icon`}
+                              fill
+                              className="object-contain"
+                              sizes="14px"
+                            />
+                          </span>
+                        ) : null}
+                        <span>
                           {formatCurrentRank(
                             roleProfile.rankTier,
                             roleProfile.rankDivision
                           )}
                         </span>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {roleStatus ? (
+                    <span
+                      className={`shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] ${roleStatusClassName[roleStatus]}`}
+                    >
+                      {roleStatus}
+                    </span>
                   ) : null}
                 </div>
 
-                <div className="mt-4">
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="mt-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     {visibleHeroes.map((hero) => (
                       <div
                         key={hero.id}
                         title={hero.label}
-                        className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-zinc-900 sm:h-10 sm:w-10"
+                        className="relative h-9 w-9 shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-zinc-900"
                       >
                         <Image
                           src={hero.imageSrc}
