@@ -108,7 +108,7 @@ export function ProfileHeader({
               {region ? (
                 <ProfileBadge
                   Icon={Globe2Icon}
-                  iconClassName="text-sky-400"
+                  iconClassName="text-sky-400/80"
                   tone="cover"
                 >
                   {region}
@@ -117,7 +117,7 @@ export function ProfileHeader({
               {timezone ? (
                 <ProfileBadge
                   Icon={Clock3Icon}
-                  iconClassName="text-amber-400"
+                  iconClassName="text-amber-400/80"
                   tone="cover"
                 >
                   {timezone}
@@ -158,7 +158,7 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-3 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>

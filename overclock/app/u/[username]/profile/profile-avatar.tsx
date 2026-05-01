@@ -19,7 +19,7 @@ export function ProfileAvatar({
   return (
     <div className="relative h-28 w-28 rounded-full sm:h-32 sm:w-32">
       <div
-        className={`absolute -inset-[3px] rounded-full ${borderClassName}`}
+        className={`absolute -inset-[3px] rounded-full opacity-75 ${borderClassName}`}
         aria-hidden="true"
       />
       {avatarUrl ? (
