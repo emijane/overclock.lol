@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { GlobalAuthBar } from "@/app/components/global-auth-bar";
+import { GlobalBackgroundShell } from "@/app/components/global-background-shell";
 
 import "./globals.css";
 
@@ -17,23 +18,25 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${geistSans.variable} h-full antialiased`}
-    >
-      <body
-        suppressHydrationWarning
-        className="min-h-full flex flex-col bg-zinc-950 text-zinc-100"
-      >
-        <GlobalAuthBar />
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html
+            lang="en"
+            suppressHydrationWarning
+            className={`${geistSans.variable} h-full antialiased`}
+        >
+            <body
+                suppressHydrationWarning
+                className="min-h-full flex flex-col bg-[#07080d] text-zinc-100"
+            >
+                <GlobalBackgroundShell>
+                    <GlobalAuthBar />
+                    {children}
+                </GlobalBackgroundShell>
+            </body>
+        </html>
+    );
 }
