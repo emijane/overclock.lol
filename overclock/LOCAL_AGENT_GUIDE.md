@@ -14,6 +14,11 @@ This file is a local working note for coding agents and should not be committed.
 
 - `docs/roadmap/PROJECT_CONTEXT_ROADMAP.md` - Start here for current product shape, route map, architecture notes, gaps, and broad roadmap direction.
 - `docs/roadmap/LFG_ROLE_FLOW.md` - Use when working on future LFG surfaces, role-based posting contexts, hero pools, duos, stacks, teams, or scrims.
+- `docs/roadmap/LFG_POST_LIFECYCLE_POLICY.md` - Use when working on LFG post states, close behavior, expiry rules, or lifecycle decisions across posting surfaces.
+- `docs/roadmap/LFG_POST_LIMITS_EXPLAINED.md` - Use when working on posting limits, anti-spam constraints, or explaining why LFG creation rules exist.
+- `docs/roadmap/ACCOUNT_POSTS_PAGE.md` - Use when working on the private `/account/posts` management surface for active, closed, or expired LFG posts.
+- `docs/roadmap/DUOS_FILTERS.md` - Use when working on server-rendered filtering, query shape, or first-pass browsing controls for `/duos`.
+- `docs/roadmap/DUOS_UI_UPDATES.md` - Use when working on duos page structure, Competitive Profile presentation, or related UI direction.
 - `docs/roadmap/RANK_VERIFICATION_SYSTEM.md` - Use when working on rank trust, verification status, reviewer flows, high-rank claims, or badge display.
 - `docs/roadmap/PUBLIC_PROFILE_PERFORMANCE.md` - Use when working on `/u/[username]` performance, public profile auth checks, public read RLS assumptions, or profile query shape.
 

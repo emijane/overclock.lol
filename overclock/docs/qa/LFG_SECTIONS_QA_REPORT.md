@@ -114,3 +114,6 @@ Method:
 
 - The original audit was based on repository inspection only; live Supabase policy console and seeded E2E session access were not available in this workspace.
 - Findings 1, 2, 3, 4, 6, and 7 now have corresponding source changes in this repo and still require the live verification called out above where marked.
+
+
+- EXPIRED POSTS STOP FROM POSTING ACTIVE POST BY SAME TITLE
