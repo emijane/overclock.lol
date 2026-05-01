@@ -8,7 +8,7 @@ export function GlobalBackgroundShell({
     children,
 }: GlobalBackgroundShellProps) {
     return (
-        <div className="relative min-h-full flex-1 overflow-hidden bg-[#050608]">
+        <div className="relative min-h-full flex-1 overflow-hidden bg-[#010103]">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0"

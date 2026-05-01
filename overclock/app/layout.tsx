@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 
 import { GlobalAuthBar } from "@/app/components/global-auth-bar";
 import { GlobalBackgroundShell } from "@/app/components/global-background-shell";
+import { GlobalFooter } from "@/app/components/global-footer";
 
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
                 <GlobalBackgroundShell>
                     <GlobalAuthBar />
                     {children}
+                    <GlobalFooter />
                 </GlobalBackgroundShell>
             </body>
         </html>

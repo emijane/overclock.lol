@@ -69,7 +69,7 @@ export function ProfileHeader({
     "border-white/10 bg-white/[0.02]";
 
   return (
-    <section className="bg-zinc-950">
+    <section className="bg-[#05070b]">
       <div className="pb-6 sm:pb-7">
         <div
           className="relative overflow-hidden px-4 py-4 sm:px-6"
@@ -86,12 +86,12 @@ export function ProfileHeader({
             </>
           ) : (
             <div
-              className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950"
+              className="absolute inset-0 bg-gradient-to-b from-[#0a0b10] via-[#07080d] to-[#05070b]"
               aria-hidden="true"
             />
           )}
           <div
-            className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent"
+            className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#05070b] via-[#05070b]/70 to-transparent"
             aria-hidden="true"
           />
           <div className="relative z-10 flex items-start justify-between gap-3">

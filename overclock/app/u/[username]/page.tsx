@@ -18,7 +18,6 @@ import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { RecentProfilePosts } from "./profile/recent-profile-posts";
 import {
   getRankAccentStyle,
-  getRankBorderClassName,
 } from "./profile/rank-border-styles";
 import { getCompetitiveRankDisplay } from "./profile/profile-rank";
 
@@ -106,7 +105,6 @@ export default async function ProfilePage({
     const profileRankTier =
         mainRoleProfile?.rankTier ?? profile.current_rank_tier;
     const profileAccentStyle = getRankAccentStyle(profileRankTier);
-    const profileBorderClassName = getRankBorderClassName(profileRankTier);
     const coverImageUrl = getProfileCoverUrl(
         profile.cover_image_path,
         profile.cover_image_updated_at
@@ -156,10 +154,11 @@ export default async function ProfilePage({
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
                 <div
-                    className={`rounded-[28px] p-px shadow-[0_0_32px_var(--profile-rank-glow)] ${profileBorderClassName}`}
+                    className="rounded-[28px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_24px_var(--profile-rank-glow)]"
+                    style={profileAccentStyle}
                 >
                     <div
-                        className="overflow-hidden rounded-[27px] bg-zinc-950"
+                        className="overflow-hidden rounded-[27px] bg-[#05070b] ring-1 ring-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                         style={profileAccentStyle}
                     >
                         <EditableProfileHeader

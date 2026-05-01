@@ -30,45 +30,45 @@ export const defaultRankBorderClassName =
 
 const rankAccentStyleByTier: Record<string, RankAccentStyle> = {
   Bronze: {
-    "--profile-rank-border": "rgba(208,128,80,0.22)",
-    "--profile-rank-glow": "rgba(160,80,48,0.16)",
+    "--profile-rank-border": "rgba(208,128,80,0.58)",
+    "--profile-rank-glow": "rgba(160,80,48,0.15)",
   },
   Silver: {
-    "--profile-rank-border": "rgba(208,224,232,0.18)",
+    "--profile-rank-border": "rgba(208,224,232,0.48)",
     "--profile-rank-glow": "rgba(160,176,192,0.13)",
   },
   Gold: {
-    "--profile-rank-border": "rgba(240,224,128,0.22)",
-    "--profile-rank-glow": "rgba(208,160,48,0.16)",
+    "--profile-rank-border": "rgba(240,224,128,0.58)",
+    "--profile-rank-glow": "rgba(208,160,48,0.15)",
   },
   Platinum: {
-    "--profile-rank-border": "rgba(208,255,255,0.2)",
+    "--profile-rank-border": "rgba(208,255,255,0.54)",
     "--profile-rank-glow": "rgba(160,192,208,0.15)",
   },
   Diamond: {
-    "--profile-rank-border": "rgba(128,176,240,0.22)",
-    "--profile-rank-glow": "rgba(64,96,160,0.16)",
+    "--profile-rank-border": "rgba(128,176,240,0.56)",
+    "--profile-rank-glow": "rgba(64,96,160,0.15)",
   },
   Master: {
-    "--profile-rank-border": "rgba(192,224,208,0.2)",
-    "--profile-rank-glow": "rgba(48,96,64,0.16)",
+    "--profile-rank-border": "rgba(192,224,208,0.54)",
+    "--profile-rank-glow": "rgba(48,96,64,0.15)",
   },
   Grandmaster: {
-    "--profile-rank-border": "rgba(240,224,255,0.2)",
-    "--profile-rank-glow": "rgba(64,48,112,0.17)",
+    "--profile-rank-border": "rgba(240,224,255,0.52)",
+    "--profile-rank-glow": "rgba(64,48,112,0.16)",
   },
   Champion: {
-    "--profile-rank-border": "rgba(240,171,252,0.24)",
-    "--profile-rank-glow": "rgba(168,85,247,0.2)",
+    "--profile-rank-border": "rgba(240,171,252,0.6)",
+    "--profile-rank-glow": "rgba(168,85,247,0.16)",
   },
   "Top 500": {
-    "--profile-rank-border": "rgba(240,224,144,0.24)",
-    "--profile-rank-glow": "rgba(224,176,64,0.18)",
+    "--profile-rank-border": "rgba(240,224,144,0.6)",
+    "--profile-rank-glow": "rgba(224,176,64,0.16)",
   },
 };
 
 const defaultRankAccentStyle: RankAccentStyle = {
-  "--profile-rank-border": "rgba(161,161,170,0.16)",
+  "--profile-rank-border": "rgba(161,161,170,0.42)",
   "--profile-rank-glow": "rgba(113,113,122,0.12)",
 };
 
