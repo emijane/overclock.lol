@@ -31,7 +31,7 @@ export default function RootLayout({
         >
             <body
                 suppressHydrationWarning
-                className="min-h-full flex flex-col bg-[#07080d] text-zinc-100"
+                className="min-h-screen flex flex-col bg-[#07080d] text-zinc-100"
             >
                 <GlobalBackgroundShell>
                     <GlobalAuthBar />

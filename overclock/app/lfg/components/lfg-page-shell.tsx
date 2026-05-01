@@ -240,21 +240,42 @@ export async function LFGPageShell({
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
+  const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
+    <main
+      className={`bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
+        isComposerOnlyPage
+          ? "flex flex-1 flex-col pb-0 pt-2 sm:pb-0 sm:pt-3"
+          : "min-h-screen py-6 sm:py-8"
+      }`}
+    >
       <AuthMessage message={message} type={messageType} variant="toast" />
-      <PageContainer className="flex flex-col gap-3">
+      <PageContainer
+        className={`flex flex-col ${
+          isComposerOnlyPage ? "flex-1 gap-2" : "gap-3"
+        }`}
+      >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
-            <header className="px-5 py-5 sm:px-6 sm:py-7">
-              <div className="space-y-5">
+            <header
+              className={`px-5 sm:px-6 ${
+                isComposerOnlyPage ? "py-3 sm:py-4" : "py-5 sm:py-7"
+              }`}
+            >
+              <div className={isComposerOnlyPage ? "space-y-3" : "space-y-5"}>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="space-y-3">
+                  <div className={isComposerOnlyPage ? "space-y-2" : "space-y-3"}>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
                       LFG Channel
                     </p>
-                    <h1 className="text-5xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-6xl">
+                    <h1
+                      className={`font-semibold tracking-[-0.075em] text-zinc-50 ${
+                        isComposerOnlyPage
+                          ? "text-4xl sm:text-5xl"
+                          : "text-5xl sm:text-6xl"
+                      }`}
+                    >
                       {displayTitle}
                     </h1>
                   </div>
@@ -279,7 +300,7 @@ export async function LFGPageShell({
               </div>
 
               {type && shouldShowComposer ? (
-                <section className="mt-8">
+                <section className={isComposerOnlyPage ? "mt-4" : "mt-8"}>
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"

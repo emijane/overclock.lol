@@ -28,7 +28,7 @@ const footerGroups = [
 
 export function GlobalFooter() {
     return (
-        <footer className="mt-10 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <footer className="mt-10 border-t border-white/5 bg-black/40">
             <PageContainer className="px-4 py-8 sm:px-6 sm:py-10">
                 <div className="grid gap-8 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
                     <div className="max-w-sm">
