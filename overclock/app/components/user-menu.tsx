@@ -50,7 +50,7 @@ export function UserMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full"
+          className="rounded-full cursor-pointer"
         >
           <Avatar className="h-9 w-9">
             {avatarUrl ? (
