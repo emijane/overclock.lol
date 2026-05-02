@@ -126,6 +126,7 @@ Current behavior:
 - `Max Rank` includes posts at or below the selected tier
 - using both creates an inclusive range
 - if the URL contains reversed bounds, the server normalizes them
+- rank filtering is intentionally tier-only, not division-aware
 
 ### Region
 
@@ -249,6 +250,19 @@ In the current release:
 
 - no min/max rank filter means unranked posts can still appear
 - any active min/max rank filter only matches ranked tiers within the selected range
+- filtering is intentionally based on `snapshot_rank_tier` only
+- divisions inside a tier are not separated by the current filter model
+
+This is the intended product rule for the current filter system.
+
+Why this rule is final for the current version:
+
+- it keeps rank filtering fast to scan
+- it avoids turning the feed into a high-precision search UI
+- most LFG browsing decisions happen at the broad tier level rather than exact
+  division matching
+- it aligns with the rest of the first-pass filter philosophy on `/duos` and
+  `/stacks`
 
 ## Empty States
 
@@ -274,6 +288,8 @@ The current filter release still does not include:
 - personalized "best match" ranking
 - exact division-level matching
 - filters on routes that have not adopted the current model yet
+
+Division-level rank matching is explicitly out of scope for this version.
 
 ## Current Implementation Status
 

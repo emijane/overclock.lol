@@ -248,18 +248,15 @@ There are also a few UX clarity issues:
   - active rank filters show copy explaining that matching is tier-only and that
     unranked posts are excluded
 
-- Medium: current rank filtering only checks `snapshot_rank_tier`, not
-  `snapshot_rank_division`.
-  Expected:
-  - if the UI suggests precise range filtering, users may assume finer-grained
-    ordering inside a tier
-  Actual:
+- Resolved as a product decision: current rank filtering only checks
+  `snapshot_rank_tier`, not `snapshot_rank_division`.
+  Intended behavior:
   - all divisions within a tier are treated identically
+  - exact division-level matching is out of scope for the current version
 
 ### Recommendations
 
-- Decide whether tier-only filtering is the intended product rule. If yes,
-  document it clearly in the UI or docs.
+- Keep the tier-only rule documented in roadmap and UI copy.
 
 ## Filter: Region
 
@@ -472,8 +469,8 @@ Actual:
    Status:
    - mostly resolved by explicit selected-state labels
 
-2. Medium: `Min Rank` / `Max Rank` suggests precise range control, but the
-   implementation is tier-only, not division-aware.
+2. Resolved as a product rule: `Min Rank` / `Max Rank` is tier-only and not
+   division-aware in the current version.
 
 3. Resolved: reversed rank bounds no longer need to produce a visible state
    that disagrees with the shareable URL.
@@ -486,20 +483,9 @@ Actual:
 
 ### Medium
 
-1. Rank range semantics are stronger than the actual precision
-   Expected:
-   - users should understand whether rank filtering is tier-only or
-     division-aware
-   Actual:
-   - UI now explains tier-only behavior, but the filtering still does not
-     account for divisions within a tier
-   Recommendation:
-   - clarify tier-only behavior or extend the system later if finer precision is
-     needed
-
 ### Low
 
-2. `Clear All` resembles a normal selected chip
+1. `Clear All` resembles a normal selected chip
    Expected:
    - bulk action should be obviously distinct enough from selected filters
    Actual:
@@ -514,5 +500,4 @@ settled until the remaining UX gaps are addressed.
 
 Priority order:
 
-1. Decide whether tier-only rank filtering is the final intended product rule
-2. Reevaluate `Clear All` styling only if testing still shows confusion
+1. Reevaluate `Clear All` styling only if testing still shows confusion
