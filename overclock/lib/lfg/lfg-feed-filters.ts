@@ -20,6 +20,17 @@ export type LFGFeedFilters = {
   role?: CompetitiveRole;
 };
 
+export function hasActiveLFGFeedFilters(filters?: LFGFeedFilters) {
+  return Boolean(
+    filters?.lookingFor ||
+      filters?.maxRank ||
+      filters?.minRank ||
+      filters?.mode ||
+      filters?.region ||
+      filters?.role
+  );
+}
+
 export function isLFGRankFilterOption(value: string): value is LFGRankFilterOption {
   return LFG_RANK_FILTER_OPTIONS.includes(value as LFGRankFilterOption);
 }

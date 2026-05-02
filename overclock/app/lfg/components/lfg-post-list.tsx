@@ -8,6 +8,7 @@ type LFGPostListProps = {
   emptyStateDescription: string;
   emptyStateTitle: string;
   errorMessage?: string | null;
+  hasActiveFilters?: boolean;
   posts: LFGPost[];
   retryHref?: string;
 };
@@ -49,6 +50,7 @@ export function LFGPostList({
   emptyStateDescription,
   emptyStateTitle,
   errorMessage,
+  hasActiveFilters = false,
   posts,
   retryHref,
 }: LFGPostListProps) {
@@ -69,8 +71,12 @@ export function LFGPostList({
     return (
       <section className="px-5 py-2 sm:px-6 sm:py-3">
         <LFGFeedPlaceholder
-          description={emptyStateDescription}
-          title={emptyStateTitle}
+          description={
+            hasActiveFilters
+              ? "No posts match the filters you have selected right now. Try widening your filters or clear all to see more listings."
+              : emptyStateDescription
+          }
+          title={hasActiveFilters ? "No matching posts" : emptyStateTitle}
         />
       </section>
     );

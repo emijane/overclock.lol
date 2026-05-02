@@ -37,7 +37,6 @@ and dropdowns can agree on one normalized range.
 There are also a few UX clarity issues:
 
 - rank-range expectations around `Unranked` are not obvious
-- filtered empty states still do not explain zero-result states
 - `Clear All` still reads visually like a state chip more than a bulk action
 
 ## Filter: Mode
@@ -294,7 +293,8 @@ There are also a few UX clarity issues:
    - filtered empty state should communicate that no posts match the selected
      region
    Actual:
-   - generic empty state only
+   - filter-aware empty-state copy now distinguishes zero matches from a
+     generally empty section
 
 ### Issues
 
@@ -303,7 +303,7 @@ There are also a few UX clarity issues:
 
 ### Recommendations
 
-- Add filter-aware empty-state copy when one or more filters are active.
+- Keep the filter-aware empty-state copy concise and actionable.
 
 ## Filter Pills
 
@@ -453,7 +453,7 @@ Actual:
    - empty state should help users understand zero matches
    Actual:
    - chips help
-   - empty state itself is not filter-aware
+   - empty state is now filter-aware
 
 4. Invalid query param values
    Expected:
@@ -482,10 +482,7 @@ Actual:
 
 4. Resolved: dropdown reset labels are now explicit instead of generic.
 
-5. Low: no filter-aware empty state means users may not realize a zero-result
-   feed is caused by their current selections.
-
-6. Low: `Clear All` looks like a state chip rather than a bulk action chip.
+5. Low: `Clear All` looks like a state chip rather than a bulk action chip.
 
 ## Bugs
 
@@ -501,17 +498,9 @@ Actual:
    - clarify tier-only behavior or extend the system later if finer precision is
      needed
 
-2. Empty states do not explain filter-caused zero results
-   Expected:
-   - filtered empty states should acknowledge active filters
-   Actual:
-   - same empty state as a naturally empty section
-   Recommendation:
-   - add filter-aware empty-state messaging
-
 ### Low
 
-3. `Clear All` resembles a normal selected chip
+2. `Clear All` resembles a normal selected chip
    Expected:
    - bulk action should be obviously distinct enough from selected filters
    Actual:
@@ -526,6 +515,5 @@ settled until the remaining UX gaps are addressed.
 
 Priority order:
 
-1. Add filter-aware empty-state messaging
-2. Clarify rank-range precision and `Unranked` handling
-3. Decide whether `Clear All` should be styled more like an action than a chip
+1. Clarify rank-range precision and `Unranked` handling
+2. Decide whether `Clear All` should be styled more like an action than a chip

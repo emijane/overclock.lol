@@ -9,6 +9,7 @@ import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import type { LFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
+import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveLFGPostCountsByRole,
@@ -376,6 +377,7 @@ export async function LFGPageShell({
                   emptyStateDescription={emptyStateDescription}
                   emptyStateTitle={emptyStateTitle}
                   errorMessage={pageData.postsErrorMessage}
+                  hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
                   posts={pageData.posts}
                   retryHref={sectionHref}
                 />
