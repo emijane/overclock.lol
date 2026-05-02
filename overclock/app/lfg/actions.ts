@@ -16,6 +16,7 @@ import { normalizeLFGPostTitle } from "@/lib/lfg/lfg-post-title";
 import {
   isLFGGameMode,
   isLFGType,
+  normalizeLFGLookingForRoles,
   type CompetitiveProfileSnapshot,
   type LFGGameMode,
 } from "@/lib/lfg/lfg-post-types";
@@ -94,6 +95,9 @@ function getRequiredProfileError({
 export async function createLFGPost(formData: FormData) {
   const gameModeValue = formData.get("game_mode")?.toString().trim() ?? "";
   const lfgTypeValue = formData.get("lfg_type")?.toString().trim() ?? "";
+  const lookingForRoles = normalizeLFGLookingForRoles(
+    formData.getAll("looking_for_roles").map((value) => value.toString().trim())
+  );
   const title = normalizeLFGPostTitle(formData.get("title")?.toString() ?? "");
   const postingRoleValue = formData.get("posting_role")?.toString().trim() ?? "";
 
@@ -172,6 +176,7 @@ export async function createLFGPost(formData: FormData) {
       gameMode,
       heroPoolSnapshot,
       lfgType: lfgTypeValue,
+      lookingForRoles,
       platform: profile.platform ?? null,
       postingRole,
       profileId: profile.id,

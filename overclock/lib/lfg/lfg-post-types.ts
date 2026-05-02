@@ -1,5 +1,6 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
+import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 
 export const LFG_TYPE_OPTIONS = ["duos", "stacks", "scrims", "teams"] as const;
 export type LFGType = (typeof LFG_TYPE_OPTIONS)[number];
@@ -9,6 +10,7 @@ export type LFGPostStatus = (typeof LFG_POST_STATUS_OPTIONS)[number];
 
 export const LFG_GAME_MODE_OPTIONS = ["ranked", "quick_play"] as const;
 export type LFGGameMode = (typeof LFG_GAME_MODE_OPTIONS)[number];
+export type LFGLookingForRole = CompetitiveRole;
 
 export type LFGHeroSnapshot = {
   id: string;
@@ -39,6 +41,7 @@ export type LFGPost = {
   heroPool: LFGHeroSnapshot[];
   id: string;
   lfgType: LFGType;
+  lookingForRoles: LFGLookingForRole[];
   profileId: string | null;
   postingRole: CompetitiveRole;
   rankDivision: number | null;
@@ -48,6 +51,40 @@ export type LFGPost = {
   timezone: string | null;
   title: string;
 };
+
+export function isLFGLookingForRole(value: string): value is LFGLookingForRole {
+  return COMPETITIVE_ROLE_OPTIONS.includes(value as LFGLookingForRole);
+}
+
+export function normalizeLFGLookingForRoles(
+  values: Iterable<string>
+): LFGLookingForRole[] {
+  const uniqueRoles = Array.from(
+    new Set(
+      Array.from(values).filter((value): value is LFGLookingForRole =>
+        isLFGLookingForRole(value)
+      )
+    )
+  );
+
+  if (uniqueRoles.length === 0 || uniqueRoles.length === COMPETITIVE_ROLE_OPTIONS.length) {
+    return [...COMPETITIVE_ROLE_OPTIONS];
+  }
+
+  return uniqueRoles;
+}
+
+export function getLFGLookingForRoleLabel(role: LFGLookingForRole) {
+  if (role === "tank") {
+    return "Tank";
+  }
+
+  if (role === "dps") {
+    return "DPS";
+  }
+
+  return "Support";
+}
 
 export function isLFGType(value: string): value is LFGType {
   return LFG_TYPE_OPTIONS.includes(value as LFGType);

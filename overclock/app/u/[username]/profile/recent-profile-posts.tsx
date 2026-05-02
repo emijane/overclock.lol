@@ -1,7 +1,10 @@
 import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
-import type { LFGPost } from "@/lib/lfg/lfg-post-types";
+import {
+  getLFGLookingForRoleLabel,
+  type LFGPost,
+} from "@/lib/lfg/lfg-post-types";
 import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
 
 type RecentProfilePostsProps = {
@@ -143,6 +146,20 @@ export function RecentProfilePosts({
                       <span className="text-zinc-500">{createdAtLabel}</span>
                     </>
                   ) : null}
+                </div>
+
+                <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
+                  <span className="uppercase tracking-[0.1em] text-zinc-500">
+                    Looking for
+                  </span>
+                  {post.lookingForRoles.map((role) => (
+                    <span
+                      key={`${post.id}-recent-looking-for-${role}`}
+                      className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 text-zinc-200"
+                    >
+                      {getLFGLookingForRoleLabel(role)}
+                    </span>
+                  ))}
                 </div>
               </article>
             );

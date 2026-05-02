@@ -13,7 +13,10 @@ import {
 } from "lucide-react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
-import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
+import {
+  COMPETITIVE_ROLE_OPTIONS,
+  type CompetitiveRole,
+} from "@/lib/competitive/competitive-profile-types";
 
 export type LFGRoleOption = {
   heroPool: Array<{
@@ -114,6 +117,9 @@ export function LFGRolePicker({
     LOOKING_FOR_ALL_VALUE,
   ]);
   const { pending } = useFormStatus();
+  const submittedLookingForRoles = lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)
+    ? [...COMPETITIVE_ROLE_OPTIONS]
+    : lookingForRoles;
 
   const selectedRoleOption =
     roleOptions.find((roleOption) => roleOption.role === selectedRole) ?? null;
@@ -310,6 +316,9 @@ export function LFGRolePicker({
           </div>
         )
       ) : null}
+      {submittedLookingForRoles.map((role) => (
+        <input key={`looking-for-input-${role}`} type="hidden" name="looking_for_roles" value={role} />
+      ))}
     </div>
   );
 }

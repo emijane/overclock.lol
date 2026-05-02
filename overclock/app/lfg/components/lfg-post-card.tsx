@@ -4,7 +4,11 @@ import Link from "next/link";
 import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
-import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
+import {
+  getLFGGameModeLabel,
+  getLFGLookingForRoleLabel,
+  type LFGPost,
+} from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
@@ -189,6 +193,18 @@ export function LFGPostCard({
                 </span>
               </>
             ) : null}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+            <span className="uppercase tracking-[0.08em] text-zinc-500">Looking for</span>
+            {post.lookingForRoles.map((role) => (
+              <span
+                key={`${post.id}-looking-for-${role}`}
+                className="rounded-full border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 text-zinc-200"
+              >
+                {getLFGLookingForRoleLabel(role)}
+              </span>
+            ))}
           </div>
 
           {post.heroPool.length > 0 ? (

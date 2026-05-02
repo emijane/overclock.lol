@@ -180,15 +180,15 @@ export default async function ProfilePage({
                             timezone={profile.timezone}
                             username={profile.username}
                         />
-                        <FeaturedClipsSection
-                            clips={featuredClips as FeaturedClip[]}
-                            isOwner={isOwner}
-                        />
                         <PreferredHeroPools
                             competitiveProfile={competitiveProfile}
                             heroPicks={heroPools.heroPicks}
                             isOwner={isOwner}
                             roles={heroPools.roles}
+                        />
+                        <FeaturedClipsSection
+                            clips={featuredClips as FeaturedClip[]}
+                            isOwner={isOwner}
                         />
                         <RecentProfilePosts
                             isOwner={isOwner}

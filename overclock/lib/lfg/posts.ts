@@ -5,7 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
 import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
-import { isLFGGameMode, isLFGType } from "./lfg-post-types";
+import {
+  isLFGGameMode,
+  isLFGType,
+  normalizeLFGLookingForRoles,
+} from "./lfg-post-types";
 
 import type {
   CompetitiveProfileSnapshot,
@@ -123,6 +127,16 @@ function normalizeLFGGameMode(value: unknown): LFGGameMode {
   return typeof value === "string" && isLFGGameMode(value) ? value : "ranked";
 }
 
+function normalizeLookingForRoles(value: unknown) {
+  if (!Array.isArray(value)) {
+    return normalizeLFGLookingForRoles([]);
+  }
+
+  return normalizeLFGLookingForRoles(
+    value.filter((role): role is string => typeof role === "string")
+  );
+}
+
 function createEmptyRoleCountMap(): ActiveLFGPostCountsByRole {
   return {
     tank: 0,
@@ -142,6 +156,7 @@ function normalizeLFGPostRow(
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",
     lfgType: normalizeLFGType(row.lfg_type),
+    lookingForRoles: normalizeLookingForRoles(row.looking_for_roles),
     profileId: typeof row.profile_id === "string" ? row.profile_id : null,
     postingRole: normalizeCompetitiveRole(row.posting_role),
     rankDivision:
@@ -176,6 +191,7 @@ export async function getActiveLFGPosts(
         "game_mode",
         "title",
         "status",
+        "looking_for_roles",
         "posting_role",
         "snapshot_rank_tier",
         "snapshot_rank_division",
@@ -285,6 +301,7 @@ export async function getRecentPostsByProfileId(
         "game_mode",
         "title",
         "status",
+        "looking_for_roles",
         "posting_role",
         "snapshot_rank_tier",
         "snapshot_rank_division",
@@ -326,6 +343,7 @@ export async function getPostsByProfileId(
         "game_mode",
         "title",
         "status",
+        "looking_for_roles",
         "posting_role",
         "snapshot_rank_tier",
         "snapshot_rank_division",
@@ -386,7 +404,11 @@ export async function getActiveLFGPostCountsByRole(input: {
   return counts;
 }
 
-function normalizeLFGCreateResult(value: unknown) {
+function normalizeLFGCreateResult(value: unknown): {
+  created: boolean;
+  errorCode: string | null;
+  postId: string | null;
+} {
   if (typeof value === "string") {
     try {
       return normalizeLFGCreateResult(JSON.parse(value));
@@ -436,7 +458,11 @@ function normalizeLFGCreateResult(value: unknown) {
   };
 }
 
-function normalizeLFGCloseResult(value: unknown) {
+function normalizeLFGCloseResult(value: unknown): {
+  errorCode: string | null;
+  lfgType: LFGType | null;
+  updated: boolean;
+} {
   if (typeof value === "string") {
     try {
       return normalizeLFGCloseResult(JSON.parse(value));
@@ -493,6 +519,7 @@ export async function createLFGPostAtomically(input: {
   gameMode: LFGGameMode;
   heroPoolSnapshot: LFGHeroSnapshot[];
   lfgType: LFGType;
+  lookingForRoles: CompetitiveRole[];
   platform: string | null;
   postingRole: CompetitiveRole;
   profileId: string;
@@ -508,6 +535,7 @@ export async function createLFGPostAtomically(input: {
     p_game_mode: input.gameMode,
     p_hero_pool_snapshot: input.heroPoolSnapshot,
     p_lfg_type: input.lfgType,
+    p_looking_for_roles: input.lookingForRoles,
     p_platform: input.platform,
     p_posting_role: input.postingRole,
     p_profile_id: input.profileId,
