@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type FilterKey = "mode" | "role" | "rank" | "region";
+type FilterKey = "looking_for" | "mode" | "role" | "rank" | "region";
 
 function buildFilterHref(
   pathname: string,
@@ -47,26 +47,35 @@ function buildFilterHref(
 }
 
 function FilterDropdown({
+  anyLabel,
   items,
-  label,
   pathname,
   paramKey,
   searchParams,
   selectedLabel,
+  variant = "default",
 }: {
+  anyLabel: string;
   items: Array<{ href: string; label: string; selected: boolean }>;
-  label: string;
   pathname: string;
   paramKey: FilterKey;
   searchParams: URLSearchParams;
   selectedLabel: string;
+  variant?: "default" | "primary" | "secondary";
 }) {
+  const triggerClassName =
+    variant === "primary"
+      ? "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-50 transition hover:border-white/[0.12] hover:text-white"
+      : variant === "secondary"
+        ? "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-medium text-zinc-200 transition hover:border-white/[0.12] hover:text-zinc-50"
+        : "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-100 transition hover:border-white/[0.12] hover:text-zinc-50";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 text-[12px] font-semibold text-zinc-100 shadow-[0_8px_20px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.03)] transition hover:border-white/[0.13] hover:bg-white/[0.05] hover:text-zinc-50"
+          className={triggerClassName}
         >
           <span>{selectedLabel}</span>
           <ChevronDownIcon className="h-3 w-3 text-zinc-500" />
@@ -80,9 +89,7 @@ function FilterDropdown({
           asChild
           className="text-zinc-400 focus:bg-white/[0.04] focus:text-zinc-100"
         >
-          <Link href={buildFilterHref(pathname, searchParams, paramKey)}>
-            Any {label}
-          </Link>
+          <Link href={buildFilterHref(pathname, searchParams, paramKey)}>{anyLabel}</Link>
         </DropdownMenuItem>
         {items.map((item) => (
           <DropdownMenuItem
@@ -130,6 +137,11 @@ export function LFGFeedFiltersPanel({
     label: COMPETITIVE_ROLE_LABELS[role],
     selected: selectedFilters?.role === role,
   }));
+  const lookingForItems = COMPETITIVE_ROLE_OPTIONS.map((role) => ({
+    href: buildFilterHref(pathname, params, "looking_for", role),
+    label: COMPETITIVE_ROLE_LABELS[role],
+    selected: selectedFilters?.lookingFor === role,
+  }));
   const rankItems = LFG_RANK_BRACKET_OPTIONS.map((rank) => ({
     href: buildFilterHref(pathname, params, "rank", rank),
     label: getRankBracketLabel(rank),
@@ -146,7 +158,10 @@ export function LFGFeedFiltersPanel({
     : "Any Mode";
   const selectedRoleLabel = selectedFilters?.role
     ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
-    : "All Roles";
+    : "Role";
+  const selectedLookingForLabel = selectedFilters?.lookingFor
+    ? COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor]
+    : "Needs";
   const selectedRankLabel = selectedFilters?.rank
     ? getRankBracketLabel(selectedFilters.rank as LFGRankBracket)
     : "Any Rank";
@@ -159,32 +174,42 @@ export function LFGFeedFiltersPanel({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-1.5">
           <FilterDropdown
+            anyLabel="Any Mode"
             items={modeItems}
-            label="Mode"
             pathname={pathname}
             paramKey="mode"
             searchParams={params}
             selectedLabel={selectedModeLabel}
           />
           <FilterDropdown
+            anyLabel="Any"
             items={roleItems}
-            label="Role"
             pathname={pathname}
             paramKey="role"
             searchParams={params}
             selectedLabel={selectedRoleLabel}
+            variant="primary"
           />
           <FilterDropdown
+            anyLabel="Any"
+            items={lookingForItems}
+            pathname={pathname}
+            paramKey="looking_for"
+            searchParams={params}
+            selectedLabel={selectedLookingForLabel}
+            variant="secondary"
+          />
+          <FilterDropdown
+            anyLabel="Any Rank"
             items={rankItems}
-            label="Rank"
             pathname={pathname}
             paramKey="rank"
             searchParams={params}
             selectedLabel={selectedRankLabel}
           />
           <FilterDropdown
+            anyLabel="Any Region"
             items={regionItems}
-            label="Region"
             pathname={pathname}
             paramKey="region"
             searchParams={params}
