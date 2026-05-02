@@ -36,7 +36,6 @@ and dropdowns can agree on one normalized range.
 
 There are also a few UX clarity issues:
 
-- rank-range expectations around `Unranked` are not obvious
 - `Clear All` still reads visually like a state chip more than a bulk action
 
 ## Filter: Mode
@@ -240,12 +239,13 @@ There are also a few UX clarity issues:
 
 - Resolved: reversed Min Rank / Max Rank state sync bug.
 
-- Medium: `Unranked` behavior is not obvious.
+- Resolved: rank filter semantics are now explicitly communicated in the UI.
   Current behavior:
   - unranked is not selectable as a bound
   - any active rank bound excludes unranked posts
-  User confusion risk:
-  - users may expect `Max Rank: Bronze` to include unranked
+  Clarified behavior:
+  - active rank filters show copy explaining that matching is tier-only and that
+    unranked posts are excluded
 
 - Medium: current rank filtering only checks `snapshot_rank_tier`, not
   `snapshot_rank_division`.
@@ -257,8 +257,6 @@ There are also a few UX clarity issues:
 
 ### Recommendations
 
-- Add explicit product copy for how unranked is handled, or surface `Unranked`
-  as an explicit option if that matters.
 - Decide whether tier-only filtering is the intended product rule. If yes,
   document it clearly in the UI or docs.
 
@@ -493,7 +491,8 @@ Actual:
    - users should understand whether rank filtering is tier-only or
      division-aware
    Actual:
-   - UI suggests a more exact range than the underlying filter really supports
+   - UI now explains tier-only behavior, but the filtering still does not
+     account for divisions within a tier
    Recommendation:
    - clarify tier-only behavior or extend the system later if finer precision is
      needed
@@ -515,5 +514,5 @@ settled until the remaining UX gaps are addressed.
 
 Priority order:
 
-1. Clarify rank-range precision and `Unranked` handling
+1. Decide whether tier-only rank filtering is the final intended product rule
 2. Decide whether `Clear All` should be styled more like an action than a chip

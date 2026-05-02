@@ -159,6 +159,9 @@ export function LFGFeedFiltersPanel({
       selectedFilters?.role ||
       selectedFilters?.region
   );
+  const hasActiveRankFilters = Boolean(
+    selectedFilters?.minRank || selectedFilters?.maxRank
+  );
 
   const modeItems = LFG_GAME_MODE_OPTIONS.map((mode) => ({
     href: buildFilterHref(pathname, params, "mode", mode),
@@ -346,6 +349,12 @@ export function LFGFeedFiltersPanel({
             </Link>
           ) : null}
         </div>
+      ) : null}
+      {hasActiveRankFilters ? (
+        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+          Rank filters match tier ranges only. Unranked posts are excluded while a
+          min or max rank filter is active.
+        </p>
       ) : null}
     </section>
   );
