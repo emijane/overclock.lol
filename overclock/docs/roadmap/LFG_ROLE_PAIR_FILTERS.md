@@ -1,12 +1,12 @@
 # LFG Role Pair Filters
 
-This note captures a future filter design for connecting:
+This note captures the current first-pass design for connecting:
 
 - the role a player is posting as
 - the role or roles they are looking for
 
-It exists so future filter work can build on the current LFG post model without
-collapsing two different role concepts into one.
+It exists so shipped behavior and future filter work can build on the current
+LFG post model without collapsing two different role concepts into one.
 
 ## Current Data Model
 
@@ -61,16 +61,16 @@ If they are collapsed together, the feed loses an important distinction:
 
 That distinction is exactly what makes LFG posts useful.
 
-## Recommended Filter Model
+## Current Filter Model
 
-The clean first-pass shape is:
+The current first-pass shape is:
 
-- `Posting as`
-- `Looking for`
+- `Role`
+- `Needs`
 
 Both should be optional and independent.
 
-### Posting As
+### Role
 
 This filters by:
 
@@ -80,12 +80,12 @@ post.posting_role
 
 Options:
 
-- `All Roles`
+- `Any`
 - `Tank`
 - `DPS`
 - `Support`
 
-### Looking For
+### Needs
 
 This filters by:
 
@@ -95,29 +95,29 @@ selected_role in post.looking_for_roles
 
 Options:
 
-- `Any Role`
+- `Any`
 - `Tank`
 - `DPS`
 - `Support`
 
 Even though posts store an array for `looking_for_roles`, the filter should
-start as a single-select control. That keeps the browsing experience fast and
-easy to understand.
+stay a single-select control in the current version. That keeps the browsing
+experience fast and easy to understand.
 
 ## Match Behavior
 
 The intended query behavior is:
 
-- If only `Posting as` is selected, filter on `posting_role`
-- If only `Looking for` is selected, filter on whether the selected role is
+- If only `Role` is selected, filter on `posting_role`
+- If only `Needs` is selected, filter on whether the selected role is
   contained in `looking_for_roles`
 - If both are selected, require both conditions
 
 Example:
 
 ```text
-Posting as = Support
-Looking for = DPS
+Role = Support
+Needs = DPS
 ```
 
 This should return:
@@ -147,21 +147,21 @@ Reasons:
 Two independent role filters give most of the product value with much less
 complexity.
 
-## Suggested UI Language
+## Current UI Language
 
-Preferred filter labels:
+Current filter labels:
 
-- `Posting as`
-- `Looking for`
+- `Role`
+- `Needs`
 
-Preferred active-filter summary examples:
+Current concise examples:
 
 - `Support`
-- `LF DPS`
-- `Support + LF DPS`
+- `DPS`
+- `Support + DPS`
 
-This keeps the language short, readable, and aligned with how players already
-talk in LFG.
+This keeps the language short, readable, and clear about the difference between
+poster identity and target role.
 
 ## Rollout Order
 
@@ -169,9 +169,28 @@ Recommended implementation order:
 
 1. Keep the existing `posting_role` filter behavior.
 2. Add `looking_for_roles` support to feed queries.
-3. Add a second role filter control labeled `Looking for`.
+3. Add a second role filter control for target role.
 4. Support combining both filters together.
 5. Observe whether this is enough before designing richer role-pair presets.
+
+Current status:
+
+- Steps 1 through 4 are now shipped on the current first-pass filtered
+  sections.
+- The current follow-up question is whether the simple `Role` + `Needs` model
+  is enough before adding more complexity.
+
+## Current Coverage
+
+The current first-pass connected role filters are available on:
+
+- `/duos`
+- `/stacks`
+
+They are not yet available on:
+
+- `/teams`
+- `/scrims`
 
 ## Scope Guardrails
 

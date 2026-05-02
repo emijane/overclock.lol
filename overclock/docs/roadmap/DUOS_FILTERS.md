@@ -45,6 +45,7 @@ The current implementation supports these filters:
 
 - `Mode`
 - `Role`
+- `Needs`
 - `Rank`
 - `Region`
 
@@ -71,7 +72,7 @@ Why it shipped in the first pass:
 
 Options:
 
-- `All Roles`
+- `Any`
 - `Tank`
 - `DPS`
 - `Support`
@@ -81,6 +82,22 @@ Why this shipped in the first pass:
 - it is the fastest way to remove irrelevant posts
 - it maps directly to the post's `posting_role`
 - it is already core to the LFG identity model
+
+### Needs
+
+Options:
+
+- `Any`
+- `Tank`
+- `DPS`
+- `Support`
+
+Why this shipped in the current first pass:
+
+- it lets users browse by the teammate role a post is trying to fill
+- it maps directly to the post's `looking_for_roles`
+- it works cleanly alongside `Role` without collapsing identity and target into
+  one filter
 
 ### Rank
 
@@ -165,7 +182,7 @@ Current layout:
 
 ```text
 Browse Feed
-[Mode dropdown] [Role dropdown] [Rank dropdown] [Region dropdown]
+[Mode dropdown] [Role dropdown] [Needs dropdown] [Rank dropdown] [Region dropdown]
 ```
 
 The important thing is that the controls clearly read as real filters, not
@@ -183,7 +200,7 @@ Current request shape:
 Example:
 
 ```text
-/duos?mode=ranked&role=support&rank=diamond-master&region=NA
+/duos?mode=ranked&role=support&looking_for=dps&rank=diamond-master&region=NA
 ```
 
 Why URL-based filters are a good fit here:
@@ -199,6 +216,7 @@ The current Duos posts already expose the main fields needed for these filters:
 
 - `game_mode`
 - `posting_role`
+- `looking_for_roles`
 - `snapshot_rank_tier`
 - `snapshot_rank_division`
 - `snapshot_region`
@@ -277,7 +295,7 @@ Follow-up work that still makes sense:
 The current first-pass Duos filter release is:
 
 ```text
-Mode + Role + Rank + Region
+Mode + Role + Needs + Rank + Region
 Newest first
 URL-based
 Server-rendered

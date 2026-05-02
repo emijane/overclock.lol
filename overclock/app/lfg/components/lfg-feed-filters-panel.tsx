@@ -46,6 +46,19 @@ function buildFilterHref(
   return query ? `${pathname}?${query}` : pathname;
 }
 
+function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) {
+  const params = new URLSearchParams(searchParams.toString());
+
+  params.delete("mode");
+  params.delete("role");
+  params.delete("looking_for");
+  params.delete("rank");
+  params.delete("region");
+
+  const query = params.toString();
+  return query ? `${pathname}?${query}` : pathname;
+}
+
 function FilterDropdown({
   anyLabel,
   items,
@@ -222,7 +235,7 @@ export function LFGFeedFiltersPanel({
           </p>
           {hasActiveFilters ? (
             <Link
-              href={pathname}
+              href={buildClearFiltersHref(pathname, params)}
               className="inline-flex h-7 items-center gap-1 rounded-full bg-white/[0.07] px-2 text-[10px] font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
             >
               <XIcon className="h-3 w-3" />
