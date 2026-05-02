@@ -59,6 +59,19 @@ function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) 
   return query ? `${pathname}?${query}` : pathname;
 }
 
+function buildClearFilterHref(
+  pathname: string,
+  searchParams: URLSearchParams,
+  key: FilterKey
+) {
+  const params = new URLSearchParams(searchParams.toString());
+
+  params.delete(key);
+
+  const query = params.toString();
+  return query ? `${pathname}?${query}` : pathname;
+}
+
 function FilterDropdown({
   anyLabel,
   items,
@@ -168,7 +181,7 @@ export function LFGFeedFiltersPanel({
 
   const selectedModeLabel = selectedFilters?.mode
     ? getLFGGameModeLabel(selectedFilters.mode as LFGGameMode)
-    : "Any Mode";
+    : "Mode";
   const selectedRoleLabel = selectedFilters?.role
     ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
     : "Role";
@@ -177,10 +190,54 @@ export function LFGFeedFiltersPanel({
     : "Needs";
   const selectedRankLabel = selectedFilters?.rank
     ? getRankBracketLabel(selectedFilters.rank as LFGRankBracket)
-    : "Any Rank";
+    : "Rank";
   const selectedRegionLabel = selectedFilters?.region
     ? (selectedFilters.region as LFGRegion)
-    : "Any Region";
+    : "Region";
+  const activeFilterChips = [
+    selectedFilters?.mode
+      ? {
+          href: buildClearFilterHref(pathname, params, "mode"),
+          key: "mode",
+          label: "Mode",
+          value: getLFGGameModeLabel(selectedFilters.mode),
+        }
+      : null,
+    selectedFilters?.role
+      ? {
+          href: buildClearFilterHref(pathname, params, "role"),
+          key: "role",
+          label: "Role",
+          value: COMPETITIVE_ROLE_LABELS[selectedFilters.role],
+        }
+      : null,
+    selectedFilters?.lookingFor
+      ? {
+          href: buildClearFilterHref(pathname, params, "looking_for"),
+          key: "looking_for",
+          label: "Needs",
+          value: COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor],
+        }
+      : null,
+    selectedFilters?.rank
+      ? {
+          href: buildClearFilterHref(pathname, params, "rank"),
+          key: "rank",
+          label: "Rank",
+          value: getRankBracketLabel(selectedFilters.rank),
+        }
+      : null,
+    selectedFilters?.region
+      ? {
+          href: buildClearFilterHref(pathname, params, "region"),
+          key: "region",
+          label: "Region",
+          value: selectedFilters.region,
+        }
+      : null,
+  ].filter((chip): chip is { href: string; key: string; label: string; value: string } =>
+    Boolean(chip)
+  );
 
   return (
     <section className="px-5 py-1.5 sm:px-6 sm:py-2">
@@ -233,17 +290,32 @@ export function LFGFeedFiltersPanel({
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
             {activeCount} active listings
           </p>
+        </div>
+      </div>
+      {activeFilterChips.length > 0 ? (
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          {activeFilterChips.map((chip) => (
+            <Link
+              key={chip.key}
+              href={chip.href}
+              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-200 transition hover:border-white/[0.12] hover:text-zinc-50"
+            >
+              <span className="text-zinc-400">{chip.label}:</span>
+              <span className="text-zinc-100">{chip.value}</span>
+              <XIcon className="h-3 w-3 text-zinc-500" />
+            </Link>
+          ))}
           {hasActiveFilters ? (
             <Link
               href={buildClearFiltersHref(pathname, params)}
-              className="inline-flex h-7 items-center gap-1 rounded-full bg-white/[0.07] px-2 text-[10px] font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
+              className="inline-flex h-7 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-300 transition hover:border-white/[0.12] hover:text-zinc-50"
             >
-              <XIcon className="h-3 w-3" />
-              Clear Filters
+              Clear All
+              <XIcon className="h-3 w-3 text-zinc-500" />
             </Link>
           ) : null}
         </div>
-      </div>
+      ) : null}
     </section>
   );
 }
