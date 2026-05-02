@@ -36,7 +36,8 @@ and dropdowns can agree on one normalized range.
 
 There are also a few UX clarity issues:
 
-- `Clear All` still reads visually like a state chip more than a bulk action
+- `Clear All` still lives in the chip row, but now has lighter visual treatment
+  than selected filter chips
 
 ## Filter: Mode
 
@@ -384,15 +385,14 @@ There are also a few UX clarity issues:
 
 ### Issues
 
-- Low: `Clear All` visually resembles a removable chip, which is consistent,
-  but it is also a bulk action rather than a filter state. Some users may read
-  it as another selected filter at a glance.
+- Partially resolved: `Clear All` now has a dashed border and softer treatment,
+  which helps distinguish it from selected state chips while keeping it aligned
+  with the row.
 
 ### Recommendations
 
-- Keep current placement.
-- Consider subtle styling differentiation later if users confuse it with a real
-  filter chip.
+- Keep current placement and lighter action styling.
+- Reevaluate only if user testing still shows confusion.
 
 ## State Sync Audit
 
@@ -503,9 +503,9 @@ Actual:
    Expected:
    - bulk action should be obviously distinct enough from selected filters
    Actual:
-   - visually close to regular state chips
+   - improved, but still intentionally colocated with the selected chips
    Recommendation:
-   - consider slightly different styling if this becomes confusing in testing
+   - monitor whether the current dashed action styling is sufficient in testing
 
 ## Final Recommendation
 
@@ -515,4 +515,4 @@ settled until the remaining UX gaps are addressed.
 Priority order:
 
 1. Decide whether tier-only rank filtering is the final intended product rule
-2. Decide whether `Clear All` should be styled more like an action than a chip
+2. Reevaluate `Clear All` styling only if testing still shows confusion

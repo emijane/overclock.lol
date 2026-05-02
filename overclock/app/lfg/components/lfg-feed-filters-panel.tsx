@@ -342,7 +342,7 @@ export function LFGFeedFiltersPanel({
           {hasActiveFilters ? (
             <Link
               href={buildClearFiltersHref(pathname, params)}
-              className="inline-flex h-7 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-300 transition hover:border-white/[0.12] hover:text-zinc-50"
+              className="inline-flex h-7 items-center gap-1 rounded-full border border-dashed border-white/[0.12] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.18] hover:text-zinc-100"
             >
               Clear All
               <XIcon className="h-3 w-3 text-zinc-500" />
