@@ -277,7 +277,7 @@ That keeps the page lightweight while still exposing active-only filtering.
 
 ## Relationship To Existing LFG Lifecycle Policy
 
-This page should follow `docs/roadmap/LFG_POST_LIFECYCLE_POLICY.md`.
+This page should follow `docs/roadmap/lfg/LFG_POST_LIFECYCLE_POLICY.md`.
 
 Important aligned rules:
 
