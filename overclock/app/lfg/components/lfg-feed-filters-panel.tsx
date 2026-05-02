@@ -7,11 +7,10 @@ import { ChevronDownIcon, XIcon } from "lucide-react";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import {
-  getRankBracketLabel,
-  LFG_RANK_BRACKET_OPTIONS,
+  LFG_RANK_FILTER_OPTIONS,
   LFG_REGION_OPTIONS,
   type LFGFeedFilters,
-  type LFGRankBracket,
+  type LFGRankFilterOption,
   type LFGRegion,
 } from "@/lib/lfg/lfg-feed-filters";
 import {
@@ -26,7 +25,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type FilterKey = "looking_for" | "mode" | "role" | "rank" | "region";
+type FilterKey =
+  | "looking_for"
+  | "max_rank"
+  | "min_rank"
+  | "mode"
+  | "region"
+  | "role";
 
 function buildFilterHref(
   pathname: string,
@@ -52,7 +57,8 @@ function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) 
   params.delete("mode");
   params.delete("role");
   params.delete("looking_for");
-  params.delete("rank");
+  params.delete("min_rank");
+  params.delete("max_rank");
   params.delete("region");
 
   const query = params.toString();
@@ -146,10 +152,11 @@ export function LFGFeedFiltersPanel({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const hasActiveFilters = Boolean(
-    selectedFilters?.lookingFor ||
-    selectedFilters?.mode ||
+      selectedFilters?.lookingFor ||
+      selectedFilters?.maxRank ||
+      selectedFilters?.minRank ||
+      selectedFilters?.mode ||
       selectedFilters?.role ||
-      selectedFilters?.rank ||
       selectedFilters?.region
   );
 
@@ -168,10 +175,15 @@ export function LFGFeedFiltersPanel({
     label: COMPETITIVE_ROLE_LABELS[role],
     selected: selectedFilters?.lookingFor === role,
   }));
-  const rankItems = LFG_RANK_BRACKET_OPTIONS.map((rank) => ({
-    href: buildFilterHref(pathname, params, "rank", rank),
-    label: getRankBracketLabel(rank),
-    selected: selectedFilters?.rank === rank,
+  const minRankItems = LFG_RANK_FILTER_OPTIONS.map((rank) => ({
+    href: buildFilterHref(pathname, params, "min_rank", rank),
+    label: rank,
+    selected: selectedFilters?.minRank === rank,
+  }));
+  const maxRankItems = LFG_RANK_FILTER_OPTIONS.map((rank) => ({
+    href: buildFilterHref(pathname, params, "max_rank", rank),
+    label: rank,
+    selected: selectedFilters?.maxRank === rank,
   }));
   const regionItems = LFG_REGION_OPTIONS.map((region) => ({
     href: buildFilterHref(pathname, params, "region", region),
@@ -188,9 +200,12 @@ export function LFGFeedFiltersPanel({
   const selectedLookingForLabel = selectedFilters?.lookingFor
     ? COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor]
     : "Needs";
-  const selectedRankLabel = selectedFilters?.rank
-    ? getRankBracketLabel(selectedFilters.rank as LFGRankBracket)
-    : "Rank";
+  const selectedMinRankLabel = selectedFilters?.minRank
+    ? (selectedFilters.minRank as LFGRankFilterOption)
+    : "Min Rank";
+  const selectedMaxRankLabel = selectedFilters?.maxRank
+    ? (selectedFilters.maxRank as LFGRankFilterOption)
+    : "Max Rank";
   const selectedRegionLabel = selectedFilters?.region
     ? (selectedFilters.region as LFGRegion)
     : "Region";
@@ -219,12 +234,20 @@ export function LFGFeedFiltersPanel({
           value: COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor],
         }
       : null,
-    selectedFilters?.rank
+    selectedFilters?.minRank
       ? {
-          href: buildClearFilterHref(pathname, params, "rank"),
-          key: "rank",
-          label: "Rank",
-          value: getRankBracketLabel(selectedFilters.rank),
+          href: buildClearFilterHref(pathname, params, "min_rank"),
+          key: "min_rank",
+          label: "Min Rank",
+          value: selectedFilters.minRank,
+        }
+      : null,
+    selectedFilters?.maxRank
+      ? {
+          href: buildClearFilterHref(pathname, params, "max_rank"),
+          key: "max_rank",
+          label: "Max Rank",
+          value: selectedFilters.maxRank,
         }
       : null,
     selectedFilters?.region
@@ -270,12 +293,20 @@ export function LFGFeedFiltersPanel({
             variant="secondary"
           />
           <FilterDropdown
-            anyLabel="Any Rank"
-            items={rankItems}
+            anyLabel="Any"
+            items={minRankItems}
             pathname={pathname}
-            paramKey="rank"
+            paramKey="min_rank"
             searchParams={params}
-            selectedLabel={selectedRankLabel}
+            selectedLabel={selectedMinRankLabel}
+          />
+          <FilterDropdown
+            anyLabel="Any"
+            items={maxRankItems}
+            pathname={pathname}
+            paramKey="max_rank"
+            searchParams={params}
+            selectedLabel={selectedMaxRankLabel}
           />
           <FilterDropdown
             anyLabel="Any Region"

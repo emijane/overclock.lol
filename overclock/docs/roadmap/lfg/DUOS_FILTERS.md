@@ -46,7 +46,8 @@ The current implementation supports these filters:
 - `Mode`
 - `Role`
 - `Needs`
-- `Rank`
+- `Min Rank`
+- `Max Rank`
 - `Region`
 
 These are enough to improve discovery meaningfully without turning the feed into
@@ -99,29 +100,32 @@ Why this shipped in the current first pass:
 - it works cleanly alongside `Role` without collapsing identity and target into
   one filter
 
-### Rank
+### Min Rank / Max Rank
 
-Current grouped options:
+Options:
 
-- `Any Rank`
-- `Bronze-Silver`
-- `Gold-Plat`
-- `Diamond-Master`
-- `GM-Champion`
+- `Any`
+- `Bronze`
+- `Silver`
+- `Gold`
+- `Platinum`
+- `Diamond`
+- `Master`
+- `Grandmaster`
+- `Champion`
 
-Why grouped brackets are better than every individual division at first:
+Why this shipped:
 
-- Faster to scan
-- Less visual clutter
-- More aligned with how players broadly search in LFG
+- it gives users tighter control than grouped brackets
+- it supports an inclusive rank window without adding a complex custom range UI
+- it reads naturally for common use cases like `Gold` through `Diamond`
 
-Future versions could support:
+Current behavior:
 
-- exact tier filtering
-- "around my rank"
-- one-tier-above / one-tier-below logic
-
-But that should not be part of the current release.
+- `Min Rank` includes posts at or above the selected tier
+- `Max Rank` includes posts at or below the selected tier
+- using both creates an inclusive range
+- if the URL contains reversed bounds, the server normalizes them
 
 ### Region
 
@@ -182,7 +186,7 @@ Current layout:
 
 ```text
 Browse Feed
-[Mode dropdown] [Role dropdown] [Needs dropdown] [Rank dropdown] [Region dropdown]
+[Mode dropdown] [Role dropdown] [Needs dropdown] [Min Rank dropdown] [Max Rank dropdown] [Region dropdown]
 ```
 
 The important thing is that the controls clearly read as real filters, not
@@ -200,7 +204,7 @@ Current request shape:
 Example:
 
 ```text
-/duos?mode=ranked&role=support&looking_for=dps&rank=diamond-master&region=NA
+/duos?mode=ranked&role=support&looking_for=dps&min_rank=gold&max_rank=diamond&region=Americas
 ```
 
 Why URL-based filters are a good fit here:
@@ -224,31 +228,27 @@ The current Duos posts already expose the main fields needed for these filters:
 That means the current Duos filter release did not require a major data model
 change.
 
-## Recommended Rank Mapping
+## Rank Range Rules
 
-For the grouped filter, the current mapping is:
-
-```text
-Bronze-Silver
-  Bronze, Silver
-
-Gold-Plat
-  Gold, Platinum
-
-Diamond-Master
-  Diamond, Master
-
-GM-Champion
-  Grandmaster, Champion
-```
-
-`Unranked` currently falls under:
+The current rank filters use exact tiers for the bounds:
 
 ```text
-Any Rank only
+Bronze
+Silver
+Gold
+Platinum
+Diamond
+Master
+Grandmaster
+Champion
 ```
 
-unless product rules later decide otherwise.
+`Unranked` is not exposed as a min/max bound option.
+
+In the current release:
+
+- no min/max rank filter means unranked posts can still appear
+- any active min/max rank filter only matches ranked tiers within the selected range
 
 ## Empty States
 
@@ -295,7 +295,7 @@ Follow-up work that still makes sense:
 The current first-pass Duos filter release is:
 
 ```text
-Mode + Role + Needs + Rank + Region
+Mode + Role + Needs + Min Rank + Max Rank + Region
 Newest first
 URL-based
 Server-rendered

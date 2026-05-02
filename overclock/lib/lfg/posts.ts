@@ -2,7 +2,7 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { createClient } from "@/lib/supabase/server";
-import { getRankBracketTiers, type LFGFeedFilters } from "./lfg-feed-filters";
+import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
 import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
 import {
@@ -223,8 +223,14 @@ export async function getActiveLFGPosts(
     query = query.eq("snapshot_region", filters.region);
   }
 
-  if (filters?.rank) {
-    query = query.in("snapshot_rank_tier", getRankBracketTiers(filters.rank));
+  if (filters?.minRank || filters?.maxRank) {
+    query = query.in(
+      "snapshot_rank_tier",
+      getLFGRankRangeTiers({
+        maxRank: filters?.maxRank,
+        minRank: filters?.minRank,
+      })
+    );
   }
 
   const { data, error } = await query.limit(30);
