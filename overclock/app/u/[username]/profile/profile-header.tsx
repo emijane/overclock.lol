@@ -90,10 +90,6 @@ export function ProfileHeader({
               aria-hidden="true"
             />
           )}
-          <div
-            className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#05070b] via-[#05070b]/70 to-transparent"
-            aria-hidden="true"
-          />
           <div className="relative z-10 flex items-start justify-between gap-3">
             <div>
               {isOwner ? <ProfileCoverUploadButton /> : null}
