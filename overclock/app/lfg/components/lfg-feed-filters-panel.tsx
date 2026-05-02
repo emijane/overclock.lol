@@ -201,11 +201,11 @@ export function LFGFeedFiltersPanel({
     ? `Needs: ${COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor]}`
     : "Needs";
   const selectedMinRankLabel = selectedFilters?.minRank
-    ? `Min Rank: ${selectedFilters.minRank as LFGRankFilterOption}`
-    : "Min Rank";
+    ? `Min rank: ${selectedFilters.minRank as LFGRankFilterOption}`
+    : "Min rank";
   const selectedMaxRankLabel = selectedFilters?.maxRank
-    ? `Max Rank: ${selectedFilters.maxRank as LFGRankFilterOption}`
-    : "Max Rank";
+    ? `Max rank: ${selectedFilters.maxRank as LFGRankFilterOption}`
+    : "Max rank";
   const selectedRegionLabel = selectedFilters?.region
     ? (selectedFilters.region as LFGRegion)
     : "Region";
@@ -267,7 +267,7 @@ export function LFGFeedFiltersPanel({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-1.5">
           <FilterDropdown
-            anyLabel="Any Mode"
+            anyLabel="Any mode"
             items={modeItems}
             pathname={pathname}
             paramKey="mode"
@@ -275,7 +275,7 @@ export function LFGFeedFiltersPanel({
             selectedLabel={selectedModeLabel}
           />
           <FilterDropdown
-            anyLabel="Any"
+            anyLabel="Any role"
             items={roleItems}
             pathname={pathname}
             paramKey="role"
@@ -284,7 +284,7 @@ export function LFGFeedFiltersPanel({
             variant="primary"
           />
           <FilterDropdown
-            anyLabel="Any"
+            anyLabel="Any role"
             items={lookingForItems}
             pathname={pathname}
             paramKey="looking_for"
@@ -293,7 +293,7 @@ export function LFGFeedFiltersPanel({
             variant="secondary"
           />
           <FilterDropdown
-            anyLabel="Any"
+            anyLabel="Any rank"
             items={minRankItems}
             pathname={pathname}
             paramKey="min_rank"
@@ -301,7 +301,7 @@ export function LFGFeedFiltersPanel({
             selectedLabel={selectedMinRankLabel}
           />
           <FilterDropdown
-            anyLabel="Any"
+            anyLabel="Any rank"
             items={maxRankItems}
             pathname={pathname}
             paramKey="max_rank"
@@ -309,7 +309,7 @@ export function LFGFeedFiltersPanel({
             selectedLabel={selectedMaxRankLabel}
           />
           <FilterDropdown
-            anyLabel="Any Region"
+            anyLabel="Any region"
             items={regionItems}
             pathname={pathname}
             paramKey="region"
