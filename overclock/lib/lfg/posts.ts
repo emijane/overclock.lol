@@ -211,6 +211,10 @@ export async function getActiveLFGPosts(
     query = query.eq("posting_role", filters.role);
   }
 
+  if (filters?.lookingFor) {
+    query = query.contains("looking_for_roles", [filters.lookingFor]);
+  }
+
   if (filters?.mode) {
     query = query.eq("game_mode", filters.mode);
   }

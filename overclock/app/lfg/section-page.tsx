@@ -48,6 +48,7 @@ export async function LFGSectionPage({
   const feedFilters =
     config.type === "duos" || config.type === "stacks"
       ? parseLFGFeedFilters({
+          lookingFor: pickValue(params.looking_for),
           mode: pickValue(params.mode),
           rank: pickValue(params.rank),
           region: pickValue(params.region),

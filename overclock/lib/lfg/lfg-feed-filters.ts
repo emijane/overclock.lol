@@ -15,6 +15,7 @@ export type LFGRankBracket = (typeof LFG_RANK_BRACKET_OPTIONS)[number];
 export type LFGRegion = (typeof REGION_OPTIONS)[number];
 
 export type LFGFeedFilters = {
+  lookingFor?: CompetitiveRole;
   mode?: LFGGameMode;
   rank?: LFGRankBracket;
   region?: LFGRegion;
@@ -30,12 +31,17 @@ export function isLFGRegion(value: string): value is LFGRegion {
 }
 
 export function parseLFGFeedFilters(input: {
+  lookingFor?: string;
   mode?: string;
   rank?: string;
   region?: string;
   role?: string;
 }): LFGFeedFilters {
   return {
+    lookingFor:
+      input.lookingFor && isCompetitiveRole(input.lookingFor)
+        ? input.lookingFor
+        : undefined,
     mode: input.mode && isLFGGameMode(input.mode) ? input.mode : undefined,
     rank: input.rank && isLFGRankBracket(input.rank) ? input.rank : undefined,
     region: input.region && isLFGRegion(input.region) ? input.region : undefined,

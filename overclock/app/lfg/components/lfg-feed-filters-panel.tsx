@@ -113,6 +113,7 @@ export function LFGFeedFiltersPanel({
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const hasActiveFilters = Boolean(
+    selectedFilters?.lookingFor ||
     selectedFilters?.mode ||
       selectedFilters?.role ||
       selectedFilters?.rank ||
