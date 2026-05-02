@@ -24,6 +24,20 @@ export function isLFGRankFilterOption(value: string): value is LFGRankFilterOpti
   return LFG_RANK_FILTER_OPTIONS.includes(value as LFGRankFilterOption);
 }
 
+export function normalizeLFGRankFilterOption(
+  value: string | undefined
+): LFGRankFilterOption | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+
+  return LFG_RANK_FILTER_OPTIONS.find(
+    (rankOption) => rankOption.toLowerCase() === normalizedValue
+  );
+}
+
 export function isLFGRegion(value: string): value is LFGRegion {
   return REGION_OPTIONS.includes(value as LFGRegion);
 }
@@ -32,7 +46,7 @@ function getRankOrderIndex(rank: LFGRankFilterOption) {
   return LFG_RANK_FILTER_OPTIONS.indexOf(rank);
 }
 
-function normalizeRankBounds(input: {
+export function normalizeLFGRankBounds(input: {
   maxRank?: LFGRankFilterOption;
   minRank?: LFGRankFilterOption;
 }) {
@@ -55,11 +69,9 @@ export function parseLFGFeedFilters(input: {
   region?: string;
   role?: string;
 }): LFGFeedFilters {
-  const parsedMinRank =
-    input.minRank && isLFGRankFilterOption(input.minRank) ? input.minRank : undefined;
-  const parsedMaxRank =
-    input.maxRank && isLFGRankFilterOption(input.maxRank) ? input.maxRank : undefined;
-  const normalizedRankBounds = normalizeRankBounds({
+  const parsedMinRank = normalizeLFGRankFilterOption(input.minRank);
+  const parsedMaxRank = normalizeLFGRankFilterOption(input.maxRank);
+  const normalizedRankBounds = normalizeLFGRankBounds({
     maxRank: parsedMaxRank,
     minRank: parsedMinRank,
   });
@@ -81,7 +93,7 @@ export function getLFGRankRangeTiers(input: {
   maxRank?: LFGRankFilterOption;
   minRank?: LFGRankFilterOption;
 }) {
-  const normalizedRankBounds = normalizeRankBounds(input);
+  const normalizedRankBounds = normalizeLFGRankBounds(input);
   const minRankIndex = normalizedRankBounds.minRank
     ? getRankOrderIndex(normalizedRankBounds.minRank)
     : 0;
