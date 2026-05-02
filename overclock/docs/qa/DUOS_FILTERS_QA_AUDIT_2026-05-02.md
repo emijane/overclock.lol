@@ -30,18 +30,15 @@ version. Mode, Role, Needs, Region, and the new Min/Max rank model are all
 wired into the server-rendered feed query, and the selected-filter chips give
 users a clear way to remove individual filters.
 
-The largest issue found is a state-sync bug in the Min Rank / Max Rank flow.
-If the user creates reversed bounds such as `min_rank=diamond` and
-`max_rank=gold`, the server normalizes the results to `Gold -> Diamond`, but
-the URL is left reversed. That means the visible dropdown state and chips can
-disagree with the raw query string. This is a real correctness and shareability
-problem.
+The original high-severity rank-range state sync issue has now been addressed:
+reversed valid rank bounds are canonicalized so the URL, server query, chips,
+and dropdowns can agree on one normalized range.
 
 There are also a few UX clarity issues:
 
-- `Role` and `Needs` lose their labels after selection and rely on position
-- `Any` is overly generic inside some dropdown menus
 - rank-range expectations around `Unranked` are not obvious
+- filtered empty states still do not explain zero-result states
+- `Clear All` still reads visually like a state chip more than a bulk action
 
 ## Filter: Mode
 
@@ -129,16 +126,12 @@ There are also a few UX clarity issues:
 
 ### Issues
 
-- Medium: when selected, the trigger becomes just `Support`, `Tank`, or `DPS`.
-  Next to `Needs`, this can still be misread quickly, especially on mobile or
-  once the row wraps.
+- Resolved: selected trigger labels now retain context with phrasing such as
+  `Role: Support`.
 
 ### Recommendations
 
-- Consider preserving context in the trigger when selected, for example:
-  - `Role: Support`
-  - `Needs: DPS`
-- If that feels too long, use small inline labels above or inside the trigger.
+- Keep the explicit selected-state wording.
 
 ## Filter: Needs
 
@@ -175,17 +168,14 @@ There are also a few UX clarity issues:
 
 ### Issues
 
-- Medium: same trigger-label clarity problem as `Role`. Once selected, `Needs`
-  becomes just `DPS` / `Tank` / `Support`, which is understandable only if the
-  user remembers the left-to-right order.
+- Resolved: selected trigger labels now retain context with phrasing such as
+  `Needs: DPS`.
 
-- Low: the dropdown menu item `Any` is generic and depends entirely on the open
-  menu context. It is usable, but weaker than `Any Needs`.
+- Resolved: the dropdown reset label is now explicit instead of generic.
 
 ### Recommendations
 
-- Prefer `Any Needs` in the menu list.
-- Consider keeping `Needs` visible in the trigger after selection.
+- Keep the explicit selected-state wording and reset labels.
 
 ## Filter: Min Rank / Max Rank
 
@@ -229,18 +219,16 @@ There are also a few UX clarity issues:
      - the UI should automatically rewrite the URL to `min_rank=gold&max_rank=diamond`, or
      - the UI should refuse the invalid order
    Actual:
-   - server-side parsing normalizes the bounds for filtering
-   - visible triggers and chips show normalized values
-   - raw URL is left reversed
-   - this creates a source-of-truth mismatch between query string and visible state
+   - valid reversed bounds are now canonicalized into normalized order
+   - URL, visible triggers, chips, and server query should now agree
 
 6. Remove one rank chip from reversed range
    Expected:
    - removing one bound should leave the user with the remaining bound they can
      currently see in the UI
    Actual:
-   - because chip removal operates on the raw URL params, the remaining bound
-     can be surprising when the URL was reversed first
+   - should now behave predictably because canonicalization happens before
+     render
 
 7. No results range
    Expected:
@@ -251,16 +239,7 @@ There are also a few UX clarity issues:
 
 ### Issues
 
-- High: reversed Min Rank / Max Rank state sync bug.
-  Expected vs actual mismatch:
-  - expected: URL, dropdowns, chips, and query behavior all reflect the same
-    normalized rank range
-  - actual: query behavior and visible UI normalize, but the URL remains
-    reversed
-  Impact:
-  - shared URLs are misleading
-  - debugging is harder
-  - chip removal and further edits become unintuitive
+- Resolved: reversed Min Rank / Max Rank state sync bug.
 
 - Medium: `Unranked` behavior is not obvious.
   Current behavior:
@@ -279,8 +258,6 @@ There are also a few UX clarity issues:
 
 ### Recommendations
 
-- Rewrite the URL when rank bounds are normalized so the query string always
-  matches the visible state.
 - Add explicit product copy for how unranked is handled, or surface `Unranked`
   as an explicit option if that matters.
 - Decide whether tier-only filtering is the intended product rule. If yes,
@@ -364,9 +341,7 @@ There are also a few UX clarity issues:
    - changing a dropdown updates the corresponding chip
    - removing a chip updates the corresponding dropdown back to placeholder
    Actual:
-   - matches current implementation in normal cases
-   - broken for reversed rank bounds because the visible chips can represent a
-     normalized range while the URL remains reversed
+   - matches current implementation
 
 ### Issues
 
@@ -376,7 +351,7 @@ There are also a few UX clarity issues:
 
 - Low: chips and triggers use different wording density.
   Example:
-  - trigger: `Support`
+  - trigger: `Role: Support`
   - chip: `Role: Support`
   This is not wrong, but it does create two different levels of clarity.
 
@@ -434,8 +409,7 @@ Actual:
 
 - generally works
 - invalid values are ignored by `parseLFGFeedFilters`
-- rank bounds are the exception because reversed values remain in the URL even
-  after the UI normalizes them
+- valid rank bounds are normalized into canonical URL order
 
 ### URL -> Server Query
 
@@ -446,7 +420,7 @@ Expected:
 Actual:
 
 - mostly true
-- rank bounds are functionally normalized server-side before querying
+- rank bounds are normalized server-side before querying
 
 ### URL -> Visible UI
 
@@ -457,8 +431,7 @@ Expected:
 
 Actual:
 
-- true for Mode, Role, Needs, Region
-- not fully true for reversed Min Rank / Max Rank URLs
+- true for the current filter set, including canonicalized rank bounds
 
 ## Edge Cases
 
@@ -492,20 +465,22 @@ Actual:
    Expected:
    - normalized everywhere or blocked
    Actual:
-   - normalized only in parsed server state, not in the URL
+   - valid bounds are now normalized in both parsed server state and the URL
 
 ## UX Issues
 
 1. Medium: `Role` and `Needs` are clearer as placeholders than as selected
-   triggers. Once selected, they become bare values and lose context.
+   triggers.
+   Status:
+   - mostly resolved by explicit selected-state labels
 
 2. Medium: `Min Rank` / `Max Rank` suggests precise range control, but the
    implementation is tier-only, not division-aware.
 
-3. Medium: reversed rank bounds can produce a visible state that disagrees with
-   the shareable URL.
+3. Resolved: reversed rank bounds no longer need to produce a visible state
+   that disagrees with the shareable URL.
 
-4. Low: some dropdown `Any` labels are too generic inside the menu list.
+4. Resolved: dropdown reset labels are now explicit instead of generic.
 
 5. Low: no filter-aware empty state means users may not realize a zero-result
    feed is caused by their current selections.
@@ -514,29 +489,9 @@ Actual:
 
 ## Bugs
 
-### High
-
-1. Reversed Min Rank / Max Rank state sync bug
-   Expected:
-   - URL, chips, dropdowns, and query behavior all agree
-   Actual:
-   - query behavior and visible state are normalized, but URL params can remain
-     reversed
-   Recommendation:
-   - canonicalize the URL after normalization or prevent invalid bound order in
-     the first place
-
 ### Medium
 
-2. Selected `Role` / `Needs` triggers lose context
-   Expected:
-   - a selected trigger should remain self-explanatory
-   Actual:
-   - selected values are bare role names and depend on position for meaning
-   Recommendation:
-   - keep context in trigger labels or add persistent inline labels
-
-3. Rank range semantics are stronger than the actual precision
+1. Rank range semantics are stronger than the actual precision
    Expected:
    - users should understand whether rank filtering is tier-only or
      division-aware
@@ -546,7 +501,7 @@ Actual:
    - clarify tier-only behavior or extend the system later if finer precision is
      needed
 
-4. Empty states do not explain filter-caused zero results
+2. Empty states do not explain filter-caused zero results
    Expected:
    - filtered empty states should acknowledge active filters
    Actual:
@@ -556,15 +511,7 @@ Actual:
 
 ### Low
 
-5. Generic `Any` menu labels reduce clarity
-   Expected:
-   - labels should be understandable even inside the open menu
-   Actual:
-   - several menus use plain `Any`
-   Recommendation:
-   - use `Any Role`, `Any Needs`, `Any Min Rank`, `Any Max Rank`
-
-6. `Clear All` resembles a normal selected chip
+3. `Clear All` resembles a normal selected chip
    Expected:
    - bulk action should be obviously distinct enough from selected filters
    Actual:
@@ -575,11 +522,10 @@ Actual:
 ## Final Recommendation
 
 The Duos filter system is close to solid, but it should not be treated as fully
-settled until the rank-range state sync bug is fixed.
+settled until the remaining UX gaps are addressed.
 
 Priority order:
 
-1. Fix reversed Min Rank / Max Rank URL normalization
-2. Improve selected-state clarity for `Role` and `Needs`
-3. Add filter-aware empty-state messaging
-4. Tighten `Any` label clarity
+1. Add filter-aware empty-state messaging
+2. Clarify rank-range precision and `Unranked` handling
+3. Decide whether `Clear All` should be styled more like an action than a chip
