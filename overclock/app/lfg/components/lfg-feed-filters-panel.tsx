@@ -195,16 +195,16 @@ export function LFGFeedFiltersPanel({
     ? getLFGGameModeLabel(selectedFilters.mode as LFGGameMode)
     : "Mode";
   const selectedRoleLabel = selectedFilters?.role
-    ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
+    ? `Role: ${COMPETITIVE_ROLE_LABELS[selectedFilters.role]}`
     : "Role";
   const selectedLookingForLabel = selectedFilters?.lookingFor
-    ? COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor]
+    ? `Needs: ${COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor]}`
     : "Needs";
   const selectedMinRankLabel = selectedFilters?.minRank
-    ? (selectedFilters.minRank as LFGRankFilterOption)
+    ? `Min Rank: ${selectedFilters.minRank as LFGRankFilterOption}`
     : "Min Rank";
   const selectedMaxRankLabel = selectedFilters?.maxRank
-    ? (selectedFilters.maxRank as LFGRankFilterOption)
+    ? `Max Rank: ${selectedFilters.maxRank as LFGRankFilterOption}`
     : "Max Rank";
   const selectedRegionLabel = selectedFilters?.region
     ? (selectedFilters.region as LFGRegion)
