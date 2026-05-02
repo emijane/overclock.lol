@@ -50,9 +50,9 @@ export function UserMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full border border-zinc-700 bg-zinc-900 text-zinc-100 transition hover:bg-zinc-800"
+          className="rounded-full"
         >
-          <Avatar className="h-9 w-9 border border-zinc-700">
+          <Avatar className="h-9 w-9">
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt={`${visibleName} avatar`} />
             ) : null}
@@ -64,7 +64,7 @@ export function UserMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-56 border border-zinc-800 bg-zinc-950 text-zinc-100"
+        className="w-56 border border-white/10 !bg-black text-zinc-100"
       >
         <DropdownMenuLabel className="px-3 py-2">
           <span className="block text-sm font-semibold text-zinc-100">
@@ -75,7 +75,7 @@ export function UserMenu({
         <DropdownMenuGroup>
           <DropdownMenuItem
             asChild
-            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+            className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
           >
             <Link href={profileHref}>
               <UserIcon />
@@ -84,7 +84,7 @@ export function UserMenu({
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild
-            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+            className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
           >
             <Link href="/account/competitive">
               <TrophyIcon />
@@ -93,7 +93,7 @@ export function UserMenu({
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild
-            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+            className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
           >
             <Link href="/account/posts">
               <MessageSquareIcon />
@@ -102,7 +102,7 @@ export function UserMenu({
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild
-            className="text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100"
+            className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
           >
             <Link href="/account">
               <SettingsIcon />
@@ -117,7 +117,7 @@ export function UserMenu({
             event.preventDefault();
             handleSignOut();
           }}
-          className="text-amber-400 focus:bg-amber-950/40 focus:text-amber-300"
+          className="text-amber-400 focus:bg-amber-950/30 focus:text-amber-300"
         >
           <LogOutIcon />
           {isPending ? "Signing out..." : "Sign out"}
