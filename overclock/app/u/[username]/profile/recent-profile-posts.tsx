@@ -149,15 +149,12 @@ export function RecentProfilePosts({
                 </div>
 
                 <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
-                  <span className="uppercase tracking-[0.1em] text-zinc-500">
-                    Looking for
-                  </span>
                   {post.lookingForRoles.map((role) => (
                     <span
                       key={`${post.id}-recent-looking-for-${role}`}
-                      className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 text-zinc-200"
+                      className="rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 font-medium tracking-[-0.01em] text-zinc-100"
                     >
-                      {getLFGLookingForRoleLabel(role)}
+                      LF {getLFGLookingForRoleLabel(role)}
                     </span>
                   ))}
                 </div>

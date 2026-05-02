@@ -25,6 +25,8 @@ The current product shape is profile-first rather than feed-first:
   a dedicated create route at `/duos/create`.
 - `/stacks`, `/scrims`, and `/teams` still support inline browsing and creating
   LFG posts, with first-pass URL-based filters currently enabled on `/stacks`.
+- LFG posts now store both `posting_role` and `looking_for_roles`, but
+  browsing filters currently only use the posting-role side of that model.
 
 The homepage currently redirects to `/login`.
 
@@ -78,6 +80,8 @@ These are already visible in the codebase today:
   flows.
 - `/teams` and `/scrims` do not yet have the first-pass feed filters now used
   on `/duos` and `/stacks`.
+- The feed does not yet expose filters for the new `looking_for_roles` post
+  field, so users cannot yet browse by role pairings like "Support LF DPS".
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
 
@@ -100,6 +104,8 @@ These are already visible in the codebase today:
 - Build rank verification for high-rank role claims and related trust display.
 - Decide whether `/teams` and `/scrims` should get first-pass filters similar
   to `/duos` and `/stacks`.
+- Add connected LFG role filters so users can browse by both `posting_role`
+  and `looking_for_roles` without overcomplicating the feed UI.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 

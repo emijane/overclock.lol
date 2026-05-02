@@ -196,13 +196,12 @@ export function LFGPostCard({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-            <span className="uppercase tracking-[0.08em] text-zinc-500">Looking for</span>
             {post.lookingForRoles.map((role) => (
               <span
                 key={`${post.id}-looking-for-${role}`}
-                className="rounded-full border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 text-zinc-200"
+                className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-medium tracking-[-0.01em] text-zinc-100"
               >
-                {getLFGLookingForRoleLabel(role)}
+                LF {getLFGLookingForRoleLabel(role)}
               </span>
             ))}
           </div>
