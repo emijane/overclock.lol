@@ -73,9 +73,8 @@ export function LFGPostCard({
               <img
                 src={post.author.coverImageUrl}
                 alt=""
-                className="h-full w-full object-cover opacity-[0.18]"
+                className="h-full w-full object-cover brightness-50"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.10)_0%,rgba(0,0,0,0.18)_44%,rgba(5,7,11,0.94)_100%)]" />
             </>
           ) : null}
         </div>
