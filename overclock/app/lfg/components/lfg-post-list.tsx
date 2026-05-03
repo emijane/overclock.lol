@@ -9,6 +9,7 @@ type LFGPostListProps = {
   emptyStateTitle: string;
   errorMessage?: string | null;
   hasActiveFilters?: boolean;
+  layout?: "list" | "grid-3";
   posts: LFGPost[];
   retryHref?: string;
 };
@@ -51,6 +52,7 @@ export function LFGPostList({
   emptyStateTitle,
   errorMessage,
   hasActiveFilters = false,
+  layout = "list",
   posts,
   retryHref,
 }: LFGPostListProps) {
@@ -84,7 +86,13 @@ export function LFGPostList({
 
   return (
     <section className="px-5 py-2 sm:px-6 sm:py-3">
-      <div className="grid gap-3">
+      <div
+        className={
+          layout === "grid-3"
+            ? "grid gap-3 md:grid-cols-2 xl:grid-cols-3"
+            : "grid gap-3"
+        }
+      >
         {posts.map((post) => {
           return (
             <LFGPostCard

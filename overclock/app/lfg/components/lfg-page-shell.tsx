@@ -256,6 +256,7 @@ export async function LFGPageShell({
         className={`flex flex-col ${
           isComposerOnlyPage ? "flex-1 gap-2" : "gap-3"
         }`}
+        maxWidthClassName="max-w-[88rem]"
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
@@ -378,6 +379,7 @@ export async function LFGPageShell({
                   emptyStateTitle={emptyStateTitle}
                   errorMessage={pageData.postsErrorMessage}
                   hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
+                  layout={type === "duos" ? "grid-3" : "list"}
                   posts={pageData.posts}
                   retryHref={sectionHref}
                 />
