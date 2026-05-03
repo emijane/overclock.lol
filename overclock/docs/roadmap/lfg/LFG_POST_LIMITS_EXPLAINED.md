@@ -2,51 +2,32 @@
 
 Date: 2026-05-03
 
-This note explains how LFG posting limits work today.
+This note explains the current temporary testing policy for LFG posting.
 
-## Current Active Limit
+## Current Testing Policy
 
-- Maximum `2` active posts per role per section
-- This is checked per:
-  - user
-  - section
-  - role
-- Only `status = "active"` posts inside the active visibility window count
+- Active posts still expire from active surfaces after `12` hours.
+- Active slot limits are currently disabled for testing.
+- Rolling per-hour creation rate limits are currently disabled for testing.
+- Duplicate active posts with the exact same normalized title, section, mode,
+  and posting role are still blocked.
 
-Examples:
-- A user can have up to `2` active `Tank` posts in `/duos`
-- A user can also have up to `2` active `DPS` posts in `/duos`
-- A user can also have up to `2` active `Tank` posts in `/stacks`
+## Still Enforced
 
-Important behavior:
-- Closing a post frees the active slot immediately
-- Expired posts do not count toward active slots
-
-## What Happens When A User Closes A Post?
-
-Timeline:
-
-1. `1:00 PM` create Tank post in `/duos`
-2. `1:10 PM` create Tank post in `/duos`
-
-Result:
-
-- The user now has `2` active Tank posts in `/duos`
-- A third active Tank post is blocked by the active slot limit
-
-If the user closes one post at `1:15 PM`:
-
-- They now have only `1` active Tank post in `/duos`
-- The active slot limit no longer blocks them
-- They can create another Tank post immediately if no other rule blocks it
+- Auth and ownership checks
+- Valid section, mode, and role validation
+- Title validation
+- Duplicate active post prevention on matching normalized title + role + mode + section
 
 ## Simple Summary
 
-- The active slot limit controls how many live posts a user can currently hold
-- Closing a post frees that slot immediately
+- You can currently create posts without active-count or rolling-window caps.
+- The only creation guard that still intentionally blocks testing is duplicate
+  active posts with the same normalized identity.
 
 ## Current Policy Summary
 
 - Active posts expire from active surfaces after `12` hours
-- Maximum `2` active posts per role per section
+- There is currently no active-post slot limit
 - There is currently no rolling per-hour creation rate limit
+- Duplicate active posts are still blocked

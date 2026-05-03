@@ -57,11 +57,11 @@ export function LFGPostCard({
 
   return (
     <article
-      className="rounded-[18px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_14px_var(--profile-rank-glow)] transition-[box-shadow,filter] duration-200 ease-out hover:shadow-[0_0_28px_var(--profile-rank-glow),0_0_12px_var(--profile-rank-border)] hover:brightness-110"
+      className="h-full rounded-[18px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_14px_var(--profile-rank-glow)] transition-[box-shadow,filter] duration-200 ease-out hover:shadow-[0_0_28px_var(--profile-rank-glow),0_0_12px_var(--profile-rank-border)] hover:brightness-110"
       style={rankAccentStyle}
     >
-      <div className="min-w-0 flex-1 rounded-[17px] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.05]">
-        <div className="flex flex-col gap-2.5">
+      <div className="flex h-full min-w-0 flex-col rounded-[17px] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.05]">
+        <div className="flex flex-1 flex-col gap-2.5">
           {sectionLabel || statusPill ? (
             <div className="flex flex-wrap items-center gap-2">
               {sectionLabel ? (
@@ -77,9 +77,9 @@ export function LFGPostCard({
             <div className="flex min-w-0 items-center gap-3.5">
               <RankedAvatar
                 avatarUrl={post.author.avatarUrl}
-                className="h-[72px] w-[72px] shrink-0"
+                className="h-14 w-14 shrink-0"
                 displayName={visibleName}
-                fallbackClassName="text-lg font-semibold text-zinc-100"
+                fallbackClassName="text-sm font-semibold text-zinc-100"
                 fallbackText={visibleName.slice(0, 2).toUpperCase()}
                 rankTier={post.rankTier}
                 ringClassName="-inset-[1.5px] opacity-75"
@@ -196,7 +196,7 @@ export function LFGPostCard({
           </div>
 
           {post.heroPool.length > 0 ? (
-            <div>
+            <div className="mt-auto pt-1">
               <p className="mb-2 text-[11px] font-medium text-zinc-500">
                 Hero pool
               </p>

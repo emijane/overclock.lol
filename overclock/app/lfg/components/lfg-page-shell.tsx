@@ -256,7 +256,7 @@ export async function LFGPageShell({
         className={`flex flex-col ${
           isComposerOnlyPage ? "flex-1 gap-2" : "gap-3"
         }`}
-        maxWidthClassName="max-w-[88rem]"
+        maxWidthClassName="max-w-[96rem]"
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">

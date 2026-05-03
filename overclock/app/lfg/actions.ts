@@ -24,7 +24,6 @@ import {
   closeOwnedActiveLFGPost,
   createLFGPostAtomically,
   hasMatchingActiveLFGPost,
-  hasReachedActiveLFGPostLimit,
 } from "@/lib/lfg/posts";
 
 function lfgRedirect(
@@ -194,13 +193,6 @@ export async function createLFGPost(formData: FormData) {
         );
       }
 
-      if (result.errorCode === "active_slot_limit") {
-        lfgRedirect(
-          lfgTypeValue,
-          `You can only keep 2 active ${COMPETITIVE_ROLE_LABELS[postingRole]} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
-        );
-      }
-
       if (
         result.errorCode === "unauthenticated" ||
         result.errorCode === "forbidden"
@@ -219,23 +211,16 @@ export async function createLFGPost(formData: FormData) {
     });
 
     let hasDuplicateActivePost = false;
-    let hasReachedActiveSlotLimit = false;
     try {
-      [hasDuplicateActivePost, hasReachedActiveSlotLimit] =
-        await Promise.all([
-          hasMatchingActiveLFGPost({
-            gameMode,
-            lfgType: lfgTypeValue,
-            postingRole,
-            profileId: profile.id,
-            title,
-          }),
-          hasReachedActiveLFGPostLimit({
-            lfgType: lfgTypeValue,
-            postingRole,
-            profileId: profile.id,
-          }),
-        ]);
+      [hasDuplicateActivePost] = await Promise.all([
+        hasMatchingActiveLFGPost({
+          gameMode,
+          lfgType: lfgTypeValue,
+          postingRole,
+          profileId: profile.id,
+          title,
+        }),
+      ]);
     } catch (diagnosticError) {
       console.error("LFG post creation diagnostics failed", {
         diagnosticError,
@@ -249,13 +234,6 @@ export async function createLFGPost(formData: FormData) {
       lfgRedirect(
         lfgTypeValue,
         "You already have an active post in this section with this title."
-      );
-    }
-
-    if (hasReachedActiveSlotLimit) {
-      lfgRedirect(
-        lfgTypeValue,
-        `You can only keep 2 active ${COMPETITIVE_ROLE_LABELS[postingRole]} posts in this section at once. Close one of your active posts or wait for it to expire before posting again.`
       );
     }
 
