@@ -6,11 +6,7 @@ import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
-import {
-  getLFGGameModeLabel,
-  getLFGLookingForRoleLabel,
-  type LFGPost,
-} from "@/lib/lfg/lfg-post-types";
+import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
@@ -61,7 +57,7 @@ export function LFGPostCard({
 
   return (
     <article
-      className="rounded-[18px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_20px_var(--profile-rank-glow)]"
+      className="rounded-[18px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_14px_var(--profile-rank-glow)] transition-[box-shadow,filter] duration-200 ease-out hover:shadow-[0_0_28px_var(--profile-rank-glow),0_0_12px_var(--profile-rank-border)] hover:brightness-110"
       style={rankAccentStyle}
     >
       <div className="min-w-0 flex-1 rounded-[17px] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.05]">
@@ -90,19 +86,19 @@ export function LFGPostCard({
               />
               <div className="min-w-0">
                 <div className="flex min-w-0 flex-col">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    {profileHref ? (
-                      <Link
-                        href={profileHref}
-                        className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-200"
-                      >
-                        {displayName}
-                      </Link>
-                    ) : (
-                      <p className="truncate text-sm font-semibold text-zinc-100">
-                        {displayName}
-                      </p>
-                    )}
+                  {profileHref ? (
+                    <Link
+                      href={profileHref}
+                      className="block truncate text-sm font-semibold text-zinc-100 transition hover:text-sky-200"
+                    >
+                      {displayName}
+                    </Link>
+                  ) : (
+                    <p className="truncate text-sm font-semibold text-zinc-100">
+                      {displayName}
+                    </p>
+                  )}
+                  <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                     {post.author.username ? (
                       profileHref ? (
                         <Link
@@ -155,18 +151,6 @@ export function LFGPostCard({
                       );
                     })}
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-zinc-400">
-                    {rankIconSrc ? (
-                      <Image
-                        src={rankIconSrc}
-                        alt={`${rankedRoleLabel} rank icon`}
-                        width={18}
-                        height={18}
-                        className="h-[18px] w-[18px] shrink-0 object-contain"
-                      />
-                    ) : null}
-                    <span className="text-zinc-300">{rankedRoleLabel}</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -197,17 +181,18 @@ export function LFGPostCard({
             <h2 className="min-w-0 text-[1.18rem] font-semibold leading-6 tracking-[-0.04em] text-zinc-50">
               {post.title}
             </h2>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-            {post.lookingForRoles.map((role) => (
-              <span
-                key={`${post.id}-looking-for-${role}`}
-                className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-medium tracking-[-0.01em] text-zinc-100"
-              >
-                LF {getLFGLookingForRoleLabel(role)}
-              </span>
-            ))}
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-zinc-400">
+              {rankIconSrc ? (
+                <Image
+                  src={rankIconSrc}
+                  alt={`${rankedRoleLabel} rank icon`}
+                  width={18}
+                  height={18}
+                  className="h-[18px] w-[18px] shrink-0 object-contain"
+                />
+              ) : null}
+              <span className="text-zinc-300">{rankedRoleLabel}</span>
+            </div>
           </div>
 
           {post.heroPool.length > 0 ? (
