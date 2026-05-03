@@ -229,6 +229,10 @@ export async function getActiveLFGPosts(
     query = query.eq("game_mode", filters.mode);
   }
 
+  if (filters?.search) {
+    query = query.ilike("title", `%${filters.search}%`);
+  }
+
   if (filters?.region) {
     query = query.eq("snapshot_region", filters.region);
   }

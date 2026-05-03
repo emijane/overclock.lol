@@ -18,6 +18,7 @@ export type LFGFeedFilters = {
   mode?: LFGGameMode;
   region?: LFGRegion;
   role?: CompetitiveRole;
+  search?: string;
 };
 
 export function hasActiveLFGFeedFilters(filters?: LFGFeedFilters) {
@@ -27,7 +28,8 @@ export function hasActiveLFGFeedFilters(filters?: LFGFeedFilters) {
       filters?.minRank ||
       filters?.mode ||
       filters?.region ||
-      filters?.role
+      filters?.role ||
+      filters?.search
   );
 }
 
@@ -79,6 +81,7 @@ export function parseLFGFeedFilters(input: {
   mode?: string;
   region?: string;
   role?: string;
+  search?: string;
 }): LFGFeedFilters {
   const parsedMinRank = normalizeLFGRankFilterOption(input.minRank);
   const parsedMaxRank = normalizeLFGRankFilterOption(input.maxRank);
@@ -97,6 +100,7 @@ export function parseLFGFeedFilters(input: {
     mode: input.mode && isLFGGameMode(input.mode) ? input.mode : undefined,
     region: input.region && isLFGRegion(input.region) ? input.region : undefined,
     role: input.role && isCompetitiveRole(input.role) ? input.role : undefined,
+    search: input.search?.trim() ? input.search.trim() : undefined,
   };
 }
 

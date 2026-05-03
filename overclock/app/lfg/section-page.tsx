@@ -102,6 +102,7 @@ export async function LFGSectionPage({
           mode: pickValue(params.mode),
           region: pickValue(params.region),
           role: pickValue(params.role),
+          search: pickValue(params.search),
         })
       : undefined;
 

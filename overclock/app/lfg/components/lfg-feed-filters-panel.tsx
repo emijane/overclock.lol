@@ -31,6 +31,7 @@ type FilterKey =
   | "min_rank"
   | "mode"
   | "region"
+  | "search"
   | "role";
 
 function buildFilterHref(
@@ -60,6 +61,7 @@ function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) 
   params.delete("min_rank");
   params.delete("max_rank");
   params.delete("region");
+  params.delete("search");
 
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
@@ -157,7 +159,8 @@ export function LFGFeedFiltersPanel({
       selectedFilters?.minRank ||
       selectedFilters?.mode ||
       selectedFilters?.role ||
-      selectedFilters?.region
+      selectedFilters?.region ||
+      selectedFilters?.search
   );
   const hasActiveRankFilters = Boolean(
     selectedFilters?.minRank || selectedFilters?.maxRank
@@ -259,6 +262,14 @@ export function LFGFeedFiltersPanel({
           key: "region",
           label: "Region",
           value: selectedFilters.region,
+        }
+      : null,
+    selectedFilters?.search
+      ? {
+          href: buildClearFilterHref(pathname, params, "search"),
+          key: "search",
+          label: "Search",
+          value: selectedFilters.search,
         }
       : null,
   ].filter((chip): chip is { href: string; key: string; label: string; value: string } =>

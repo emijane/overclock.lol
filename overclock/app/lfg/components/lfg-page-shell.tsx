@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FilterIcon, PlusIcon } from "lucide-react";
+import { FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
 import { createLFGPost } from "@/app/lfg/actions";
@@ -100,6 +100,49 @@ function LFGFiltersBar({ description }: { description: string }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function LFGSearchBar({
+  feedFilters,
+  type,
+}: {
+  feedFilters?: LFGFeedFilters;
+  type: LFGType;
+}) {
+  return (
+    <form action={`/${type}`} className="mt-5 sm:mt-6">
+      <div className="flex items-center gap-3 rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
+          <SearchIcon className="h-4 w-4" />
+        </span>
+        <input
+          type="search"
+          name="search"
+          defaultValue={feedFilters?.search ?? ""}
+          placeholder={`Search ${type} posts`}
+          className="h-10 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+        />
+        {feedFilters?.mode ? (
+          <input type="hidden" name="mode" value={feedFilters.mode} />
+        ) : null}
+        {feedFilters?.role ? (
+          <input type="hidden" name="role" value={feedFilters.role} />
+        ) : null}
+        {feedFilters?.lookingFor ? (
+          <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
+        ) : null}
+        {feedFilters?.minRank ? (
+          <input type="hidden" name="min_rank" value={feedFilters.minRank} />
+        ) : null}
+        {feedFilters?.maxRank ? (
+          <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
+        ) : null}
+        {feedFilters?.region ? (
+          <input type="hidden" name="region" value={feedFilters.region} />
+        ) : null}
+      </div>
+    </form>
   );
 }
 
@@ -298,6 +341,9 @@ export async function LFGPageShell({
                   <p className="text-sm leading-6 text-zinc-500">
                     {helperText}
                   </p>
+                ) : null}
+                {type === "duos" ? (
+                  <LFGSearchBar feedFilters={feedFilters} type={type} />
                 ) : null}
               </div>
 
