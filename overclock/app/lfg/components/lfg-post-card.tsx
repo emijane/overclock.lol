@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShieldIcon, SwordsIcon } from "lucide-react";
 
+import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
+import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
 import {
   getLFGGameModeLabel,
   getLFGLookingForRoleLabel,
@@ -61,16 +63,19 @@ export function LFGPostCard({
   viewLabel,
 }: LFGPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
+  const rankAccentStyle = getRankAccentStyle(post.rankTier);
   const createdAtLabel = formatPostDate(post.createdAt);
   const gameModeLabel = getLFGGameModeLabel(post.gameMode);
   const visibleName = post.author.username ?? post.author.displayName ?? "Player";
   const profileHref = post.author.username ? `/u/${post.author.username}` : null;
-  const avatarFallback = visibleName.slice(0, 2).toUpperCase();
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="rounded-[18px] border border-white/[0.08] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <div className="min-w-0 flex-1">
+    <article
+      className="rounded-[18px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_20px_var(--profile-rank-glow)]"
+      style={rankAccentStyle}
+    >
+      <div className="min-w-0 flex-1 rounded-[17px] bg-[#05070b] px-4 py-3 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.05]">
         <div className="flex flex-col gap-2.5">
           {sectionLabel || statusPill ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -85,19 +90,15 @@ export function LFGPostCard({
 
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <div className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-[10px] font-semibold text-zinc-100 shadow-[0_6px_16px_rgba(0,0,0,0.18)]">
-                {post.author.avatarUrl ? (
-                  <Image
-                    src={post.author.avatarUrl}
-                    alt={`${visibleName} avatar`}
-                    fill
-                    className="object-cover"
-                    sizes="28px"
-                  />
-                ) : (
-                  avatarFallback
-                )}
-              </div>
+              <RankedAvatar
+                avatarUrl={post.author.avatarUrl}
+                className="h-7 w-7 shrink-0"
+                displayName={visibleName}
+                fallbackClassName="text-[10px] font-semibold text-zinc-100"
+                fallbackText={visibleName.slice(0, 2).toUpperCase()}
+                rankTier={post.rankTier}
+                ringClassName="-inset-[2px] opacity-80"
+              />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                   {profileHref ? (
