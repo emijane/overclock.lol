@@ -33,6 +33,7 @@ export type LFGPost = {
   author: {
     avatarUrl: string | null;
     badges: ProfileBadge[];
+    coverImageUrl: string | null;
     displayName: string | null;
     username: string | null;
   };
