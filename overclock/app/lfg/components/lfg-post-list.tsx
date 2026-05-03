@@ -89,7 +89,7 @@ export function LFGPostList({
       <div
         className={
           layout === "grid-3"
-            ? "grid gap-3 md:grid-cols-2 xl:grid-cols-3"
+            ? "grid gap-3 md:grid-cols-2 xl:grid-cols-4"
             : "grid gap-3"
         }
       >

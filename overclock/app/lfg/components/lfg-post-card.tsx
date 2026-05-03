@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
-import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
@@ -56,7 +55,6 @@ export function LFGPostCard({
   const postingRoleLabel = getPostingRoleLabel(post.postingRole);
   const rankedRoleLabel = `${rankLabel} ${postingRoleLabel}`;
   const rankIconSrc = getRankIconSrc(post.rankTier);
-  const rankAccentStyle = getRankAccentStyle(post.rankTier);
   const modeBadgeClassName = getModeBadgeClassName(post.gameMode);
   const createdAtLabel = formatPostDate(post.createdAt);
   const gameModeLabel = getLFGGameModeLabel(post.gameMode);
@@ -66,10 +64,7 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article
-      className="group h-full rounded-[22px] border border-[var(--profile-rank-border)] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]"
-      style={rankAccentStyle}
-    >
+    <article className="group h-full rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]">
       <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
         <div className="relative h-20 overflow-hidden border-b border-white/[0.05] bg-zinc-950">
           {post.author.coverImageUrl ? (
@@ -115,7 +110,7 @@ export function LFGPostCard({
             </div>
             {createdAtLabel ? (
               <p className="text-right text-[10px] font-medium text-zinc-700">
-                {createdAtLabel}
+                Posted {createdAtLabel}
               </p>
             ) : null}
           </div>
@@ -202,7 +197,7 @@ export function LFGPostCard({
           </div>
 
           <div className="mt-2 min-w-0">
-            <h2 className="line-clamp-2 min-h-[2.9rem] text-[15px] font-semibold leading-6 tracking-[-0.02em] text-zinc-100">
+            <h2 className="line-clamp-2 min-h-[3rem] text-[16px] font-semibold leading-6 tracking-[-0.02em] text-zinc-100">
               {post.title}
             </h2>
             <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] font-semibold text-zinc-300">
