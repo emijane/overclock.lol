@@ -15,5 +15,5 @@ export function ProfilePresenceBadges({
     return null;
   }
 
-  return <LookingToPlayBadge className={badgeClassName} />;
+  return <LookingToPlayBadge className={badgeClassName} tone="neutral" />;
 }

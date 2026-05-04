@@ -158,12 +158,15 @@ export function ProfileHeader({
               {platform || isLookingToPlay ? (
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   {platform ? (
-                    <LookingToPlayBadge className={rankBadgeClassName}>
+                    <LookingToPlayBadge
+                      className={`${rankBadgeClassName} text-zinc-100`}
+                      tone="neutral"
+                    >
                       {platform}
                     </LookingToPlayBadge>
                   ) : null}
                   <ProfilePresenceBadges
-                    badgeClassName={rankBadgeClassName}
+                    badgeClassName={`${rankBadgeClassName} text-zinc-100`}
                     isLookingToPlay={isLookingToPlay}
                   />
                 </div>
