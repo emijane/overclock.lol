@@ -14,8 +14,8 @@ const footerGroups = [
     {
         title: "Community",
         links: [
-            { href: "/scrims", label: "Placeholder Link" },
-            { href: "/teams", label: "Placeholder Link" },
+            { href: "/duos", label: "Placeholder Link" },
+            { href: "/stacks", label: "Placeholder Link" },
         ],
     },
     {

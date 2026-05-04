@@ -289,8 +289,6 @@ export async function saveCompetitiveProfileSettings(formData: FormData) {
   revalidatePath("/account/competitive");
   revalidatePath("/duos");
   revalidatePath("/stacks");
-  revalidatePath("/scrims");
-  revalidatePath("/teams");
   competitiveRedirect("Competitive profile settings saved.", "success");
 }
 

@@ -23,8 +23,8 @@ The current product shape is profile-first rather than feed-first:
 - `/lfg` is the top-level LFG hub.
 - `/duos` is now a browse-first LFG feed with first-pass URL-based filters and
   a dedicated create route at `/duos/create`.
-- `/stacks`, `/scrims`, and `/teams` still support inline browsing and creating
-  LFG posts, with first-pass URL-based filters currently enabled on `/stacks`.
+- `/stacks` still supports inline browsing and creating LFG posts, with
+  first-pass URL-based filters currently enabled.
 - LFG posts now store both `posting_role` and `looking_for_roles`, and `/duos`
   plus `/stacks` now expose both `Role` and `Needs` filters for role-pair
   browsing.
@@ -44,8 +44,8 @@ The homepage currently redirects to `/login`.
 5. The user can separately define hero pools by role.
 6. Their public profile is available at `/u/[username]`.
 7. Once their profile and Competitive Profile are set up, they can create LFG
-   posts in Duos, Stacks, Scrims, and Teams, with Duos now using a dedicated
-   post-creation route instead of an inline feed composer.
+   posts in Duos and Stacks, with Duos now using a dedicated post-creation
+   route instead of an inline feed composer.
 8. Active posts appear in section feeds and on the public profile.
 9. They can review active, closed, and expired posts from `/account/posts`.
 
@@ -82,8 +82,6 @@ These are already visible in the codebase today:
   sparse profiles likely feel unfinished.
 - There are no tests yet for the main profile editing, hero-pool, and LFG post
   flows.
-- `/teams` and `/scrims` do not yet have the first-pass feed filters now used
-  on `/duos` and `/stacks`.
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
 
@@ -104,9 +102,6 @@ These are already visible in the codebase today:
 - Add a compact "looking for" summary near the top of the public profile.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
-- Decide whether `/teams` and `/scrims` should eventually adopt the shipped
-  first-pass filter model from `/duos` and `/stacks`, including `Role` +
-  `Needs` browsing.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 

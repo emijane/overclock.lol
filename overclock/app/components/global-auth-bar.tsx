@@ -22,8 +22,6 @@ export async function GlobalAuthBar() {
   const discoveryLinks = [
     { href: "/duos", label: "Duos" },
     { href: "/stacks", label: "Stacks" },
-    { href: "/scrims", label: "Scrims" },
-    { href: "/teams", label: "Teams" },
   ] as const;
 
   return (

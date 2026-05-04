@@ -16,7 +16,7 @@ featured videos.
 - `/account/posts` is the private LFG management page for active and past posts.
 - `/lfg` is the main LFG hub.
 - `/duos` is the browse-first duo feed, with post creation moved to `/duos/create`.
-- `/stacks`, `/scrims`, and `/teams` currently support inline creating and browsing posts.
+- `/stacks` currently supports inline creating and browsing posts.
 
 ## Stack
 
