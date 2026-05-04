@@ -30,7 +30,16 @@ export function PresenceIndicator({
   sizeClassName = "h-3.5 w-3.5 sm:h-4 sm:w-4",
   userId,
 }: PresenceIndicatorProps) {
-  const { isUserOnline } = usePresence();
+  const { hasPresenceSession, isReady, isUserOnline } = usePresence();
+
+  if (!hasPresenceSession) {
+    return null;
+  }
+
+  if (!isReady) {
+    return null;
+  }
+
   const presence = resolveProfilePresence({
     isLookingToPlay,
     isOnline: isUserOnline(userId),

@@ -23,10 +23,14 @@ type PresenceProviderProps = {
 };
 
 type PresenceContextValue = {
+  hasPresenceSession: boolean;
+  isReady: boolean;
   isUserOnline: (userId: string | null | undefined) => boolean;
 };
 
 const PresenceContext = createContext<PresenceContextValue>({
+  hasPresenceSession: false,
+  isReady: false,
   isUserOnline: () => false,
 });
 
@@ -50,6 +54,7 @@ export function PresenceProvider({
   currentUsername,
 }: PresenceProviderProps) {
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
+  const [isReady, setIsReady] = useState(false);
   const lastSeenWriteAtRef = useRef<number>(0);
 
   useEffect(() => {
@@ -111,6 +116,7 @@ export function PresenceProvider({
         });
 
         syncOnlineUsers();
+        setIsReady(true);
         void writeLastSeen(true);
       });
 
@@ -123,6 +129,7 @@ export function PresenceProvider({
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.clearInterval(heartbeatId);
+      setIsReady(false);
       setOnlineUserIds(new Set());
       void channel.untrack();
       void supabase.removeChannel(channel);
@@ -131,9 +138,11 @@ export function PresenceProvider({
 
   const value = useMemo<PresenceContextValue>(
     () => ({
+      hasPresenceSession: Boolean(currentUserId),
+      isReady,
       isUserOnline: (userId) => (userId ? onlineUserIds.has(userId) : false),
     }),
-    [onlineUserIds]
+    [currentUserId, isReady, onlineUserIds]
   );
 
   return <PresenceContext.Provider value={value}>{children}</PresenceContext.Provider>;
