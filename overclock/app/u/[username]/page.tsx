@@ -93,7 +93,7 @@ export default async function ProfilePage({
 
     // Keep route components focused on loading data while profile presentation
     // helpers stay colocated with the UI they support.
-    const { currentRank, currentRankIconSrc, currentRankPill } =
+    const { currentRank, currentRankIconSrc } =
         getCompetitiveRankDisplay(profile, competitiveProfile);
     const isOwner = currentUserId === profile.id;
     const mainRoleProfile = competitiveProfile.roles.find(
@@ -174,7 +174,6 @@ export default async function ProfilePage({
                             currentRank={currentRank}
                             currentRankTier={profileRankTier}
                             currentRankIconSrc={currentRankIconSrc}
-                            currentRankPill={currentRankPill}
                             displayName={profile.display_name}
                             id={profile.id}
                             isOwner={isOwner}

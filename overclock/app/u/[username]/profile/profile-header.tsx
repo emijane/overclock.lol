@@ -16,7 +16,6 @@ type ProfileHeaderProps = {
   currentRank: string | null;
   currentRankTier?: string | null;
   currentRankIconSrc: string | null;
-  currentRankPill: string;
   displayName: string;
   id: string;
   isOwner: boolean;
@@ -53,7 +52,6 @@ export function ProfileHeader({
   coverImageUrl,
   currentRank,
   currentRankIconSrc,
-  currentRankPill,
   currentRankTier,
   displayName,
   id,
@@ -134,12 +132,12 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-7 px-4 sm:-mt-10 sm:px-6">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+        <div className="mt-6 px-4 sm:-mt-10 sm:px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
             <div className="min-w-0 flex-1">
               <div className="sm:h-14" aria-hidden="true" />
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-[25px] font-semibold leading-[1.05] tracking-[-0.04em] text-zinc-50">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-[29px] font-semibold leading-[1.02] tracking-[-0.045em] text-zinc-50 sm:text-[31px]">
                   {displayName}
                 </h1>
                 {currentRankIconSrc && currentRank ? (
@@ -152,11 +150,11 @@ export function ProfileHeader({
                   />
                 ) : null}
               </div>
-              <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
+              <p className="mt-0.5 text-[14px] font-medium tracking-[-0.01em] text-zinc-600">
                 @{username}
               </p>
               {platform || isLookingToPlay ? (
-                <div className="mt-2 flex flex-wrap items-center gap-2">
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
                   {platform ? (
                     <LookingToPlayBadge
                       className={`${rankBadgeClassName} text-zinc-100`}
@@ -171,7 +169,7 @@ export function ProfileHeader({
                   />
                 </div>
               ) : null}
-              <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
             </div>
@@ -193,21 +191,6 @@ export function ProfileHeader({
               />
             </div>
           </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2.5 px-4 sm:px-6">
-          <ProfileBadge className={rankBadgeClassName}>
-            {currentRankIconSrc && currentRank ? (
-              <Image
-                src={currentRankIconSrc}
-                alt={`${currentRank} rank icon`}
-                width={20}
-                height={20}
-                className="h-5 w-5 shrink-0 object-contain"
-              />
-            ) : null}
-            {currentRankPill}
-          </ProfileBadge>
         </div>
       </div>
     </section>
