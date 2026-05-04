@@ -38,6 +38,7 @@ type LFGPostCardProps = {
   sectionLabel?: string | null;
   showActions?: boolean;
   statusPill?: ReactNode;
+  tone?: "default" | "duos";
   viewHref?: string;
   viewLabel?: string;
 };
@@ -50,6 +51,7 @@ export function LFGPostCard({
   sectionLabel,
   showActions = true,
   statusPill,
+  tone = "default",
   viewHref,
   viewLabel,
 }: LFGPostCardProps) {
@@ -64,15 +66,21 @@ export function LFGPostCard({
   const visibleName = post.author.username ?? post.author.displayName ?? "Player";
   const profileHref = post.author.username ? `/u/${post.author.username}` : null;
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
+  const outerBorderClassName =
+    tone === "duos" ? "border-white/[0.12]" : "border-[#12161d]";
+  const innerRingClassName =
+    tone === "duos" ? "ring-white/[0.08]" : "ring-white/[0.05]";
+  const coverBorderClassName =
+    tone === "duos" ? "border-white/[0.08]" : "border-white/[0.05]";
 
   return (
     <article
-      className={`group h-full rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]${
+      className={`group h-full rounded-[22px] border ${outerBorderClassName} bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
-        <div className="relative h-20 overflow-hidden border-b border-white/[0.05] bg-zinc-950">
+      <div className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ${innerRingClassName}`}>
+        <div className={`relative h-20 overflow-hidden border-b ${coverBorderClassName} bg-zinc-950`}>
           {post.author.coverImageUrl ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}

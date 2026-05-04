@@ -87,6 +87,7 @@ function FilterDropdown({
   paramKey,
   searchParams,
   selectedLabel,
+  tone = "default",
   variant = "default",
 }: {
   anyLabel: string;
@@ -95,14 +96,19 @@ function FilterDropdown({
   paramKey: FilterKey;
   searchParams: URLSearchParams;
   selectedLabel: string;
+  tone?: "default" | "duos";
   variant?: "default" | "primary" | "secondary";
 }) {
+  const borderClassName =
+    tone === "duos"
+      ? "border-white/[0.14] hover:border-white/[0.2]"
+      : "border-white/[0.08] hover:border-white/[0.12]";
   const triggerClassName =
     variant === "primary"
-      ? "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-50 transition hover:border-white/[0.12] hover:text-white"
+      ? `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-50 transition hover:text-white`
       : variant === "secondary"
-        ? "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-medium text-zinc-200 transition hover:border-white/[0.12] hover:text-zinc-50"
-        : "inline-flex h-7.5 items-center gap-1 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-100 transition hover:border-white/[0.12] hover:text-zinc-50";
+        ? `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-medium text-zinc-200 transition hover:text-zinc-50`
+        : `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-100 transition hover:text-zinc-50`;
 
   return (
     <DropdownMenu>
@@ -146,9 +152,11 @@ function FilterDropdown({
 export function LFGFeedFiltersPanel({
   activeCount,
   selectedFilters,
+  tone = "default",
 }: {
   activeCount: number;
   selectedFilters?: LFGFeedFilters;
+  tone?: "default" | "duos";
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -287,6 +295,7 @@ export function LFGFeedFiltersPanel({
             paramKey="mode"
             searchParams={params}
             selectedLabel={selectedModeLabel}
+            tone={tone}
           />
           <FilterDropdown
             anyLabel="Any role"
@@ -295,6 +304,7 @@ export function LFGFeedFiltersPanel({
             paramKey="role"
             searchParams={params}
             selectedLabel={selectedRoleLabel}
+            tone={tone}
             variant="primary"
           />
           <FilterDropdown
@@ -304,6 +314,7 @@ export function LFGFeedFiltersPanel({
             paramKey="looking_for"
             searchParams={params}
             selectedLabel={selectedLookingForLabel}
+            tone={tone}
             variant="secondary"
           />
           <FilterDropdown
@@ -313,6 +324,7 @@ export function LFGFeedFiltersPanel({
             paramKey="min_rank"
             searchParams={params}
             selectedLabel={selectedMinRankLabel}
+            tone={tone}
           />
           <FilterDropdown
             anyLabel="Any rank"
@@ -321,6 +333,7 @@ export function LFGFeedFiltersPanel({
             paramKey="max_rank"
             searchParams={params}
             selectedLabel={selectedMaxRankLabel}
+            tone={tone}
           />
           <FilterDropdown
             anyLabel="Any region"
@@ -329,6 +342,7 @@ export function LFGFeedFiltersPanel({
             paramKey="region"
             searchParams={params}
             selectedLabel={selectedRegionLabel}
+            tone={tone}
           />
         </div>
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
@@ -343,7 +357,11 @@ export function LFGFeedFiltersPanel({
             <Link
               key={chip.key}
               href={chip.href}
-              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-200 transition hover:border-white/[0.12] hover:text-zinc-50"
+              className={`inline-flex h-7 items-center gap-1.5 rounded-full border bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-200 transition hover:text-zinc-50 ${
+                tone === "duos"
+                  ? "border-white/[0.14] hover:border-white/[0.2]"
+                  : "border-white/[0.08] hover:border-white/[0.12]"
+              }`}
             >
               <span className="text-zinc-400">{chip.label}:</span>
               <span className="text-zinc-100">{chip.value}</span>
@@ -353,7 +371,11 @@ export function LFGFeedFiltersPanel({
           {hasActiveFilters ? (
             <Link
               href={buildClearFiltersHref(pathname, params)}
-              className="inline-flex h-7 items-center gap-1 rounded-full border border-dashed border-white/[0.12] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.18] hover:text-zinc-100"
+              className={`inline-flex h-7 items-center gap-1 rounded-full border border-dashed bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-400 transition hover:text-zinc-100 ${
+                tone === "duos"
+                  ? "border-white/[0.18] hover:border-white/[0.26]"
+                  : "border-white/[0.12] hover:border-white/[0.18]"
+              }`}
             >
               Clear All
               <XIcon className="h-3 w-3 text-zinc-400" />

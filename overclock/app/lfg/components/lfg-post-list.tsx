@@ -13,21 +13,26 @@ type LFGPostListProps = {
   layout?: "list" | "grid-3";
   posts: LFGPost[];
   retryHref?: string;
+  tone?: "default" | "duos";
 };
 
 function LFGFeedPlaceholder({
   ctaHref,
   ctaLabel,
   description,
+  tone = "default",
   title,
 }: {
   ctaHref?: string;
   ctaLabel?: string;
   description: string;
+  tone?: "default" | "duos";
   title: string;
 }) {
   return (
-    <div className="grid min-h-[280px] place-items-center rounded-[20px] border border-white/[0.07] bg-[#05070b] px-5 py-10 text-center shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className={`grid min-h-[280px] place-items-center rounded-[20px] border bg-[#05070b] px-5 py-10 text-center shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] ${
+      tone === "duos" ? "border-white/[0.12]" : "border-white/[0.07]"
+    }`}>
       <div className="max-w-sm">
         <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
           <span className="text-lg">?</span>
@@ -57,6 +62,7 @@ export function LFGPostList({
   layout = "list",
   posts,
   retryHref,
+  tone = "default",
 }: LFGPostListProps) {
   if (errorMessage) {
     return (
@@ -65,6 +71,7 @@ export function LFGPostList({
           ctaHref={retryHref}
           ctaLabel="Reload Section"
           description={`${errorMessage} Reload this section to try again.`}
+          tone={tone}
           title="Unable to load this feed"
         />
       </section>
@@ -80,6 +87,7 @@ export function LFGPostList({
               ? "No posts match the filters you have selected right now. Try widening your filters or clear all to see more listings."
               : emptyStateDescription
           }
+          tone={tone}
           title={hasActiveFilters ? "No matching posts" : emptyStateTitle}
         />
       </section>
@@ -103,6 +111,7 @@ export function LFGPostList({
               currentProfileId={currentProfileId}
               post={post}
               returnPath={`/${post.lfgType}`}
+              tone={tone}
             />
           );
         })}

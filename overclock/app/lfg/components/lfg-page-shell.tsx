@@ -117,7 +117,9 @@ function LFGSearchBar({
 }) {
   return (
     <form action={`/${type}`} className="mt-5 sm:mt-6">
-      <div className="flex items-center gap-2.5 rounded-[16px] border border-white/[0.07] bg-[#05070b] px-3.5 py-2 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+      <div className={`flex items-center gap-2.5 rounded-[16px] border bg-[#05070b] px-3.5 py-2 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] ${
+        type === "duos" ? "border-white/[0.12]" : "border-white/[0.07]"
+      }`}>
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
           <SearchIcon className="h-3.5 w-3.5" />
         </span>
@@ -167,7 +169,7 @@ function LFGActionNotice({
   title: string;
 }) {
   return (
-    <div className="mt-4 rounded-[20px] border border-white/[0.07] bg-[#05070b] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="mt-4 rounded-[20px] border border-white/[0.12] bg-[#05070b] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
       <Link
@@ -315,6 +317,7 @@ export async function LFGPageShell({
   const displayTitle = type ? `/ ${title}` : title;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
+  const isDuosPage = type === "duos";
 
   return (
     <main
@@ -326,11 +329,11 @@ export async function LFGPageShell({
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
       />
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer
@@ -365,7 +368,9 @@ export async function LFGPageShell({
                   {type && composerMode === "cta" ? (
                     <Link
                       href={resolvedCreatePostHref}
-                      className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border border-white/[0.08] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
+                      className={`inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:bg-[#080b10] hover:text-white ${
+                        isDuosPage ? "border-white/[0.14] hover:border-white/[0.2]" : "border-white/[0.08] hover:border-white/[0.12]"
+                      }`}
                     >
                       <PlusIcon className="h-4 w-4" />
                       Create Post
@@ -420,7 +425,9 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5"
+                      className={`rounded-[24px] border bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5 ${
+                        isDuosPage ? "border-white/[0.12]" : "border-white/[0.08]"
+                      }`}
                     >
                       <div className="flex items-center justify-between gap-3">
                         <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
@@ -428,7 +435,9 @@ export async function LFGPageShell({
                         </h2>
                         <Link
                           href="/account/posts"
-                          className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/[0.07] bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:border-white/[0.1] hover:bg-white/[0.04] hover:text-zinc-200"
+                          className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
+                            isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
+                          }`}
                         >
                           Manage Posts
                         </Link>
@@ -453,6 +462,7 @@ export async function LFGPageShell({
                   <LFGFeedFiltersPanel
                     activeCount={visiblePostCount}
                     selectedFilters={feedFilters}
+                    tone={isDuosPage ? "duos" : "default"}
                   />
                 ) : (
                   <LFGFiltersBar description={filtersDescription} />
@@ -471,6 +481,7 @@ export async function LFGPageShell({
                   layout={type === "duos" ? "grid-3" : "list"}
                   posts={pageData.posts}
                   retryHref={sectionHref}
+                  tone={isDuosPage ? "duos" : "default"}
                 />
               </>
             ) : null}
