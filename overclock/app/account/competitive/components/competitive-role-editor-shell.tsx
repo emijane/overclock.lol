@@ -127,7 +127,7 @@ export function CompetitiveRoleEditorShell({
   );
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+    <section className="border-t border-white/10 px-5 py-4 sm:px-6 sm:py-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold tracking-[-0.03em] text-zinc-50">
@@ -161,7 +161,7 @@ export function CompetitiveRoleEditorShell({
         </form>
       ) : null}
 
-      <div className="mt-5 grid gap-4">
+      <div className="mt-4 grid gap-3">
         <div className="rounded-[18px] border border-white/10 bg-[#05070b] p-4 sm:p-5">
           <p className="text-sm font-medium text-zinc-200">{currentRankPreview}</p>
 
@@ -188,7 +188,7 @@ export function CompetitiveRoleEditorShell({
             />
           </div>
 
-          <div className="mt-5">
+          <div className="mt-4">
             <label className="flex items-center gap-3 text-sm font-medium text-zinc-200">
               <button
                 type="button"
@@ -216,7 +216,7 @@ export function CompetitiveRoleEditorShell({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
           onClick={onCancel}

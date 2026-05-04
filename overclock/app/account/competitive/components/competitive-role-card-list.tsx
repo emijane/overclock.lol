@@ -22,10 +22,10 @@ export function CompetitiveRoleCardList({
   );
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
-      <div className="grid items-stretch gap-3 sm:grid-cols-3">
-        {COMPETITIVE_ROLE_OPTIONS.map((role: CompetitiveRole) => (
-          <CompetitiveRoleCard
+        <section className="border-t border-white/10 px-5 py-4 sm:px-6 sm:py-5">
+            <div className="grid items-stretch gap-3 sm:grid-cols-3">
+                {COMPETITIVE_ROLE_OPTIONS.map((role: CompetitiveRole) => (
+                    <CompetitiveRoleCard
             key={role}
             isMainRole={competitiveProfile.mainRole === role}
             heroIds={heroSelections[role]}

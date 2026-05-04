@@ -48,7 +48,7 @@ export default async function CompetitiveProfilePage({
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer
         className="relative z-10 flex flex-col gap-3"
-        maxWidthClassName="max-w-[96rem]"
+        maxWidthClassName="max-w-4xl"
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">

@@ -3,14 +3,14 @@ import { PlusIcon } from "lucide-react";
 
 export function CompetitiveProfileHeader() {
   return (
-    <header className="px-5 py-5 sm:px-6 sm:py-7">
-      <div className="space-y-3">
+    <header className="px-5 py-4 sm:px-6 sm:py-5">
+      <div className="space-y-2.5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
               Account
             </p>
-            <h1 className="text-4xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-5xl">
+            <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
               / Competitive
             </h1>
           </div>

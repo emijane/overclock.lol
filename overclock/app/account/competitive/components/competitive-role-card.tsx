@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PencilIcon } from "lucide-react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
@@ -31,7 +32,7 @@ export function CompetitiveRoleCard({
   const rankIconSrc = roleProfile ? getRankIconSrc(roleProfile.rankTier) : null;
 
   return (
-    <article className="group flex h-full min-h-[220px] flex-col rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]">
+    <article className="group flex h-full flex-col rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -63,6 +64,15 @@ export function CompetitiveRoleCard({
             </span>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={() => onSelectRole(role)}
+          aria-label={isConfigured ? `Edit ${COMPETITIVE_ROLE_LABELS[role]}` : `Set up ${COMPETITIVE_ROLE_LABELS[role]}`}
+          title={isConfigured ? "Edit role" : "Set up role"}
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+        >
+          <PencilIcon className="h-3.5 w-3.5" />
+        </button>
       </div>
 
       <div className="mt-3 min-h-9">
@@ -91,15 +101,6 @@ export function CompetitiveRoleCard({
         )}
       </div>
 
-      <div className="mt-auto pt-4">
-        <button
-          type="button"
-          onClick={() => onSelectRole(role)}
-          className="inline-flex h-9 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-        >
-          {isConfigured ? "Edit" : "Set up"}
-        </button>
-      </div>
     </article>
   );
 }
