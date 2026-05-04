@@ -46,20 +46,26 @@ export function GlobalFooter() {
                             />
                             <span>overclock.lol</span>
                         </Link>
-                        <p className="mt-2 text-sm leading-6 text-white/45">
-                            Build custom Overwatch player profiles, find duo
-                            partners, create ranked stacks, and showcase your mains,
-                            roles, rank, and playstyle.
+                        <p className="mt-3 text-xs font-medium leading-4 text-white/55">
+                            developed by{" "}
+                            <Link
+                                href="https://x.com/pcexplodes"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-semibold text-white/70 transition-colors hover:text-white"
+                            >
+                                emi
+                            </Link>
                         </p>
-                        <p className="mt-4 text-sm font-medium leading-5 text-transparent bg-gradient-to-r from-orange-100 via-rose-100 to-pink-100 bg-clip-text drop-shadow-[0_0_14px_rgba(251,113,133,0.4)]">
-                            Logo art by{" "}
+                        <p className="mt-1 text-xs font-medium leading-4 text-white/55">
+                            logo art by{" "}
                             <Link
                                 href="https://ioananenciu.carrd.co/"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="font-semibold text-transparent bg-gradient-to-r from-white via-rose-100 to-orange-100 bg-clip-text transition-all hover:from-white hover:via-white hover:to-rose-100"
+                                className="font-semibold text-white/70 transition-colors hover:text-white"
                             >
-                                neo ˃ 𖥦 ˂
+                                neo
                             </Link>
                         </p>
                     </div>
