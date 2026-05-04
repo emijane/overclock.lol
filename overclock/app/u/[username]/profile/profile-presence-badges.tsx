@@ -1,11 +1,17 @@
-import { resolveProfilePresence, type ResolvedProfilePresence } from "@/lib/profiles/profile-presence";
+"use client";
+
+import { usePresence } from "@/app/components/presence-provider";
+import {
+  resolveProfilePresence,
+  type ResolvedProfilePresence,
+} from "@/lib/profiles/profile-presence";
 
 import { ProfileBadge } from "./profile-badge";
 
 type ProfilePresenceBadgesProps = {
   isLookingToPlay?: boolean | null;
-  isOnline?: boolean;
   lastSeenAt?: Date | string | null;
+  userId: string;
 };
 
 function getPresenceTone(status: ResolvedProfilePresence["status"]) {
@@ -22,12 +28,13 @@ function getPresenceTone(status: ResolvedProfilePresence["status"]) {
 
 export function ProfilePresenceBadges({
   isLookingToPlay,
-  isOnline = false,
   lastSeenAt,
+  userId,
 }: ProfilePresenceBadgesProps) {
+  const { isUserOnline } = usePresence();
   const presence = resolveProfilePresence({
     isLookingToPlay,
-    isOnline,
+    isOnline: isUserOnline(userId),
     lastSeenAt,
   });
 

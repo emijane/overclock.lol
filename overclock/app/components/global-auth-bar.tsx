@@ -3,13 +3,19 @@ import Link from "next/link";
 
 import { PageContainer } from "@/app/components/page-container";
 import { UserMenu } from "@/app/components/user-menu";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+
+type GlobalAuthBarProps = {
+  profile: {
+    discord_avatar_url: string | null;
+    display_name: string | null;
+    username: string;
+  } | null;
+  userId?: string | null;
+};
 
 // Shared top-right auth controls for any page in the app shell.
-export async function GlobalAuthBar() {
-  const { user, profile } = await getCurrentProfile();
-
-  if (!user) {
+export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
+  if (!userId) {
     return null;
   }
 

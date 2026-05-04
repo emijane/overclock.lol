@@ -179,6 +179,7 @@ export default async function ProfilePage({
                             currentRankIconSrc={currentRankIconSrc}
                             currentRankPill={currentRankPill}
                             displayName={profile.display_name}
+                            id={profile.id}
                             isOwner={isOwner}
                             isLookingToPlay={profile.is_looking_to_play}
                             lastSeenAt={profile.last_seen_at}

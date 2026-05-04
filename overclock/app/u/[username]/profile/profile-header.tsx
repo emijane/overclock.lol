@@ -19,6 +19,7 @@ type ProfileHeaderProps = {
   currentRankIconSrc: string | null;
   currentRankPill: string;
   displayName: string;
+  id: string;
   isOwner: boolean;
   isLookingToPlay?: boolean | null;
   lastSeenAt?: Date | string | null;
@@ -57,6 +58,7 @@ export function ProfileHeader({
   currentRankPill,
   currentRankTier,
   displayName,
+  id,
   isOwner,
   isLookingToPlay,
   lastSeenAt,
@@ -158,6 +160,7 @@ export function ProfileHeader({
                 <ProfilePresenceBadges
                   isLookingToPlay={isLookingToPlay}
                   lastSeenAt={lastSeenAt}
+                  userId={id}
                 />
               </div>
               <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
