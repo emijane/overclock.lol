@@ -318,15 +318,23 @@ export async function LFGPageShell({
 
   return (
     <main
-      className={`bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
+      className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
         isComposerOnlyPage
           ? "flex flex-1 flex-col pb-0 pt-2 sm:pb-0 sm:pt-3"
           : "min-h-screen py-6 sm:py-8"
       }`}
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+      />
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer
-        className={`flex flex-col ${
+        className={`relative z-10 flex flex-col ${
           isComposerOnlyPage ? "flex-1 gap-2" : "gap-3"
         }`}
         maxWidthClassName="max-w-[96rem]"

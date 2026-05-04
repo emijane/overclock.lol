@@ -17,12 +17,20 @@ export function LFGPageLoading({
 }) {
   return (
     <main
-      className={`bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
+      className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
         composerOnly ? "flex min-h-screen flex-1 flex-col pb-0 pt-2 sm:pt-3" : "min-h-screen py-5 sm:py-7"
       }`}
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.82)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-80 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+      />
       <PageContainer
-        className={`flex flex-col ${composerOnly ? "flex-1 gap-2" : "gap-4"}`}
+        className={`relative z-10 flex flex-col ${composerOnly ? "flex-1 gap-2" : "gap-4"}`}
         maxWidthClassName="max-w-[96rem]"
       >
         <section className="rounded-[28px]">
