@@ -95,9 +95,6 @@ export default async function ProfilePage({
     // helpers stay colocated with the UI they support.
     const { currentRank, currentRankIconSrc, currentRankPill } =
         getCompetitiveRankDisplay(profile, competitiveProfile);
-    const roleLabels = heroPools.roles.map((role) =>
-        role === "tank" ? "Tank" : role === "dps" ? "DPS" : "Support"
-    );
     const isOwner = currentUserId === profile.id;
     const mainRoleProfile = competitiveProfile.roles.find(
         (roleProfile) => roleProfile.role === competitiveProfile.mainRole
@@ -186,7 +183,6 @@ export default async function ProfilePage({
                             lookingFor={profile.looking_for}
                             platform={competitiveProfile.platform}
                             region={profile.region}
-                            roleLabels={roleLabels}
                             socialLinks={socialLinks}
                             timezone={profile.timezone}
                             username={profile.username}

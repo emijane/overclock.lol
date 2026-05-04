@@ -1,6 +1,5 @@
 import { RankedAvatar } from "@/app/components/ranked-avatar";
-
-import { ProfilePresenceIndicator } from "./profile-presence-indicator";
+import { PresenceIndicator } from "@/app/components/presence-indicator";
 
 type ProfileAvatarProps = {
   avatarUrl: string | null;
@@ -26,7 +25,7 @@ export function ProfileAvatar({
       displayName={displayName}
       fallbackClassName="text-3xl font-semibold text-zinc-100 sm:text-[2.2rem]"
       overlay={
-        <ProfilePresenceIndicator
+        <PresenceIndicator
           isLookingToPlay={isLookingToPlay}
           lastSeenAt={lastSeenAt}
           userId={userId}

@@ -1,13 +1,12 @@
 import Image from "next/image";
 import { Clock3Icon, Globe2Icon } from "lucide-react";
-import { FaComputerMouse } from "react-icons/fa6";
-import { IoGameController } from "react-icons/io5";
 
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfilePresenceBadges } from "./profile-presence-badges";
 import { ProfileSocialLinks } from "./profile-social-links";
+import { LookingToPlayBadge } from "@/app/components/looking-to-play-badge";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
 
 type ProfileHeaderProps = {
@@ -26,7 +25,6 @@ type ProfileHeaderProps = {
   lookingFor?: string[] | null;
   platform: string | null;
   region: string | null;
-  roleLabels: string[];
   socialLinks: Array<{
     label: string;
     platform: "discord" | "battlenet" | "twitch" | "x" | "youtube";
@@ -64,13 +62,11 @@ export function ProfileHeader({
   lastSeenAt,
   platform,
   region,
-  roleLabels,
   socialLinks,
   timezone,
   username,
   onEditProfile,
 }: ProfileHeaderProps) {
-  const PlatformIcon = platform === "PC" ? FaComputerMouse : IoGameController;
   const rankBadgeClassName =
     rankBadgeClassNameByTier[currentRankTier ?? ""] ??
     "border-white/10 bg-white/[0.02]";
@@ -159,9 +155,17 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              {isLookingToPlay ? (
+              {platform || isLookingToPlay ? (
                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <ProfilePresenceBadges isLookingToPlay={isLookingToPlay} />
+                  {platform ? (
+                    <LookingToPlayBadge className={rankBadgeClassName}>
+                      {platform}
+                    </LookingToPlayBadge>
+                  ) : null}
+                  <ProfilePresenceBadges
+                    badgeClassName={rankBadgeClassName}
+                    isLookingToPlay={isLookingToPlay}
+                  />
                 </div>
               ) : null}
               <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
@@ -201,16 +205,6 @@ export function ProfileHeader({
             ) : null}
             {currentRankPill}
           </ProfileBadge>
-          {platform ? (
-            <ProfileBadge Icon={PlatformIcon}>
-              {platform}
-            </ProfileBadge>
-          ) : null}
-          {roleLabels.map((role) => (
-            <ProfileBadge key={role}>
-              {role}
-            </ProfileBadge>
-          ))}
         </div>
       </div>
     </section>

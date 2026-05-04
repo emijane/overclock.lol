@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { PresenceIndicator } from "@/app/components/presence-indicator";
 import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
@@ -101,6 +102,17 @@ export function LFGPostCard({
               displayName={visibleName}
               fallbackClassName="text-sm font-semibold text-zinc-100"
               fallbackText={visibleName.slice(0, 2).toUpperCase()}
+              overlay={
+                post.profileId ? (
+                  <PresenceIndicator
+                    className="absolute bottom-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#05070b] shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+                    isLookingToPlay={post.author.isLookingToPlay}
+                    lastSeenAt={post.author.lastSeenAt}
+                    sizeClassName="h-3 w-3"
+                    userId={post.profileId}
+                  />
+                ) : null
+              }
               rankTier={post.rankTier}
               ringClassName="hidden"
             />

@@ -1,21 +1,19 @@
 "use client";
 
-import { ProfileBadge } from "./profile-badge";
+import { LookingToPlayBadge } from "@/app/components/looking-to-play-badge";
 
 type ProfilePresenceBadgesProps = {
+  badgeClassName?: string;
   isLookingToPlay?: boolean | null;
 };
 
 export function ProfilePresenceBadges({
+  badgeClassName,
   isLookingToPlay,
 }: ProfilePresenceBadgesProps) {
   if (!isLookingToPlay) {
     return null;
   }
 
-  return (
-    <ProfileBadge className="border-sky-400/20 bg-sky-400/10 text-sky-100">
-      Looking to play
-    </ProfileBadge>
-  );
+  return <LookingToPlayBadge className={badgeClassName} />;
 }
