@@ -76,7 +76,7 @@ function getRequiredProfileError({
   timezone: string | null;
 }) {
   if (!platform) {
-    return "Choose your platform in your profile before posting.";
+    return "Choose your platform in your competitive profile before posting.";
   }
 
   if (!region) {
@@ -129,8 +129,12 @@ export async function createLFGPost(formData: FormData) {
     redirect("/onboarding");
   }
 
+  const [competitiveProfile, heroPools] = await Promise.all([
+    getCompetitiveProfile(profile.id),
+    getProfileHeroPools(profile.id),
+  ]);
   const requiredProfileError = getRequiredProfileError({
-    platform: profile.platform ?? null,
+    platform: competitiveProfile.platform,
     region: profile.region ?? null,
     timezone: profile.timezone ?? null,
   });
@@ -138,11 +142,6 @@ export async function createLFGPost(formData: FormData) {
   if (requiredProfileError) {
     lfgRedirect(lfgTypeValue, requiredProfileError);
   }
-
-  const [competitiveProfile, heroPools] = await Promise.all([
-    getCompetitiveProfile(profile.id),
-    getProfileHeroPools(profile.id),
-  ]);
 
   const postingRole = postingRoleValue as CompetitiveRole;
   const gameMode = gameModeValue as LFGGameMode;
@@ -160,7 +159,7 @@ export async function createLFGPost(formData: FormData) {
   const competitiveProfileSnapshot: CompetitiveProfileSnapshot = {
     hero_pool: heroPoolSnapshot,
     main_role: competitiveProfile.mainRole,
-    platform: profile.platform ?? null,
+    platform: competitiveProfile.platform,
     posting_role: postingRole,
     rank_division: roleProfile.rankDivision,
     rank_tier: roleProfile.rankTier,
@@ -175,7 +174,7 @@ export async function createLFGPost(formData: FormData) {
       heroPoolSnapshot,
       lfgType: lfgTypeValue,
       lookingForRoles,
-      platform: profile.platform ?? null,
+      platform: competitiveProfile.platform,
       postingRole,
       profileId: profile.id,
       rankDivision: roleProfile.rankDivision,

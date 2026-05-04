@@ -18,7 +18,6 @@ export function useProfileEditForm(profile: ProfileEditProfile) {
   const [displayName, setDisplayName] = useState(profile.displayName);
   const [selectedRegion, setSelectedRegion] = useState(profile.region ?? "");
   const [selectedTimezone, setSelectedTimezone] = useState(profile.timezone ?? "");
-  const [selectedPlatform, setSelectedPlatform] = useState(profile.platform ?? "");
   const [twitchHandle, setTwitchHandle] = useState(
     stripSocialPrefix(profile.socials.twitch, SOCIAL_URL_PREFIXES.twitch)
   );
@@ -43,7 +42,6 @@ export function useProfileEditForm(profile: ProfileEditProfile) {
     battleNetHandle,
     bio,
     displayName,
-    selectedPlatform,
     selectedRegion,
     selectedTimezone,
     timezoneOptions,
@@ -56,7 +54,6 @@ export function useProfileEditForm(profile: ProfileEditProfile) {
     setBattleNetHandle,
     setBio,
     setDisplayName,
-    setSelectedPlatform,
     setSelectedTimezone,
     setTwitchHandle,
     setXHandle,

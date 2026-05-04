@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
 import {
   LOOKING_FOR_OPTIONS,
-  PLATFORM_OPTIONS,
   REGION_OPTIONS,
   REGION_TO_TIMEZONES,
   TIMEZONE_OPTIONS,
@@ -23,7 +22,6 @@ type ParsedProfileUpdate = {
   bio: string | null;
   displayName: string | null;
   lookingFor: (typeof LOOKING_FOR_OPTIONS)[number][];
-  platform: (typeof PLATFORM_OPTIONS)[number] | null;
   region: (typeof REGION_OPTIONS)[number] | null;
   returnTo: string;
   timezone: (typeof TIMEZONE_OPTIONS)[number] | null;
@@ -99,12 +97,6 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
     "region",
     returnTo
   );
-  const platform = optionalEnumValue(
-    formData.get("platform"),
-    PLATFORM_OPTIONS,
-    "platform",
-    returnTo
-  );
   const lookingFor = formData
     .getAll("looking_for")
     .map((value) => value.toString())
@@ -117,7 +109,6 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
     bio,
     displayName,
     lookingFor,
-    platform,
     region,
     returnTo,
     timezone,
@@ -194,7 +185,6 @@ export async function updateProfile(formData: FormData) {
     bio,
     displayName,
     lookingFor,
-    platform,
     region,
     returnTo,
     timezone,
@@ -220,7 +210,6 @@ export async function updateProfile(formData: FormData) {
       bio,
       display_name: displayName,
       looking_for: lookingFor,
-      platform,
       region,
       timezone,
       twitch_url: twitchUrl,

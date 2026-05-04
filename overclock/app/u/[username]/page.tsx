@@ -173,7 +173,7 @@ export default async function ProfilePage({
                             displayName={profile.display_name}
                             isOwner={isOwner}
                             lookingFor={profile.looking_for}
-                            platform={profile.platform}
+                            platform={competitiveProfile.platform}
                             region={profile.region}
                             roleLabels={roleLabels}
                             socialLinks={socialLinks}

@@ -42,6 +42,7 @@ type LFGPageShellProps = {
 
 type LFGPageData = {
   activePostCounts: Awaited<ReturnType<typeof getActiveLFGPostCountsByRole>>;
+  competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>> | null;
   posts: Awaited<ReturnType<typeof getActiveLFGPosts>>;
   postsErrorMessage: string | null;
   roleOptions: LFGRoleOption[];
@@ -209,6 +210,7 @@ async function getLFGPageData(
   if (!profileId) {
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
+      competitiveProfile: null,
       posts: postsResult.posts,
       postsErrorMessage: postsResult.postsErrorMessage,
       roleOptions: [],
@@ -223,6 +225,7 @@ async function getLFGPageData(
 
   return {
     activePostCounts,
+    competitiveProfile,
     posts: postsResult.posts,
     postsErrorMessage: postsResult.postsErrorMessage,
     roleOptions: buildRoleOptions(competitiveProfile, heroPools),
@@ -249,6 +252,7 @@ export async function LFGPageShell({
   const shouldShowFeed = Boolean(type && showFeed);
   const emptyPageData: LFGPageData = {
     activePostCounts: { tank: 0, dps: 0, support: 0 },
+    competitiveProfile: null,
     posts: [],
     postsErrorMessage: null,
     roleOptions: [],
@@ -264,6 +268,12 @@ export async function LFGPageShell({
           await getProfileHeroPools(profile.id)
         )
       : pageData.roleOptions;
+  const competitiveProfileForComposer =
+    shouldShowComposer && profile?.id
+      ? shouldShowFeed
+        ? pageData.competitiveProfile
+        : await getCompetitiveProfile(profile.id)
+      : null;
   const hasConfiguredRole = composerRoleOptions.some(
     (roleOption) => roleOption.isConfigured
   );
@@ -273,13 +283,25 @@ export async function LFGPageShell({
   };
   const missingProfileRequirements = profile
     ? getMissingProfileRequirements({
-        platform: profile.platform ?? null,
+        platform: competitiveProfileForComposer?.platform ?? null,
         region: profile.region ?? null,
         timezone: profile.timezone ?? null,
       })
     : [];
-  const profileSetupHref =
-    profile?.username ? `/u/${profile.username}?edit=profile` : "/account";
+  const isMissingPlatformOnly =
+    missingProfileRequirements.length === 1 &&
+    missingProfileRequirements[0] === "platform";
+  const profileSetupHref = isMissingPlatformOnly
+    ? "/account/competitive"
+    : profile?.username
+      ? `/u/${profile.username}?edit=profile`
+      : "/account";
+  const profileSetupDescriptionSuffix = isMissingPlatformOnly
+    ? " This opens your competitive profile settings directly."
+    : " This opens your profile editor directly.";
+  const profileSetupCtaLabel = isMissingPlatformOnly
+    ? "Open Competitive Profile"
+    : "Open Profile Editor";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;
@@ -366,10 +388,10 @@ export async function LFGPageShell({
                   ) : missingProfileRequirements.length > 0 ? (
                     <LFGActionNotice
                       ctaHref={profileSetupHref}
-                      ctaLabel="Open Profile Editor"
+                      ctaLabel={profileSetupCtaLabel}
                       description={`Add your ${formatMissingFields(
                         missingProfileRequirements
-                      )} before creating a post in this section. This opens your profile editor directly.`}
+                      )} before creating a post in this section.${profileSetupDescriptionSuffix}`}
                       title="Complete your setup before posting"
                     />
                   ) : !hasConfiguredRole ? (

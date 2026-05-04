@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import {
   isCompetitiveRole,
+  type CompetitivePlatform,
   type CompetitiveRole,
   type CompetitiveRankTier,
 } from "@/lib/competitive/competitive-profile-types";
@@ -14,7 +15,10 @@ import {
   saveProfileHeroPools,
   type HeroPoolSelections,
 } from "@/lib/heroes/profile-hero-pools";
-import { RANK_TIERS } from "@/lib/profiles/profile-options";
+import {
+  PLATFORM_OPTIONS,
+  RANK_TIERS,
+} from "@/lib/profiles/profile-options";
 import { createClient } from "@/lib/supabase/server";
 
 const HERO_LIMIT = 5;
@@ -57,6 +61,22 @@ function parseRankTier(value: FormDataEntryValue | null): CompetitiveRankTier {
   }
 
   return parsed as CompetitiveRankTier;
+}
+
+function parseCompetitivePlatform(
+  value: FormDataEntryValue | null
+): CompetitivePlatform | null {
+  const parsed = optionalTrimmedString(value);
+
+  if (!parsed) {
+    return null;
+  }
+
+  if (!PLATFORM_OPTIONS.includes(parsed as CompetitivePlatform)) {
+    competitiveRedirect("Invalid platform.");
+  }
+
+  return parsed as CompetitivePlatform;
 }
 
 function validateRankPair(tier: CompetitiveRankTier, division: number | null) {
@@ -231,6 +251,47 @@ export async function saveCompetitiveRoleProfile(formData: FormData) {
 
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role saved.", "success");
+}
+
+export async function saveCompetitiveProfileSettings(formData: FormData) {
+  const platform = parseCompetitivePlatform(formData.get("platform"));
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    redirect("/login");
+  }
+
+  const { error } = await supabase
+    .from("competitive_profiles")
+    .upsert(
+      {
+        platform,
+        profile_id: user.id,
+      },
+      {
+        onConflict: "profile_id",
+      }
+    );
+
+  if (error) {
+    console.error("Competitive profile settings save failed", {
+      error,
+      platform,
+      profileId: user.id,
+    });
+    competitiveRedirect("Unable to save competitive profile settings right now.");
+  }
+
+  revalidatePath("/account/competitive");
+  revalidatePath("/duos");
+  revalidatePath("/stacks");
+  revalidatePath("/scrims");
+  revalidatePath("/teams");
+  competitiveRedirect("Competitive profile settings saved.", "success");
 }
 
 export async function removeCompetitiveRoleProfile(formData: FormData) {

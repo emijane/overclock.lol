@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  PLATFORM_OPTIONS,
   REGION_OPTIONS,
 } from "@/lib/profiles/profile-options";
 import { PROFILE_BIO_MAX_CHARACTERS } from "@/lib/profiles/profile-bio";
@@ -27,7 +26,6 @@ type ProfileEditFormState = {
   battleNetHandle: string;
   bio: string;
   displayName: string;
-  selectedPlatform: string;
   selectedRegion: string;
   selectedTimezone: string;
   timezoneOptions: string[];
@@ -37,7 +35,6 @@ type ProfileEditFormState = {
   setBattleNetHandle: (value: string) => void;
   setBio: (value: string) => void;
   setDisplayName: (value: string) => void;
-  setSelectedPlatform: (value: string) => void;
   setSelectedTimezone: (value: string) => void;
   setTwitchHandle: (value: string) => void;
   setXHandle: (value: string) => void;
@@ -282,16 +279,6 @@ export function ProfileEditFormFields({
             placeholder={form.selectedRegion ? "Not set" : "Choose region first"}
             options={form.timezoneOptions}
             onSelect={form.setSelectedTimezone}
-          />
-        }
-        platformField={
-          <ModalDropdownField
-            inputName="platform"
-            label="Platform"
-            value={form.selectedPlatform}
-            placeholder="Not set"
-            options={PLATFORM_OPTIONS}
-            onSelect={form.setSelectedPlatform}
           />
         }
       />

@@ -1,4 +1,5 @@
 import {
+  isCompetitivePlatform,
   isCompetitiveRankTier,
   isCompetitiveRole,
   type CompetitiveProfile,
@@ -37,7 +38,7 @@ export async function getCompetitiveProfile(
   const [profileResult, roleResult] = await Promise.all([
     supabase
       .from("competitive_profiles")
-      .select("main_role")
+      .select("main_role, platform")
       .eq("profile_id", profileId)
       .maybeSingle(),
     supabase
@@ -64,10 +65,15 @@ export async function getCompetitiveProfile(
     profileData && typeof profileData.main_role === "string"
       ? profileData.main_role
       : null;
+  const rawPlatform =
+    profileData && typeof profileData.platform === "string"
+      ? profileData.platform
+      : null;
 
   return {
     profileId,
     mainRole: rawMainRole && isCompetitiveRole(rawMainRole) ? rawMainRole : null,
+    platform: rawPlatform && isCompetitivePlatform(rawPlatform) ? rawPlatform : null,
     roles: (roleData ?? [])
       .map((row) => normalizeCompetitiveRoleProfile(row))
       .filter((role): role is CompetitiveRoleProfile => Boolean(role)),

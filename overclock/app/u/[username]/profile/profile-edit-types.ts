@@ -12,7 +12,6 @@ export type ProfileEditProfile = {
   discordUsername: string | null;
   displayName: string;
   lookingFor: string[];
-  platform: string | null;
   region: string | null;
   returnTo: string;
   socials: SocialValues;

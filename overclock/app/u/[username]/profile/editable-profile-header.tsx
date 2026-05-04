@@ -51,7 +51,6 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
           discordUsername,
           displayName: props.displayName,
           lookingFor: props.lookingFor ?? [],
-          platform: props.platform,
           region: props.region,
           returnTo: pathname,
           socials,
