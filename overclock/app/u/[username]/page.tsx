@@ -175,6 +175,7 @@ export default async function ProfilePage({
                             currentRankTier={profileRankTier}
                             currentRankIconSrc={currentRankIconSrc}
                             displayName={profile.display_name}
+                            hideOfflinePresence={profile.hide_offline_presence}
                             id={profile.id}
                             isOwner={isOwner}
                             isLookingToPlay={profile.is_looking_to_play}

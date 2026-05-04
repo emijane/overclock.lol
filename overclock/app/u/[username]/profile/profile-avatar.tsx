@@ -5,6 +5,7 @@ type ProfileAvatarProps = {
   avatarUrl: string | null;
   currentRankTier?: string | null;
   displayName: string;
+  hideOfflinePresence?: boolean | null;
   isLookingToPlay?: boolean | null;
   lastSeenAt?: Date | string | null;
   userId: string;
@@ -14,6 +15,7 @@ export function ProfileAvatar({
   avatarUrl,
   currentRankTier,
   displayName,
+  hideOfflinePresence,
   isLookingToPlay,
   lastSeenAt,
   userId,
@@ -26,6 +28,7 @@ export function ProfileAvatar({
       fallbackClassName="text-3xl font-semibold text-zinc-100 sm:text-[2.2rem]"
       overlay={
         <PresenceIndicator
+          hideOfflinePresence={hideOfflinePresence}
           isLookingToPlay={isLookingToPlay}
           lastSeenAt={lastSeenAt}
           userId={userId}

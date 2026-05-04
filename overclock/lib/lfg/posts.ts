@@ -97,6 +97,7 @@ function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
       badges,
       coverImageUrl: null,
       displayName: null,
+      hideOfflinePresence: false,
       isLookingToPlay: false,
       lastSeenAt: null,
       username: null,
@@ -121,6 +122,7 @@ function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
     ),
     displayName:
       typeof candidate.display_name === "string" ? candidate.display_name : null,
+    hideOfflinePresence: candidate.hide_offline_presence === true,
     isLookingToPlay: candidate.is_looking_to_play === true,
     lastSeenAt:
       typeof candidate.last_seen_at === "string" ? candidate.last_seen_at : null,
@@ -217,7 +219,7 @@ export async function getActiveLFGPosts(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play)",
+        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("lfg_type", lfgType)
@@ -342,7 +344,7 @@ export async function getRecentPostsByProfileId(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play)",
+        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("profile_id", profileId)
@@ -385,7 +387,7 @@ export async function getPostsByProfileId(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play)",
+        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("profile_id", profileId)

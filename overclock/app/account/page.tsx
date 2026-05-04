@@ -5,6 +5,7 @@ import { AuthMessage } from "@/app/login/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 import { AvailabilityToggleCard } from "./availability-toggle-card";
+import { PresencePrivacyToggleCard } from "./presence-privacy-toggle-card";
 
 type AccountPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -41,6 +42,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
         <AvailabilityToggleCard
           initialIsLookingToPlay={profile.is_looking_to_play ?? false}
+        />
+
+        <PresencePrivacyToggleCard
+          initialHideOfflinePresence={profile.hide_offline_presence ?? false}
         />
 
         <section className="rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 sm:p-6">

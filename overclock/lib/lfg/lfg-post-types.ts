@@ -35,6 +35,7 @@ export type LFGPost = {
     badges: ProfileBadge[];
     coverImageUrl: string | null;
     displayName: string | null;
+    hideOfflinePresence: boolean;
     isLookingToPlay: boolean;
     lastSeenAt: string | null;
     username: string | null;

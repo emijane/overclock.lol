@@ -17,6 +17,7 @@ type ProfileHeaderProps = {
   currentRankTier?: string | null;
   currentRankIconSrc: string | null;
   displayName: string;
+  hideOfflinePresence?: boolean | null;
   id: string;
   isOwner: boolean;
   isLookingToPlay?: boolean | null;
@@ -54,6 +55,7 @@ export function ProfileHeader({
   currentRankIconSrc,
   currentRankTier,
   displayName,
+  hideOfflinePresence,
   id,
   isOwner,
   isLookingToPlay,
@@ -125,6 +127,7 @@ export function ProfileHeader({
               avatarUrl={avatarUrl}
               currentRankTier={currentRankTier}
               displayName={displayName}
+              hideOfflinePresence={hideOfflinePresence}
               isLookingToPlay={isLookingToPlay}
               lastSeenAt={lastSeenAt}
               userId={id}

@@ -28,6 +28,11 @@ export type SetLookingToPlayResult =
   | { status: "unauthenticated" }
   | { status: "error"; message: string };
 
+export type SetHideOfflinePresenceResult =
+  | { status: "success"; hideOfflinePresence: boolean }
+  | { status: "unauthenticated" }
+  | { status: "error"; message: string };
+
 type ParsedProfileUpdate = {
   battlenetHandle: string | null;
   bio: string | null;
@@ -326,4 +331,59 @@ export async function setLookingToPlay(
   revalidatePath(`/u/${ownerProfile.username}`);
 
   return { status: "success", isLookingToPlay };
+}
+
+export async function setHideOfflinePresence(
+  hideOfflinePresence: boolean
+): Promise<SetHideOfflinePresenceResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { status: "unauthenticated" };
+  }
+
+  const { data: ownerProfile, error: profileError } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !ownerProfile) {
+    console.error("Hide offline presence profile lookup failed", {
+      error: profileError,
+      profileId: user.id,
+    });
+    return {
+      status: "error",
+      message: "Unable to update presence privacy right now.",
+    };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      hide_offline_presence: hideOfflinePresence,
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("Hide offline presence toggle failed", {
+      error,
+      hideOfflinePresence,
+      profileId: user.id,
+    });
+    return {
+      status: "error",
+      message: "Unable to update presence privacy right now.",
+    };
+  }
+
+  revalidatePath("/account");
+  revalidatePath(`/u/${ownerProfile.username}`);
+
+  return { status: "success", hideOfflinePresence };
 }

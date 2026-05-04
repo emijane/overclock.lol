@@ -106,6 +106,7 @@ export function LFGPostCard({
                 post.profileId ? (
                   <PresenceIndicator
                     className="absolute bottom-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#05070b] shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+                    hideOfflinePresence={post.author.hideOfflinePresence}
                     isLookingToPlay={post.author.isLookingToPlay}
                     lastSeenAt={post.author.lastSeenAt}
                     sizeClassName="h-3 w-3"
