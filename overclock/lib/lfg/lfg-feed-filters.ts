@@ -7,6 +7,8 @@ export const LFG_REGION_OPTIONS = REGION_OPTIONS;
 export const LFG_RANK_FILTER_OPTIONS = RANK_TIERS.filter(
   (tier) => tier !== "Unranked"
 );
+export const LFG_SEARCH_MAX_WORDS = 6;
+export const LFG_SEARCH_MAX_CHARACTERS = 48;
 
 export type LFGRankFilterOption = (typeof LFG_RANK_FILTER_OPTIONS)[number];
 export type LFGRegion = (typeof REGION_OPTIONS)[number];
@@ -89,6 +91,7 @@ export function parseLFGFeedFilters(input: {
     maxRank: parsedMaxRank,
     minRank: parsedMinRank,
   });
+  const normalizedSearch = normalizeLFGSearchQuery(input.search);
 
   return {
     lookingFor:
@@ -100,8 +103,34 @@ export function parseLFGFeedFilters(input: {
     mode: input.mode && isLFGGameMode(input.mode) ? input.mode : undefined,
     region: input.region && isLFGRegion(input.region) ? input.region : undefined,
     role: input.role && isCompetitiveRole(input.role) ? input.role : undefined,
-    search: input.search?.trim() ? input.search.trim() : undefined,
+    search: normalizedSearch,
   };
+}
+
+export function normalizeLFGSearchQuery(value: string | undefined) {
+  if (!value) {
+    return undefined;
+  }
+
+  const cleanedValue = value
+    .replace(/[\u0000-\u001F\u007F]/g, " ")
+    .replace(/[%_*<>[\]{}|\\`]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!cleanedValue) {
+    return undefined;
+  }
+
+  const limitedWords = cleanedValue
+    .split(" ")
+    .slice(0, LFG_SEARCH_MAX_WORDS)
+    .join(" ");
+  const limitedCharacters = limitedWords
+    .slice(0, LFG_SEARCH_MAX_CHARACTERS)
+    .trim();
+
+  return limitedCharacters || undefined;
 }
 
 export function getLFGRankRangeTiers(input: {

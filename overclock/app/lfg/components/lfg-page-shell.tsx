@@ -8,7 +8,10 @@ import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
-import type { LFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
+import {
+  LFG_SEARCH_MAX_CHARACTERS,
+  type LFGFeedFilters,
+} from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
@@ -121,6 +124,7 @@ function LFGSearchBar({
           type="search"
           name="search"
           defaultValue={feedFilters?.search ?? ""}
+          maxLength={LFG_SEARCH_MAX_CHARACTERS}
           placeholder={`Search ${type} posts`}
           className="duos-search-input h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
         />

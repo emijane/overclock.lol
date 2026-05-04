@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { LFGPageShell } from "@/app/lfg/components/lfg-page-shell";
 import {
+  normalizeLFGSearchQuery,
   normalizeLFGRankFilterOption,
   normalizeLFGRankBounds,
   parseLFGFeedFilters,
@@ -73,6 +74,8 @@ export async function LFGSectionPage({
   const messageType = pickValue(params.type);
   const rawMinRank = pickValue(params.min_rank);
   const rawMaxRank = pickValue(params.max_rank);
+  const rawSearch = pickValue(params.search);
+  const normalizedSearch = normalizeLFGSearchQuery(rawSearch);
   const normalizedRankBounds = normalizeLFGRankBounds({
     maxRank: normalizeLFGRankFilterOption(rawMaxRank),
     minRank: normalizeLFGRankFilterOption(rawMinRank),
@@ -80,14 +83,24 @@ export async function LFGSectionPage({
 
   if (
     (config.type === "duos" || config.type === "stacks") &&
-    normalizedRankBounds.minRank &&
-    normalizedRankBounds.maxRank &&
-    (normalizedRankBounds.minRank !== rawMinRank ||
-      normalizedRankBounds.maxRank !== rawMaxRank)
+    ((normalizedRankBounds.minRank &&
+      normalizedRankBounds.maxRank &&
+      (normalizedRankBounds.minRank !== rawMinRank ||
+        normalizedRankBounds.maxRank !== rawMaxRank)) ||
+      rawSearch !== normalizedSearch)
   ) {
     const canonicalSearchParams = buildCanonicalSearchParams(params);
-    canonicalSearchParams.set("min_rank", normalizedRankBounds.minRank);
-    canonicalSearchParams.set("max_rank", normalizedRankBounds.maxRank);
+
+    if (normalizedRankBounds.minRank && normalizedRankBounds.maxRank) {
+      canonicalSearchParams.set("min_rank", normalizedRankBounds.minRank);
+      canonicalSearchParams.set("max_rank", normalizedRankBounds.maxRank);
+    }
+
+    if (normalizedSearch) {
+      canonicalSearchParams.set("search", normalizedSearch);
+    } else {
+      canonicalSearchParams.delete("search");
+    }
 
     const query = canonicalSearchParams.toString();
     redirect(query ? `/${config.type}?${query}` : `/${config.type}`);
@@ -102,7 +115,7 @@ export async function LFGSectionPage({
           mode: pickValue(params.mode),
           region: pickValue(params.region),
           role: pickValue(params.role),
-          search: pickValue(params.search),
+          search: rawSearch,
         })
       : undefined;
 
