@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { getRankBorderClassName } from "@/lib/competitive/rank-border-styles";
 
 type RankedAvatarProps = {
@@ -7,6 +9,7 @@ type RankedAvatarProps = {
   fallbackClassName?: string;
   fallbackText?: string;
   imageClassName?: string;
+  overlay?: ReactNode;
   rankTier?: string | null;
   ringClassName?: string;
 };
@@ -18,6 +21,7 @@ export function RankedAvatar({
   fallbackClassName = "text-sm font-semibold text-zinc-100",
   fallbackText,
   imageClassName = "",
+  overlay,
   rankTier,
   ringClassName = "-inset-[2px] opacity-75",
 }: RankedAvatarProps) {
@@ -48,6 +52,7 @@ export function RankedAvatar({
           {resolvedFallbackText}
         </div>
       )}
+      {overlay}
     </div>
   );
 }

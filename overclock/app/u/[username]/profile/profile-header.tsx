@@ -131,6 +131,9 @@ export function ProfileHeader({
               avatarUrl={avatarUrl}
               currentRankTier={currentRankTier}
               displayName={displayName}
+              isLookingToPlay={isLookingToPlay}
+              lastSeenAt={lastSeenAt}
+              userId={id}
             />
           </div>
         </div>
@@ -156,13 +159,11 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <ProfilePresenceBadges
-                  isLookingToPlay={isLookingToPlay}
-                  lastSeenAt={lastSeenAt}
-                  userId={id}
-                />
-              </div>
+              {isLookingToPlay ? (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <ProfilePresenceBadges isLookingToPlay={isLookingToPlay} />
+                </div>
+              ) : null}
               <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
