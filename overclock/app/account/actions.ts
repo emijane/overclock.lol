@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
@@ -16,6 +17,16 @@ import {
   validateSocialUrl,
 } from "@/lib/profiles/profile-socials";
 import { createClient } from "@/lib/supabase/server";
+
+export type UpdateLastSeenResult =
+  | { status: "success" }
+  | { status: "unauthenticated" }
+  | { status: "error"; message: string };
+
+export type SetLookingToPlayResult =
+  | { status: "success"; isLookingToPlay: boolean }
+  | { status: "unauthenticated" }
+  | { status: "error"; message: string };
 
 type ParsedProfileUpdate = {
   battlenetHandle: string | null;
@@ -228,4 +239,91 @@ export async function updateProfile(formData: FormData) {
   }
 
   accountRedirect("Profile settings saved.", returnTo, "success");
+}
+
+export async function updateLastSeen(): Promise<UpdateLastSeenResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { status: "unauthenticated" };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      last_seen_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("Last seen update failed", {
+      error,
+      profileId: user.id,
+    });
+    return {
+      status: "error",
+      message: "Unable to update presence activity right now.",
+    };
+  }
+
+  return { status: "success" };
+}
+
+export async function setLookingToPlay(
+  isLookingToPlay: boolean
+): Promise<SetLookingToPlayResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { status: "unauthenticated" };
+  }
+
+  const { data: ownerProfile, error: profileError } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !ownerProfile) {
+    console.error("Looking to play toggle profile lookup failed", {
+      error: profileError,
+      profileId: user.id,
+    });
+    return {
+      status: "error",
+      message: "Unable to update availability right now.",
+    };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      is_looking_to_play: isLookingToPlay,
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("Looking to play toggle failed", {
+      error,
+      isLookingToPlay,
+      profileId: user.id,
+    });
+    return {
+      status: "error",
+      message: "Unable to update availability right now.",
+    };
+  }
+
+  revalidatePath("/account");
+  revalidatePath(`/u/${ownerProfile.username}`);
+
+  return { status: "success", isLookingToPlay };
 }
