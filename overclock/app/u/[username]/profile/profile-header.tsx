@@ -6,6 +6,7 @@ import { IoGameController } from "react-icons/io5";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
+import { ProfilePresenceBadges } from "./profile-presence-badges";
 import { ProfileSocialLinks } from "./profile-social-links";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
 
@@ -19,6 +20,8 @@ type ProfileHeaderProps = {
   currentRankPill: string;
   displayName: string;
   isOwner: boolean;
+  isLookingToPlay?: boolean | null;
+  lastSeenAt?: Date | string | null;
   lookingFor?: string[] | null;
   platform: string | null;
   region: string | null;
@@ -55,6 +58,8 @@ export function ProfileHeader({
   currentRankTier,
   displayName,
   isOwner,
+  isLookingToPlay,
+  lastSeenAt,
   platform,
   region,
   roleLabels,
@@ -149,6 +154,12 @@ export function ProfileHeader({
               <p className="text-[15px] font-medium tracking-[-0.01em] text-zinc-500">
                 @{username}
               </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <ProfilePresenceBadges
+                  isLookingToPlay={isLookingToPlay}
+                  lastSeenAt={lastSeenAt}
+                />
+              </div>
               <p className="mt-2 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>

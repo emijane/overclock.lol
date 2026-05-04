@@ -180,6 +180,8 @@ export default async function ProfilePage({
                             currentRankPill={currentRankPill}
                             displayName={profile.display_name}
                             isOwner={isOwner}
+                            isLookingToPlay={profile.is_looking_to_play}
+                            lastSeenAt={profile.last_seen_at}
                             lookingFor={profile.looking_for}
                             platform={competitiveProfile.platform}
                             region={profile.region}
