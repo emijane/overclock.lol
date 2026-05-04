@@ -1,12 +1,28 @@
+import Link from "next/link";
+import { PlusIcon } from "lucide-react";
+
 export function CompetitiveProfileHeader() {
   return (
-    <section className="border-b border-white/10 px-5 py-5 shadow-[inset_0_-1px_0_rgba(255,255,255,0.04)] sm:px-6">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-        Account
-      </p>
-      <h1 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-zinc-50">
-        Competitive Profile
-      </h1>
-    </section>
+    <header className="px-5 py-5 sm:px-6 sm:py-7">
+      <div className="space-y-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
+              Account
+            </p>
+            <h1 className="text-4xl font-semibold tracking-[-0.075em] text-zinc-50 sm:text-5xl">
+              / Competitive
+            </h1>
+          </div>
+          <Link
+            href="/duos/create"
+            className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border border-white/[0.14] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create Post
+          </Link>
+        </div>
+      </div>
+    </header>
   );
 }

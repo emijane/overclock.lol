@@ -36,18 +36,31 @@ export default async function CompetitiveProfilePage({
   const heroPools = await getProfileHeroPools(profile.id);
 
   return (
-    <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
-      <PageContainer className="flex flex-col gap-4">
-        <AuthMessage message={message} type={messageType} />
-        <div className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-          <div className="overflow-hidden rounded-[27px] bg-zinc-950">
+    <main className="relative min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+      />
+      <AuthMessage message={message} type={messageType} variant="toast" />
+      <PageContainer
+        className="relative z-10 flex flex-col gap-3"
+        maxWidthClassName="max-w-[96rem]"
+      >
+        <section className="rounded-[28px]">
+          <div className="overflow-hidden rounded-[28px]">
             <CompetitiveProfileHeader />
-            <CompetitiveProfileManager
-              competitiveProfile={competitiveProfile}
-              heroSelections={heroPools.heroPicks}
-            />
+            <div className="rounded-[28px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <CompetitiveProfileManager
+                competitiveProfile={competitiveProfile}
+                heroSelections={heroPools.heroPicks}
+              />
+            </div>
           </div>
-        </div>
+        </section>
       </PageContainer>
     </main>
   );

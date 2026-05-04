@@ -127,13 +127,10 @@ export function CompetitiveRoleEditorShell({
   );
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-6 sm:py-6">
+    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-            Role setup
-          </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-zinc-50">
+          <h2 className="text-xl font-semibold tracking-[-0.03em] text-zinc-50">
             {COMPETITIVE_ROLE_LABELS[role]}
           </h2>
         </div>
@@ -141,7 +138,7 @@ export function CompetitiveRoleEditorShell({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-full border border-white/12 bg-white/[0.055] px-4 py-2 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition hover:border-white/20 hover:bg-white/[0.075]"
+          className="inline-flex h-9 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
         >
           Cancel
         </button>
@@ -157,25 +154,16 @@ export function CompetitiveRoleEditorShell({
           />
           <button
             type="submit"
-            className="rounded-full border border-rose-400/40 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-300/60 hover:bg-rose-950/30 hover:text-rose-100"
+            className="inline-flex h-9 items-center rounded-full border border-rose-400/30 bg-rose-950/20 px-3.5 text-sm font-semibold text-rose-100 transition hover:border-rose-300/50 hover:bg-rose-950/35"
           >
-            Remove {COMPETITIVE_ROLE_LABELS[role]} profile
+            Remove role
           </button>
         </form>
       ) : null}
 
       <div className="mt-5 grid gap-4">
-        <div className="rounded-[22px] border border-white/10 bg-white/[0.035] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
-                Rank
-              </p>
-              <p className="mt-2 text-sm font-medium text-zinc-200">
-                {currentRankPreview}
-              </p>
-            </div>
-          </div>
+        <div className="rounded-[18px] border border-white/10 bg-[#05070b] p-4 sm:p-5">
+          <p className="text-sm font-medium text-zinc-200">{currentRankPreview}</p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <EditorDropdownField
@@ -193,9 +181,7 @@ export function CompetitiveRoleEditorShell({
               label="Division"
               value={selectedRankDivision}
               placeholder={
-                selectedRankTier === "Unranked"
-                  ? "No division"
-                  : "Choose division"
+                selectedRankTier === "Unranked" ? "No division" : "Choose division"
               }
               options={RANK_DIVISION_OPTIONS}
               onSelect={setSelectedRankDivision}
@@ -218,24 +204,15 @@ export function CompetitiveRoleEditorShell({
               </button>
               Use as main competitive role
             </label>
-            <p className="mt-2 pl-7 text-xs leading-5 text-zinc-500">
-              You can only have one main role. Choosing this will replace your
-              current main role.
-            </p>
           </div>
         </div>
 
-        <div className="rounded-[22px] border border-white/10 bg-white/[0.035] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
-            Hero pool
-          </p>
-          <div className="mt-4">
-            <RoleHeroPicker
-              onChange={setSelectedHeroIds}
-              role={role}
-              selectedHeroIds={selectedHeroIds}
-            />
-          </div>
+        <div className="rounded-[18px] border border-white/10 bg-[#05070b] p-4 sm:p-5">
+          <RoleHeroPicker
+            onChange={setSelectedHeroIds}
+            role={role}
+            selectedHeroIds={selectedHeroIds}
+          />
         </div>
       </div>
 
@@ -243,7 +220,7 @@ export function CompetitiveRoleEditorShell({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-full border border-white/12 bg-white/[0.055] px-4 py-2.5 text-sm font-semibold text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition hover:border-white/20 hover:bg-white/[0.075]"
+          className="inline-flex h-9 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
         >
           Cancel
         </button>
@@ -272,9 +249,9 @@ export function CompetitiveRoleEditorShell({
 
           <button
             type="submit"
-            className="rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+            className="inline-flex h-9 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
           >
-            Save role
+            Save
           </button>
         </form>
       </div>
