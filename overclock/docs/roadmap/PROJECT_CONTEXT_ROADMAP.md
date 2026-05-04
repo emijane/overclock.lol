@@ -112,6 +112,12 @@ These are already visible in the codebase today:
 - Add matching and filtering around schedule overlap.
 - Add a lightweight reconnect or "play again" flow.
 
+## Related Roadmap Notes
+
+- `docs/roadmap/presence/USER_PRESENCE_AND_AVAILABILITY.md` - Use when planning
+  automatic online presence, recent activity fallback, and the separate
+  `Looking to play` availability state.
+
 ### Quality Track
 
 - Add tests for bio validation, onboarding edge cases, hero-pool save flows,
