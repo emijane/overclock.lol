@@ -9,6 +9,7 @@ import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import {
+  LFG_SEARCH_MIN_CHARACTERS,
   LFG_SEARCH_MAX_CHARACTERS,
   type LFGFeedFilters,
 } from "@/lib/lfg/lfg-feed-filters";
@@ -147,6 +148,9 @@ function LFGSearchBar({
           <input type="hidden" name="region" value={feedFilters.region} />
         ) : null}
       </div>
+      <p className="mt-2 px-1 text-xs text-zinc-500">
+        Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
+      </p>
     </form>
   );
 }

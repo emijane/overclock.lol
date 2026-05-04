@@ -7,8 +7,9 @@ export const LFG_REGION_OPTIONS = REGION_OPTIONS;
 export const LFG_RANK_FILTER_OPTIONS = RANK_TIERS.filter(
   (tier) => tier !== "Unranked"
 );
+export const LFG_SEARCH_MIN_CHARACTERS = 2;
 export const LFG_SEARCH_MAX_WORDS = 6;
-export const LFG_SEARCH_MAX_CHARACTERS = 48;
+export const LFG_SEARCH_MAX_CHARACTERS = 80;
 
 export type LFGRankFilterOption = (typeof LFG_RANK_FILTER_OPTIONS)[number];
 export type LFGRegion = (typeof REGION_OPTIONS)[number];
@@ -130,7 +131,11 @@ export function normalizeLFGSearchQuery(value: string | undefined) {
     .slice(0, LFG_SEARCH_MAX_CHARACTERS)
     .trim();
 
-  return limitedCharacters || undefined;
+  if (limitedCharacters.length < LFG_SEARCH_MIN_CHARACTERS) {
+    return undefined;
+  }
+
+  return limitedCharacters;
 }
 
 export function getLFGRankRangeTiers(input: {
