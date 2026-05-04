@@ -23,3 +23,12 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
 }
+
+.duos-search-input {
+  color-scheme: dark;
+}
+
+.duos-search-input::-webkit-search-cancel-button {
+  display: none;
+  -webkit-appearance: none;
+}

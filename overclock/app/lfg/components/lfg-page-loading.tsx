@@ -23,6 +23,7 @@ export function LFGPageLoading({
     >
       <PageContainer
         className={`flex flex-col ${composerOnly ? "flex-1 gap-2" : "gap-4"}`}
+        maxWidthClassName="max-w-[96rem]"
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
@@ -92,8 +93,14 @@ export function LFGPageLoading({
 
             {composerOnly ? null : (
               <>
-                {composerCta ? (
+                  {composerCta ? (
                   <section className="px-5 py-1.5 sm:px-6 sm:py-2">
+                    <div className="mb-4">
+                      <div className="flex items-center gap-3 rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                        <SkeletonBlock className="h-9 w-9 rounded-full" />
+                        <SkeletonBlock className="h-4 w-full max-w-md" />
+                      </div>
+                    </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <SkeletonBlock className="h-7.5 w-22 rounded-full" />
@@ -114,25 +121,40 @@ export function LFGPageLoading({
                 )}
 
                 <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
-                  <div className="grid gap-3">
-                    {[0, 1, 2].map((item) => (
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    {[0, 1, 2, 3].map((item) => (
                       <div
                         key={item}
-                        className="rounded-[18px] border border-white/[0.08] bg-[#05070b] p-4 shadow-[0_14px_32px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.04)]"
+                        className="overflow-hidden rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]"
                       >
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="min-w-0 flex-1">
-                            <div className="mb-3 flex items-center gap-3">
-                              <SkeletonBlock className="h-10 w-10 rounded-full" />
-                              <div className="min-w-0 flex-1">
-                                <SkeletonBlock className="h-4 w-28" />
-                                <SkeletonBlock className="mt-2 h-3 w-24" />
+                        <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
+                          <SkeletonBlock className="h-20 w-full rounded-none bg-white/[0.05]" />
+                          <div className="relative flex flex-1 flex-col px-4 pb-3.5 pt-2">
+                            <div className="absolute left-4 top-0">
+                              <SkeletonBlock className="h-[84px] w-[84px] rounded-full border-[3px] border-[#05070b] bg-white/[0.08]" />
+                            </div>
+                            <div className="absolute right-4 top-2.5 flex flex-col items-end gap-1">
+                              <SkeletonBlock className="h-6 w-20 rounded-full" />
+                              <SkeletonBlock className="h-3 w-14" />
+                            </div>
+                            <div className="min-w-0 pt-8">
+                              <SkeletonBlock className="h-4 w-24" />
+                              <SkeletonBlock className="mt-2 h-3 w-16" />
+                            </div>
+                            <div className="mt-2 min-w-0">
+                              <SkeletonBlock className="h-4 w-full max-w-[16rem]" />
+                              <SkeletonBlock className="mt-2 h-4 w-full max-w-[13rem]" />
+                              <div className="mt-3 flex items-center gap-2">
+                                <SkeletonBlock className="h-4 w-4 rounded-full" />
+                                <SkeletonBlock className="h-3.5 w-28" />
                               </div>
                             </div>
-                            <SkeletonBlock className="h-5 w-full max-w-sm" />
-                            <SkeletonBlock className="mt-3 h-4 w-full max-w-xs" />
+                            <div className="mt-auto flex gap-2 pt-3">
+                              <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+                              <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+                              <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+                            </div>
                           </div>
-                          <SkeletonBlock className="h-9 w-9 rounded-full" />
                         </div>
                       </div>
                     ))}

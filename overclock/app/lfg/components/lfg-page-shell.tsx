@@ -112,16 +112,16 @@ function LFGSearchBar({
 }) {
   return (
     <form action={`/${type}`} className="mt-5 sm:mt-6">
-      <div className="flex items-center gap-3 rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
-          <SearchIcon className="h-4 w-4" />
+      <div className="flex items-center gap-2.5 rounded-[16px] border border-white/[0.07] bg-[#05070b] px-3.5 py-2 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
+          <SearchIcon className="h-3.5 w-3.5" />
         </span>
         <input
           type="search"
           name="search"
           defaultValue={feedFilters?.search ?? ""}
           placeholder={`Search ${type} posts`}
-          className="h-10 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="duos-search-input h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
         />
         {feedFilters?.mode ? (
           <input type="hidden" name="mode" value={feedFilters.mode} />

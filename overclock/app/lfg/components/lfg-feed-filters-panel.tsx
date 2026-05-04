@@ -347,7 +347,7 @@ export function LFGFeedFiltersPanel({
             >
               <span className="text-zinc-400">{chip.label}:</span>
               <span className="text-zinc-100">{chip.value}</span>
-              <XIcon className="h-3 w-3 text-zinc-500" />
+              <XIcon className="h-3 w-3 text-zinc-400" />
             </Link>
           ))}
           {hasActiveFilters ? (
@@ -356,7 +356,7 @@ export function LFGFeedFiltersPanel({
               className="inline-flex h-7 items-center gap-1 rounded-full border border-dashed border-white/[0.12] bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.18] hover:text-zinc-100"
             >
               Clear All
-              <XIcon className="h-3 w-3 text-zinc-500" />
+              <XIcon className="h-3 w-3 text-zinc-400" />
             </Link>
           ) : null}
         </div>
