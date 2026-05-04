@@ -45,6 +45,7 @@ export type LFGPost = {
   lookingForRoles: LFGLookingForRole[];
   profileId: string | null;
   postingRole: CompetitiveRole;
+  platform: string | null;
   rankDivision: number | null;
   rankTier: string;
   region: string | null;

@@ -49,13 +49,13 @@ type LFGPageData = {
 };
 
 function getMissingProfileRequirements(profile: {
-  platform: string | null;
+  competitivePlatform: string | null;
   region: string | null;
   timezone: string | null;
 }) {
   const missingFields: string[] = [];
 
-  if (!profile.platform) {
+  if (!profile.competitivePlatform) {
     missingFields.push("platform");
   }
 
@@ -283,7 +283,7 @@ export async function LFGPageShell({
   };
   const missingProfileRequirements = profile
     ? getMissingProfileRequirements({
-        platform: competitiveProfileForComposer?.platform ?? null,
+        competitivePlatform: competitiveProfileForComposer?.platform ?? null,
         region: profile.region ?? null,
         timezone: profile.timezone ?? null,
       })

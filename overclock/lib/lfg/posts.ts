@@ -169,6 +169,8 @@ function normalizeLFGPostRow(
     lookingForRoles: normalizeLookingForRoles(row.looking_for_roles),
     profileId: typeof row.profile_id === "string" ? row.profile_id : null,
     postingRole: normalizeCompetitiveRole(row.posting_role),
+    platform:
+      typeof row.snapshot_platform === "string" ? row.snapshot_platform : null,
     rankDivision:
       typeof row.snapshot_rank_division === "number"
         ? row.snapshot_rank_division
@@ -203,6 +205,7 @@ export async function getActiveLFGPosts(
         "status",
         "looking_for_roles",
         "posting_role",
+        "snapshot_platform",
         "snapshot_rank_tier",
         "snapshot_rank_division",
         "snapshot_region",
@@ -327,6 +330,7 @@ export async function getRecentPostsByProfileId(
         "status",
         "looking_for_roles",
         "posting_role",
+        "snapshot_platform",
         "snapshot_rank_tier",
         "snapshot_rank_division",
         "snapshot_region",
@@ -369,6 +373,7 @@ export async function getPostsByProfileId(
         "status",
         "looking_for_roles",
         "posting_role",
+        "snapshot_platform",
         "snapshot_rank_tier",
         "snapshot_rank_division",
         "snapshot_region",

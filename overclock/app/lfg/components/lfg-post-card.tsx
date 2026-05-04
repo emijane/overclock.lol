@@ -99,6 +99,11 @@ export function LFGPostCard({
           </div>
           <div className="absolute right-4 top-2.5 z-20 flex flex-col items-end gap-0.5">
             <div className="flex items-center gap-2">
+              {post.platform ? (
+                <span className="inline-flex items-center rounded-full border border-white/10 bg-black/45 px-2 py-1 text-[9px] font-semibold text-zinc-100 backdrop-blur-sm">
+                  {post.platform}
+                </span>
+              ) : null}
               <span
                 className={`shrink-0 rounded-full border px-2 py-1 text-[9px] font-semibold ${modeBadgeClassName}`}
               >
