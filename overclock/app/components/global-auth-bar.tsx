@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { PageContainer } from "@/app/components/page-container";
@@ -31,8 +32,19 @@ export async function GlobalAuthBar() {
         className="flex items-center justify-between gap-4"
         maxWidthClassName="max-w-[96rem]"
       >
-        <Link href="/" className="text-xl font-bold tracking-tight text-white">
-          overclock.lol
+        <Link
+          href="/"
+          className="flex items-center gap-3 text-xl font-bold tracking-tight text-white"
+        >
+          <Image
+            src="/branding/kitty-white-cross-white-border.png"
+            alt="Overclock logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0"
+            priority
+          />
+          <span>overclock.lol</span>
         </Link>
 
         <div className="flex items-center gap-3">

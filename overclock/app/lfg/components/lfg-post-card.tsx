@@ -31,6 +31,7 @@ function getPostingRoleLabel(role: LFGPost["postingRole"]) {
 }
 
 type LFGPostCardProps = {
+  cardClassName?: string;
   currentProfileId?: string | null;
   post: LFGPost;
   returnPath?: string;
@@ -42,6 +43,7 @@ type LFGPostCardProps = {
 };
 
 export function LFGPostCard({
+  cardClassName,
   currentProfileId,
   post,
   returnPath,
@@ -64,7 +66,11 @@ export function LFGPostCard({
   const isOwner = Boolean(currentProfileId && post.profileId === currentProfileId);
 
   return (
-    <article className="group h-full rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]">
+    <article
+      className={`group h-full rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]${
+        cardClassName ? ` ${cardClassName}` : ""
+      }`}
+    >
       <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
         <div className="relative h-20 overflow-hidden border-b border-white/[0.05] bg-zinc-950">
           {post.author.coverImageUrl ? (

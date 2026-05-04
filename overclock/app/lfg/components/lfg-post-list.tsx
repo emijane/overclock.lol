@@ -4,6 +4,7 @@ import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
 
 type LFGPostListProps = {
+  cardClassName?: string;
   currentProfileId?: string | null;
   emptyStateDescription: string;
   emptyStateTitle: string;
@@ -47,6 +48,7 @@ function LFGFeedPlaceholder({
 }
 
 export function LFGPostList({
+  cardClassName,
   currentProfileId,
   emptyStateDescription,
   emptyStateTitle,
@@ -96,6 +98,7 @@ export function LFGPostList({
         {posts.map((post) => {
           return (
             <LFGPostCard
+              cardClassName={cardClassName}
               key={post.id}
               currentProfileId={currentProfileId}
               post={post}

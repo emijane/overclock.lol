@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { PageContainer } from "@/app/components/page-container";
@@ -32,12 +33,34 @@ export function GlobalFooter() {
             <PageContainer className="px-4 py-8 sm:px-6 sm:py-10">
                 <div className="grid gap-8 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
                     <div className="max-w-sm">
-                        <p className="text-sm font-semibold text-white/90">
-                            overclock.lol
-                        </p>
+                        <Link
+                            href="/"
+                            className="flex items-center gap-3 text-sm font-semibold text-white/90"
+                        >
+                            <Image
+                                src="/branding/kitty-white-cross-white-border.png"
+                                alt="Overclock logo"
+                                width={28}
+                                height={28}
+                                className="h-7 w-7 shrink-0"
+                            />
+                            <span>overclock.lol</span>
+                        </Link>
                         <p className="mt-2 text-sm leading-6 text-white/45">
-                            Placeholder footer copy for future product, community,
-                            and support links.
+                            Build custom Overwatch player profiles, find duo
+                            partners, create ranked stacks, and showcase your mains,
+                            roles, rank, and playstyle.
+                        </p>
+                        <p className="mt-4 text-sm font-medium leading-5 text-transparent bg-gradient-to-r from-orange-100 via-rose-100 to-pink-100 bg-clip-text drop-shadow-[0_0_14px_rgba(251,113,133,0.4)]">
+                            Logo art by{" "}
+                            <Link
+                                href="https://ioananenciu.carrd.co/"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-semibold text-transparent bg-gradient-to-r from-white via-rose-100 to-orange-100 bg-clip-text transition-all hover:from-white hover:via-white hover:to-rose-100"
+                            >
+                                neo ˃ 𖥦 ˂
+                            </Link>
                         </p>
                     </div>
 

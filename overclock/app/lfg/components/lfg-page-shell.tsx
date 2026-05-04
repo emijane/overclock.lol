@@ -442,6 +442,11 @@ export async function LFGPageShell({
                   <LFGFiltersBar description={filtersDescription} />
                 )}
                 <LFGPostList
+                  cardClassName={
+                    type === "duos"
+                      ? "shadow-[0_16px_36px_rgba(0,0,0,0.26),inset_0_-8px_0_0_rgba(255,255,255,1)]"
+                      : undefined
+                  }
                   currentProfileId={profile?.id ?? null}
                   emptyStateDescription={emptyStateDescription}
                   emptyStateTitle={emptyStateTitle}
