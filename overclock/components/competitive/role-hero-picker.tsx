@@ -70,7 +70,7 @@ export function RoleHeroPicker({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
         {heroes.map((hero) => {
           const isSelected = selectedHeroIds.includes(hero.id);
           const isDisabled = !isSelected && selectedHeroIds.length >= HERO_LIMIT;
