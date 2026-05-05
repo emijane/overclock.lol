@@ -5,14 +5,18 @@ function SkeletonBlock({ className }: { className: string }) {
 }
 
 export function LFGPageLoading({
+  breadcrumb = false,
   composerCta = false,
   composerOnly = false,
   helperText,
+  showDescription = true,
   title,
 }: {
+  breadcrumb?: boolean;
   composerCta?: boolean;
   composerOnly?: boolean;
   helperText?: string;
+  showDescription?: boolean;
   title: string;
 }) {
   return (
@@ -42,16 +46,22 @@ export function LFGPageLoading({
             >
               <div className={composerCta ? "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" : undefined}>
                 <div>
-                  <SkeletonBlock className="h-3 w-28 rounded-full" />
+                  {breadcrumb ? (
+                    <SkeletonBlock className="h-3 w-24 rounded-full" />
+                  ) : null}
                   <h1
-                    className={`mt-3 font-semibold tracking-[-0.04em] text-zinc-50 ${
+                    className={`${breadcrumb ? "mt-3" : ""} font-semibold tracking-[-0.04em] text-zinc-50 ${
                       composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
                     }`}
                   >
                     {title}
                   </h1>
-                  <SkeletonBlock className="mt-3 h-4 w-full max-w-2xl" />
-                  <SkeletonBlock className="mt-2 h-4 w-full max-w-xl" />
+                  {showDescription ? (
+                    <>
+                      <SkeletonBlock className="mt-3 h-4 w-full max-w-2xl" />
+                      <SkeletonBlock className="mt-2 h-4 w-full max-w-xl" />
+                    </>
+                  ) : null}
                   {helperText ? (
                     <SkeletonBlock className="mt-2 h-4 w-full max-w-lg" />
                   ) : null}

@@ -10,8 +10,10 @@ export const metadata: Metadata = {
 export default function CreateDuosPostPage() {
   return (
     <LFGPageShell
+      breadcrumbHref="/duos"
+      breadcrumbLabel="Duos"
       composerMode="inline"
-      description="Create a duo listing for ranked or casual queue."
+      description=""
       showFeed={false}
       title="Duos"
       type="duos"

@@ -17,6 +17,8 @@ type LFGSectionPageProps = {
 type LFGSectionConfig = {
   composerMode?: "cta" | "inline" | "none";
   createPostHref?: string;
+  breadcrumbHref?: string;
+  breadcrumbLabel?: string;
   description: string;
   emptyStateDescription?: string;
   emptyStateTitle?: string;
@@ -121,6 +123,8 @@ export async function LFGSectionPage({
 
   return (
     <LFGPageShell
+      breadcrumbHref={config.breadcrumbHref}
+      breadcrumbLabel={config.breadcrumbLabel}
       description={config.description}
       composerMode={config.composerMode}
       createPostHref={config.createPostHref}
