@@ -59,14 +59,6 @@ export function CompetitiveProfileSettings({
                 align="start"
                 className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)]"
               >
-                <DropdownMenuItem onSelect={() => setPlatform("")}>
-                  <span className="flex w-full items-center justify-between gap-3">
-                    <span>Platform</span>
-                    {!platform ? (
-                      <CheckIcon className="h-4 w-4 text-sky-400" />
-                    ) : null}
-                  </span>
-                </DropdownMenuItem>
                 {PLATFORM_OPTIONS.map((platformOption) => (
                   <DropdownMenuItem
                     key={platformOption}
@@ -82,10 +74,7 @@ export function CompetitiveProfileSettings({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <span aria-hidden="true" className="text-zinc-600">
-              •
-            </span>
-            <span>{configuredRoleCount} roles</span>
+            <span>{configuredRoleCount} role profiles set up</span>
           </div>
           <SaveButton />
         </div>
