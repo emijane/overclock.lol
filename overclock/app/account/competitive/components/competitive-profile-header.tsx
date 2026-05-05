@@ -3,7 +3,7 @@ import { ChevronLeftIcon, PlusIcon } from "lucide-react";
 
 export function CompetitiveProfileHeader() {
   return (
-    <header className="px-5 py-4 sm:px-6 sm:py-5">
+    <header className="py-4 sm:py-5">
       <div className="space-y-2.5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
