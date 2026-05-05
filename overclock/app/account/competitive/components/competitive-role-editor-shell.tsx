@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
   CompetitiveRankTier,
@@ -121,6 +122,14 @@ export function CompetitiveRoleEditorShell({
         </h2>
 
         <div className="flex items-center gap-2">
+          <label className="inline-flex h-7 items-center gap-2 rounded-full border border-white/12 bg-white/[0.02] px-2.5 text-[11px] font-medium text-zinc-300">
+            <span>Main role</span>
+            <Switch
+              checked={mainRoleEnabled}
+              onCheckedChange={setMainRoleEnabled}
+              className="h-5 w-9 border-white/12 bg-zinc-700 data-[state=checked]:bg-zinc-100"
+            />
+          </label>
           {roleProfile ? (
             <form action={removeCompetitiveRoleProfile}>
               <input type="hidden" name="role" value={role} />
@@ -148,7 +157,7 @@ export function CompetitiveRoleEditorShell({
       </div>
 
       <div className="mt-3 space-y-3">
-        <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center">
+        <div className="grid gap-2 sm:grid-cols-2 sm:items-center">
           <EditorDropdownField
             value={selectedRankTier}
             placeholder="Tier"
@@ -163,28 +172,6 @@ export function CompetitiveRoleEditorShell({
             options={RANK_DIVISION_OPTIONS}
             onSelect={setSelectedRankDivision}
           />
-
-          <label className="flex h-9 items-center gap-2 text-xs font-medium text-zinc-200 sm:justify-end sm:pl-2">
-            <button
-              type="button"
-              onClick={() => setMainRoleEnabled((current) => !current)}
-              aria-pressed={mainRoleEnabled}
-              className={`relative inline-flex h-5 w-9 shrink-0 rounded-full border transition ${
-                mainRoleEnabled
-                  ? "border-sky-400/70 bg-sky-400/30"
-                  : "border-white/15 bg-white/[0.035] hover:border-white/30"
-              }`}
-            >
-              <span
-                className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full transition ${
-                  mainRoleEnabled
-                    ? "left-[18px] bg-sky-300"
-                    : "left-[2px] bg-zinc-500"
-                }`}
-              />
-            </button>
-            Main
-          </label>
         </div>
 
         <div>
