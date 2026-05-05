@@ -169,19 +169,25 @@ export function CompetitiveRoleEditorShell({
               type="button"
               onClick={() => setMainRoleEnabled((current) => !current)}
               aria-pressed={mainRoleEnabled}
-              className={`inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition ${
+              className={`relative inline-flex h-5 w-9 shrink-0 rounded-full border transition ${
                 mainRoleEnabled
-                  ? "border-sky-400 bg-sky-400 text-zinc-950"
-                  : "border-white/15 bg-white/[0.035] text-transparent hover:border-white/30"
+                  ? "border-sky-400/70 bg-sky-400/30"
+                  : "border-white/15 bg-white/[0.035] hover:border-white/30"
               }`}
             >
-              <CheckIcon className="h-2.5 w-2.5" />
+              <span
+                className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full transition ${
+                  mainRoleEnabled
+                    ? "left-[18px] bg-sky-300"
+                    : "left-[2px] bg-zinc-500"
+                }`}
+              />
             </button>
             Main
           </label>
         </div>
 
-        <div className="border-t border-white/10 pt-3">
+        <div>
           <RoleHeroPicker
             onChange={setSelectedHeroIds}
             role={role}

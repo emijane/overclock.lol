@@ -20,7 +20,7 @@ export function CompetitiveProfileManager({
   competitiveProfile,
   heroSelections,
 }: CompetitiveProfileManagerProps) {
-  const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
+  const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>("tank");
   const selectedRoleProfile =
     competitiveProfile.roles.find((roleProfile) => roleProfile.role === selectedRole) ??
     null;
