@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeftIcon, FilterIcon, PlusIcon } from "lucide-react";
+import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
 import { createLFGPost } from "@/app/lfg/actions";
@@ -9,6 +9,8 @@ import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import {
+  LFG_SEARCH_MAX_CHARACTERS,
+  LFG_SEARCH_MIN_CHARACTERS,
   type LFGFeedFilters,
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
@@ -105,6 +107,53 @@ function LFGFiltersBar({ description }: { description: string }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function LFGSearchBar({
+  feedFilters,
+  type,
+}: {
+  feedFilters?: LFGFeedFilters;
+  type: LFGType;
+}) {
+  return (
+    <form action={`/${type}`} className="mt-5 sm:mt-6">
+      <div className="flex items-center gap-2.5 rounded-[16px] border border-white/[0.12] bg-[#05070b] px-3.5 py-2 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
+          <SearchIcon className="h-3.5 w-3.5" />
+        </span>
+        <input
+          type="search"
+          name="search"
+          defaultValue={feedFilters?.search ?? ""}
+          maxLength={LFG_SEARCH_MAX_CHARACTERS}
+          placeholder={`Search ${type} posts`}
+          className="duos-search-input h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+        />
+        {feedFilters?.mode ? (
+          <input type="hidden" name="mode" value={feedFilters.mode} />
+        ) : null}
+        {feedFilters?.role ? (
+          <input type="hidden" name="role" value={feedFilters.role} />
+        ) : null}
+        {feedFilters?.lookingFor ? (
+          <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
+        ) : null}
+        {feedFilters?.minRank ? (
+          <input type="hidden" name="min_rank" value={feedFilters.minRank} />
+        ) : null}
+        {feedFilters?.maxRank ? (
+          <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
+        ) : null}
+        {feedFilters?.region ? (
+          <input type="hidden" name="region" value={feedFilters.region} />
+        ) : null}
+      </div>
+      <p className="mt-2 px-1 text-xs text-zinc-500">
+        Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
+      </p>
+    </form>
   );
 }
 
@@ -345,6 +394,9 @@ export async function LFGPageShell({
                   <p className="text-sm leading-6 text-zinc-500">
                     {helperText}
                   </p>
+                ) : null}
+                {type === "duos" && shouldShowFeed ? (
+                  <LFGSearchBar feedFilters={feedFilters} type={type} />
                 ) : null}
               </div>
 
