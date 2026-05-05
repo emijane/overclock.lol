@@ -32,11 +32,11 @@ export function CompetitiveRoleCard({
   const rankIconSrc = roleProfile ? getRankIconSrc(roleProfile.rankTier) : null;
 
   return (
-    <article className="group flex h-full flex-col rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]">
-      <div className="flex items-start justify-between gap-3">
+    <article className="group flex h-full flex-col rounded-[16px] border border-white/10 bg-[#05070b] p-3 transition-all duration-200 hover:bg-[#080b10]">
+      <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
-            <h2 className="text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">
+            <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
               {COMPETITIVE_ROLE_LABELS[role]}
             </h2>
             {isMainRole ? (
@@ -45,15 +45,15 @@ export function CompetitiveRoleCard({
               </span>
             ) : null}
           </div>
-          <div className="mt-1 flex min-h-5 items-center gap-1.5 text-[11px] font-medium text-white/65">
+          <div className="mt-0.5 flex min-h-4 items-center gap-1 text-[10px] font-medium text-white/65">
             {rankIconSrc && roleProfile ? (
-              <span className="relative h-3.5 w-3.5 shrink-0">
+              <span className="relative h-3 w-3 shrink-0">
                 <Image
                   src={rankIconSrc}
                   alt={`${roleProfile.rankTier} rank icon`}
                   fill
                   className="object-contain"
-                  sizes="14px"
+                  sizes="12px"
                 />
               </span>
             ) : null}
@@ -67,29 +67,33 @@ export function CompetitiveRoleCard({
         <button
           type="button"
           onClick={() => onSelectRole(role)}
-          aria-label={isConfigured ? `Edit ${COMPETITIVE_ROLE_LABELS[role]}` : `Set up ${COMPETITIVE_ROLE_LABELS[role]}`}
+          aria-label={
+            isConfigured
+              ? `Edit ${COMPETITIVE_ROLE_LABELS[role]}`
+              : `Set up ${COMPETITIVE_ROLE_LABELS[role]}`
+          }
           title={isConfigured ? "Edit role" : "Set up role"}
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
-          <PencilIcon className="h-3.5 w-3.5" />
+          <PencilIcon className="h-3 w-3" />
         </button>
       </div>
 
-      <div className="mt-3 min-h-9">
+      <div className="mt-2 min-h-8">
         {heroes.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             {heroes.map((hero) => (
               <div
                 key={hero.id}
                 title={hero.label}
-                className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[9px] border border-white/12 bg-zinc-900"
+                className="relative h-7 w-7 shrink-0 overflow-hidden rounded-[8px] border border-white/12 bg-zinc-900"
               >
                 <Image
                   src={hero.imageSrc}
                   alt={hero.label}
                   fill
                   className="object-cover"
-                  sizes="32px"
+                  sizes="28px"
                 />
               </div>
             ))}
@@ -100,7 +104,6 @@ export function CompetitiveRoleCard({
           </p>
         )}
       </div>
-
     </article>
   );
 }

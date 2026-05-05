@@ -52,25 +52,25 @@ export function RoleHeroPicker({
   }
 
   return (
-    <div className="grid gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm font-medium text-zinc-300">Choose up to five heroes</p>
+    <div className="grid gap-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-medium text-zinc-300">Heroes</p>
         <div className="flex items-center gap-3">
-          <p className="text-sm text-zinc-500">
+          <p className="text-xs text-zinc-500">
             {selectedHeroIds.length}/{HERO_LIMIT}
           </p>
           <button
             type="button"
             onClick={() => onChange([])}
             disabled={selectedHeroIds.length === 0}
-            className="text-sm font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
+            className="text-xs font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
           >
             Clear
           </button>
         </div>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2">
         {heroes.map((hero) => {
           const isSelected = selectedHeroIds.includes(hero.id);
           const isDisabled = !isSelected && selectedHeroIds.length >= HERO_LIMIT;
@@ -82,22 +82,22 @@ export function RoleHeroPicker({
               onClick={() => toggleHero(hero.id)}
               disabled={isDisabled}
               aria-pressed={isSelected}
-              className={`flex items-center gap-2.5 rounded-[16px] border px-2.5 py-2.5 text-left transition ${
+              className={`flex h-[52px] items-center gap-2 rounded-[14px] border px-2 py-2 text-left transition ${
                 isSelected
                   ? "border-white/20 bg-white/[0.07] text-zinc-50"
                   : "border-white/10 bg-white/[0.035] text-zinc-300 hover:border-white/20 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
               }`}
             >
-              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-zinc-900">
+              <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[8px] border border-white/10 bg-zinc-900">
                 <Image
                   src={hero.imageSrc}
                   alt={hero.label}
                   fill
                   className="object-cover"
-                  sizes="40px"
+                  sizes="32px"
                 />
               </div>
-              <span className="text-sm font-medium">{hero.label}</span>
+              <span className="text-xs font-medium">{hero.label}</span>
             </button>
           );
         })}
