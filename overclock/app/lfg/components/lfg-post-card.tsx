@@ -73,8 +73,7 @@ export function LFGPostCard({
     tone === "duos" ? "ring-white/[0.08]" : "ring-white/[0.05]";
   const coverBorderClassName =
     tone === "duos" ? "border-white/[0.08]" : "border-white/[0.05]";
-
-  return (
+  const article = (
     <article
       className={`group h-full rounded-[22px] border ${outerBorderClassName} bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]${
         cardClassName ? ` ${cardClassName}` : ""
@@ -249,8 +248,9 @@ export function LFGPostCard({
             </div>
           </div>
 
-          {post.heroPool.length > 0 ? (
-            <div className="mt-auto flex flex-wrap gap-2 pt-3">
+          {post.heroPool.length > 0 || tone === "duos" ? (
+            <div className="mt-auto flex items-end justify-between gap-3 pt-3">
+              <div className="flex flex-wrap gap-2">
                 {post.heroPool.slice(0, 5).map((hero) => (
                   <div
                     key={`${post.id}-${hero.id}`}
@@ -269,10 +269,21 @@ export function LFGPostCard({
                     ) : null}
                   </div>
                 ))}
+              </div>
+              {tone === "duos" ? (
+                <button
+                  type="button"
+                  className="inline-flex h-8 shrink-0 cursor-pointer items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
+                >
+                  Invite to play
+                </button>
+              ) : null}
             </div>
           ) : null}
         </div>
       </div>
     </article>
   );
+
+  return article;
 }

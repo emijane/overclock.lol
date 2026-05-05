@@ -105,14 +105,15 @@ export function LFGPostList({
       >
         {posts.map((post) => {
           return (
-            <LFGPostCard
-              cardClassName={cardClassName}
-              key={post.id}
-              currentProfileId={currentProfileId}
-              post={post}
-              returnPath={`/${post.lfgType}`}
-              tone={tone}
-            />
+            <div key={post.id}>
+              <LFGPostCard
+                cardClassName={cardClassName}
+                currentProfileId={currentProfileId}
+                post={post}
+                returnPath={`/${post.lfgType}`}
+                tone={tone}
+              />
+            </div>
           );
         })}
       </div>
