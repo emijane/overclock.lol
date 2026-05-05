@@ -41,10 +41,10 @@ function EditorDropdownField({
         <button
           type="button"
           disabled={disabled}
-          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[14px] border bg-white/[0.035] px-3 text-left text-xs outline-none transition ${
+          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[14px] border bg-[#262626] px-3 text-left text-xs outline-none transition ${
             disabled
               ? "cursor-not-allowed border-white/10 text-zinc-600 opacity-70"
-              : "border-white/10 text-zinc-100 hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
+              : "border-white/10 text-zinc-100 hover:border-white/20 hover:bg-[#303030] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
           }`}
         >
           <span className={value ? "text-zinc-100" : "text-zinc-500"}>
@@ -129,7 +129,7 @@ export function CompetitiveRoleEditorShell({
             <Switch
               checked={mainRoleEnabled}
               onCheckedChange={setMainRoleEnabled}
-              className="h-5 w-9 cursor-pointer border-white/12 bg-zinc-700 data-[state=checked]:bg-zinc-100"
+              className="h-5 w-9 cursor-pointer border-white/12 bg-[#262626] data-[state=checked]:bg-zinc-100"
             />
           </label>
           {roleProfile ? (
@@ -142,7 +142,7 @@ export function CompetitiveRoleEditorShell({
               />
               <button
                 type="submit"
-                className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-transparent px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:text-rose-200"
+                className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
               >
                 Remove
               </button>
@@ -201,9 +201,9 @@ export function CompetitiveRoleEditorShell({
             <input type="hidden" name="main_role" value="on" />
           ) : null}
 
-          <button
-            type="submit"
-            className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
+            <button
+              type="submit"
+            className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
           >
             Save
           </button>

@@ -53,7 +53,7 @@ export default async function CompetitiveProfilePage({
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
             <CompetitiveProfileHeader />
-            <div className="rounded-[28px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="rounded-[28px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/5">
               <CompetitiveProfileManager
                 competitiveProfile={competitiveProfile}
                 heroSelections={heroPools.heroPicks}
