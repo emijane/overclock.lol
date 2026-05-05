@@ -5,6 +5,7 @@ import {
   removeCompetitiveRoleProfile,
   saveCompetitiveRoleProfile,
 } from "@/app/account/competitive/actions";
+import { PageReveal } from "@/app/components/page-reveal";
 import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import {
   DropdownMenu,
@@ -117,98 +118,100 @@ export function CompetitiveRoleEditorShell({
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-3 sm:px-6 sm:py-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-base font-semibold tracking-[-0.03em] text-zinc-50">
-          {COMPETITIVE_ROLE_LABELS[role]}
-        </h2>
+    <PageReveal variant="fade">
+      <section className="border-t border-white/10 px-5 py-3 sm:px-6 sm:py-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-base font-semibold tracking-[-0.03em] text-zinc-50">
+            {COMPETITIVE_ROLE_LABELS[role]}
+          </h2>
 
-        <div className="flex items-center gap-2">
-          <label className="inline-flex h-7 items-center gap-2 px-0.5 text-[11px] font-medium text-zinc-300">
-            <span>Main role</span>
-            <Switch
-              checked={mainRoleEnabled}
-              onCheckedChange={setMainRoleEnabled}
-              className="h-5 w-9 cursor-pointer border-white/12 bg-[#262626] data-[state=checked]:bg-zinc-100"
-            />
-          </label>
-          {roleProfile ? (
-            <form action={removeCompetitiveRoleProfile}>
-              <input type="hidden" name="role" value={role} />
-              <input
-                type="hidden"
-                name="was_main_role"
-                value={isMainRole ? "true" : "false"}
+          <div className="flex items-center gap-2">
+            <label className="inline-flex h-7 items-center gap-2 px-0.5 text-[11px] font-medium text-zinc-300">
+              <span>Main role</span>
+              <Switch
+                checked={mainRoleEnabled}
+                onCheckedChange={setMainRoleEnabled}
+                className="h-5 w-9 cursor-pointer border-white/12 bg-[#262626] data-[state=checked]:bg-zinc-100"
               />
-              <button
-                type="submit"
-                className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
-              >
-                Remove
-              </button>
-            </form>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-3 space-y-3">
-        <div className="grid gap-2 sm:grid-cols-2 sm:items-center">
-          <EditorDropdownField
-            value={selectedRankTier}
-            placeholder="Tier"
-            options={RANK_TIERS}
-            onSelect={(value) => handleRankTierChange(value as CompetitiveRankTier)}
-          />
-
-          <EditorDropdownField
-            disabled={selectedRankTier === "Unranked"}
-            value={selectedRankDivision}
-            placeholder="Division"
-            options={RANK_DIVISION_OPTIONS}
-            onSelect={setSelectedRankDivision}
-          />
+            </label>
+            {roleProfile ? (
+              <form action={removeCompetitiveRoleProfile}>
+                <input type="hidden" name="role" value={role} />
+                <input
+                  type="hidden"
+                  name="was_main_role"
+                  value={isMainRole ? "true" : "false"}
+                />
+                <button
+                  type="submit"
+                  className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
+                >
+                  Remove
+                </button>
+              </form>
+            ) : null}
+          </div>
         </div>
 
-        <div>
-          <RoleHeroPicker
-            onChange={setSelectedHeroIds}
-            role={role}
-            selectedHeroIds={selectedHeroIds}
-          />
-        </div>
-      </div>
+        <div className="mt-3 space-y-3">
+          <div className="grid gap-2 sm:grid-cols-2 sm:items-center">
+            <EditorDropdownField
+              value={selectedRankTier}
+              placeholder="Tier"
+              options={RANK_TIERS}
+              onSelect={(value) => handleRankTierChange(value as CompetitiveRankTier)}
+            />
 
-      <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-        <form action={saveCompetitiveRoleProfile}>
-          <input type="hidden" name="role" value={role} />
-          <input
-            type="hidden"
-            name="was_main_role"
-            value={isMainRole ? "true" : "false"}
-          />
-          <input type="hidden" name="rank_tier" value={selectedRankTier} />
-          <input
-            type="hidden"
-            name="rank_division"
-            value={selectedRankDivision}
-          />
-          <input
-            type="hidden"
-            name="hero_ids"
-            value={JSON.stringify(selectedHeroIds)}
-          />
-          {mainRoleEnabled ? (
-            <input type="hidden" name="main_role" value="on" />
-          ) : null}
+            <EditorDropdownField
+              disabled={selectedRankTier === "Unranked"}
+              value={selectedRankDivision}
+              placeholder="Division"
+              options={RANK_DIVISION_OPTIONS}
+              onSelect={setSelectedRankDivision}
+            />
+          </div>
+
+          <div>
+            <RoleHeroPicker
+              onChange={setSelectedHeroIds}
+              role={role}
+              selectedHeroIds={selectedHeroIds}
+            />
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+          <form action={saveCompetitiveRoleProfile}>
+            <input type="hidden" name="role" value={role} />
+            <input
+              type="hidden"
+              name="was_main_role"
+              value={isMainRole ? "true" : "false"}
+            />
+            <input type="hidden" name="rank_tier" value={selectedRankTier} />
+            <input
+              type="hidden"
+              name="rank_division"
+              value={selectedRankDivision}
+            />
+            <input
+              type="hidden"
+              name="hero_ids"
+              value={JSON.stringify(selectedHeroIds)}
+            />
+            {mainRoleEnabled ? (
+              <input type="hidden" name="main_role" value="on" />
+            ) : null}
 
             <button
               type="submit"
-            className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
-          >
-            Save
-          </button>
-        </form>
-      </div>
-    </section>
+              className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
+            >
+              Save
+            </button>
+          </form>
+        </div>
+      </section>
+    </PageReveal>
   );
 }
