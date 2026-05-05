@@ -36,7 +36,7 @@ export default async function OnboardingPage({
   const discordProfile = getDiscordProfile(user);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
+    <main className="flex-1 bg-slate-950 px-6 py-12 text-slate-100">
       <PageContainer className="flex min-h-[calc(100vh-6rem)] items-center">
         <section className="w-full max-w-xl rounded-3xl border border-slate-800 bg-slate-900/80 p-8">
           <AuthMessage message={message} type={messageType} />

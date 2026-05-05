@@ -38,7 +38,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
+    <main className="flex-1 bg-slate-950 px-6 py-12 text-slate-100">
       <PageContainer className="flex min-h-[calc(100vh-6rem)] flex-col justify-center gap-6">
         <AuthMessage message={message} type={messageType} />
         <div className="w-full max-w-xl">

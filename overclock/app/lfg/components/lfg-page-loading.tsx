@@ -18,7 +18,7 @@ export function LFGPageLoading({
   return (
     <main
       className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
-        composerOnly ? "flex min-h-screen flex-1 flex-col pb-0 pt-2 sm:pt-3" : "min-h-screen py-5 sm:py-7"
+        composerOnly ? "flex flex-1 flex-col pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
       }`}
     >
       <div

@@ -145,7 +145,7 @@ export default async function ProfilePage({
     ].filter((link): link is NonNullable<typeof link> => Boolean(link));
 
     return (
-        <main className="relative min-h-screen bg-transparent px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
+        <main className="relative flex-1 bg-transparent px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"

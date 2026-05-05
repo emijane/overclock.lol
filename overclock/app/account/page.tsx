@@ -30,7 +30,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
+    <main className="flex-1 bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
       <PageContainer className="flex flex-col gap-4">
         <AuthMessage message={message} type={messageType} />
 
