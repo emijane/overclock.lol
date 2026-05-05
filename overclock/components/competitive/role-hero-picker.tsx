@@ -52,11 +52,9 @@ export function RoleHeroPicker({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm font-medium text-zinc-300">
-          Choose up to five heroes
-        </p>
+        <p className="text-sm font-medium text-zinc-300">Choose up to five heroes</p>
         <div className="flex items-center gap-3">
           <p className="text-sm text-zinc-500">
             {selectedHeroIds.length}/{HERO_LIMIT}
@@ -67,7 +65,7 @@ export function RoleHeroPicker({
             disabled={selectedHeroIds.length === 0}
             className="text-sm font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
           >
-            Clear all
+            Clear
           </button>
         </div>
       </div>
@@ -84,19 +82,19 @@ export function RoleHeroPicker({
               onClick={() => toggleHero(hero.id)}
               disabled={isDisabled}
               aria-pressed={isSelected}
-              className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition ${
+              className={`flex items-center gap-2.5 rounded-[16px] border px-2.5 py-2.5 text-left transition ${
                 isSelected
-                  ? "border-sky-300/35 bg-sky-300/10 text-zinc-50 shadow-[0_0_18px_rgba(56,189,248,0.12),inset_0_1px_0_rgba(255,255,255,0.08)]"
+                  ? "border-white/20 bg-white/[0.07] text-zinc-50"
                   : "border-white/10 bg-white/[0.035] text-zinc-300 hover:border-white/20 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
               }`}
             >
-              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
+              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-zinc-900">
                 <Image
                   src={hero.imageSrc}
                   alt={hero.label}
                   fill
                   className="object-cover"
-                  sizes="44px"
+                  sizes="40px"
                 />
               </div>
               <span className="text-sm font-medium">{hero.label}</span>
