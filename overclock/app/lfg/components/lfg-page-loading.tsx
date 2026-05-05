@@ -22,7 +22,7 @@ export function LFGPageLoading({
   return (
     <main
       className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
-        composerOnly ? "flex flex-1 flex-col pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
+        composerOnly ? "pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
       }`}
     >
       <div
@@ -34,7 +34,7 @@ export function LFGPageLoading({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
       />
       <PageContainer
-        className={`relative z-10 flex flex-col ${composerOnly ? "flex-1 gap-2" : "gap-4"}`}
+        className={`relative z-10 flex flex-col ${composerOnly ? "gap-2" : "gap-4"}`}
         maxWidthClassName={composerOnly ? "max-w-4xl" : "max-w-[96rem]"}
       >
         <section className="rounded-[28px]">
