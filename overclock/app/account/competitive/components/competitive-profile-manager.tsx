@@ -43,7 +43,6 @@ export function CompetitiveProfileManager({
           key={selectedRole}
           heroIds={heroSelections[selectedRole]}
           isMainRole={competitiveProfile.mainRole === selectedRole}
-          onCancel={() => setSelectedRole(null)}
           role={selectedRole}
           roleProfile={selectedRoleProfile}
         />

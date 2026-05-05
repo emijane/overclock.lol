@@ -49,7 +49,7 @@ export function CompetitiveProfileSettings({
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex h-9 min-w-[92px] items-center justify-between gap-2 rounded-[16px] border border-white/10 bg-white/[0.035] px-3 text-left text-xs font-medium text-zinc-100 outline-none transition hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
+                  className="inline-flex h-8 min-w-[78px] items-center justify-between gap-2 rounded-[14px] border border-white/10 bg-white/[0.035] px-2.5 text-left text-[11px] font-medium text-zinc-100 outline-none transition hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
                 >
                   <span>{platform || "Platform"}</span>
                   <ChevronDownIcon className="h-4 w-4 shrink-0 text-zinc-500" />
