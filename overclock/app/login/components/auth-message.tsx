@@ -30,20 +30,20 @@ export function AuthMessage({
       : "border-rose-400/40 bg-rose-400/10 text-rose-100";
   const containerClassName =
     variant === "toast"
-      ? "fixed right-4 top-4 z-50 w-[min(420px,calc(100vw-2rem))] rounded-[18px] border px-4 py-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:right-6 sm:top-6"
+      ? "fixed right-4 top-[4.75rem] z-50 w-[min(320px,calc(100vw-2rem))] rounded-[14px] border px-3 py-1.5 text-xs shadow-[0_14px_36px_rgba(0,0,0,0.34)] backdrop-blur-sm sm:right-6 sm:top-[5.25rem]"
       : "mb-5 rounded-[18px] border px-4 py-2 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-4.5";
 
   return (
     <div className={`${containerClassName} ${toneClassName}`}>
       <div className="flex items-center justify-between gap-3">
-        <p className="min-w-0 flex-1 leading-6">{message}</p>
+        <p className="min-w-0 flex-1 leading-5">{message}</p>
         <button
           type="button"
           onClick={() => setIsVisible(false)}
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-current/75 transition hover:bg-black/10 hover:text-current"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-current/75 transition hover:bg-black/10 hover:text-current"
           aria-label="Dismiss message"
         >
-          <XIcon className="h-4 w-4" />
+          <XIcon className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>
