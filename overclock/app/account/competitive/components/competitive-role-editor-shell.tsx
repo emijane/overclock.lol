@@ -122,12 +122,12 @@ export function CompetitiveRoleEditorShell({
         </h2>
 
         <div className="flex items-center gap-2">
-          <label className="inline-flex h-7 items-center gap-2 rounded-full border border-white/12 bg-white/[0.02] px-2.5 text-[11px] font-medium text-zinc-300">
+          <label className="inline-flex h-7 items-center gap-2 px-0.5 text-[11px] font-medium text-zinc-300">
             <span>Main role</span>
             <Switch
               checked={mainRoleEnabled}
               onCheckedChange={setMainRoleEnabled}
-              className="h-5 w-9 border-white/12 bg-zinc-700 data-[state=checked]:bg-zinc-100"
+              className="h-4 w-7 cursor-pointer border-white/12 bg-zinc-700 p-0.5 data-[state=checked]:bg-zinc-100 [&>span]:h-3 [&>span]:w-3 [&>span[data-state=checked]]:translate-x-3"
             />
           </label>
           {roleProfile ? (
@@ -140,19 +140,12 @@ export function CompetitiveRoleEditorShell({
               />
               <button
                 type="submit"
-                className="inline-flex h-7 items-center rounded-full border border-white/12 bg-transparent px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:text-rose-200"
+                className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-transparent px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:text-rose-200"
               >
                 Remove
               </button>
             </form>
           ) : null}
-          <button
-            type="button"
-            onClick={onCancel}
-            className="inline-flex h-7 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
-          >
-            Cancel
-          </button>
         </div>
       </div>
 
@@ -187,7 +180,7 @@ export function CompetitiveRoleEditorShell({
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex h-7 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
+          className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
         >
           Cancel
         </button>
@@ -216,7 +209,7 @@ export function CompetitiveRoleEditorShell({
 
           <button
             type="submit"
-            className="inline-flex h-7 items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
+            className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#05070b] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white"
           >
             Save
           </button>
