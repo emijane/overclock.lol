@@ -15,7 +15,7 @@ export default function CreateDuosPostPage() {
       composerMode="inline"
       description=""
       showFeed={false}
-      title="Duos"
+      title="Create a Post"
       type="duos"
     />
   );

@@ -1,22 +1,41 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useId, useState } from "react";
 
 const MAX_POST_TITLE_LENGTH = 80;
 
-export function PostTitleField() {
+export function PostTitleField({
+  actions,
+  inlineLabel = false,
+}: {
+  actions?: ReactNode;
+  inlineLabel?: boolean;
+}) {
   const inputId = useId();
   const [value, setValue] = useState("");
 
   return (
     <div className="mt-3">
-      <label
-        htmlFor={inputId}
-        className="mb-1.5 block text-sm font-medium text-zinc-200"
-      >
-        Post title
-      </label>
-      <div className="rounded-[18px] border border-zinc-800 bg-zinc-950/90 px-3.5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+      {inlineLabel ? (
+        <div className="mb-1.5 flex items-center justify-between gap-3">
+          <label
+            htmlFor={inputId}
+            className="block text-sm font-medium text-zinc-200"
+          >
+            Post title
+          </label>
+          {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+        </div>
+      ) : (
+        <label
+          htmlFor={inputId}
+          className="mb-1.5 block text-sm font-medium text-zinc-200"
+        >
+          Post title
+        </label>
+      )}
+      <div className="rounded-[18px] border border-zinc-800 bg-zinc-950/90 px-3.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="flex items-center gap-3">
           <input
             id={inputId}

@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import {
   ArrowRightIcon,
-  ChevronRightIcon,
   PlusIcon,
   ShieldIcon,
   SwordsIcon,
@@ -70,7 +69,7 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
 function getRoleButtonClassName(isSelected: boolean) {
   return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-sky-400/55 bg-sky-400/10 text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+      ? "border-white/20 bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
       : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
   }`;
 }
@@ -78,7 +77,7 @@ function getRoleButtonClassName(isSelected: boolean) {
 function getLookingForButtonClassName(isSelected: boolean) {
   return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-sky-400/45 bg-sky-400/8 text-sky-100"
+      ? "border-white/20 bg-white/[0.08] text-white"
       : "border-white/5 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.045] hover:text-zinc-200"
   }`;
 }
@@ -86,7 +85,7 @@ function getLookingForButtonClassName(isSelected: boolean) {
 function getLookingForAllButtonClassName(isSelected: boolean) {
   return `inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-sky-400/35 bg-sky-400/[0.07] text-sky-100"
+      ? "border-white/20 bg-white/[0.08] text-white"
       : "border-white/6 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:bg-white/[0.035] hover:text-zinc-300"
   }`;
 }
@@ -99,10 +98,10 @@ function CreatePostButton() {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))] px-4 text-sm font-semibold text-zinc-50 shadow-[0_12px_28px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:border-white/[0.12] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.05))] hover:text-white sm:w-auto disabled:cursor-not-allowed disabled:border-white/[0.05] disabled:bg-white/[0.04] disabled:text-zinc-500 disabled:shadow-none"
+      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.06] px-4 text-sm font-semibold text-zinc-50 transition hover:border-white/[0.12] hover:bg-white/[0.09] hover:text-white sm:w-auto disabled:cursor-not-allowed disabled:border-white/[0.05] disabled:bg-white/[0.04] disabled:text-zinc-500"
     >
       <PlusIcon className="h-4 w-4" />
-      {pending ? "Creating..." : "Create Post"}
+      {pending ? "Creating..." : "Create post"}
     </button>
   );
 }
@@ -167,16 +166,7 @@ export function LFGRolePicker({
                 onClick={() => setSelectedRole(roleOption.role)}
                 className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
               >
-                {getRoleIcon(
-                  roleOption.role,
-                  `h-4.5 w-4.5 ${
-                    roleOption.role === "tank"
-                      ? "text-sky-300"
-                      : roleOption.role === "dps"
-                        ? "text-rose-300"
-                        : "text-emerald-300"
-                  }`
-                )}
+                {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
                 {COMPETITIVE_ROLE_LABELS[roleOption.role]}
               </button>
             );
@@ -201,16 +191,7 @@ export function LFGRolePicker({
                 onClick={() => toggleLookingForRole(roleOption.role)}
                 className={`${getLookingForButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
               >
-                {getRoleIcon(
-                  roleOption.role,
-                  `h-4.5 w-4.5 ${
-                    roleOption.role === "tank"
-                      ? "text-sky-300"
-                      : roleOption.role === "dps"
-                        ? "text-rose-300"
-                        : "text-emerald-300"
-                  }`
-                )}
+                {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
                 {COMPETITIVE_ROLE_LABELS[roleOption.role]}
               </button>
             );
@@ -232,32 +213,16 @@ export function LFGRolePicker({
         selectedRoleOption.isConfigured ? (
           <>
             <input type="hidden" name="posting_role" value={selectedRoleOption.role} />
-            <div className="mt-2.5 border-t border-white/[0.04] pt-2.5">
-              <div className="flex items-start justify-between gap-4">
+            <div className="mt-2.5 pt-2.5">
+              <div className="min-w-0">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-300">
                     <span className="text-zinc-500">Posting as</span>
-                    <span className="inline-flex h-4.5 w-4.5 items-center justify-center">
-                      {getRoleIcon(
-                        selectedRoleOption.role,
-                        selectedRoleOption.role === "tank"
-                          ? "h-4 w-4 text-sky-300"
-                          : selectedRoleOption.role === "dps"
-                            ? "h-4 w-4 text-rose-300"
-                            : "h-4 w-4 text-emerald-300"
-                      )}
-                    </span>
-                    <span className="font-semibold text-zinc-100">{postingAsLabel}</span>
-                    <span className="text-zinc-600">&bull;</span>
                     <span className="font-semibold text-zinc-100">
-                      {selectedRoleOption.rankLabel}
+                      {selectedRoleOption.rankLabel} {postingAsLabel}
                     </span>
-                    <span className="text-zinc-600">&bull;</span>
                     <span className="text-zinc-400">
-                      {profileSummary.region}
-                      {profileSummary.timezone
-                        ? ` (${profileSummary.timezone})`
-                        : ""}
+                      / {profileSummary.region} {profileSummary.timezone}
                     </span>
                   </div>
 
@@ -268,7 +233,7 @@ export function LFGRolePicker({
                           key={hero.id}
                           title={hero.label}
                           aria-label={hero.label}
-                          className="relative h-9 w-9 overflow-hidden rounded-[10px] border border-white/8 bg-zinc-900/90"
+                          className="relative h-9 w-9 overflow-hidden rounded-[10px] bg-zinc-900/90"
                         >
                           <Image
                             src={hero.imageSrc}
@@ -286,17 +251,9 @@ export function LFGRolePicker({
                     </p>
                   )}
                 </div>
-
-                <Link
-                  href={setupHref}
-                  className="inline-flex h-7 shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-400 transition hover:text-zinc-100"
-                >
-                  Edit Profile
-                  <ChevronRightIcon className="h-4 w-4" />
-                </Link>
               </div>
             </div>
-            <div className="mt-2.5 flex flex-col gap-2.5 border-t border-white/[0.04] pt-2.5 sm:flex-row sm:items-center sm:justify-end">
+            <div className="mt-2.5 flex flex-col gap-2.5 pt-2.5 sm:flex-row sm:items-center sm:justify-end">
               <CreatePostButton />
             </div>
           </>

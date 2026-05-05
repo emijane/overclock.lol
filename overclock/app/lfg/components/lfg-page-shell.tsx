@@ -263,8 +263,8 @@ export async function LFGPageShell({
     ? " This opens your competitive profile settings directly."
     : " This opens your profile editor directly.";
   const profileSetupCtaLabel = isMissingPlatformOnly
-    ? "Open Competitive Profile"
-    : "Open Profile Editor";
+    ? "Open competitive profile"
+    : "Open profile editor";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;
@@ -293,7 +293,7 @@ export async function LFGPageShell({
         className={`relative z-10 flex flex-col ${
           isComposerOnlyPage ? "flex-1 gap-2" : "gap-3"
         }`}
-        maxWidthClassName="max-w-[96rem]"
+        maxWidthClassName={isComposerOnlyPage ? "max-w-4xl" : "max-w-[96rem]"}
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
@@ -353,14 +353,14 @@ export async function LFGPageShell({
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"
-                      ctaLabel="Log In"
+                      ctaLabel="Log in"
                       description="Sign in with Discord to create a post in this section."
                       title="Log in to post"
                     />
                   ) : !profile ? (
                     <LFGActionNotice
                       ctaHref="/onboarding"
-                      ctaLabel="Finish Onboarding"
+                      ctaLabel="Finish onboarding"
                       description="Finish your overclock.lol profile first so your post can be attached to your public player page."
                       title="Complete your profile first"
                     />
@@ -376,7 +376,7 @@ export async function LFGPageShell({
                   ) : !hasConfiguredRole ? (
                     <LFGActionNotice
                       ctaHref="/account/competitive"
-                      ctaLabel="Set Up Competitive Profile"
+                      ctaLabel="Set up competitive profile"
                       description="Set up at least one competitive role before creating a post in this section."
                       title="Competitive profile required"
                     />
@@ -387,21 +387,30 @@ export async function LFGPageShell({
                         isDuosPage ? "border-white/[0.12]" : "border-white/[0.08]"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
-                          Create a Post
-                        </h2>
-                        <Link
-                          href="/account/posts"
-                          className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
-                            isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
-                          }`}
-                        >
-                          Manage Posts
-                        </Link>
-                      </div>
                       <input type="hidden" name="lfg_type" value={type} />
-                      <PostTitleField />
+                      <PostTitleField
+                        inlineLabel
+                        actions={
+                          <>
+                            <Link
+                              href={profileSetupHref}
+                              className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
+                                isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
+                              }`}
+                            >
+                              Edit profile
+                            </Link>
+                            <Link
+                              href="/account/posts"
+                              className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
+                                isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
+                              }`}
+                            >
+                              Manage posts
+                            </Link>
+                          </>
+                        }
+                      />
                       <LFGGameModePicker />
                       <LFGRolePicker
                         profileSummary={profileSummary}

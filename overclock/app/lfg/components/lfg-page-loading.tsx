@@ -35,7 +35,7 @@ export function LFGPageLoading({
       />
       <PageContainer
         className={`relative z-10 flex flex-col ${composerOnly ? "flex-1 gap-2" : "gap-4"}`}
-        maxWidthClassName="max-w-[96rem]"
+        maxWidthClassName={composerOnly ? "max-w-4xl" : "max-w-[96rem]"}
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
@@ -75,12 +75,12 @@ export function LFGPageLoading({
                 <section className="mt-4">
                   <div className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5">
                     <div className="flex items-center justify-between gap-3">
-                      <h2 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-zinc-50 sm:text-[2rem]">
-                        Create a Post
-                      </h2>
-                      <SkeletonBlock className="h-8 w-28 rounded-full" />
+                      <SkeletonBlock className="h-4 w-20" />
+                      <div className="flex items-center gap-2">
+                        <SkeletonBlock className="h-8 w-24 rounded-full" />
+                        <SkeletonBlock className="h-8 w-28 rounded-full" />
+                      </div>
                     </div>
-                    <SkeletonBlock className="mt-6 h-4 w-20" />
                     <SkeletonBlock className="mt-2 h-[54px] w-full rounded-[18px]" />
 
                     <SkeletonBlock className="mt-4 h-4 w-16" />
