@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { ChevronLeftIcon, PlusIcon } from "lucide-react";
 
 export function CompetitiveProfileHeader() {
   return (
@@ -7,11 +7,15 @@ export function CompetitiveProfileHeader() {
       <div className="space-y-2.5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-zinc-500">
+            <Link
+              href="/account"
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+            >
+              <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
               Account
-            </p>
+            </Link>
             <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
-              / Competitive
+              Competitive profile
             </h1>
           </div>
           <Link

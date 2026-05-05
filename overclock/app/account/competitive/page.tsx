@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { CompetitiveProfileHeader } from "@/app/account/competitive/components/competitive-profile-header";
 import { CompetitiveProfileManager } from "@/app/account/competitive/components/competitive-profile-manager";
 import { PageContainer } from "@/app/components/page-container";
+import { PageReveal } from "@/app/components/page-reveal";
 import { AuthMessage } from "@/app/login/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
@@ -52,13 +53,17 @@ export default async function CompetitiveProfilePage({
       >
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
-            <CompetitiveProfileHeader />
-            <div className="rounded-[28px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/5">
-              <CompetitiveProfileManager
-                competitiveProfile={competitiveProfile}
-                heroSelections={heroPools.heroPicks}
-              />
-            </div>
+            <PageReveal>
+              <CompetitiveProfileHeader />
+            </PageReveal>
+            <PageReveal delay={1}>
+              <div className="rounded-[28px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/5">
+                <CompetitiveProfileManager
+                  competitiveProfile={competitiveProfile}
+                  heroSelections={heroPools.heroPicks}
+                />
+              </div>
+            </PageReveal>
           </div>
         </section>
       </PageContainer>

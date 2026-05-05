@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
+import { PageReveal } from "@/app/components/page-reveal";
 import { createLFGPost } from "@/app/lfg/actions";
 import { AuthMessage } from "@/app/login/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
@@ -354,10 +355,10 @@ export async function LFGPageShell({
               }`}
             >
               <div className={isComposerOnlyPage ? "space-y-3" : "space-y-5"}>
-                <div
-                  className={`flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between${
-                    animateOnLoad && isComposerOnlyPage ? " page-enter" : ""
-                  }`}
+                <PageReveal
+                  className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                  delay={0}
+                  disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
                   <div className={isComposerOnlyPage ? "space-y-2" : "space-y-3"}>
                     {breadcrumbHref && breadcrumbLabel ? (
@@ -390,7 +391,7 @@ export async function LFGPageShell({
                       Create Post
                     </Link>
                   ) : null}
-                </div>
+                </PageReveal>
                 {description ? (
                   <p className="max-w-xl text-sm leading-6 text-zinc-400">
                     {description}
@@ -407,10 +408,10 @@ export async function LFGPageShell({
               </div>
 
               {type && shouldShowComposer ? (
-                <section
-                  className={`${isComposerOnlyPage ? "mt-4" : "mt-8"}${
-                    animateOnLoad && isComposerOnlyPage ? " page-enter page-enter-delay-1" : ""
-                  }`}
+                <PageReveal
+                  className={isComposerOnlyPage ? "mt-4" : "mt-8"}
+                  delay={1}
+                  disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
                   {!user ? (
                     <LFGActionNotice
@@ -481,7 +482,7 @@ export async function LFGPageShell({
                       />
                     </form>
                   )}
-                </section>
+                </PageReveal>
               ) : null}
             </header>
 
