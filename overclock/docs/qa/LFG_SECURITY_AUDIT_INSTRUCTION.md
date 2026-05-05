@@ -85,3 +85,7 @@ Return:
 5. Any risks before applying
 6. Manual test steps after migration
 7. Report findings in LFG_SECURITY_AUDIT_REPORT.md
+# Audit Prompt
+
+This file is an audit instruction/prompt, not a source of truth for current
+shipped product behavior.

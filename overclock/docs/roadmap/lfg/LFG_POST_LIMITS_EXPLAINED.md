@@ -4,6 +4,11 @@ Date: 2026-05-03
 
 This note explains the current temporary testing policy for LFG posting.
 
+Current shipped public sections:
+
+- `/duos`
+- `/stacks`
+
 ## Current Testing Policy
 
 - Active posts still expire from active surfaces after `12` hours.

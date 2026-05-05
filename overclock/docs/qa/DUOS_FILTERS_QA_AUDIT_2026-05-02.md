@@ -501,3 +501,7 @@ settled until the remaining UX gaps are addressed.
 Priority order:
 
 1. Reevaluate `Clear All` styling only if testing still shows confusion
+# Historical Snapshot
+
+This audit reflects the Duos filters implementation as of `2026-05-02`.
+Current UI and behavior may differ from this snapshot.

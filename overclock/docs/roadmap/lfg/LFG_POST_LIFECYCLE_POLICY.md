@@ -4,8 +4,7 @@ This note captures the current lifecycle rules for LFG posts across:
 
 - `/duos`
 - `/stacks`
-- `/teams`
-- `/scrims`
+- future LFG sections if they ship later
 
 It exists so the shipped behavior and remaining follow-up work stay clear.
 
@@ -149,8 +148,6 @@ Only active posts should appear in the public-facing LFG experience.
 
 - `/duos`
 - `/stacks`
-- `/teams`
-- `/scrims`
 - public profile active listing modules
 
 ### Private history surface
@@ -250,12 +247,18 @@ If you do nothing, it expires on its own.
 
 The current implementation already includes:
 
-- active slot limiting
-- rolling creation rate limiting
 - owner-only close
 - hidden closed and expired posts on public surfaces
 - read-time expiry for active feeds
 - private post management through `/account/posts`
+
+Temporary current-codebase note:
+
+- active slot limits are currently disabled for testing
+- rolling creation rate limits are currently disabled for testing
+- duplicate active posts with the same normalized title + section + mode +
+  posting role are still blocked
+- the shipped public sections are currently `/duos` and `/stacks`
 
 Follow-up work that still makes sense:
 

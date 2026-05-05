@@ -6,13 +6,13 @@ quick play LFG posts.
 
 ## Product Scope
 
-The current LFG experience supports ranked and quick play posting across Duos,
-Stacks, Teams, and Scrims. A player's competitive identity should still be
-based on the role they play, the rank they have on that role, and their hero
-pool for that role.
+The current shipped LFG experience supports ranked and quick play posting across
+Duos and Stacks. A player's competitive identity should still be based on the
+role they play, the rank they have on that role, and their hero pool for that
+role.
 
-LFG sections such as Duos, Stacks, Teams, and Scrims are posting contexts. They
-should not require separate registration.
+LFG sections are posting contexts. They should not require separate
+registration.
 
 ## Competitive Profile
 
@@ -58,13 +58,11 @@ Tank: not listed
 ```
 
 Once the user has registered Support, they can use that Support identity across
-all LFG sections:
+the currently shipped LFG sections:
 
 ```text
 Duos
 Stacks
-Teams
-Scrims
 ```
 
 They should not be forced to register Tank or DPS unless they want to post,
@@ -144,7 +142,7 @@ Optional: add another role
 
 ```text
 User opens LFG
--> Selects Duos / Stacks / Teams / Scrims
+-> Selects Duos / Stacks
 -> Can browse posts
 
 User creates a post
@@ -164,8 +162,6 @@ Current routes exist at:
 /duos
 /duos/create
 /stacks
-/scrims
-/teams
 ```
 
 These pages share one LFG architecture but should feel like standalone
@@ -178,7 +174,7 @@ living on the dedicated `/duos/create` route instead of inline on the feed.
 Example post composer state:
 
 ```text
-Create Duo Post
+Create a Post
 Mode: Competitive / Quick Play
 Posting as: Support - Champion 3
 Hero pool: Ana, Kiriko, Juno

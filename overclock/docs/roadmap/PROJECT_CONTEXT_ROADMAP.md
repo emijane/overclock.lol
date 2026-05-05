@@ -9,13 +9,14 @@ next sensible product steps look like based on the current codebase and `TODO`.
 `overclock.lol` is a Next.js App Router app for Overwatch players to create a
 public profile, connect through Discord auth, and share matchmaking-relevant
 details such as rank, platform, preferred server, bio, preferred hero pools,
-social links, and featured videos.
+social links, featured videos, presence, and LFG posts.
 
 The current product shape is profile-first rather than feed-first:
 
 - `/login` is the main entry point and auth gate.
 - `/onboarding` creates an app profile for a Discord-authenticated user.
-- `/account` is currently a placeholder settings route.
+- `/account` now ships small account controls for `Looking to play` and offline
+  presence privacy, plus a lightweight placeholder for future account settings.
 - `/account/competitive` manages per-role rank and hero setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private owner-only surface for managing LFG posts.
@@ -25,12 +26,15 @@ The current product shape is profile-first rather than feed-first:
   a dedicated create route at `/duos/create`.
 - `/stacks` still supports inline browsing and creating LFG posts, with
   first-pass URL-based filters currently enabled.
+- `/teams` and `/scrims` are discussed in roadmap notes but do not currently
+  exist as shipped routes in `app/`.
 - LFG posts now store both `posting_role` and `looking_for_roles`, and `/duos`
   plus `/stacks` now expose both `Role` and `Needs` filters for role-pair
   browsing.
 - Current Duos and Stacks rank filtering is tier-only via `Min rank` /
   `Max rank`; exact division-level matching is intentionally out of scope for
   the current version.
+- `/duos` also now supports feed search in addition to the first-pass filters.
 
 The homepage currently redirects to `/login`.
 
@@ -39,15 +43,18 @@ The homepage currently redirects to `/login`.
 1. A user signs in with Discord through Supabase auth.
 2. If they do not yet have a `profiles` row, they are redirected to onboarding.
 3. Onboarding creates the app-specific profile with a unique username.
-4. The user can fill in account details like bio, region, preferred server, platform,
-   rank, and looking-for preferences from the edit modal on `/u/[username]`.
-5. The user can separately define hero pools by role.
+4. The user can fill in account details like bio, region, preferred server,
+   platform, socials, featured clips, and looking-for preferences from the edit
+   modal on `/u/[username]`.
+5. The user can define competitive ranks and hero pools by role on
+   `/account/competitive`.
 6. Their public profile is available at `/u/[username]`.
 7. Once their profile and Competitive Profile are set up, they can create LFG
    posts in Duos and Stacks, with Duos now using a dedicated post-creation
    route instead of an inline feed composer.
 8. Active posts appear in section feeds and on the public profile.
 9. They can review active, closed, and expired posts from `/account/posts`.
+10. They can toggle `Looking to play` and hide offline presence from `/account`.
 
 ## Technical Context
 
@@ -71,6 +78,11 @@ The homepage currently redirects to `/login`.
 - Hero pool logic is isolated in `lib/heroes/*` and the dedicated account route.
 - Shared LFG policy, query, and display helpers live under `lib/lfg/*`, while
   reusable section UI lives under `app/lfg/*`.
+- Presence and availability UI now live in shared app components and account
+  settings, with current status displayed on profile surfaces and LFG cards.
+- The global authenticated shell currently includes top-level Duos / Stacks
+  navigation, a placeholder notifications icon, the account menu, and smaller
+  toast-style alerts below the main menu.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 
@@ -89,19 +101,19 @@ These are already visible in the codebase today:
 
 ### Now
 
-- Replace placeholder and starter content with project-specific metadata and
-  documentation.
 - Polish the core profile setup loop so onboarding, account editing, and hero
   pools feel complete and trustworthy.
 - Improve empty states so owners know what to fill in next without exposing
   awkward blank UI publicly.
+- Keep roadmap notes in sync with the currently shipped Duos/Stacks-only LFG
+  surface area.
 
 ### Next
 
 - Add profile completion prompts and guided setup cues in account settings.
-- Add a compact "looking for" summary near the top of the public profile.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
+- Add real notifications behavior to replace the current placeholder header icon.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 

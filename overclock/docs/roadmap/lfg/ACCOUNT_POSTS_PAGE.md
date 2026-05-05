@@ -34,8 +34,6 @@ private owner-only route instead of being spread across:
 - `/u/[username]`
 - `/duos`
 - `/stacks`
-- `/teams`
-- `/scrims`
 
 Recommended route:
 
@@ -148,8 +146,6 @@ Section filters can come later if needed:
 
 - `Duos`
 - `Stacks`
-- `Teams`
-- `Scrims`
 
 For the first version, status filtering is enough.
 

@@ -34,10 +34,9 @@ usually simple:
 That made Duos a good place to validate the filter model before applying it to:
 
 - `/stacks`
-- `/teams`
-- `/scrims`
 
-The same first-pass filter model is now also used on `/stacks`.
+Those future sections are still roadmap-only. The same first-pass filter model
+is currently live on `/stacks` only.
 
 ## Current Filters
 
@@ -154,7 +153,6 @@ These still stay out of the current filter release:
 - timezone
 - playstyle
 - microphone / comms
-- free-text search
 - advanced sorting controls
 
 Why:
@@ -186,7 +184,7 @@ The filter bar should stay compact and readable.
 Current layout:
 
 ```text
-Browse Feed
+[search]
 [Mode dropdown] [Role dropdown] [Needs dropdown] [Min Rank dropdown] [Max Rank dropdown] [Region dropdown]
 ```
 
@@ -205,7 +203,7 @@ Current request shape:
 Example:
 
 ```text
-/duos?mode=ranked&role=support&looking_for=dps&min_rank=gold&max_rank=diamond&region=Americas
+/duos?search=kiriko&mode=ranked&role=support&looking_for=dps&min_rank=gold&max_rank=diamond&region=NA
 ```
 
 Why URL-based filters are a good fit here:
@@ -225,6 +223,7 @@ The current Duos posts already expose the main fields needed for these filters:
 - `snapshot_rank_tier`
 - `snapshot_rank_division`
 - `snapshot_region`
+- `title`
 
 That means the current Duos filter release did not require a major data model
 change.
@@ -282,7 +281,6 @@ Useful follow-up:
 
 The current filter release still does not include:
 
-- search
 - section-wide filters reused everywhere
 - advanced sort controls
 - personalized "best match" ranking
@@ -295,6 +293,7 @@ Division-level rank matching is explicitly out of scope for this version.
 
 The current filter release already includes:
 
+- feed search on `/duos`
 - URL query parsing
 - server-side filtering
 - shared dropdown controls in the feed header

@@ -117,3 +117,8 @@ Method:
 
 
 - EXPIRED POSTS STOP FROM POSTING ACTIVE POST BY SAME TITLE
+# Historical Snapshot
+
+This report is a dated QA snapshot and should not be treated as a complete
+description of the current shipped UI. In particular, `/teams` and `/scrims`
+references in this file are now roadmap-only rather than current routes.

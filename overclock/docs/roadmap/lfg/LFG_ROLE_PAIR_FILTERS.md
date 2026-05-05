@@ -29,7 +29,7 @@ Examples:
 
 - Support player posting for Duos
 - Tank player posting for Stacks
-- DPS player posting for Teams
+- DPS player posting for Duos
 
 This is the author's role identity for that post.
 
@@ -186,11 +186,6 @@ The current first-pass connected role filters are available on:
 
 - `/duos`
 - `/stacks`
-
-They are not yet available on:
-
-- `/teams`
-- `/scrims`
 
 ## Scope Guardrails
 

@@ -1,105 +1,124 @@
-Refine the Create Post composer to feel more minimal, premium, and editorial. Focus on simplification, hierarchy, and atmospheric dark UI. Do not change core functionality—improve presentation and structure.
+# Duos UI Updates
 
-1. Reduce nested panel complexity.
-- Audit the composer for “box inside box inside box” patterns.
-- Remove unnecessary nested surfaces.
-- Keep a single primary composer surface wherever possible.
-- Use spacing and dividers for separation instead of stacked sub-cards.
+This note captures the currently shipped Duos UI direction across:
 
-2. Rework the Competitive Profile section.
-- It currently reads too much like an account settings panel.
-- Convert it into lightweight inline contextual profile information rather than a standalone dashboard card.
+```text
+/duos
+/duos/create
+```
 
-Target structure:
-Support • Unranked • Americas                     Edit Profile →
+It exists so future polish work starts from the current codebase instead of
+older composer experiments.
 
-Hero icons directly below or inline.
+## Current Feed Shape
 
-- Remove heavy card treatment around this section.
+The Duos surface is browse-first.
 
-3. Replace the bright blue “Create Post” CTA treatment.
-- Redesign as a darker, subtler, premium-feeling primary action.
-- Explore elevated dark button, soft glow, or understated accent treatment.
-- Maintain strong affordance without loud default SaaS styling.
+Current top-level behavior:
 
-4. Simplify Queue selection dramatically.
-- Current queue cards feel like settings controls.
-- Redesign them as a cleaner segmented selector.
-- Reduce or remove descriptive helper copy.
-- Aim for minimal channel selection rather than informational cards.
+- `/duos` focuses on discovery, filtering, and card browsing
+- post creation lives on the dedicated `/duos/create` route
+- top-level section switching belongs in the global authenticated header, not
+  inside the feed itself
 
-Example direction:
-Competitive | Quick Play
+Current header shape on `/duos`:
 
-5. Reduce labels and instructional chrome.
-Audit and remove or minimize redundant labels such as:
-- Post title
-- Queue
-- Role
-- Competitive Profile
-- Hero Pool
+- large `/ Duos` heading
+- no inline "LFG Channel" eyebrow
+- Duos feed search
+- compact first-pass filter bar below the header
 
-Only keep labels where truly necessary.
-Favor inferred structure over over-labeled UI.
+## Current Create Page Shape
 
-6. Compress the composer vertically.
-- Reduce excessive padding in:
-  - Queue section
-  - Role section
-  - Profile section
-  - Bottom action area
+The current create route is intentionally narrower and more editorial than the
+feed.
 
-Goal:
-Make the composer significantly denser and less form-heavy.
+Current top-level behavior:
 
-7. Remove or redesign the bottom “Posting as Support • Unranked” strip.
-- It repeats information already present.
-- Eliminate redundant system-status style UI.
-- Either remove entirely or fold this information into existing profile context.
+- breadcrumb back to `/duos`
+- heading of `/ Create a Post`
+- no feed search bar
+- no "LFG Channel" eyebrow
+- no extra description copy
 
-8. Reduce the visual weight of “Create a Post.”
-- It should not compete with the main channel heading.
-- Treat it as a quieter section title.
-- Reduce size, weight, or prominence.
+The current composer uses:
 
-9. Add subtle atmospheric treatment inside the composer.
-Introduce internal surface depth:
-- soft radial ambient glow
-- subtle noise/grain
-- low-contrast lighting variation
+- one main surface
+- lighter action chrome
+- quieter section labels
+- denser spacing than earlier card-within-card drafts
 
-Goal:
-Dark panels should feel dimensional, not flat.
+## Current Composer Layout
 
-10. Reduce border dependence.
-- Audit outlines across inputs, pills, sections, cards.
-- Remove unnecessary strokes.
-- Let spacing, tone shifts, and lighting do more of the separation work.
+The shipped create form currently reads like:
 
-11. Preserve and refine role pills.
-- Keep role selection, but consider making them lighter and more icon-forward.
-- Reduce pill heaviness where possible.
+```text
+breadcrumb
+/ Create a Post
 
-12. Push the overall composer away from “dashboard settings panel” and toward “editor surface.”
-- Less administrative
-- More minimal
-- More editorial
-- More intentional
+Post title                        [Edit profile] [Manage posts]
+[title input]
 
-13. Strengthen typography hierarchy.
-Improve distinction between:
-- Channel heading
-- Section heading
-- Input content
-- Metadata
-- Supporting copy
+Queue
+[Competitive] [Quick Play]
 
-Use clearer scale differences and restraint.
+Role
+[Tank] [DPS] [Support]
 
-14. Apply a simplification pass after implementation.
-After updates, do a second pass asking:
-“What can be removed without losing function?”
-Remove any remaining redundant UI.
+Looking for
+[Tank] [DPS] [Support] [All]
 
-Design objective:
-Transform the Create Post section from a structured SaaS form into a minimal, atmospheric, premium-feeling editor surface.
+Posting as Rank Division Role / Region Timezone
+[hero icons]
+                                     [Create post]
+```
+
+Important current styling notes:
+
+- selected queue and role states use neutral white tones rather than blue
+- role icons are white
+- the create button is subtle dark UI, not a bright CTA
+- the selected-role summary is lightweight and no longer uses a repeated status strip
+- hero icons no longer use extra borders in the composer summary
+
+## Current Card Direction
+
+Duos post cards currently:
+
+- reuse the shared LFG card structure
+- stay flat, without hover parallax
+- include a placeholder `Invite to play` button in the bottom-right corner
+- show presence, badges, rank snapshot, role, and hero pool
+
+## Current Loading Direction
+
+The Duos feed does not currently use a custom spinner-first loading experience.
+
+Current behavior:
+
+- no special spiral loader
+- no staged feed-card entrance animation
+- real cards simply render when the route resolves
+
+The create page and Competitive Profile page do use subtle page-entry motion,
+but the Duos feed itself is intentionally calmer right now.
+
+## Design Principles To Preserve
+
+When iterating on Duos UI, preserve these current choices:
+
+- browse-first feed structure
+- dedicated create route
+- lighter, editorial composer styling
+- minimal repeated labels and eyebrow text
+- strong separation between feed browsing and post authoring
+
+## Follow-Up Ideas
+
+Useful future polish work:
+
+- replace the placeholder `Invite to play` button with a real flow
+- refine mobile spacing for the search + filters stack
+- add clearer feed empty-state language for heavily filtered results
+- add notification-driven entry points once notifications exist beyond the
+  current placeholder bell icon

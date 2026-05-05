@@ -19,8 +19,8 @@ That meant logged-out public visitors still paid for auth/profile lookup work
 that could only ever produce `isOwner = false`.
 
 The route also loaded profile extras sequentially even though hero pools,
-competitive profile data, and featured clips are independent reads once the
-public profile row exists.
+competitive profile data, featured clips, badges, and recent posts are
+independent reads once the public profile row exists.
 
 ## Changes Made
 
@@ -39,7 +39,8 @@ The page now:
 
 - loads the public profile and optional current user id in parallel
 - returns `notFound()` if the public profile does not exist
-- loads hero pools, competitive profile data, and featured clips in parallel
+- loads hero pools, competitive profile data, featured clips, badges, and
+  recent posts in parallel
 - keeps owner detection based on `currentUserId === profile.id`
 
 Updated `lib/competitive/competitive-profile.ts`.

@@ -355,3 +355,7 @@ Key behavior inside the function:
   - close goes through `close_owned_lfg_post(...)`
 - Direct raw table writes are blocked for `anon` and `authenticated`.
 - Supporting indexes and defensive constraints are now reviewable in source control.
+# Historical Snapshot
+
+This report reflects a point-in-time security audit and may not describe the
+current codebase exactly line-for-line after later refactors.
