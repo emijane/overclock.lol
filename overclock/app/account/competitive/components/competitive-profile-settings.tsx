@@ -26,7 +26,7 @@ function SaveButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-8 items-center justify-center rounded-full border border-white/[0.14] bg-[#05070b] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
+      className="inline-flex h-8 cursor-pointer items-center justify-center rounded-full border border-white/[0.14] bg-[#05070b] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#080b10] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
     >
       {pending ? "Saving..." : "Save"}
     </button>
@@ -49,7 +49,7 @@ export function CompetitiveProfileSettings({
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex h-8 min-w-[78px] items-center justify-between gap-2 rounded-[14px] border border-white/10 bg-white/[0.035] px-2.5 text-left text-[11px] font-medium text-zinc-100 outline-none transition hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
+                  className="inline-flex h-8 min-w-[78px] cursor-pointer items-center justify-between gap-2 rounded-[14px] border border-white/10 bg-white/[0.035] px-2.5 text-left text-[11px] font-medium text-zinc-100 outline-none transition hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
                 >
                   <span>{platform || "Platform"}</span>
                   <ChevronDownIcon className="h-4 w-4 shrink-0 text-zinc-500" />
@@ -57,12 +57,13 @@ export function CompetitiveProfileSettings({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="start"
-                className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)]"
+                className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)] text-[11px]"
               >
                 {PLATFORM_OPTIONS.map((platformOption) => (
                   <DropdownMenuItem
                     key={platformOption}
                     onSelect={() => setPlatform(platformOption)}
+                    className="cursor-pointer text-[11px]"
                   >
                     <span className="flex w-full items-center justify-between gap-3">
                       <span>{platformOption}</span>

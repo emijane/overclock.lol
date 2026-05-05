@@ -41,7 +41,7 @@ function EditorDropdownField({
         <button
           type="button"
           disabled={disabled}
-          className={`inline-flex h-9 w-full items-center justify-between rounded-[14px] border bg-white/[0.035] px-3 text-left text-xs outline-none transition ${
+          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[14px] border bg-white/[0.035] px-3 text-left text-xs outline-none transition ${
             disabled
               ? "cursor-not-allowed border-white/10 text-zinc-600 opacity-70"
               : "border-white/10 text-zinc-100 hover:border-white/20 focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
@@ -55,16 +55,20 @@ function EditorDropdownField({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)]"
+        className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)] text-xs"
       >
-        <DropdownMenuItem onSelect={() => onSelect("")}>
+        <DropdownMenuItem onSelect={() => onSelect("")} className="cursor-pointer text-xs">
           <span className="flex w-full items-center justify-between gap-3">
             <span>{placeholder}</span>
             {!value ? <CheckIcon className="h-4 w-4 text-sky-400" /> : null}
           </span>
         </DropdownMenuItem>
         {options.map((option) => (
-          <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
+          <DropdownMenuItem
+            key={option}
+            onSelect={() => onSelect(option)}
+            className="cursor-pointer text-xs"
+          >
             <span className="flex w-full items-center justify-between gap-3">
               <span>{option}</span>
               {value === option ? (
@@ -120,7 +124,7 @@ export function CompetitiveRoleEditorShell({
         </h2>
 
         <div className="flex items-center gap-2">
-          <label className="inline-flex h-7 items-center gap-2 rounded-full border border-white/12 bg-white/[0.02] px-2.5 text-[11px] font-medium text-zinc-300">
+          <label className="inline-flex h-7 items-center gap-2 px-0.5 text-[11px] font-medium text-zinc-300">
             <span>Main role</span>
             <Switch
               checked={mainRoleEnabled}

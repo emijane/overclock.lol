@@ -63,7 +63,7 @@ export function RoleHeroPicker({
             type="button"
             onClick={() => onChange([])}
             disabled={selectedHeroIds.length === 0}
-            className="text-xs font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
+            className="cursor-pointer text-xs font-medium text-zinc-400 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:text-zinc-600"
           >
             Clear
           </button>
@@ -82,13 +82,13 @@ export function RoleHeroPicker({
               onClick={() => toggleHero(hero.id)}
               disabled={isDisabled}
               aria-pressed={isSelected}
-              className={`flex h-[52px] items-center gap-2 rounded-[14px] border px-2 py-2 text-left transition ${
+              className={`flex h-[52px] cursor-pointer items-center gap-2 rounded-[14px] border px-2 py-2 text-left transition ${
                 isSelected
                   ? "border-white/20 bg-white/[0.07] text-zinc-50"
                   : "border-white/10 bg-white/[0.035] text-zinc-300 hover:border-white/20 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
               }`}
             >
-              <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[8px] border border-white/10 bg-zinc-900">
+              <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[8px] bg-zinc-900">
                 <Image
                   src={hero.imageSrc}
                   alt={hero.label}
