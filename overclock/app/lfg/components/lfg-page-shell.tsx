@@ -29,6 +29,7 @@ import { LFGPostList } from "./lfg-post-list";
 import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
+  animateOnLoad?: boolean;
   composerMode?: "cta" | "inline" | "none";
   createPostHref?: string;
   breadcrumbHref?: string;
@@ -243,6 +244,7 @@ async function getLFGPageData(
 }
 
 export async function LFGPageShell({
+  animateOnLoad = false,
   composerMode = "inline",
   createPostHref,
   breadcrumbHref,
@@ -352,7 +354,11 @@ export async function LFGPageShell({
               }`}
             >
               <div className={isComposerOnlyPage ? "space-y-3" : "space-y-5"}>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div
+                  className={`flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between${
+                    animateOnLoad && isComposerOnlyPage ? " page-enter" : ""
+                  }`}
+                >
                   <div className={isComposerOnlyPage ? "space-y-2" : "space-y-3"}>
                     {breadcrumbHref && breadcrumbLabel ? (
                       <Link
@@ -401,7 +407,11 @@ export async function LFGPageShell({
               </div>
 
               {type && shouldShowComposer ? (
-                <section className={isComposerOnlyPage ? "mt-4" : "mt-8"}>
+                <section
+                  className={`${isComposerOnlyPage ? "mt-4" : "mt-8"}${
+                    animateOnLoad && isComposerOnlyPage ? " page-enter page-enter-delay-1" : ""
+                  }`}
+                >
                   {!user ? (
                     <LFGActionNotice
                       ctaHref="/login"

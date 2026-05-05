@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 export default function CreateDuosPostPage() {
   return (
     <LFGPageShell
+      animateOnLoad
       breadcrumbHref="/duos"
       breadcrumbLabel="Duos"
       composerMode="inline"
