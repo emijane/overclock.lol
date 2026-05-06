@@ -11,8 +11,8 @@ As of the current codebase, Invite to Play is partially shipped:
 - Phase 1 is largely complete in Supabase migrations.
 - Phase 2 backend RPCs now cover send, accept, decline, cancel, and expiry
   transitions, but no invite UI is wired to the new lifecycle actions yet.
-- The main-menu bell and `/matches` route both exist as UI scaffolds, but they
-  are not yet backed by live invite data.
+- The `/matches` route now renders accepted matches plus pending sent invites
+  from live invite data, while the main-menu bell dropdown is still scaffolded.
 
 Use this roadmap as an implementation guide for the remaining work, not as a
 purely greenfield spec.
@@ -251,7 +251,7 @@ Current state:
 
 Add a dedicated `/matches` route in the authenticated shell navigation.
 
-Status: route and nav link exist, page content is still placeholder UI.
+Status: first-pass data-backed page is live; richer actions and history polish remain.
 
 ### Purpose
 
@@ -307,8 +307,10 @@ If nothing exists yet, explain:
 Current state:
 
 - `/matches` is already linked from the main shell and account menu.
-- The page currently renders a “coming next” structure for active matches,
-  pending sent invites, and history, but does not query live invite data yet.
+- The page now renders accepted matches with unlocked Discord / Battle.net
+  profile details and pending sent invites with cancel actions.
+- Accepted history currently uses a first-pass recent/past split rather than
+  pagination.
 
 ## Phase 5: Realtime Behavior
 

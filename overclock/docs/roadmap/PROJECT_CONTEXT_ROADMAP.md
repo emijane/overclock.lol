@@ -97,8 +97,9 @@ These are already visible in the codebase today:
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
 - Invite to Play is only partially shipped: the backend send flow and `/matches`
-  scaffold exist, and backend lifecycle RPCs now cover accept/decline/cancel,
-  but live notification data and real match history UI are still incomplete.
+  route now exist, and backend lifecycle RPCs now cover accept/decline/cancel,
+  but the notification bell is still placeholder-only and invite-send UI
+  surfaces are not wired yet.
 
 ## Roadmap
 
@@ -117,7 +118,8 @@ These are already visible in the codebase today:
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
 - Finish Invite to Play UI flows by replacing the placeholder bell dropdown with
-  live pending invites and by backing `/matches` with real data.
+  live pending invites and by wiring actual invite-send actions into profile or
+  LFG surfaces.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 
