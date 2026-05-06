@@ -4,6 +4,19 @@ This note scopes a first-pass Invite to Play system that fits the current
 profile-first, Duos/Stacks product shape and keeps sensitive contact details
 locked until both sides accept a connection.
 
+## Current Status
+
+As of the current codebase, Invite to Play is partially shipped:
+
+- Phase 1 is largely complete in Supabase migrations.
+- Phase 2 has `send_play_invite` in place, but accept/decline/cancel/expire
+  flows are still missing.
+- The main-menu bell and `/matches` route both exist as UI scaffolds, but they
+  are not yet backed by live invite data.
+
+Use this roadmap as an implementation guide for the remaining work, not as a
+purely greenfield spec.
+
 ## Goals
 
 - Let a player send a lightweight invite from a relevant profile or LFG surface.
@@ -40,9 +53,12 @@ server helpers for `pending_incoming_invites`, `pending_sent_invites`, and
 
 ## Phase 1: DB / Schema
 
+Status: mostly complete.
+
 ### Core table
 
-Add or evolve `play_invites` with fields along these lines:
+`play_invites` now exists and already includes these first-pass lifecycle
+fields:
 
 - `id`
 - `sender_profile_id`
@@ -64,6 +80,8 @@ Add or evolve `play_invites` with fields along these lines:
 
 ### Constraints
 
+Already implemented:
+
 - Prevent self-invites.
 - Prevent duplicate active invites between the same sender and recipient for the
   same source context only while another row is still `pending`.
@@ -79,9 +97,14 @@ Add or evolve `play_invites` with fields along these lines:
 Do not copy Discord handles or BattleTags into the invite row. Keep contact
 data on the profile and gate access through accepted-match reads.
 
+Current state:
+
+- Snapshot fields are limited to public-ish sender summary data.
+- Contact unlock reads are still future work on accepted match queries.
+
 ### Indexes
 
-Add targeted indexes for the main query paths:
+These targeted indexes are already in place for the main query paths:
 
 - `(recipient_profile_id, status, expires_at desc, created_at desc)` for the
   header dropdown
@@ -101,11 +124,18 @@ Add one of the following:
 Prefer shared query helpers first unless the SQL view meaningfully simplifies
 RLS-safe reads.
 
+Current gap:
+
+- Invite lifecycle query helpers for incoming pending, sent pending, and
+  accepted matches are not centralized yet.
+
 ## Phase 2: RPC / Security
+
+Status: partially complete.
 
 ### Required RPCs or server actions
 
-- `send_play_invite`
+- `send_play_invite` completed
 - `accept_play_invite`
 - `decline_play_invite`
 - `cancel_play_invite`
@@ -131,6 +161,14 @@ RLS-safe reads.
 - Only the sender can update status to `cancelled`.
 - System expiry logic must run in a controlled server path or privileged job.
 
+Current state:
+
+- Participant read access is already enforced with RLS.
+- Create/write access currently flows through the security-definer
+  `send_play_invite` RPC rather than direct client inserts.
+- Recipient and sender update policies for later lifecycle transitions are not
+  implemented yet.
+
 ### Contact info protection
 
 - Public profile reads continue to hide private contact details.
@@ -148,7 +186,17 @@ RLS-safe reads.
 - Rate limiting should be enforced server-side and should be the main guard
   against repeated invite spam.
 
+Current state:
+
+- `send_play_invite` already validates auth, recipient existence, self-invite,
+  message length, source-post validity, duplicate pending state, and rate
+  limits.
+- Recipient eligibility beyond simple existence still needs a clearer shared
+  policy.
+
 ## Phase 3: Notification Dropdown
+
+Status: scaffold exists, live behavior not implemented.
 
 ### Purpose
 
@@ -157,8 +205,8 @@ a full inbox.
 
 ### Header behavior
 
-- Replace the placeholder notification icon with a bell that shows a badge count
-  for pending incoming invites only.
+- Replace the current placeholder bell dropdown with a data-backed bell that
+  shows a badge count for pending incoming invites only.
 - Hide the badge when count is zero.
 - Cap visible badge text if needed, such as `9+`.
 
@@ -190,9 +238,18 @@ Each row should show:
 - Use centralized query helpers so the menu and later notification surfaces do
   not drift.
 
+Current state:
+
+- The bell dropdown exists in the authenticated shell with a static empty state
+  and a link to `/matches`.
+- Badge count, actionable rows, loading/error states, and invite data loading
+  are still to do.
+
 ## Phase 4: Matches Page
 
 Add a dedicated `/matches` route in the authenticated shell navigation.
+
+Status: route and nav link exist, page content is still placeholder UI.
 
 ### Purpose
 
@@ -245,7 +302,15 @@ If nothing exists yet, explain:
 - Only participants can load accepted match details.
 - Contact info is only rendered inside accepted match cards.
 
+Current state:
+
+- `/matches` is already linked from the main shell and account menu.
+- The page currently renders a “coming next” structure for active matches,
+  pending sent invites, and history, but does not query live invite data yet.
+
 ## Phase 5: Realtime Behavior
+
+Status: not implemented yet.
 
 ### Notification updates
 
@@ -287,8 +352,18 @@ logic so post cards and profile actions stay consistent.
 state for an existing accepted connection, but it should not permanently block
 future invites if product UX later exposes a re-invite or play-again action.
 
+Current gap:
+
+- No invite-capable LFG or profile surface has shipped these button states yet.
+
 ## QA Checklist
 
+- Existing verification: sending an invite through the current server action
+  reaches the RPC and returns user-facing validation errors for duplicate,
+  invalid, and rate-limit cases.
+- Existing verification: `/matches` route access already respects auth and
+  onboarding redirects.
+- Remaining product QA:
 - Sending an invite creates one pending row and updates sender UI state to
   `Invite Sent`.
 - Incoming pending invite count appears on the header bell for the recipient.

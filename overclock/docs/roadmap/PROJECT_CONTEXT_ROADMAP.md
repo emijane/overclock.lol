@@ -80,9 +80,9 @@ The homepage currently redirects to `/login`.
   reusable section UI lives under `app/lfg/*`.
 - Presence and availability UI now live in shared app components and account
   settings, with current status displayed on profile surfaces and LFG cards.
-- The global authenticated shell currently includes top-level Duos / Stacks
-  navigation, a placeholder notifications icon, the account menu, and smaller
-  toast-style alerts below the main menu.
+- The global authenticated shell currently includes top-level Duos / Matches /
+  Stacks navigation, a placeholder notifications bell dropdown, the account
+  menu, and smaller toast-style alerts below the main menu.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 
@@ -96,6 +96,9 @@ These are already visible in the codebase today:
   flows.
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
+- Invite to Play is only partially shipped: the backend send flow and `/matches`
+  scaffold exist, but accept/decline flows, live notification data, and real
+  match history UI are still incomplete.
 
 ## Roadmap
 
@@ -113,7 +116,8 @@ These are already visible in the codebase today:
 - Add profile completion prompts and guided setup cues in account settings.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
-- Add real notifications behavior to replace the current placeholder header icon.
+- Finish Invite to Play UI flows by replacing the placeholder bell dropdown with
+  live pending invites and by backing `/matches` with real data.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 
