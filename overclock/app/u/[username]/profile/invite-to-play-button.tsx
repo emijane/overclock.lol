@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
-import { sendPlayInvite } from "@/app/matches/actions";
+import { removeProfileConnection, sendPlayInvite } from "@/app/matches/actions";
 import { getInviteActionPresentation } from "@/lib/matches/invite-action-presentation";
 import type {
   InviteViewerState,
@@ -11,12 +11,14 @@ import type {
 } from "@/lib/matches/play-invite-types";
 
 type InviteToPlayButtonProps = {
+  activeConnectionId: string | null;
   initialState: ProfileInviteState;
   recipientProfileId: string;
   viewerState: InviteViewerState;
 };
 
 export function InviteToPlayButton({
+  activeConnectionId,
   initialState,
   recipientProfileId,
   viewerState,
@@ -51,7 +53,7 @@ export function InviteToPlayButton({
 
       if (result.status === "success") {
         setInviteState("invite_sent");
-        setFeedback("Invite sent. You can track it from Connections.");
+        setFeedback("Invite sent. You can track it from Matches.");
         return;
       }
 
@@ -71,6 +73,51 @@ export function InviteToPlayButton({
 
       setFeedback(result.message);
     });
+  }
+
+  function handleUnmatch() {
+    if (!activeConnectionId) return;
+    setFeedback(null);
+
+    startTransition(async () => {
+      const result = await removeProfileConnection({
+        connectionId: activeConnectionId,
+      });
+
+      if (result.status === "success") {
+        setInviteState("invite_to_play");
+        return;
+      }
+
+      if (result.status === "unauthenticated") {
+        setFeedback("Your session expired. Sign in again.");
+        return;
+      }
+
+      if (result.status === "onboarding_required") {
+        setFeedback("Finish onboarding before updating connections.");
+        return;
+      }
+
+      setFeedback(result.message);
+    });
+  }
+
+  if (inviteState === "connected") {
+    return (
+      <div className="flex flex-col items-start gap-2">
+        <button
+          type="button"
+          disabled={isPending || !activeConnectionId}
+          aria-disabled={isPending || !activeConnectionId}
+          onClick={handleUnmatch}
+          className="inline-flex h-8 items-center rounded-full border border-rose-400/20 bg-rose-500/10 px-3 text-xs font-medium text-rose-200 transition-all duration-200 hover:bg-rose-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isPending ? "Removing..." : "Unmatch"}
+        </button>
+        {feedback ? <p className="max-w-[220px] text-xs text-rose-300">{feedback}</p> : null}
+      </div>
+    );
   }
 
   return (

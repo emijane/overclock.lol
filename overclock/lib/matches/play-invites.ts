@@ -649,6 +649,35 @@ export async function getIncomingPendingPlayInvites(input: {
   };
 }
 
+export async function getActiveConnectionIdForPair(input: {
+  currentProfileId: string | null;
+  targetProfileId: string;
+}): Promise<string | null> {
+  if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return null;
+  }
+
+  const [profileLowId, profileHighId] = [
+    input.currentProfileId,
+    input.targetProfileId,
+  ].sort();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_connections")
+    .select("id")
+    .is("disconnected_at", null)
+    .eq("profile_low_id", profileLowId)
+    .eq("profile_high_id", profileHighId)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return typeof data?.id === "string" ? data.id : null;
+}
+
 export async function getProfileInviteState(input: {
   currentProfileId: string | null;
   targetProfileId: string;

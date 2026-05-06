@@ -13,11 +13,15 @@ import type {
 } from "@/lib/matches/play-invite-types";
 
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
+  activeConnectionId?: string | null;
   profileActionState?: ProfileInviteState;
   viewerState?: InviteViewerState;
 };
 
-export function EditableProfileHeader(props: EditableProfileHeaderProps) {
+export function EditableProfileHeader({
+  activeConnectionId,
+  ...props
+}: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -52,6 +56,7 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
         profileAction={
           !props.isOwner && props.profileActionState && props.viewerState ? (
             <InviteToPlayButton
+              activeConnectionId={activeConnectionId ?? null}
               initialState={props.profileActionState}
               recipientProfileId={props.id}
               viewerState={props.viewerState}
