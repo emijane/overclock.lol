@@ -32,7 +32,7 @@ export function MatchCard({ match, acceptedAtLabel }: MatchCardProps) {
     Boolean(match.participant.battlenetHandle);
 
   return (
-    <article className="rounded-[20px] border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+    <article className="rounded-[20px] bg-white/[0.02] p-4 sm:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
           <Avatar className="h-12 w-12 border border-white/10">
