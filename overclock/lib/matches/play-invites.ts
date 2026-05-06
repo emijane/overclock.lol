@@ -1,10 +1,39 @@
 import { createClient } from "@/lib/supabase/server";
 
+export type PlayInviteStatus =
+  | "pending"
+  | "accepted"
+  | "declined"
+  | "expired"
+  | "cancelled";
+
 type SendPlayInviteResult = {
   created: boolean;
   errorCode: string | null;
   inviteId: string | null;
 };
+
+type UpdatePlayInviteResult = {
+  errorCode: string | null;
+  inviteId: string | null;
+  status: PlayInviteStatus | null;
+  updated: boolean;
+};
+
+type ExpirePlayInvitesResult = {
+  errorCode: string | null;
+  expiredCount: number;
+};
+
+function isPlayInviteStatus(value: unknown): value is PlayInviteStatus {
+  return (
+    value === "pending" ||
+    value === "accepted" ||
+    value === "declined" ||
+    value === "expired" ||
+    value === "cancelled"
+  );
+}
 
 function normalizeSendPlayInviteResult(value: unknown): SendPlayInviteResult {
   if (typeof value === "string") {
@@ -58,6 +87,118 @@ function normalizeSendPlayInviteResult(value: unknown): SendPlayInviteResult {
   };
 }
 
+function normalizeUpdatePlayInviteResult(
+  value: unknown,
+  functionName:
+    | "accept_play_invite"
+    | "decline_play_invite"
+    | "cancel_play_invite"
+): UpdatePlayInviteResult {
+  if (typeof value === "string") {
+    try {
+      return normalizeUpdatePlayInviteResult(JSON.parse(value), functionName);
+    } catch {
+      return {
+        errorCode: "invalid_response",
+        inviteId: null,
+        status: null,
+        updated: false,
+      };
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0
+      ? normalizeUpdatePlayInviteResult(value[0], functionName)
+      : {
+          errorCode: "invalid_response",
+          inviteId: null,
+          status: null,
+          updated: false,
+        };
+  }
+
+  if (!value || typeof value !== "object") {
+    return {
+      errorCode: "invalid_response",
+      inviteId: null,
+      status: null,
+      updated: false,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const nestedCandidate =
+    candidate[functionName] &&
+    typeof candidate[functionName] === "object" &&
+    !Array.isArray(candidate[functionName])
+      ? (candidate[functionName] as Record<string, unknown>)
+      : candidate;
+
+  return {
+    errorCode:
+      typeof nestedCandidate.error_code === "string"
+        ? nestedCandidate.error_code
+        : null,
+    inviteId:
+      typeof nestedCandidate.invite_id === "string"
+        ? nestedCandidate.invite_id
+        : null,
+    status: isPlayInviteStatus(nestedCandidate.status)
+      ? nestedCandidate.status
+      : null,
+    updated: nestedCandidate.updated === true,
+  };
+}
+
+function normalizeExpirePlayInvitesResult(value: unknown): ExpirePlayInvitesResult {
+  if (typeof value === "string") {
+    try {
+      return normalizeExpirePlayInvitesResult(JSON.parse(value));
+    } catch {
+      return {
+        errorCode: "invalid_response",
+        expiredCount: 0,
+      };
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0
+      ? normalizeExpirePlayInvitesResult(value[0])
+      : {
+          errorCode: "invalid_response",
+          expiredCount: 0,
+        };
+  }
+
+  if (!value || typeof value !== "object") {
+    return {
+      errorCode: "invalid_response",
+      expiredCount: 0,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const nestedCandidate =
+    candidate.expire_play_invites &&
+    typeof candidate.expire_play_invites === "object" &&
+    !Array.isArray(candidate.expire_play_invites)
+      ? (candidate.expire_play_invites as Record<string, unknown>)
+      : candidate;
+
+  return {
+    errorCode:
+      typeof nestedCandidate.error_code === "string"
+        ? nestedCandidate.error_code
+        : null,
+    expiredCount:
+      typeof nestedCandidate.expired_count === "number"
+        ? nestedCandidate.expired_count
+        : 0,
+  };
+}
+
 export async function sendPlayInviteRecord(input: {
   message?: string | null;
   recipientProfileId: string;
@@ -75,4 +216,56 @@ export async function sendPlayInviteRecord(input: {
   }
 
   return normalizeSendPlayInviteResult(data);
+}
+
+export async function acceptPlayInviteRecord(input: { inviteId: string }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("accept_play_invite", {
+    p_invite_id: input.inviteId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeUpdatePlayInviteResult(data, "accept_play_invite");
+}
+
+export async function declinePlayInviteRecord(input: { inviteId: string }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("decline_play_invite", {
+    p_invite_id: input.inviteId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeUpdatePlayInviteResult(data, "decline_play_invite");
+}
+
+export async function cancelPlayInviteRecord(input: { inviteId: string }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("cancel_play_invite", {
+    p_invite_id: input.inviteId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeUpdatePlayInviteResult(data, "cancel_play_invite");
+}
+
+export async function expirePlayInvitesRecord(input?: { inviteId?: string | null }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("expire_play_invites", {
+    p_invite_id: input?.inviteId ?? null,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeExpirePlayInvitesResult(data);
 }

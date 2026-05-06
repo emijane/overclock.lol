@@ -97,8 +97,8 @@ These are already visible in the codebase today:
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
 - Invite to Play is only partially shipped: the backend send flow and `/matches`
-  scaffold exist, but accept/decline flows, live notification data, and real
-  match history UI are still incomplete.
+  scaffold exist, and backend lifecycle RPCs now cover accept/decline/cancel,
+  but live notification data and real match history UI are still incomplete.
 
 ## Roadmap
 

@@ -9,8 +9,8 @@ locked until both sides accept a connection.
 As of the current codebase, Invite to Play is partially shipped:
 
 - Phase 1 is largely complete in Supabase migrations.
-- Phase 2 has `send_play_invite` in place, but accept/decline/cancel/expire
-  flows are still missing.
+- Phase 2 backend RPCs now cover send, accept, decline, cancel, and expiry
+  transitions, but no invite UI is wired to the new lifecycle actions yet.
 - The main-menu bell and `/matches` route both exist as UI scaffolds, but they
   are not yet backed by live invite data.
 
@@ -131,15 +131,15 @@ Current gap:
 
 ## Phase 2: RPC / Security
 
-Status: partially complete.
+Status: backend lifecycle RPCs are in place; UI wiring is still incomplete.
 
 ### Required RPCs or server actions
 
 - `send_play_invite` completed
-- `accept_play_invite`
-- `decline_play_invite`
-- `cancel_play_invite`
-- `expire_play_invites` for scheduled cleanup or read-time maintenance
+- `accept_play_invite` completed
+- `decline_play_invite` completed
+- `cancel_play_invite` completed
+- `expire_play_invites` completed for participant-scoped read-time cleanup
 
 ### State transition rules
 
@@ -165,9 +165,11 @@ Current state:
 
 - Participant read access is already enforced with RLS.
 - Create/write access currently flows through the security-definer
-  `send_play_invite` RPC rather than direct client inserts.
-- Recipient and sender update policies for later lifecycle transitions are not
-  implemented yet.
+  invite RPCs rather than direct client writes.
+- Accept, decline, cancel, and expiry transitions now enforce participant
+  ownership and pending-only state changes on the server.
+- Direct table update policies for client-side writes are still intentionally
+  absent.
 
 ### Contact info protection
 
