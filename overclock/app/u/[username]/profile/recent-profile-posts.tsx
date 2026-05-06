@@ -91,21 +91,21 @@ export function RecentProfilePosts({
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+    <section className="border-t border-white/[0.06] px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-white/85">
+          <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
             Active Listings
           </h2>
         </div>
       </div>
 
       {posts.length === 0 ? (
-        <div className="mt-4 rounded-[18px] border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
+        <div className="mt-4 rounded-[18px] border border-white/8 bg-white/2 px-4 py-3 text-sm text-zinc-500">
           Your active LFG listings will show up here.
         </div>
       ) : (
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="mt-4 grid gap-2.5 md:grid-cols-2">
           {posts.map((post) => {
             const rankLabel = post.rankTier;
             const createdAtLabel = formatPostDate(post.createdAt);
@@ -113,7 +113,7 @@ export function RecentProfilePosts({
             return (
               <article
                 key={post.id}
-                className="rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]"
+                className="rounded-[18px] border border-white/8 bg-white/4 p-3.5 transition-colors duration-200 hover:bg-white/6"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="truncate pr-1.5 text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">

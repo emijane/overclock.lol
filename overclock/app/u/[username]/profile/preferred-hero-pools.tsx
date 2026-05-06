@@ -95,10 +95,10 @@ export function PreferredHeroPools({
   );
 
   return (
-    <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+    <section className="border-t border-white/[0.06] px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-white/85">
+          <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
             Competitive Roles
           </h2>
         </div>
@@ -116,11 +116,11 @@ export function PreferredHeroPools({
       </div>
 
       {selectedHeroes.length === 0 ? (
-        <div className="mt-4 rounded-[18px] border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
+        <div className="mt-4 rounded-[18px] border border-white/8 bg-white/2 px-4 py-3 text-sm text-zinc-500">
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
-        <div className="mt-4 grid gap-3 lg:grid-cols-3 lg:gap-3">
+        <div className="mt-4 grid gap-2.5 lg:grid-cols-3">
           {getOrderedHeroPoolGroups(competitiveProfile.mainRole).map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
             const roleProfile = competitiveProfile.roles.find(
@@ -140,7 +140,7 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/10 bg-[#05070b] p-3.5 transition-all duration-200 hover:bg-[#080b10]"
+                className="rounded-[18px] border border-white/8 bg-white/4 p-3.5 transition-colors duration-200 hover:bg-white/6"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
