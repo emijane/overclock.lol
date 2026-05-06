@@ -678,6 +678,31 @@ export async function getActiveConnectionIdForPair(input: {
   return typeof data?.id === "string" ? data.id : null;
 }
 
+export async function getPendingOutgoingInviteIdForPair(input: {
+  currentProfileId: string | null;
+  targetProfileId: string;
+}): Promise<string | null> {
+  if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("play_invites")
+    .select("id")
+    .eq("sender_profile_id", input.currentProfileId)
+    .eq("recipient_profile_id", input.targetProfileId)
+    .eq("status", "pending")
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return typeof data?.id === "string" ? data.id : null;
+}
+
 export async function getProfileInviteState(input: {
   currentProfileId: string | null;
   targetProfileId: string;

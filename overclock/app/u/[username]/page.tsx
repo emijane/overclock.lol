@@ -11,6 +11,7 @@ import { getProfileBadges } from "@/lib/badges/badges";
 import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
 import {
   getActiveConnectionIdForPair,
+  getPendingOutgoingInviteIdForPair,
   getProfileConnectionCount,
   getProfileInviteState,
 } from "@/lib/matches/play-invites";
@@ -77,7 +78,7 @@ export default async function ProfilePage({
         notFound();
     }
 
-    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount, activeConnectionId] =
+    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount, activeConnectionId, pendingOutgoingInviteId] =
         await Promise.all([
             measureProfileStep(username, "hero pools", () =>
                 getProfileHeroPools(profile.id)
@@ -105,6 +106,12 @@ export default async function ProfilePage({
             ),
             measureProfileStep(username, "active connection id", () =>
                 getActiveConnectionIdForPair({
+                    currentProfileId: viewer.profileId,
+                    targetProfileId: profile.id,
+                })
+            ),
+            measureProfileStep(username, "pending outgoing invite id", () =>
+                getPendingOutgoingInviteIdForPair({
                     currentProfileId: viewer.profileId,
                     targetProfileId: profile.id,
                 })
@@ -208,6 +215,7 @@ export default async function ProfilePage({
                             timezone={profile.timezone}
                             username={profile.username}
                             activeConnectionId={activeConnectionId}
+                            pendingOutgoingInviteId={pendingOutgoingInviteId}
                             profileActionState={inviteState}
                             viewerState={viewer.viewerState}
                         />

@@ -14,12 +14,14 @@ import type {
 
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
   activeConnectionId?: string | null;
+  pendingOutgoingInviteId?: string | null;
   profileActionState?: ProfileInviteState;
   viewerState?: InviteViewerState;
 };
 
 export function EditableProfileHeader({
   activeConnectionId,
+  pendingOutgoingInviteId,
   ...props
 }: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -57,6 +59,7 @@ export function EditableProfileHeader({
           !props.isOwner && props.profileActionState && props.viewerState ? (
             <InviteToPlayButton
               activeConnectionId={activeConnectionId ?? null}
+              initialInviteId={pendingOutgoingInviteId ?? null}
               initialState={props.profileActionState}
               recipientProfileId={props.id}
               viewerState={props.viewerState}
