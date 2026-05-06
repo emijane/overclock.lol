@@ -1,3 +1,4 @@
+import type React from "react";
 import Image from "next/image";
 import { Clock3Icon, Globe2Icon } from "lucide-react";
 
@@ -33,6 +34,7 @@ type ProfileHeaderProps = {
   timezone: string | null;
   username: string;
   onEditProfile?: () => void;
+  profileAction?: React.ReactNode;
 };
 
 const rankBadgeClassNameByTier: Record<string, string> = {
@@ -66,6 +68,7 @@ export function ProfileHeader({
   timezone,
   username,
   onEditProfile,
+  profileAction,
 }: ProfileHeaderProps) {
   const rankBadgeClassName =
     rankBadgeClassNameByTier[currentRankTier ?? ""] ??
@@ -188,7 +191,9 @@ export function ProfileHeader({
                     >
                       Edit profile
                     </button>
-                  ) : null
+                  ) : (
+                    profileAction ?? null
+                  )
                 }
                 links={socialLinks}
               />

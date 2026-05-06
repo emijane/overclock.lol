@@ -10,7 +10,9 @@ As of the current codebase, Invite to Play is partially shipped:
 
 - Phase 1 is largely complete in Supabase migrations.
 - Phase 2 backend RPCs now cover send, accept, decline, cancel, and expiry
-  transitions, but no invite UI is wired to the new lifecycle actions yet.
+  transitions.
+- Public profile surfaces now expose a first-pass `Invite to Play` action with
+  initial `Invite Sent` / `Matched` state derivation.
 - The `/matches` route now renders accepted matches plus pending sent invites
   from live invite data, while the main-menu bell dropdown is still scaffolded.
 
@@ -358,7 +360,9 @@ future invites if product UX later exposes a re-invite or play-again action.
 
 Current gap:
 
-- No invite-capable LFG or profile surface has shipped these button states yet.
+- Public profiles now ship the first button-state slice.
+- LFG cards and other invite-capable surfaces still need to adopt the same
+  centralized state model.
 
 ## QA Checklist
 

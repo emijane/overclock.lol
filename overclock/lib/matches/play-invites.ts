@@ -85,6 +85,11 @@ export type PendingSentPlayInvite = {
   sourcePostTitle: string | null;
 };
 
+export type ProfileInviteState =
+  | "invite_to_play"
+  | "invite_sent"
+  | "matched";
+
 function isPlayInviteStatus(value: unknown): value is PlayInviteStatus {
   return (
     value === "pending" ||
@@ -631,4 +636,51 @@ export async function getPendingSentPlayInvites(input: {
       sourcePostTitle: sourcePostId ? postsById.get(sourcePostId)?.title ?? null : null,
     } satisfies PendingSentPlayInvite;
   });
+}
+
+export async function getProfileInviteState(input: {
+  currentProfileId: string | null;
+  targetProfileId: string;
+}): Promise<ProfileInviteState> {
+  if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return "invite_to_play";
+  }
+
+  const supabase = await createClient();
+  const [pendingResult, acceptedResult] = await Promise.all([
+    supabase
+      .from("play_invites")
+      .select("id", { head: true, count: "exact" })
+      .eq("sender_profile_id", input.currentProfileId)
+      .eq("recipient_profile_id", input.targetProfileId)
+      .eq("status", "pending"),
+    supabase
+      .from("play_invites")
+      .select("id", { head: true, count: "exact" })
+      .eq("status", "accepted")
+      .or(
+        [
+          `and(sender_profile_id.eq.${input.currentProfileId},recipient_profile_id.eq.${input.targetProfileId})`,
+          `and(sender_profile_id.eq.${input.targetProfileId},recipient_profile_id.eq.${input.currentProfileId})`,
+        ].join(",")
+      ),
+  ]);
+
+  if (pendingResult.error) {
+    throw pendingResult.error;
+  }
+
+  if (acceptedResult.error) {
+    throw acceptedResult.error;
+  }
+
+  if ((pendingResult.count ?? 0) > 0) {
+    return "invite_sent";
+  }
+
+  if ((acceptedResult.count ?? 0) > 0) {
+    return "matched";
+  }
+
+  return "invite_to_play";
 }

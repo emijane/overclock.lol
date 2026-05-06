@@ -6,8 +6,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ProfileHeader } from "./profile-header";
 import { ProfileEditModalShell } from "./profile-edit-modal-shell";
 import type { SocialValues } from "./profile-edit-types";
+import { InviteToPlayButton } from "./invite-to-play-button";
+import type { ProfileInviteState } from "@/lib/matches/play-invites";
 
-type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader>;
+type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
+  profileActionState?: ProfileInviteState;
+  viewerState?: "guest" | "signed_in";
+};
 
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -41,6 +46,15 @@ export function EditableProfileHeader(props: EditableProfileHeaderProps) {
       <ProfileHeader
         {...props}
         onEditProfile={props.isOwner ? () => setIsEditModalOpen(true) : undefined}
+        profileAction={
+          !props.isOwner && props.profileActionState && props.viewerState ? (
+            <InviteToPlayButton
+              initialState={props.profileActionState}
+              recipientProfileId={props.id}
+              viewerState={props.viewerState}
+            />
+          ) : null
+        }
       />
       {isModalOpen ? (
         <ProfileEditModalShell

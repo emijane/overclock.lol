@@ -9,6 +9,7 @@ import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
+import { getProfileInviteState } from "@/lib/matches/play-invites";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
@@ -72,7 +73,7 @@ export default async function ProfilePage({
         notFound();
     }
 
-    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts] =
+    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState] =
         await Promise.all([
             measureProfileStep(username, "hero pools", () =>
                 getProfileHeroPools(profile.id)
@@ -88,6 +89,12 @@ export default async function ProfilePage({
             ),
             measureProfileStep(username, "recent posts", () =>
                 getRecentPostsByProfileId(profile.id)
+            ),
+            measureProfileStep(username, "invite state", () =>
+                getProfileInviteState({
+                    currentProfileId: currentUserId,
+                    targetProfileId: profile.id,
+                })
             ),
         ]);
 
@@ -186,6 +193,8 @@ export default async function ProfilePage({
                             socialLinks={socialLinks}
                             timezone={profile.timezone}
                             username={profile.username}
+                            profileActionState={inviteState}
+                            viewerState={currentUserId ? "signed_in" : "guest"}
                         />
                         <PreferredHeroPools
                             competitiveProfile={competitiveProfile}
