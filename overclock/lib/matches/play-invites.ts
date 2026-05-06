@@ -4,6 +4,10 @@ import {
   normalizeSendPlayInviteResult,
   normalizeUpdatePlayInviteResult,
 } from "@/lib/matches/play-invite-rpc-normalizers";
+import {
+  deriveLFGInviteStates,
+  deriveProfileInviteState,
+} from "@/lib/matches/play-invite-state-derivation";
 import type {
   LFGInviteStateMap,
   ProfileInviteState,
@@ -529,10 +533,6 @@ export async function getProfileInviteState(input: {
   currentProfileId: string | null;
   targetProfileId: string;
 }): Promise<ProfileInviteState> {
-  if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
-    return "invite_to_play";
-  }
-
   const supabase = await createClient();
   const [pendingResult, acceptedResult] = await Promise.all([
     supabase
@@ -561,15 +561,12 @@ export async function getProfileInviteState(input: {
     throw acceptedResult.error;
   }
 
-  if ((pendingResult.count ?? 0) > 0) {
-    return "invite_sent";
-  }
-
-  if ((acceptedResult.count ?? 0) > 0) {
-    return "matched";
-  }
-
-  return "invite_to_play";
+  return deriveProfileInviteState({
+    acceptedCount: acceptedResult.count,
+    currentProfileId: input.currentProfileId,
+    pendingCount: pendingResult.count,
+    targetProfileId: input.targetProfileId,
+  });
 }
 
 export async function getLFGPostInviteStates(input: {
@@ -631,48 +628,28 @@ export async function getLFGPostInviteStates(input: {
     throw acceptedResult.error;
   }
 
-  const matchedRecipientIds = new Set<string>();
-
-  for (const row of (acceptedResult.data ?? []) as Array<Record<string, unknown>>) {
-    if (typeof row.sender_profile_id !== "string") {
-      continue;
-    }
-
-    if (typeof row.recipient_profile_id !== "string") {
-      continue;
-    }
-
-    matchedRecipientIds.add(
-      row.sender_profile_id === input.currentProfileId
-        ? row.recipient_profile_id
-        : row.sender_profile_id
-    );
-  }
-
-  for (const post of eligiblePosts) {
-    if (matchedRecipientIds.has(post.profileId)) {
-      states[post.id] = "matched";
-    }
-  }
-
-  for (const row of (pendingResult.data ?? []) as Array<Record<string, unknown>>) {
-    if (
-      typeof row.recipient_profile_id !== "string" ||
-      typeof row.source_lfg_post_id !== "string"
-    ) {
-      continue;
-    }
-
-    const matchingPost = eligiblePosts.find(
-      (post) =>
-        post.id === row.source_lfg_post_id &&
-        post.profileId === row.recipient_profile_id
-    );
-
-    if (matchingPost) {
-      states[matchingPost.id] = "invite_sent";
-    }
-  }
-
-  return states;
+  return deriveLFGInviteStates({
+    acceptedPairs: ((acceptedResult.data ?? []) as Array<Record<string, unknown>>)
+      .filter(
+        (row) =>
+          typeof row.sender_profile_id === "string" &&
+          typeof row.recipient_profile_id === "string"
+      )
+      .map((row) => ({
+        recipientProfileId: row.recipient_profile_id as string,
+        senderProfileId: row.sender_profile_id as string,
+      })),
+    currentProfileId: input.currentProfileId,
+    pendingInvites: ((pendingResult.data ?? []) as Array<Record<string, unknown>>)
+      .filter(
+        (row) =>
+          typeof row.recipient_profile_id === "string" &&
+          typeof row.source_lfg_post_id === "string"
+      )
+      .map((row) => ({
+        recipientProfileId: row.recipient_profile_id as string,
+        sourceLFGPostId: row.source_lfg_post_id as string,
+      })),
+    posts: input.posts,
+  });
 }

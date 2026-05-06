@@ -15,6 +15,7 @@
     "lib/matches/play-invite-rpc-types.ts",
     "lib/matches/invite-action-presentation.ts",
     "lib/matches/play-invite-rpc-normalizers.ts",
+    "lib/matches/play-invite-state-derivation.ts",
     "app/matches/play-invite-action-helpers.ts",
     "tests/**/*.ts"
   ],
