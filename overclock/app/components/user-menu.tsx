@@ -7,6 +7,7 @@ import {
   SettingsIcon,
   TrophyIcon,
   UserIcon,
+  UsersIcon,
 } from "lucide-react";
 import { useTransition } from "react";
 
@@ -98,6 +99,15 @@ export function UserMenu({
             <Link href="/account/posts">
               <MessageSquareIcon />
               My Posts
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
+          >
+            <Link href="/matches">
+              <UsersIcon />
+              Matches
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
