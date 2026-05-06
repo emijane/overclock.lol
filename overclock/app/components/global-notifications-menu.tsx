@@ -19,6 +19,7 @@ export async function GlobalNotificationsMenu({
 
   return (
     <GlobalNotificationsMenuClient
+      currentProfileId={currentProfileId}
       initialInvites={invites}
       initialTotalCount={totalCount}
     />

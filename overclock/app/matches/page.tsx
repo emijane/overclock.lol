@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { MatchCard } from "@/app/matches/match-card";
+import { MatchesRealtimeRefresh } from "@/app/matches/matches-realtime-refresh";
 import { PendingSentInviteCard } from "@/app/matches/pending-sent-invite-card";
 import { PageContainer } from "@/app/components/page-container";
 import { PageReveal } from "@/app/components/page-reveal";
@@ -61,6 +62,7 @@ export default async function MatchesPage() {
         className="relative z-10 flex flex-col gap-3"
         maxWidthClassName="max-w-4xl"
       >
+        <MatchesRealtimeRefresh currentProfileId={profile.id} />
         <section className="rounded-[28px]">
           <div className="overflow-hidden rounded-[28px]">
             <PageReveal>

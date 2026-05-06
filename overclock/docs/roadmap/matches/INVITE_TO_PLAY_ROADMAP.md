@@ -18,7 +18,9 @@ As of the current codebase, Invite to Play is partially shipped:
 - The `/matches` route now renders accepted matches plus pending sent invites
   from live invite data.
 - The main-menu bell dropdown now renders incoming pending invites with badge
-  count plus accept / decline actions, but realtime updates are still pending.
+  count plus accept / decline actions.
+- Bell and `/matches` surfaces now refresh on `play_invites` row changes through
+  Supabase realtime subscriptions plus `router.refresh()`.
 
 Use this roadmap as an implementation guide for the remaining work, not as a
 purely greenfield spec.
@@ -320,7 +322,7 @@ Current state:
 
 ## Phase 5: Realtime Behavior
 
-Status: not implemented yet.
+Status: first-pass refresh-based realtime is live; deeper client-side polish remains optional.
 
 ### Notification updates
 
@@ -342,6 +344,17 @@ Use both:
 - a cleanup path that marks stale `pending` rows as `expired`
 
 This keeps UI safe even if background cleanup runs late.
+
+Current state:
+
+- The authenticated shell now listens for `play_invites` changes where the user
+  is sender or recipient and triggers a debounced `router.refresh()`.
+- `/matches` re-renders accepted and pending sections automatically after invite
+  lifecycle changes.
+- The notification bell re-renders incoming pending rows and badge count
+  automatically after invite lifecycle changes.
+- Realtime is currently refresh-based rather than maintaining a fully local
+  client cache.
 
 ## UI State Requirements
 
