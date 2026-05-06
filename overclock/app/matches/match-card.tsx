@@ -32,10 +32,10 @@ export function MatchCard({ match, acceptedAtLabel }: MatchCardProps) {
     Boolean(match.participant.battlenetHandle);
 
   return (
-    <article className="rounded-[18px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.018))] px-4 py-3.5 shadow-[0_16px_36px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-4.5 sm:py-4">
+    <article className="rounded-[20px] border border-white/10 bg-white/[0.02] p-4 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <Avatar className="h-11 w-11 shrink-0 border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.18)]">
+          <Avatar className="h-12 w-12 shrink-0 border border-white/10">
             {match.participant.avatarUrl ? (
               <AvatarImage
                 src={match.participant.avatarUrl}
@@ -52,7 +52,7 @@ export function MatchCard({ match, acceptedAtLabel }: MatchCardProps) {
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="truncate text-[15px] font-semibold tracking-[-0.025em] text-zinc-50">
+              <h3 className="truncate text-[15px] font-semibold tracking-[-0.02em] text-zinc-50">
                 {match.participant.displayName ?? "Unknown player"}
               </h3>
               {participantHref ? (
