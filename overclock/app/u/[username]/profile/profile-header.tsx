@@ -156,8 +156,11 @@ export function ProfileHeader({
               <p className="mt-0.5 text-[14px] font-medium tracking-[-0.01em] text-zinc-600">
                 @{username}
               </p>
+              <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+                {bio || "This player has not added a bio yet."}
+              </p>
               {platform || isLookingToPlay ? (
-                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   {platform ? (
                     <LookingToPlayBadge
                       className={`${rankBadgeClassName} text-zinc-100`}
@@ -172,9 +175,6 @@ export function ProfileHeader({
                   />
                 </div>
               ) : null}
-              <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
-                {bio || "This player has not added a bio yet."}
-              </p>
             </div>
 
             <div className="sm:min-w-[220px]">

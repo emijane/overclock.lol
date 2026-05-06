@@ -129,6 +129,8 @@ These are already visible in the codebase today:
 - `docs/roadmap/presence/USER_PRESENCE_AND_AVAILABILITY.md` - Use when planning
   automatic online presence, recent activity fallback, and the separate
   `Looking to play` availability state.
+- `docs/roadmap/matches/INVITE_TO_PLAY_ROADMAP.md` - Use when planning invite
+  notifications, accepted-match history, contact unlock rules, and `/matches`.
 
 ### Quality Track
 
