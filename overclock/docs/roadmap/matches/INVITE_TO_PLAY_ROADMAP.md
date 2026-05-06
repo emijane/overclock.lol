@@ -13,6 +13,8 @@ As of the current codebase, Invite to Play is partially shipped:
   transitions.
 - Public profile surfaces now expose a first-pass `Invite to Play` action with
   initial `Invite Sent` / `Matched` state derivation.
+- Duos and Stacks feed cards now expose the same first-pass invite action using
+  post context as the source invite target.
 - The `/matches` route now renders accepted matches plus pending sent invites
   from live invite data.
 - The main-menu bell dropdown now renders incoming pending invites with badge
@@ -363,8 +365,9 @@ future invites if product UX later exposes a re-invite or play-again action.
 Current gap:
 
 - Public profiles now ship the first button-state slice.
-- LFG cards and other invite-capable surfaces still need to adopt the same
-  centralized state model.
+- Duos and Stacks cards now adopt the same centralized state model.
+- Remaining invite-capable surfaces should reuse the same state model if more
+  contexts are added later.
 
 ## QA Checklist
 

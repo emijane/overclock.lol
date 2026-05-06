@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import type { LFGInviteStateMap } from "@/lib/matches/play-invites";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
 
@@ -10,10 +11,12 @@ type LFGPostListProps = {
   emptyStateTitle: string;
   errorMessage?: string | null;
   hasActiveFilters?: boolean;
+  inviteStates?: LFGInviteStateMap;
   layout?: "list" | "grid-3";
   posts: LFGPost[];
   retryHref?: string;
   tone?: "default" | "duos";
+  viewerState?: "guest" | "signed_in";
 };
 
 function LFGFeedPlaceholder({
@@ -59,10 +62,12 @@ export function LFGPostList({
   emptyStateTitle,
   errorMessage,
   hasActiveFilters = false,
+  inviteStates,
   layout = "list",
   posts,
   retryHref,
   tone = "default",
+  viewerState = "guest",
 }: LFGPostListProps) {
   if (errorMessage) {
     return (
@@ -109,9 +114,11 @@ export function LFGPostList({
               <LFGPostCard
                 cardClassName={cardClassName}
                 currentProfileId={currentProfileId}
+                inviteState={inviteStates?.[post.id] ?? "invite_to_play"}
                 post={post}
                 returnPath={`/${post.lfgType}`}
                 tone={tone}
+                viewerState={viewerState}
               />
             </div>
           );

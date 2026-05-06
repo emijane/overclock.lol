@@ -20,6 +20,7 @@ import {
   getActiveLFGPostCountsByRole,
   getActiveLFGPosts,
 } from "@/lib/lfg/posts";
+import { getLFGPostInviteStates } from "@/lib/matches/play-invites";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -323,6 +324,16 @@ export async function LFGPageShell({
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
   const isDuosPage = type === "duos";
+  const inviteStates =
+    shouldShowFeed
+      ? await getLFGPostInviteStates({
+          currentProfileId: profile?.id ?? null,
+          posts: pageData.posts.map((post) => ({
+            id: post.id,
+            profileId: post.profileId,
+          })),
+        })
+      : {};
 
   return (
     <main
@@ -508,10 +519,12 @@ export async function LFGPageShell({
                   emptyStateTitle={emptyStateTitle}
                   errorMessage={pageData.postsErrorMessage}
                   hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
+                  inviteStates={inviteStates}
                   layout={type === "duos" ? "grid-3" : "list"}
                   posts={pageData.posts}
                   retryHref={sectionHref}
                   tone={isDuosPage ? "duos" : "default"}
+                  viewerState={user ? "signed_in" : "guest"}
                 />
               </>
             ) : null}

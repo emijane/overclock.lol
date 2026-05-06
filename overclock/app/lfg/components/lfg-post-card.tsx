@@ -9,7 +9,9 @@ import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
+import { LFGInviteButton } from "./lfg-invite-button";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
+import type { ProfileInviteState } from "@/lib/matches/play-invites";
 
 function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {
@@ -35,6 +37,7 @@ type LFGPostCardProps = {
   cardClassName?: string;
   currentProfileId?: string | null;
   post: LFGPost;
+  inviteState?: ProfileInviteState;
   returnPath?: string;
   sectionLabel?: string | null;
   showActions?: boolean;
@@ -42,12 +45,14 @@ type LFGPostCardProps = {
   tone?: "default" | "duos";
   viewHref?: string;
   viewLabel?: string;
+  viewerState?: "guest" | "signed_in";
 };
 
 export function LFGPostCard({
   cardClassName,
   currentProfileId,
   post,
+  inviteState = "invite_to_play",
   returnPath,
   sectionLabel,
   showActions = true,
@@ -55,6 +60,7 @@ export function LFGPostCard({
   tone = "default",
   viewHref,
   viewLabel,
+  viewerState = "guest",
 }: LFGPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
   const postingRoleLabel = getPostingRoleLabel(post.postingRole);
@@ -248,7 +254,7 @@ export function LFGPostCard({
             </div>
           </div>
 
-          {post.heroPool.length > 0 || tone === "duos" ? (
+          {post.heroPool.length > 0 || tone === "duos" || !isOwner ? (
             <div className="mt-auto flex items-end justify-between gap-3 pt-3">
               <div className="flex flex-wrap gap-2">
                 {post.heroPool.slice(0, 5).map((hero) => (
@@ -270,13 +276,13 @@ export function LFGPostCard({
                   </div>
                 ))}
               </div>
-              {tone === "duos" ? (
-                <button
-                  type="button"
-                  className="inline-flex h-8 shrink-0 cursor-pointer items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
-                >
-                  Invite to play
-                </button>
+              {!isOwner && post.profileId ? (
+                <LFGInviteButton
+                  initialState={inviteState}
+                  recipientProfileId={post.profileId}
+                  sourceLFGPostId={post.id}
+                  viewerState={viewerState}
+                />
               ) : null}
             </div>
           ) : null}

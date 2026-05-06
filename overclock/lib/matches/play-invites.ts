@@ -99,6 +99,8 @@ export type ProfileInviteState =
   | "invite_sent"
   | "matched";
 
+export type LFGInviteStateMap = Record<string, ProfileInviteState>;
+
 function isPlayInviteStatus(value: unknown): value is PlayInviteStatus {
   return (
     value === "pending" ||
@@ -763,4 +765,109 @@ export async function getProfileInviteState(input: {
   }
 
   return "invite_to_play";
+}
+
+export async function getLFGPostInviteStates(input: {
+  currentProfileId: string | null;
+  posts: Array<{
+    id: string;
+    profileId: string | null;
+  }>;
+}) {
+  const states: LFGInviteStateMap = {};
+
+  for (const post of input.posts) {
+    states[post.id] = "invite_to_play";
+  }
+
+  if (!input.currentProfileId) {
+    return states;
+  }
+
+  const eligiblePosts = input.posts.filter(
+    (post) => Boolean(post.profileId) && post.profileId !== input.currentProfileId
+  ) as Array<{ id: string; profileId: string }>;
+
+  if (eligiblePosts.length === 0) {
+    return states;
+  }
+
+  const recipientIds = Array.from(
+    new Set(eligiblePosts.map((post) => post.profileId))
+  );
+  const postIds = eligiblePosts.map((post) => post.id);
+  const supabase = await createClient();
+
+  const [pendingResult, acceptedResult] = await Promise.all([
+    supabase
+      .from("play_invites")
+      .select("recipient_profile_id, source_lfg_post_id")
+      .eq("sender_profile_id", input.currentProfileId)
+      .eq("status", "pending")
+      .in("recipient_profile_id", recipientIds)
+      .in("source_lfg_post_id", postIds),
+    supabase
+      .from("play_invites")
+      .select("sender_profile_id, recipient_profile_id")
+      .eq("status", "accepted")
+      .or(
+        [
+          `and(sender_profile_id.eq.${input.currentProfileId},recipient_profile_id.in.(${recipientIds.join(",")}))`,
+          `and(recipient_profile_id.eq.${input.currentProfileId},sender_profile_id.in.(${recipientIds.join(",")}))`,
+        ].join(",")
+      ),
+  ]);
+
+  if (pendingResult.error) {
+    throw pendingResult.error;
+  }
+
+  if (acceptedResult.error) {
+    throw acceptedResult.error;
+  }
+
+  const matchedRecipientIds = new Set<string>();
+
+  for (const row of (acceptedResult.data ?? []) as Array<Record<string, unknown>>) {
+    if (typeof row.sender_profile_id !== "string") {
+      continue;
+    }
+
+    if (typeof row.recipient_profile_id !== "string") {
+      continue;
+    }
+
+    matchedRecipientIds.add(
+      row.sender_profile_id === input.currentProfileId
+        ? row.recipient_profile_id
+        : row.sender_profile_id
+    );
+  }
+
+  for (const post of eligiblePosts) {
+    if (matchedRecipientIds.has(post.profileId)) {
+      states[post.id] = "matched";
+    }
+  }
+
+  for (const row of (pendingResult.data ?? []) as Array<Record<string, unknown>>) {
+    if (
+      typeof row.recipient_profile_id !== "string" ||
+      typeof row.source_lfg_post_id !== "string"
+    ) {
+      continue;
+    }
+
+    const matchingPost = eligiblePosts.find(
+      (post) =>
+        post.id === row.source_lfg_post_id &&
+        post.profileId === row.recipient_profile_id
+    );
+
+    if (matchingPost) {
+      states[matchingPost.id] = "invite_sent";
+    }
+  }
+
+  return states;
 }
