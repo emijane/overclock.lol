@@ -25,49 +25,13 @@ The product goals are:
 
 ### Active slot limit
 
-Each user can keep up to:
-
-```text
-2 active posts per role per section
-```
-
-This limit is checked per:
-
-- user
-- section
-- role
-
-Important behavior:
-
-- only posts inside the 12-hour active visibility window count
-- closing a post frees the active slot immediately
-- expired posts do not count toward the active slot limit
+The active slot limit has been permanently removed. There is no cap on how
+many active posts a user can have per role per section.
 
 ### Posting rate limit
 
-Each user can create up to:
-
-```text
-4 posts per section per rolling 60-minute window
-```
-
-This limit is section-specific, not global.
-
-Examples:
-
-- a user could post twice in `Duos` within one hour
-- a user could post up to four times in `Duos` within one hour
-- that same user could also still post in `Stacks`, because the limit is per
-  section
-- a user who creates posts at `1:00 PM`, `1:10 PM`, `1:20 PM`, and `1:30 PM`
-  in `Duos` cannot create a fifth `Duos` post until `2:00 PM`
-
-Important behavior:
-
-- the limit is based on post creation events
-- closing a post does not refund a slot in the rolling creation history
-- future delete behavior should also not refund a slot
-- the window is rolling, based on each post's `created_at`
+The rolling per-hour creation rate limit has been permanently removed. There
+is no cap on how many posts a user can create within a time window.
 
 ## Post Lifetime
 
@@ -174,9 +138,8 @@ Before creating a new post, validate:
 - requested `lfg_type` is valid
 - requested role is valid and configured
 - required profile fields are present
-- the user has not exceeded `2` active posts for that role in that section
-- the user has not exceeded `4` created posts in that section within the last
-  `60` minutes
+- the post is not a duplicate active post with the same normalized title +
+  section + mode + posting role
 
 Client-side UI may explain the rule, but the server remains the source of
 truth.
@@ -252,13 +215,13 @@ The current implementation already includes:
 - read-time expiry for active feeds
 - private post management through `/account/posts`
 
-Temporary current-codebase note:
+Current enforcement note:
 
-- active slot limits are currently disabled for testing
-- rolling creation rate limits are currently disabled for testing
+- active slot limits have been permanently removed
+- rolling creation rate limits have been permanently removed
 - duplicate active posts with the same normalized title + section + mode +
   posting role are still blocked
-- the shipped public sections are currently `/duos` and `/stacks`
+- the shipped public sections are `/duos` and `/stacks`
 
 Follow-up work that still makes sense:
 

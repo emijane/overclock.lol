@@ -1,19 +1,19 @@
 # LFG Post Limits Explained
 
-Date: 2026-05-03
+Date: 2026-05-03 (updated 2026-05-06)
 
-This note explains the current temporary testing policy for LFG posting.
+This note explains the current LFG posting policy.
 
 Current shipped public sections:
 
 - `/duos`
 - `/stacks`
 
-## Current Testing Policy
+## Current Policy
 
-- Active posts still expire from active surfaces after `12` hours.
-- Active slot limits are currently disabled for testing.
-- Rolling per-hour creation rate limits are currently disabled for testing.
+- Active posts expire from active surfaces after `12` hours.
+- Active slot limits have been permanently removed.
+- Rolling per-hour creation rate limits have been permanently removed.
 - Duplicate active posts with the exact same normalized title, section, mode,
   and posting role are still blocked.
 
@@ -26,13 +26,13 @@ Current shipped public sections:
 
 ## Simple Summary
 
-- You can currently create posts without active-count or rolling-window caps.
-- The only creation guard that still intentionally blocks testing is duplicate
-  active posts with the same normalized identity.
+- Users can create posts without active-count or rolling-window caps.
+- The only creation guard that blocks posting is duplicate active posts with
+  the same normalized identity.
 
 ## Current Policy Summary
 
 - Active posts expire from active surfaces after `12` hours
-- There is currently no active-post slot limit
-- There is currently no rolling per-hour creation rate limit
+- There is no active-post slot limit
+- There is no rolling per-hour creation rate limit
 - Duplicate active posts are still blocked

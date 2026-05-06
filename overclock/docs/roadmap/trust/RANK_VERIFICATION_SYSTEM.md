@@ -1,5 +1,9 @@
 # Rank Verification System
 
+> **Status: Roadmap only — not shipped.**
+> None of the tables, routes, or flows described here exist in the current
+> codebase. This is a design proposal for a future implementation.
+
 This note captures the intended rank verification model for competitive role
 profiles and LFG trust.
 

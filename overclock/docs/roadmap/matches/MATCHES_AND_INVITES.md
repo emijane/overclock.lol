@@ -1,10 +1,13 @@
-# Connections And Invites
+# Matches And Invites
 
-This document explains how the current Invite to Play and `/connections` system
+This document explains how the current Invite to Play and `/matches` system
 works in the live codebase.
 
 Use this as the maintenance reference for product behavior, not as a future
 spec.
+
+Note: `/connections` is a route alias that re-exports `/matches` for legacy
+link compatibility. The primary route and implementation is `/matches`.
 
 ## Overview
 
@@ -56,7 +59,7 @@ When a user sends an invite, a `pending` row is created in `play_invites`.
 Pending invites:
 
 - appear for the recipient in the main notification bell
-- appear for the sender in `/connections` under outgoing invites
+- appear for the sender in `/matches` under outgoing invites
 - can be accepted or declined by the recipient
 - can be cancelled by the sender
 - can expire automatically
@@ -67,7 +70,7 @@ If the recipient accepts:
 
 - the invite becomes `accepted`
 - the pair is upserted into `profile_connections`
-- both participants can see the connection in `/connections`
+- both participants can see the connection in `/matches`
 - Discord and Battle.net contact info can be shown there
 - both public profiles show the active connection count
 
@@ -115,7 +118,7 @@ Pending invites expire. Active connections do not.
 The app currently enforces expiry in two ways:
 
 - lifecycle RPC logic prevents expired pending invites from being accepted
-- `/connections` performs an expiry sweep before rendering so stale pending rows are
+- `/matches` performs an expiry sweep before rendering so stale pending rows are
   cleaned up
 
 Realtime refresh behavior also helps the UI stop showing rows once they change.
@@ -136,10 +139,10 @@ It currently shows:
 
 It does not act as a full historical inbox.
 
-## Connections Page
+## Matches Page
 
-`/connections` is the authenticated home for active connections and pending
-invite management.
+`/matches` is the authenticated home for active connections and pending
+invite management. `/connections` is a route alias that re-exports this page.
 
 It currently includes:
 
@@ -162,14 +165,14 @@ Active connection cards show:
 
 ### Incoming Invites
 
-Incoming pending invites on `/connections` can be:
+Incoming pending invites on `/matches` can be:
 
 - accepted
 - declined
 
 ### Outgoing Invites
 
-Outgoing pending invites on `/connections` can be:
+Outgoing pending invites on `/matches` can be:
 
 - cancelled
 
@@ -198,7 +201,7 @@ Current realtime approach:
 - Supabase realtime subscription
 - debounced `router.refresh()`
 
-This keeps the bell and `/matches` updated when invites are:
+This keeps the bell and `/matches` page updated when invites are:
 
 - sent
 - accepted

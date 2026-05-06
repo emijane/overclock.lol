@@ -98,11 +98,11 @@ These are already visible in the codebase today:
   feature.
 - Invite to Play now ships as a lightweight connection system: pending invites
   still live in `play_invites`, accepted invites now upsert durable active rows
-  in `profile_connections`, `/connections` renders active connections plus
+  in `profile_connections`, `/matches` renders active connections plus
   pending invite management, public profiles show connection counts, accepted
-  players can unmatch, and the bell plus `/connections` refresh on realtime
-  invite changes. The legacy `/matches` route still exists as a compatibility
-  alias.
+  players can unmatch, and the bell plus `/matches` refresh on realtime
+  invite changes. `/connections` is a route alias that re-exports `/matches`
+  for legacy link compatibility.
 
 ## Roadmap
 
