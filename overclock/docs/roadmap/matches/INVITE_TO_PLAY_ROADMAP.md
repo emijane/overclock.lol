@@ -14,7 +14,9 @@ As of the current codebase, Invite to Play is partially shipped:
 - Public profile surfaces now expose a first-pass `Invite to Play` action with
   initial `Invite Sent` / `Matched` state derivation.
 - The `/matches` route now renders accepted matches plus pending sent invites
-  from live invite data, while the main-menu bell dropdown is still scaffolded.
+  from live invite data.
+- The main-menu bell dropdown now renders incoming pending invites with badge
+  count plus accept / decline actions, but realtime updates are still pending.
 
 Use this roadmap as an implementation guide for the remaining work, not as a
 purely greenfield spec.
@@ -200,7 +202,7 @@ Current state:
 
 ## Phase 3: Notification Dropdown
 
-Status: scaffold exists, live behavior not implemented.
+Status: first-pass incoming invite dropdown is live; realtime polish remains.
 
 ### Purpose
 
@@ -244,10 +246,10 @@ Each row should show:
 
 Current state:
 
-- The bell dropdown exists in the authenticated shell with a static empty state
-  and a link to `/matches`.
-- Badge count, actionable rows, loading/error states, and invite data loading
-  are still to do.
+- The bell dropdown now loads incoming pending invites, shows a badge count,
+  and lets the recipient accept or decline inline.
+- Empty state and row-level error/loading feedback are in place.
+- Realtime subscriptions and automatic push-style updates are still to do.
 
 ## Phase 4: Matches Page
 

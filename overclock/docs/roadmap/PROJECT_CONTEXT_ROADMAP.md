@@ -98,9 +98,9 @@ These are already visible in the codebase today:
   feature.
 - Invite to Play is only partially shipped: the backend send flow and `/matches`
   route now exist, and backend lifecycle RPCs now cover accept/decline/cancel,
-  public profiles now expose a first-pass invite-send action, but the
-  notification bell is still placeholder-only and LFG invite surfaces are not
-  wired yet.
+  public profiles now expose a first-pass invite-send action, the notification
+  bell now shows incoming pending invites, but LFG invite surfaces and realtime
+  invite updates are not wired yet.
 
 ## Roadmap
 
@@ -119,8 +119,8 @@ These are already visible in the codebase today:
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
 - Finish Invite to Play UI flows by replacing the placeholder bell dropdown with
-  live pending invites and by wiring the same invite-send/state behavior into
-  LFG surfaces.
+  realtime pending invite updates and by wiring the same invite-send/state
+  behavior into LFG surfaces.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 

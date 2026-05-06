@@ -66,7 +66,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
             ))}
           </nav>
 
-          <GlobalNotificationsMenu />
+          <GlobalNotificationsMenu currentProfileId={userId} />
 
           <UserMenu
             avatarFallback={avatarFallback}

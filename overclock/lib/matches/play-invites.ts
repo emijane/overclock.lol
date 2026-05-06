@@ -85,6 +85,15 @@ export type PendingSentPlayInvite = {
   sourcePostTitle: string | null;
 };
 
+export type IncomingPendingPlayInvite = {
+  createdAt: string;
+  expiresAt: string;
+  id: string;
+  message: string | null;
+  participant: MatchParticipant;
+  sourcePostTitle: string | null;
+};
+
 export type ProfileInviteState =
   | "invite_to_play"
   | "invite_sent"
@@ -636,6 +645,77 @@ export async function getPendingSentPlayInvites(input: {
       sourcePostTitle: sourcePostId ? postsById.get(sourcePostId)?.title ?? null : null,
     } satisfies PendingSentPlayInvite;
   });
+}
+
+export async function getIncomingPendingPlayInvites(input: {
+  currentProfileId: string;
+  limit?: number;
+}) {
+  const supabase = await createClient();
+  const { data, error, count } = await supabase
+    .from("play_invites")
+    .select(
+      "id, sender_profile_id, source_lfg_post_id, message, sender_snapshot, created_at, expires_at",
+      { count: "exact" }
+    )
+    .eq("status", "pending")
+    .eq("recipient_profile_id", input.currentProfileId)
+    .order("expires_at", { ascending: true })
+    .order("created_at", { ascending: false })
+    .limit(input.limit ?? 9);
+
+  if (error) {
+    throw error;
+  }
+
+  const rows = ((data ?? []) as Array<Record<string, unknown>>).filter(
+    (row) =>
+      typeof row.id === "string" &&
+      typeof row.sender_profile_id === "string" &&
+      typeof row.created_at === "string" &&
+      typeof row.expires_at === "string"
+  );
+
+  const participantIds = Array.from(
+    new Set(rows.map((row) => row.sender_profile_id as string))
+  );
+  const postIds = Array.from(
+    new Set(
+      rows
+        .map((row) =>
+          typeof row.source_lfg_post_id === "string" ? row.source_lfg_post_id : null
+        )
+        .filter((postId): postId is string => Boolean(postId))
+    )
+  );
+  const [profilesById, postsById] = await Promise.all([
+    getMatchProfilesById(participantIds),
+    getMatchSourcePostsById(postIds),
+  ]);
+
+  return {
+    invites: rows.map((row) => {
+      const participantId = row.sender_profile_id as string;
+      const sourcePostId =
+        typeof row.source_lfg_post_id === "string" ? row.source_lfg_post_id : null;
+
+      return {
+        createdAt: row.created_at as string,
+        expiresAt: row.expires_at as string,
+        id: row.id as string,
+        message: typeof row.message === "string" ? row.message : null,
+        participant: toParticipant({
+          participantId,
+          profile: profilesById.get(participantId) ?? null,
+          snapshot: normalizePlayInviteSnapshot(row.sender_snapshot),
+        }),
+        sourcePostTitle: sourcePostId
+          ? postsById.get(sourcePostId)?.title ?? null
+          : null,
+      } satisfies IncomingPendingPlayInvite;
+    }),
+    totalCount: count ?? 0,
+  };
 }
 
 export async function getProfileInviteState(input: {
