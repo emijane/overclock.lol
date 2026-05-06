@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { sendPlayInvite } from "@/app/matches/actions";
+import { getInviteActionPresentation } from "@/lib/matches/invite-action-presentation";
 import type {
   InviteViewerState,
   ProfileInviteState,
-} from "@/lib/matches/play-invites";
+} from "@/lib/matches/play-invite-types";
 
 type LFGInviteButtonProps = {
   initialState: ProfileInviteState;
@@ -25,38 +26,25 @@ export function LFGInviteButton({
   const [inviteState, setInviteState] = useState<ProfileInviteState>(initialState);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const presentation = getInviteActionPresentation({
+    inviteState,
+    isPending,
+    labels: {
+      idle: "Invite to play",
+    },
+    viewerState,
+  });
 
-  if (viewerState === "guest") {
+  if (presentation.href) {
     return (
       <Link
-        href="/login?type=error&message=Sign%20in%20to%20send%20play%20invites."
+        href={presentation.href}
         className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
       >
-        Sign in to invite
+        {presentation.label}
       </Link>
     );
   }
-
-  if (viewerState === "profile_required") {
-    return (
-      <Link
-        href="/onboarding"
-        className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
-      >
-        Profile Required
-      </Link>
-    );
-  }
-
-  const isDisabled = isPending || inviteState !== "invite_to_play";
-  const buttonLabel =
-    inviteState === "invite_sent"
-      ? "Invite Sent"
-      : inviteState === "matched"
-        ? "Matched"
-        : isPending
-          ? "Sending..."
-          : "Invite to play";
 
   function handleSendInvite() {
     setFeedback(null);
@@ -95,12 +83,12 @@ export function LFGInviteButton({
     <div className="flex flex-col items-end gap-1">
       <button
         type="button"
-        disabled={isDisabled}
-        aria-disabled={isDisabled}
+        disabled={!presentation.canSendInvite}
+        aria-disabled={!presentation.canSendInvite}
         onClick={handleSendInvite}
         className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.03] disabled:text-zinc-400"
       >
-        {buttonLabel}
+        {presentation.label}
       </button>
       {feedback ? <p className="max-w-[180px] text-right text-[11px] text-zinc-400">{feedback}</p> : null}
     </div>

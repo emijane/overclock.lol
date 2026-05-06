@@ -14,7 +14,7 @@ import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
 import type {
   InviteViewerState,
   ProfileInviteState,
-} from "@/lib/matches/play-invites";
+} from "@/lib/matches/play-invite-types";
 
 function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {

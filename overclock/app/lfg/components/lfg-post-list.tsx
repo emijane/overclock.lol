@@ -3,7 +3,7 @@ import Link from "next/link";
 import type {
   InviteViewerState,
   LFGInviteStateMap,
-} from "@/lib/matches/play-invites";
+} from "@/lib/matches/play-invite-types";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
 

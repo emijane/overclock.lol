@@ -10,7 +10,7 @@ import { InviteToPlayButton } from "./invite-to-play-button";
 import type {
   InviteViewerState,
   ProfileInviteState,
-} from "@/lib/matches/play-invites";
+} from "@/lib/matches/play-invite-types";
 
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
   profileActionState?: ProfileInviteState;

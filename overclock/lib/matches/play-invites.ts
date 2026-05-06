@@ -1,4 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import type {
+  LFGInviteStateMap,
+  ProfileInviteState,
+} from "@/lib/matches/play-invite-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 export type PlayInviteStatus =
@@ -93,14 +97,6 @@ export type IncomingPendingPlayInvite = {
   participant: MatchParticipant;
   sourcePostTitle: string | null;
 };
-
-export type ProfileInviteState =
-  | "invite_to_play"
-  | "invite_sent"
-  | "matched";
-
-export type LFGInviteStateMap = Record<string, ProfileInviteState>;
-export type InviteViewerState = "guest" | "profile_required" | "signed_in";
 
 function isPlayInviteStatus(value: unknown): value is PlayInviteStatus {
   return (

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
 import { createClient } from "@/lib/supabase/server";
-import type { InviteViewerState } from "@/lib/matches/play-invites";
+import type { InviteViewerState } from "@/lib/matches/play-invite-types";
 
 function isSupabaseAuthCookie(cookieName: string) {
   return cookieName.startsWith("sb-") && cookieName.includes("auth-token");

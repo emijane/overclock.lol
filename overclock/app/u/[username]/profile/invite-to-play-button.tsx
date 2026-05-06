@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { sendPlayInvite } from "@/app/matches/actions";
+import { getInviteActionPresentation } from "@/lib/matches/invite-action-presentation";
 import type {
   InviteViewerState,
   ProfileInviteState,
-} from "@/lib/matches/play-invites";
+} from "@/lib/matches/play-invite-types";
 
 type InviteToPlayButtonProps = {
   initialState: ProfileInviteState;
@@ -23,38 +24,22 @@ export function InviteToPlayButton({
   const [inviteState, setInviteState] = useState<ProfileInviteState>(initialState);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const presentation = getInviteActionPresentation({
+    inviteState,
+    isPending,
+    viewerState,
+  });
 
-  if (viewerState === "guest") {
+  if (presentation.href) {
     return (
       <Link
-        href="/login?type=error&message=Sign%20in%20to%20send%20play%20invites."
+        href={presentation.href}
         className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
       >
-        Sign in to invite
+        {presentation.label}
       </Link>
     );
   }
-
-  if (viewerState === "profile_required") {
-    return (
-      <Link
-        href="/onboarding"
-        className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-      >
-        Profile Required
-      </Link>
-    );
-  }
-
-  const isDisabled = isPending || inviteState !== "invite_to_play";
-  const buttonLabel =
-    inviteState === "invite_sent"
-      ? "Invite Sent"
-      : inviteState === "matched"
-        ? "Matched"
-        : isPending
-          ? "Sending..."
-          : "Invite to Play";
 
   function handleSendInvite() {
     setFeedback(null);
@@ -92,12 +77,12 @@ export function InviteToPlayButton({
     <div className="flex flex-col items-start gap-2">
       <button
         type="button"
-        disabled={isDisabled}
-        aria-disabled={isDisabled}
+        disabled={!presentation.canSendInvite}
+        aria-disabled={!presentation.canSendInvite}
         onClick={handleSendInvite}
         className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.04] disabled:text-zinc-400"
       >
-        {buttonLabel}
+        {presentation.label}
       </button>
       {feedback ? <p className="max-w-[220px] text-xs text-zinc-400">{feedback}</p> : null}
     </div>
