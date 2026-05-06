@@ -100,7 +100,8 @@ These are already visible in the codebase today:
   route now exist, and backend lifecycle RPCs now cover accept/decline/cancel,
   public profiles plus Duos/Stacks cards now expose first-pass invite-send
   actions, the notification bell now shows incoming pending invites, and the
-  bell plus `/matches` now refresh on realtime invite changes.
+  bell plus `/matches` now refresh on realtime invite changes. Signed-in users
+  without a completed app profile now see `Profile Required` on invite actions.
 
 ## Roadmap
 

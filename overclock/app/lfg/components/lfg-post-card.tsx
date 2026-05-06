@@ -11,7 +11,10 @@ import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { formatPostDate } from "./format-post-date";
 import { LFGInviteButton } from "./lfg-invite-button";
 import { LFGPostActionsMenu } from "./lfg-post-actions-menu";
-import type { ProfileInviteState } from "@/lib/matches/play-invites";
+import type {
+  InviteViewerState,
+  ProfileInviteState,
+} from "@/lib/matches/play-invites";
 
 function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {
@@ -45,7 +48,7 @@ type LFGPostCardProps = {
   tone?: "default" | "duos";
   viewHref?: string;
   viewLabel?: string;
-  viewerState?: "guest" | "signed_in";
+  viewerState?: InviteViewerState;
 };
 
 export function LFGPostCard({

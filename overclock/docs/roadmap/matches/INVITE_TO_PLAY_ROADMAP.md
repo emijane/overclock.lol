@@ -379,6 +379,8 @@ Current gap:
 
 - Public profiles now ship the first button-state slice.
 - Duos and Stacks cards now adopt the same centralized state model.
+- Signed-in viewers without a completed app profile now see `Profile Required`
+  and are routed toward onboarding instead of hitting send errors first.
 - Remaining invite-capable surfaces should reuse the same state model if more
   contexts are added later.
 

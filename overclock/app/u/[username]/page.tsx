@@ -4,7 +4,7 @@ import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
 import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
-import { getOptionalCurrentUserId } from "@/lib/profiles/get-optional-current-user-id";
+import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-current-invite-viewer";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
@@ -60,12 +60,12 @@ export default async function ProfilePage({
     const query = searchParams ? await searchParams : {};
     const message = pickValue(query.message);
     const messageType = pickValue(query.type);
-    const [profile, currentUserId] = await Promise.all([
+    const [profile, viewer] = await Promise.all([
         measureProfileStep(username, "public profile", () =>
             getProfileByUsername(username)
         ),
-        measureProfileStep(username, "optional current user id", () =>
-            getOptionalCurrentUserId()
+        measureProfileStep(username, "optional invite viewer", () =>
+            getOptionalCurrentInviteViewer()
         ),
     ]);
 
@@ -92,7 +92,7 @@ export default async function ProfilePage({
             ),
             measureProfileStep(username, "invite state", () =>
                 getProfileInviteState({
-                    currentProfileId: currentUserId,
+                    currentProfileId: viewer.profileId,
                     targetProfileId: profile.id,
                 })
             ),
@@ -102,7 +102,7 @@ export default async function ProfilePage({
     // helpers stay colocated with the UI they support.
     const { currentRank, currentRankIconSrc } =
         getCompetitiveRankDisplay(profile, competitiveProfile);
-    const isOwner = currentUserId === profile.id;
+    const isOwner = viewer.currentUserId === profile.id;
     const mainRoleProfile = competitiveProfile.roles.find(
         (roleProfile) => roleProfile.role === competitiveProfile.mainRole
     );
@@ -194,7 +194,7 @@ export default async function ProfilePage({
                             timezone={profile.timezone}
                             username={profile.username}
                             profileActionState={inviteState}
-                            viewerState={currentUserId ? "signed_in" : "guest"}
+                            viewerState={viewer.viewerState}
                         />
                         <PreferredHeroPools
                             competitiveProfile={competitiveProfile}

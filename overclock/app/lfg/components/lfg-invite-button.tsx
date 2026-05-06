@@ -4,13 +4,16 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { sendPlayInvite } from "@/app/matches/actions";
-import type { ProfileInviteState } from "@/lib/matches/play-invites";
+import type {
+  InviteViewerState,
+  ProfileInviteState,
+} from "@/lib/matches/play-invites";
 
 type LFGInviteButtonProps = {
   initialState: ProfileInviteState;
   recipientProfileId: string;
   sourceLFGPostId: string;
-  viewerState: "guest" | "signed_in";
+  viewerState: InviteViewerState;
 };
 
 export function LFGInviteButton({
@@ -30,6 +33,17 @@ export function LFGInviteButton({
         className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
       >
         Sign in to invite
+      </Link>
+    );
+  }
+
+  if (viewerState === "profile_required") {
+    return (
+      <Link
+        href="/onboarding"
+        className="inline-flex h-8 shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[11px] font-semibold text-zinc-100 transition hover:bg-white/[0.08] hover:text-white"
+      >
+        Profile Required
       </Link>
     );
   }

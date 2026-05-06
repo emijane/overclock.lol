@@ -4,12 +4,15 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { sendPlayInvite } from "@/app/matches/actions";
-import type { ProfileInviteState } from "@/lib/matches/play-invites";
+import type {
+  InviteViewerState,
+  ProfileInviteState,
+} from "@/lib/matches/play-invites";
 
 type InviteToPlayButtonProps = {
   initialState: ProfileInviteState;
   recipientProfileId: string;
-  viewerState: "guest" | "signed_in";
+  viewerState: InviteViewerState;
 };
 
 export function InviteToPlayButton({
@@ -28,6 +31,17 @@ export function InviteToPlayButton({
         className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
       >
         Sign in to invite
+      </Link>
+    );
+  }
+
+  if (viewerState === "profile_required") {
+    return (
+      <Link
+        href="/onboarding"
+        className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+      >
+        Profile Required
       </Link>
     );
   }

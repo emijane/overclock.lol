@@ -1,6 +1,9 @@
 import Link from "next/link";
 
-import type { LFGInviteStateMap } from "@/lib/matches/play-invites";
+import type {
+  InviteViewerState,
+  LFGInviteStateMap,
+} from "@/lib/matches/play-invites";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
 
@@ -16,7 +19,7 @@ type LFGPostListProps = {
   posts: LFGPost[];
   retryHref?: string;
   tone?: "default" | "duos";
-  viewerState?: "guest" | "signed_in";
+  viewerState?: InviteViewerState;
 };
 
 function LFGFeedPlaceholder({

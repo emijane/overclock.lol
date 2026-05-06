@@ -7,11 +7,14 @@ import { ProfileHeader } from "./profile-header";
 import { ProfileEditModalShell } from "./profile-edit-modal-shell";
 import type { SocialValues } from "./profile-edit-types";
 import { InviteToPlayButton } from "./invite-to-play-button";
-import type { ProfileInviteState } from "@/lib/matches/play-invites";
+import type {
+  InviteViewerState,
+  ProfileInviteState,
+} from "@/lib/matches/play-invites";
 
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
   profileActionState?: ProfileInviteState;
-  viewerState?: "guest" | "signed_in";
+  viewerState?: InviteViewerState;
 };
 
 export function EditableProfileHeader(props: EditableProfileHeaderProps) {

@@ -100,6 +100,7 @@ export type ProfileInviteState =
   | "matched";
 
 export type LFGInviteStateMap = Record<string, ProfileInviteState>;
+export type InviteViewerState = "guest" | "profile_required" | "signed_in";
 
 function isPlayInviteStatus(value: unknown): value is PlayInviteStatus {
   return (

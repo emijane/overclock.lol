@@ -524,7 +524,7 @@ export async function LFGPageShell({
                   posts={pageData.posts}
                   retryHref={sectionHref}
                   tone={isDuosPage ? "duos" : "default"}
-                  viewerState={user ? "signed_in" : "guest"}
+                  viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                 />
               </>
             ) : null}
