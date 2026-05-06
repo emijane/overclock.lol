@@ -3,61 +3,27 @@
 import { revalidatePath } from "next/cache";
 
 import {
+  mapExpirePlayInvitesActionResult,
+  mapSendPlayInviteActionResult,
+  mapUpdatePlayInviteActionResult,
+  optionalTrimmedString,
+  type ExpirePlayInvitesActionResult,
+  type SendPlayInviteActionResult,
+  type UpdatePlayInviteActionResult,
+} from "@/app/matches/play-invite-action-helpers";
+import {
   acceptPlayInviteRecord,
   cancelPlayInviteRecord,
   declinePlayInviteRecord,
   expirePlayInvitesRecord,
   sendPlayInviteRecord,
-  type PlayInviteStatus,
 } from "@/lib/matches/play-invites";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-
-export type SendPlayInviteActionResult =
-  | { status: "success"; inviteId: string }
-  | { status: "unauthenticated" }
-  | { status: "onboarding_required" }
-  | { status: "error"; message: string };
-
-export type UpdatePlayInviteActionResult =
-  | { status: "success"; inviteId: string; inviteStatus: PlayInviteStatus }
-  | { status: "unauthenticated" }
-  | { status: "onboarding_required" }
-  | { status: "error"; message: string };
-
-export type ExpirePlayInvitesActionResult =
-  | { status: "success"; expiredCount: number }
-  | { status: "unauthenticated" }
-  | { status: "onboarding_required" }
-  | { status: "error"; message: string };
-
-function optionalTrimmedString(value: string | null | undefined) {
-  const parsed = value?.trim() ?? "";
-  return parsed.length > 0 ? parsed : null;
-}
-
-function mapPlayInviteUpdateErrorMessage(errorCode: string | null) {
-  if (errorCode === "invite_expired") {
-    return "That invite has already expired.";
-  }
-
-  if (errorCode === "invite_not_found" || errorCode === "invalid_invite") {
-    return "That invite is no longer available.";
-  }
-
-  if (errorCode === "forbidden") {
-    return "You do not have permission to update that invite.";
-  }
-
-  if (errorCode === "invalid_state") {
-    return "That invite can no longer be updated.";
-  }
-
-  if (errorCode === "recipient_not_found") {
-    return "That player cannot be updated right now.";
-  }
-
-  return "Unable to update that invite right now.";
-}
+export type {
+  ExpirePlayInvitesActionResult,
+  SendPlayInviteActionResult,
+  UpdatePlayInviteActionResult,
+} from "@/app/matches/play-invite-action-helpers";
 
 export async function sendPlayInvite(input: {
   message?: string | null;
@@ -87,68 +53,15 @@ export async function sendPlayInvite(input: {
       sourceLFGPostId: optionalTrimmedString(input.sourceLFGPostId),
     });
 
-    if (!result.created || !result.inviteId) {
-      if (result.errorCode === "duplicate_pending_invite") {
-        return {
-          status: "error",
-          message: "You already have a pending invite out to this player.",
-        };
-      }
+    const actionResult = mapSendPlayInviteActionResult(result);
 
-      if (
-        result.errorCode === "send_rate_limited" ||
-        result.errorCode === "recipient_rate_limited"
-      ) {
-        return {
-          status: "error",
-          message: "You are sending invites too quickly right now.",
-        };
-      }
-
-      if (
-        result.errorCode === "invalid_recipient" ||
-        result.errorCode === "recipient_not_found" ||
-        result.errorCode === "self_invite"
-      ) {
-        return {
-          status: "error",
-          message: "That player cannot be invited right now.",
-        };
-      }
-
-      if (result.errorCode === "invalid_source_post") {
-        return {
-          status: "error",
-          message: "That post is no longer available for invites.",
-        };
-      }
-
-      if (result.errorCode === "invalid_message") {
-        return {
-          status: "error",
-          message: "Invite messages must be 280 characters or fewer.",
-        };
-      }
-
-      if (
-        result.errorCode === "unauthenticated" ||
-        result.errorCode === "sender_not_found"
-      ) {
-        return { status: "unauthenticated" };
-      }
-
-      return {
-        status: "error",
-        message: "Unable to send that invite right now.",
-      };
+    if (actionResult.status !== "success") {
+      return actionResult;
     }
 
     revalidatePath("/matches");
 
-    return {
-      status: "success",
-      inviteId: result.inviteId,
-    };
+    return actionResult;
   } catch (error) {
     console.error("Play invite send failed", {
       error,
@@ -211,20 +124,15 @@ export async function acceptPlayInvite(input: {
 
     const result = await acceptPlayInviteRecord({ inviteId });
 
-    if (!result.updated || !result.inviteId || !result.status) {
-      return {
-        status: "error",
-        message: mapPlayInviteUpdateErrorMessage(result.errorCode),
-      };
+    const actionResult = mapUpdatePlayInviteActionResult(result);
+
+    if (actionResult.status !== "success") {
+      return actionResult;
     }
 
     revalidatePath("/matches");
 
-    return {
-      status: "success",
-      inviteId: result.inviteId,
-      inviteStatus: result.status,
-    };
+    return actionResult;
   } catch (error) {
     console.error("Play invite accept failed", {
       error,
@@ -269,20 +177,15 @@ export async function declinePlayInvite(input: {
 
     const result = await declinePlayInviteRecord({ inviteId });
 
-    if (!result.updated || !result.inviteId || !result.status) {
-      return {
-        status: "error",
-        message: mapPlayInviteUpdateErrorMessage(result.errorCode),
-      };
+    const actionResult = mapUpdatePlayInviteActionResult(result);
+
+    if (actionResult.status !== "success") {
+      return actionResult;
     }
 
     revalidatePath("/matches");
 
-    return {
-      status: "success",
-      inviteId: result.inviteId,
-      inviteStatus: result.status,
-    };
+    return actionResult;
   } catch (error) {
     console.error("Play invite decline failed", {
       error,
@@ -327,20 +230,15 @@ export async function cancelPlayInvite(input: {
 
     const result = await cancelPlayInviteRecord({ inviteId });
 
-    if (!result.updated || !result.inviteId || !result.status) {
-      return {
-        status: "error",
-        message: mapPlayInviteUpdateErrorMessage(result.errorCode),
-      };
+    const actionResult = mapUpdatePlayInviteActionResult(result);
+
+    if (actionResult.status !== "success") {
+      return actionResult;
     }
 
     revalidatePath("/matches");
 
-    return {
-      status: "success",
-      inviteId: result.inviteId,
-      inviteStatus: result.status,
-    };
+    return actionResult;
   } catch (error) {
     console.error("Play invite cancel failed", {
       error,
@@ -375,23 +273,15 @@ export async function expirePlayInvites(input?: {
       inviteId: optionalTrimmedString(input?.inviteId),
     });
 
-    if (result.errorCode === "unauthenticated") {
-      return { status: "unauthenticated" };
-    }
+    const actionResult = mapExpirePlayInvitesActionResult(result);
 
-    if (result.errorCode) {
-      return {
-        status: "error",
-        message: "Unable to expire invites right now.",
-      };
+    if (actionResult.status !== "success") {
+      return actionResult;
     }
 
     revalidatePath("/matches");
 
-    return {
-      status: "success",
-      expiredCount: result.expiredCount,
-    };
+    return actionResult;
   } catch (error) {
     console.error("Play invite expiry sweep failed", {
       error,

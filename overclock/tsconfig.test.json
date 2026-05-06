@@ -12,7 +12,10 @@
   },
   "include": [
     "lib/matches/play-invite-types.ts",
+    "lib/matches/play-invite-rpc-types.ts",
     "lib/matches/invite-action-presentation.ts",
+    "lib/matches/play-invite-rpc-normalizers.ts",
+    "app/matches/play-invite-action-helpers.ts",
     "tests/**/*.ts"
   ],
   "exclude": [
