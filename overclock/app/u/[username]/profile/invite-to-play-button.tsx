@@ -29,6 +29,7 @@ export function InviteToPlayButton({
   const presentation = getInviteActionPresentation({
     inviteState,
     isPending,
+    labels: { idle: "Invite to Connect" },
     viewerState,
   });
 
