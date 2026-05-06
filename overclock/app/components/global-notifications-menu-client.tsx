@@ -147,10 +147,10 @@ export function GlobalNotificationsMenuClient({
                 When someone invites you to play, it&apos;ll show up here.
               </p>
               <Link
-                href="/matches"
+                href="/connections"
                 className="mt-4 inline-flex text-sm font-medium text-zinc-400 transition hover:text-zinc-100"
               >
-                Open matches
+                Open connections
               </Link>
             </div>
           ) : (
@@ -160,10 +160,10 @@ export function GlobalNotificationsMenuClient({
                   Pending invites
                 </p>
                 <Link
-                  href="/matches"
+                  href="/connections"
                   className="text-xs font-medium text-zinc-400 transition hover:text-zinc-100"
                 >
-                  Open matches
+                  Open connections
                 </Link>
               </div>
 

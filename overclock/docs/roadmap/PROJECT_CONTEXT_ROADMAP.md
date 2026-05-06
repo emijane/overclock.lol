@@ -80,9 +80,9 @@ The homepage currently redirects to `/login`.
   reusable section UI lives under `app/lfg/*`.
 - Presence and availability UI now live in shared app components and account
   settings, with current status displayed on profile surfaces and LFG cards.
-- The global authenticated shell currently includes top-level Duos / Matches /
-  Stacks navigation, a placeholder notifications bell dropdown, the account
-  menu, and smaller toast-style alerts below the main menu.
+- The global authenticated shell currently includes top-level Duos /
+  Connections / Stacks navigation, a pending-invite notification bell, the
+  account menu, and smaller toast-style alerts below the main menu.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 
@@ -96,12 +96,13 @@ These are already visible in the codebase today:
   flows.
 - Rank verification remains a roadmap-only trust system rather than a shipped
   feature.
-- Invite to Play is only partially shipped: the backend send flow and `/matches`
-  route now exist, and backend lifecycle RPCs now cover accept/decline/cancel,
-  public profiles plus Duos/Stacks cards now expose first-pass invite-send
-  actions, the notification bell now shows incoming pending invites, and the
-  bell plus `/matches` now refresh on realtime invite changes. Signed-in users
-  without a completed app profile now see `Profile Required` on invite actions.
+- Invite to Play now ships as a lightweight connection system: pending invites
+  still live in `play_invites`, accepted invites now upsert durable active rows
+  in `profile_connections`, `/connections` renders active connections plus
+  pending invite management, public profiles show connection counts, accepted
+  players can unmatch, and the bell plus `/connections` refresh on realtime
+  invite changes. The legacy `/matches` route still exists as a compatibility
+  alias.
 
 ## Roadmap
 
@@ -119,9 +120,9 @@ These are already visible in the codebase today:
 - Add profile completion prompts and guided setup cues in account settings.
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
-- Finish Invite to Play UI flows by replacing the placeholder bell dropdown with
-  deeper invite polish, richer edge-case handling, and any remaining UX cleanup
-  across the existing profile, feed, bell, and matches surfaces.
+- Continue polishing Invite to Play and Connections UX, including richer edge
+  cases, clearer invite state messaging, and any remaining cleanup across the
+  existing profile, feed, bell, and connections surfaces.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 
@@ -138,7 +139,7 @@ These are already visible in the codebase today:
   automatic online presence, recent activity fallback, and the separate
   `Looking to play` availability state.
 - `docs/roadmap/matches/INVITE_TO_PLAY_ROADMAP.md` - Use when planning invite
-  notifications, accepted-match history, contact unlock rules, and `/matches`.
+  notifications, active connections, contact unlock rules, and `/connections`.
 
 ### Quality Track
 

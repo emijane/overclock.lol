@@ -9,7 +9,10 @@ import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
-import { getProfileInviteState } from "@/lib/matches/play-invites";
+import {
+  getProfileConnectionCount,
+  getProfileInviteState,
+} from "@/lib/matches/play-invites";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
@@ -73,7 +76,7 @@ export default async function ProfilePage({
         notFound();
     }
 
-    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState] =
+    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount] =
         await Promise.all([
             measureProfileStep(username, "hero pools", () =>
                 getProfileHeroPools(profile.id)
@@ -95,6 +98,9 @@ export default async function ProfilePage({
                     currentProfileId: viewer.profileId,
                     targetProfileId: profile.id,
                 })
+            ),
+            measureProfileStep(username, "connection count", () =>
+                getProfileConnectionCount(profile.id)
             ),
         ]);
 
@@ -177,6 +183,7 @@ export default async function ProfilePage({
                             avatarUrl={profile.discord_avatar_url}
                             bio={profile.bio}
                             badges={badges}
+                            connectionCount={connectionCount}
                             coverImageUrl={coverImageUrl}
                             currentRank={currentRank}
                             currentRankTier={profileRankTier}

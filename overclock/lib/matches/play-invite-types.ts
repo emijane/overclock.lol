@@ -1,7 +1,7 @@
 export type ProfileInviteState =
   | "invite_to_play"
   | "invite_sent"
-  | "matched";
+  | "connected";
 
 export type LFGInviteStateMap = Record<string, ProfileInviteState>;
 

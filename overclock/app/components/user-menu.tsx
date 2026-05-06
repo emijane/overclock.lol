@@ -105,9 +105,9 @@ export function UserMenu({
             asChild
             className="text-zinc-300 focus:bg-[#080b10] focus:text-zinc-100"
           >
-            <Link href="/matches">
+            <Link href="/connections">
               <UsersIcon />
-              Matches
+              Connections
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem

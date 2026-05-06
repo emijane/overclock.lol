@@ -9,13 +9,13 @@ import { PageContainer } from "@/app/components/page-container";
 import { PageReveal } from "@/app/components/page-reveal";
 import {
   expirePlayInvitesRecord,
-  getAcceptedPlayMatches,
+  getActiveProfileConnections,
   getIncomingPendingPlayInvites,
   getPendingSentPlayInvites,
 } from "@/lib/matches/play-invites";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
-const RECENT_MATCH_LIMIT = 6;
+const RECENT_CONNECTION_LIMIT = 6;
 
 function formatDateTime(value: string | null) {
   if (!value) {
@@ -41,17 +41,17 @@ export default async function MatchesPage() {
 
   await expirePlayInvitesRecord();
 
-  const [acceptedMatches, pendingSentInvites, incomingPendingInvites] = await Promise.all([
-    getAcceptedPlayMatches({ currentProfileId: profile.id }),
+  const [connections, pendingSentInvites, incomingPendingInvites] = await Promise.all([
+    getActiveProfileConnections({ currentProfileId: profile.id }),
     getPendingSentPlayInvites({ currentProfileId: profile.id }),
     getIncomingPendingPlayInvites({ currentProfileId: profile.id, limit: 20 }).then(
       (result) => result.invites
     ),
   ]);
-  const recentMatches = acceptedMatches.slice(0, RECENT_MATCH_LIMIT);
-  const pastMatches = acceptedMatches.slice(RECENT_MATCH_LIMIT);
-  const hasAnyMatches =
-    acceptedMatches.length > 0 ||
+  const recentConnections = connections.slice(0, RECENT_CONNECTION_LIMIT);
+  const pastConnections = connections.slice(RECENT_CONNECTION_LIMIT);
+  const hasAnyConnections =
+    connections.length > 0 ||
     pendingSentInvites.length > 0 ||
     incomingPendingInvites.length > 0;
 
@@ -86,7 +86,7 @@ export default async function MatchesPage() {
                       </Link>
                       <div className="space-y-2">
                         <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
-                          Matches
+                          Connections
                         </h1>
                       </div>
                     </div>
@@ -98,22 +98,22 @@ export default async function MatchesPage() {
             <PageReveal delay={1}>
               <section className="grid gap-4">
                 <div className="rounded-[22px] border border-white/[0.08] bg-[#05070b] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-5">
-                  <div className="grid gap-3">
+                      <div className="grid gap-3">
                     <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
-                      Recent Matches
+                      Recent Connections
                     </h2>
-                    {recentMatches.length > 0 ? (
-                      recentMatches.map((match) => (
+                    {recentConnections.length > 0 ? (
+                      recentConnections.map((connection) => (
                         <MatchCard
-                          key={match.id}
-                          match={match}
-                          acceptedAtLabel={formatDateTime(match.acceptedAt)}
+                          key={connection.id}
+                          connection={connection}
+                          connectedAtLabel={formatDateTime(connection.connectedAt)}
                         />
                       ))
                     ) : (
                       <div className="rounded-[20px] border border-dashed border-white/12 bg-white/[0.02] px-4 py-6">
                         <p className="text-sm font-medium text-zinc-200">
-                          No accepted matches yet.
+                          No connections yet.
                         </p>
                       </div>
                     )}
@@ -133,25 +133,25 @@ export default async function MatchesPage() {
                   }))}
                 />
 
-                {pastMatches.length > 0 ? (
+                {pastConnections.length > 0 ? (
                   <div className="grid gap-3">
                     <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
-                      Past Matches
+                      Earlier Connections
                     </h2>
-                    {pastMatches.map((match) => (
+                    {pastConnections.map((connection) => (
                       <MatchCard
-                        key={match.id}
-                        match={match}
-                        acceptedAtLabel={formatDateTime(match.acceptedAt)}
+                        key={connection.id}
+                        connection={connection}
+                        connectedAtLabel={formatDateTime(connection.connectedAt)}
                       />
                     ))}
                   </div>
                 ) : null}
 
-                {!hasAnyMatches ? (
+                {!hasAnyConnections ? (
                   <div className="rounded-[20px] border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">
                     <p className="text-sm font-medium text-zinc-200">
-                      No matches yet.
+                      No connections yet.
                     </p>
                   </div>
                 ) : null}

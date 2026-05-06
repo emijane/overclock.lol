@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   normalizeExpirePlayInvitesResult,
+  normalizeRemoveProfileConnectionResult,
   normalizeSendPlayInviteResult,
   normalizeUpdatePlayInviteResult,
 } from "../../lib/matches/play-invite-rpc-normalizers";
@@ -93,5 +94,21 @@ test("expire normalizer falls back for malformed input", () => {
   assert.deepEqual(result, {
     errorCode: "invalid_response",
     expiredCount: 0,
+  });
+});
+
+test("remove connection normalizer reads wrapped payloads", () => {
+  const result = normalizeRemoveProfileConnectionResult({
+    remove_profile_connection: {
+      connection_id: "connection-1",
+      error_code: null,
+      updated: true,
+    },
+  });
+
+  assert.deepEqual(result, {
+    connectionId: "connection-1",
+    errorCode: null,
+    updated: true,
   });
 });

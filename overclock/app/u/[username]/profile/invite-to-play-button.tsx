@@ -51,7 +51,7 @@ export function InviteToPlayButton({
 
       if (result.status === "success") {
         setInviteState("invite_sent");
-        setFeedback("Invite sent. You can track it from Matches.");
+        setFeedback("Invite sent. You can track it from Connections.");
         return;
       }
 

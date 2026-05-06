@@ -73,9 +73,9 @@ test("invite sent state is disabled", () => {
   });
 });
 
-test("matched state is disabled", () => {
+test("connected state is disabled", () => {
   const result = getInviteActionPresentation({
-    inviteState: "matched",
+    inviteState: "connected",
     isPending: false,
     viewerState: "signed_in",
   });
@@ -83,7 +83,7 @@ test("matched state is disabled", () => {
   assert.deepEqual(result, {
     canSendInvite: false,
     href: null,
-    label: "Matched",
+    label: "Connected",
   });
 });
 

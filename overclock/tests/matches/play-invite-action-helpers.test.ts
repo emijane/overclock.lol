@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   mapExpirePlayInvitesActionResult,
   mapPlayInviteUpdateErrorMessage,
+  mapRemoveProfileConnectionActionResult,
   mapSendPlayInviteActionResult,
   mapUpdatePlayInviteActionResult,
   optionalTrimmedString,
@@ -38,6 +39,18 @@ test("send action mapper groups duplicate and rate limit failures", () => {
     {
       status: "error",
       message: "You already have a pending invite out to this player.",
+    }
+  );
+
+  assert.deepEqual(
+    mapSendPlayInviteActionResult({
+      created: false,
+      errorCode: "already_connected",
+      inviteId: null,
+    }),
+    {
+      status: "error",
+      message: "You are already connected with this player.",
     }
   );
 
@@ -140,6 +153,32 @@ test("expire action mapper handles auth, error, and success", () => {
     {
       status: "success",
       expiredCount: 4,
+    }
+  );
+});
+
+test("remove connection mapper handles success and state failures", () => {
+  assert.deepEqual(
+    mapRemoveProfileConnectionActionResult({
+      connectionId: "connection-2",
+      errorCode: null,
+      updated: true,
+    }),
+    {
+      status: "success",
+      connectionId: "connection-2",
+    }
+  );
+
+  assert.deepEqual(
+    mapRemoveProfileConnectionActionResult({
+      connectionId: "connection-2",
+      errorCode: "invalid_state",
+      updated: false,
+    }),
+    {
+      status: "error",
+      message: "That connection has already been removed.",
     }
   );
 });

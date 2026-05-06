@@ -29,7 +29,7 @@ export function deriveProfileInviteState(input: {
   }
 
   if ((input.acceptedCount ?? 0) > 0) {
-    return "matched";
+    return "connected";
   }
 
   if ((input.pendingCount ?? 0) > 0) {
@@ -66,10 +66,10 @@ export function deriveLFGInviteStates(input: {
     return states;
   }
 
-  const matchedRecipientIds = new Set<string>();
+  const connectedRecipientIds = new Set<string>();
 
   for (const row of input.acceptedPairs) {
-    matchedRecipientIds.add(
+    connectedRecipientIds.add(
       row.senderProfileId === input.currentProfileId
         ? row.recipientProfileId
         : row.senderProfileId
@@ -77,8 +77,8 @@ export function deriveLFGInviteStates(input: {
   }
 
   for (const post of eligiblePosts) {
-    if (matchedRecipientIds.has(post.profileId)) {
-      states[post.id] = "matched";
+    if (connectedRecipientIds.has(post.profileId)) {
+      states[post.id] = "connected";
     }
   }
 
@@ -88,7 +88,7 @@ export function deriveLFGInviteStates(input: {
         post.id === row.sourceLFGPostId && post.profileId === row.recipientProfileId
     );
 
-    if (!matchingPost || states[matchingPost.id] === "matched") {
+    if (!matchingPost || states[matchingPost.id] === "connected") {
       continue;
     }
 

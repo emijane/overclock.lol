@@ -4,10 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import {
   mapExpirePlayInvitesActionResult,
+  mapRemoveProfileConnectionActionResult,
   mapSendPlayInviteActionResult,
   mapUpdatePlayInviteActionResult,
   optionalTrimmedString,
   type ExpirePlayInvitesActionResult,
+  type RemoveProfileConnectionActionResult,
   type SendPlayInviteActionResult,
   type UpdatePlayInviteActionResult,
 } from "@/app/matches/play-invite-action-helpers";
@@ -16,11 +18,13 @@ import {
   cancelPlayInviteRecord,
   declinePlayInviteRecord,
   expirePlayInvitesRecord,
+  removeProfileConnectionRecord,
   sendPlayInviteRecord,
 } from "@/lib/matches/play-invites";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 export type {
   ExpirePlayInvitesActionResult,
+  RemoveProfileConnectionActionResult,
   SendPlayInviteActionResult,
   UpdatePlayInviteActionResult,
 } from "@/app/matches/play-invite-action-helpers";
@@ -60,6 +64,7 @@ export async function sendPlayInvite(input: {
     }
 
     revalidatePath("/matches");
+    revalidatePath("/connections");
 
     return actionResult;
   } catch (error) {
@@ -131,6 +136,7 @@ export async function acceptPlayInvite(input: {
     }
 
     revalidatePath("/matches");
+    revalidatePath("/connections");
 
     return actionResult;
   } catch (error) {
@@ -184,6 +190,7 @@ export async function declinePlayInvite(input: {
     }
 
     revalidatePath("/matches");
+    revalidatePath("/connections");
 
     return actionResult;
   } catch (error) {
@@ -237,6 +244,7 @@ export async function cancelPlayInvite(input: {
     }
 
     revalidatePath("/matches");
+    revalidatePath("/connections");
 
     return actionResult;
   } catch (error) {
@@ -280,6 +288,7 @@ export async function expirePlayInvites(input?: {
     }
 
     revalidatePath("/matches");
+    revalidatePath("/connections");
 
     return actionResult;
   } catch (error) {
@@ -292,6 +301,53 @@ export async function expirePlayInvites(input?: {
     return {
       status: "error",
       message: "Unable to expire invites right now.",
+    };
+  }
+}
+
+export async function removeProfileConnection(input: {
+  connectionId: string;
+}): Promise<RemoveProfileConnectionActionResult> {
+  const requiredProfile = await requireCurrentProfile();
+
+  if (requiredProfile.result) {
+    return requiredProfile.result;
+  }
+
+  const profile = requiredProfile.profile;
+
+  if (!profile) {
+    return { status: "onboarding_required" };
+  }
+
+  const connectionId = optionalTrimmedString(input.connectionId);
+
+  if (!connectionId) {
+    return { status: "error", message: "Choose a connection to remove." };
+  }
+
+  try {
+    const result = await removeProfileConnectionRecord({ connectionId });
+    const actionResult = mapRemoveProfileConnectionActionResult(result);
+
+    if (actionResult.status !== "success") {
+      return actionResult;
+    }
+
+    revalidatePath("/matches");
+    revalidatePath("/connections");
+
+    return actionResult;
+  } catch (error) {
+    console.error("Profile connection removal failed", {
+      connectionId,
+      error,
+      profileId: profile.id,
+    });
+
+    return {
+      status: "error",
+      message: "Unable to remove that connection right now.",
     };
   }
 }

@@ -28,7 +28,7 @@ test("profile state stays invite_to_play for guests and self views", () => {
   );
 });
 
-test("profile state gives matches precedence over pending invites", () => {
+test("profile state gives active connections precedence over pending invites", () => {
   assert.equal(
     deriveProfileInviteState({
       acceptedCount: 1,
@@ -36,7 +36,7 @@ test("profile state gives matches precedence over pending invites", () => {
       pendingCount: 1,
       targetProfileId: "target-1",
     }),
-    "matched"
+    "connected"
   );
 });
 
@@ -96,7 +96,7 @@ test("lfg state derivation ignores own and profileless posts", () => {
   });
 });
 
-test("lfg state derivation maps pending and matched posts", () => {
+test("lfg state derivation maps pending and connected posts", () => {
   const states = deriveLFGInviteStates({
     acceptedPairs: [
       {
@@ -120,12 +120,12 @@ test("lfg state derivation maps pending and matched posts", () => {
 
   assert.deepEqual(states, {
     "post-2": "invite_sent",
-    "post-3": "matched",
+    "post-3": "connected",
     "post-4": "invite_to_play",
   });
 });
 
-test("lfg state derivation keeps matched state when stale pending also exists", () => {
+test("lfg state derivation keeps connected state when stale pending also exists", () => {
   const states = deriveLFGInviteStates({
     acceptedPairs: [
       {
@@ -144,6 +144,6 @@ test("lfg state derivation keeps matched state when stale pending also exists", 
   });
 
   assert.deepEqual(states, {
-    "post-2": "matched",
+    "post-2": "connected",
   });
 });

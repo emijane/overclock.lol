@@ -5,6 +5,12 @@ export type PlayInviteStatus =
   | "expired"
   | "cancelled";
 
+export type RemoveProfileConnectionResult = {
+  connectionId: string | null;
+  errorCode: string | null;
+  updated: boolean;
+};
+
 export type SendPlayInviteResult = {
   created: boolean;
   errorCode: string | null;

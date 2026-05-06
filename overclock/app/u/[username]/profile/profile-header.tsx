@@ -8,11 +8,14 @@ import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfilePresenceBadges } from "./profile-presence-badges";
 import { ProfileSocialLinks } from "./profile-social-links";
 import { LookingToPlayBadge } from "@/app/components/looking-to-play-badge";
+import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
+  badges?: UserProfileBadge[];
   bio: string | null;
+  connectionCount?: number;
   coverImageUrl: string | null;
   currentRank: string | null;
   currentRankTier?: string | null;
@@ -52,6 +55,7 @@ const rankBadgeClassNameByTier: Record<string, string> = {
 export function ProfileHeader({
   avatarUrl,
   bio,
+  connectionCount = 0,
   coverImageUrl,
   currentRank,
   currentRankIconSrc,
@@ -162,22 +166,26 @@ export function ProfileHeader({
               <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
-              {platform || isLookingToPlay ? (
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  {platform ? (
-                    <LookingToPlayBadge
-                      className={`${rankBadgeClassName} text-zinc-100`}
-                      tone="neutral"
-                    >
-                      {platform}
-                    </LookingToPlayBadge>
-                  ) : null}
-                  <ProfilePresenceBadges
-                    badgeClassName={`${rankBadgeClassName} text-zinc-100`}
-                    isLookingToPlay={isLookingToPlay}
-                  />
-                </div>
-              ) : null}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <LookingToPlayBadge
+                  className={`${rankBadgeClassName} text-zinc-100`}
+                  tone="neutral"
+                >
+                  {connectionCount} {connectionCount === 1 ? "Connection" : "Connections"}
+                </LookingToPlayBadge>
+                {platform ? (
+                  <LookingToPlayBadge
+                    className={`${rankBadgeClassName} text-zinc-100`}
+                    tone="neutral"
+                  >
+                    {platform}
+                  </LookingToPlayBadge>
+                ) : null}
+                <ProfilePresenceBadges
+                  badgeClassName={`${rankBadgeClassName} text-zinc-100`}
+                  isLookingToPlay={isLookingToPlay}
+                />
+              </div>
             </div>
 
             <div className="sm:min-w-[220px]">

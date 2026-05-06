@@ -13,8 +13,8 @@ type InviteActionPresentationInput = {
   inviteState: ProfileInviteState;
   isPending: boolean;
   labels?: Partial<{
+    connected: string;
     idle: string;
-    matched: string;
     pending: string;
     sending: string;
   }>;
@@ -22,8 +22,8 @@ type InviteActionPresentationInput = {
 };
 
 const DEFAULT_LABELS = {
+  connected: "Connected",
   idle: "Invite to Play",
-  matched: "Matched",
   pending: "Invite Sent",
   sending: "Sending...",
 } as const;
@@ -68,11 +68,11 @@ export function getInviteActionPresentation(
     };
   }
 
-  if (input.inviteState === "matched") {
+  if (input.inviteState === "connected") {
     return {
       canSendInvite: false,
       href: null,
-      label: labels.matched,
+      label: labels.connected,
     };
   }
 

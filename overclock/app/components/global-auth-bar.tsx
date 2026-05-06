@@ -28,7 +28,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
   const profileHref = profile?.username ? `/u/${profile.username}` : "/onboarding";
   const discoveryLinks = [
     { href: "/duos", label: "Duos" },
-    { href: "/matches", label: "Matches" },
+    { href: "/connections", label: "Connections" },
     { href: "/stacks", label: "Stacks" },
   ] as const;
 

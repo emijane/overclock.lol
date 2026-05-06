@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import {
   normalizeExpirePlayInvitesResult,
+  normalizeRemoveProfileConnectionResult,
   normalizeSendPlayInviteResult,
   normalizeUpdatePlayInviteResult,
 } from "@/lib/matches/play-invite-rpc-normalizers";
@@ -57,11 +58,27 @@ export type MatchParticipant = {
   username: string | null;
 };
 
+type ProfileConnectionRow = {
+  connected_at: string;
+  created_from_invite_id: string | null;
+  id: string;
+  profile_high_id: string;
+  profile_low_id: string;
+};
+
+export type ActiveProfileConnection = {
+  connectedAt: string;
+  createdAt: string;
+  id: string;
+  message: string | null;
+  participant: MatchParticipant;
+  sourcePostTitle: string | null;
+};
+
 export type AcceptedPlayMatch = {
   acceptedAt: string | null;
   createdAt: string;
   id: string;
-  message: string | null;
   participant: MatchParticipant;
   sourcePostTitle: string | null;
 };
@@ -159,6 +176,36 @@ function normalizeMatchSourcePostRow(value: unknown): MatchSourcePostRow | null 
   return {
     id: candidate.id,
     title: typeof candidate.title === "string" ? candidate.title : null,
+  };
+}
+
+function normalizeProfileConnectionRow(
+  value: unknown
+): ProfileConnectionRow | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  if (
+    typeof candidate.id !== "string" ||
+    typeof candidate.profile_low_id !== "string" ||
+    typeof candidate.profile_high_id !== "string" ||
+    typeof candidate.connected_at !== "string"
+  ) {
+    return null;
+  }
+
+  return {
+    connected_at: candidate.connected_at,
+    created_from_invite_id:
+      typeof candidate.created_from_invite_id === "string"
+        ? candidate.created_from_invite_id
+        : null,
+    id: candidate.id,
+    profile_high_id: candidate.profile_high_id,
+    profile_low_id: candidate.profile_low_id,
   };
 }
 
@@ -315,83 +362,156 @@ export async function expirePlayInvitesRecord(input?: { inviteId?: string | null
   return normalizeExpirePlayInvitesResult(data);
 }
 
-export async function getAcceptedPlayMatches(input: {
-  currentProfileId: string;
-  limit?: number;
+export async function removeProfileConnectionRecord(input: {
+  connectionId: string;
 }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("remove_profile_connection", {
+    p_connection_id: input.connectionId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeRemoveProfileConnectionResult(data);
+}
+
+async function getPlayInvitesById(inviteIds: string[]) {
+  if (inviteIds.length === 0) {
+    return new Map<string, Record<string, unknown>>();
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("play_invites")
     .select(
       "id, sender_profile_id, recipient_profile_id, source_lfg_post_id, message, sender_snapshot, recipient_snapshot, created_at, accepted_at"
     )
-    .eq("status", "accepted")
-    .or(
-      `sender_profile_id.eq.${input.currentProfileId},recipient_profile_id.eq.${input.currentProfileId}`
+    .in("id", inviteIds);
+
+  if (error) {
+    throw error;
+  }
+
+  return new Map(
+    ((data ?? []) as Array<Record<string, unknown>>)
+      .filter((row) => typeof row.id === "string")
+      .map((row) => [row.id as string, row])
+  );
+}
+
+export async function getActiveProfileConnections(input: {
+  currentProfileId: string;
+  limit?: number;
+}) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_connections")
+    .select(
+      "id, profile_low_id, profile_high_id, created_from_invite_id, connected_at"
     )
-    .order("accepted_at", { ascending: false })
+    .is("disconnected_at", null)
+    .or(
+      `profile_low_id.eq.${input.currentProfileId},profile_high_id.eq.${input.currentProfileId}`
+    )
+    .order("connected_at", { ascending: false })
     .limit(input.limit ?? 30);
 
   if (error) {
     throw error;
   }
 
-  const rows = ((data ?? []) as Array<Record<string, unknown>>).filter(
-    (row) =>
-      typeof row.id === "string" &&
-      typeof row.sender_profile_id === "string" &&
-      typeof row.recipient_profile_id === "string" &&
-      typeof row.created_at === "string"
-  );
+  const rows = ((data ?? []) as unknown[])
+    .map((row) => normalizeProfileConnectionRow(row))
+    .filter((row): row is ProfileConnectionRow => Boolean(row));
 
   const participantIds = Array.from(
     new Set(
       rows.map((row) =>
-        row.sender_profile_id === input.currentProfileId
-          ? (row.recipient_profile_id as string)
-          : (row.sender_profile_id as string)
+        row.profile_low_id === input.currentProfileId
+          ? row.profile_high_id
+          : row.profile_low_id
       )
     )
   );
+  const inviteIds = Array.from(
+    new Set(
+      rows
+        .map((row) => row.created_from_invite_id)
+        .filter((inviteId): inviteId is string => Boolean(inviteId))
+    )
+  );
+  const [profilesById, invitesById] = await Promise.all([
+    getMatchProfilesById(participantIds),
+    getPlayInvitesById(inviteIds),
+  ]);
   const postIds = Array.from(
     new Set(
       rows
-        .map((row) =>
-          typeof row.source_lfg_post_id === "string" ? row.source_lfg_post_id : null
-        )
+        .map((row) => {
+          const invite =
+            row.created_from_invite_id
+              ? invitesById.get(row.created_from_invite_id)
+              : null;
+          return typeof invite?.source_lfg_post_id === "string"
+            ? invite.source_lfg_post_id
+            : null;
+        })
         .filter((postId): postId is string => Boolean(postId))
     )
   );
-  const [profilesById, postsById] = await Promise.all([
-    getMatchProfilesById(participantIds),
-    getMatchSourcePostsById(postIds),
-  ]);
+  const postsById = await getMatchSourcePostsById(postIds);
 
   return rows.map((row) => {
-    const senderProfileId = row.sender_profile_id as string;
-    const recipientProfileId = row.recipient_profile_id as string;
     const participantId =
-      senderProfileId === input.currentProfileId ? recipientProfileId : senderProfileId;
+      row.profile_low_id === input.currentProfileId
+        ? row.profile_high_id
+        : row.profile_low_id;
+    const invite = row.created_from_invite_id
+      ? invitesById.get(row.created_from_invite_id) ?? null
+      : null;
+    const senderProfileId =
+      typeof invite?.sender_profile_id === "string" ? invite.sender_profile_id : null;
     const snapshot =
-      participantId === senderProfileId
-        ? normalizePlayInviteSnapshot(row.sender_snapshot)
-        : normalizePlayInviteSnapshot(row.recipient_snapshot);
+      invite && participantId === senderProfileId
+        ? normalizePlayInviteSnapshot(invite.sender_snapshot)
+        : normalizePlayInviteSnapshot(invite?.recipient_snapshot);
     const sourcePostId =
-      typeof row.source_lfg_post_id === "string" ? row.source_lfg_post_id : null;
+      invite && typeof invite.source_lfg_post_id === "string"
+        ? invite.source_lfg_post_id
+        : null;
+    const createdAt =
+      invite && typeof invite.created_at === "string"
+        ? invite.created_at
+        : row.connected_at;
 
     return {
-      acceptedAt: typeof row.accepted_at === "string" ? row.accepted_at : null,
-      createdAt: row.created_at as string,
+      connectedAt: row.connected_at,
+      createdAt,
       id: row.id as string,
-      message: typeof row.message === "string" ? row.message : null,
+      message: invite && typeof invite.message === "string" ? invite.message : null,
       participant: toParticipant({
         participantId,
         profile: profilesById.get(participantId) ?? null,
         snapshot,
       }),
       sourcePostTitle: sourcePostId ? postsById.get(sourcePostId)?.title ?? null : null,
-    } satisfies AcceptedPlayMatch;
+    } satisfies ActiveProfileConnection;
   });
+}
+
+export async function getProfileConnectionCount(profileId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_profile_connection_count", {
+    p_profile_id: profileId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return typeof data === "number" ? data : 0;
 }
 
 export async function getPendingSentPlayInvites(input: {
@@ -533,6 +653,14 @@ export async function getProfileInviteState(input: {
   currentProfileId: string | null;
   targetProfileId: string;
 }): Promise<ProfileInviteState> {
+  if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return "invite_to_play";
+  }
+
+  const [profileLowId, profileHighId] = [
+    input.currentProfileId,
+    input.targetProfileId,
+  ].sort();
   const supabase = await createClient();
   const [pendingResult, acceptedResult] = await Promise.all([
     supabase
@@ -542,15 +670,11 @@ export async function getProfileInviteState(input: {
       .eq("recipient_profile_id", input.targetProfileId)
       .eq("status", "pending"),
     supabase
-      .from("play_invites")
+      .from("profile_connections")
       .select("id", { head: true, count: "exact" })
-      .eq("status", "accepted")
-      .or(
-        [
-          `and(sender_profile_id.eq.${input.currentProfileId},recipient_profile_id.eq.${input.targetProfileId})`,
-          `and(sender_profile_id.eq.${input.targetProfileId},recipient_profile_id.eq.${input.currentProfileId})`,
-        ].join(",")
-      ),
+      .is("disconnected_at", null)
+      .eq("profile_low_id", profileLowId)
+      .eq("profile_high_id", profileHighId),
   ]);
 
   if (pendingResult.error) {
@@ -609,13 +733,13 @@ export async function getLFGPostInviteStates(input: {
       .in("recipient_profile_id", recipientIds)
       .in("source_lfg_post_id", postIds),
     supabase
-      .from("play_invites")
-      .select("sender_profile_id, recipient_profile_id")
-      .eq("status", "accepted")
+      .from("profile_connections")
+      .select("profile_low_id, profile_high_id")
+      .is("disconnected_at", null)
       .or(
         [
-          `and(sender_profile_id.eq.${input.currentProfileId},recipient_profile_id.in.(${recipientIds.join(",")}))`,
-          `and(recipient_profile_id.eq.${input.currentProfileId},sender_profile_id.in.(${recipientIds.join(",")}))`,
+          `and(profile_low_id.eq.${input.currentProfileId},profile_high_id.in.(${recipientIds.join(",")}))`,
+          `and(profile_high_id.eq.${input.currentProfileId},profile_low_id.in.(${recipientIds.join(",")}))`,
         ].join(",")
       ),
   ]);
@@ -632,12 +756,12 @@ export async function getLFGPostInviteStates(input: {
     acceptedPairs: ((acceptedResult.data ?? []) as Array<Record<string, unknown>>)
       .filter(
         (row) =>
-          typeof row.sender_profile_id === "string" &&
-          typeof row.recipient_profile_id === "string"
+          typeof row.profile_low_id === "string" &&
+          typeof row.profile_high_id === "string"
       )
       .map((row) => ({
-        recipientProfileId: row.recipient_profile_id as string,
-        senderProfileId: row.sender_profile_id as string,
+        recipientProfileId: row.profile_high_id as string,
+        senderProfileId: row.profile_low_id as string,
       })),
     currentProfileId: input.currentProfileId,
     pendingInvites: ((pendingResult.data ?? []) as Array<Record<string, unknown>>)

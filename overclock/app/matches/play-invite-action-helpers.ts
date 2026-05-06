@@ -1,6 +1,7 @@
 import type {
   ExpirePlayInvitesResult,
   PlayInviteStatus,
+  RemoveProfileConnectionResult,
   SendPlayInviteResult,
   UpdatePlayInviteResult,
 } from "@/lib/matches/play-invite-rpc-types";
@@ -19,6 +20,12 @@ export type UpdatePlayInviteActionResult =
 
 export type ExpirePlayInvitesActionResult =
   | { status: "success"; expiredCount: number }
+  | { status: "unauthenticated" }
+  | { status: "onboarding_required" }
+  | { status: "error"; message: string };
+
+export type RemoveProfileConnectionActionResult =
+  | { status: "success"; connectionId: string }
   | { status: "unauthenticated" }
   | { status: "onboarding_required" }
   | { status: "error"; message: string };
@@ -80,13 +87,17 @@ export function mapSendPlayInviteActionResult(
   }
 
   if (
+    result.errorCode === "already_connected" ||
     result.errorCode === "invalid_recipient" ||
     result.errorCode === "recipient_not_found" ||
     result.errorCode === "self_invite"
   ) {
     return {
       status: "error",
-      message: "That player cannot be invited right now.",
+      message:
+        result.errorCode === "already_connected"
+          ? "You are already connected with this player."
+          : "That player cannot be invited right now.",
     };
   }
 
@@ -151,5 +162,49 @@ export function mapExpirePlayInvitesActionResult(
   return {
     status: "success",
     expiredCount: result.expiredCount,
+  };
+}
+
+export function mapRemoveProfileConnectionActionResult(
+  result: RemoveProfileConnectionResult
+): RemoveProfileConnectionActionResult {
+  if (result.updated && result.connectionId) {
+    return {
+      status: "success",
+      connectionId: result.connectionId,
+    };
+  }
+
+  if (result.errorCode === "unauthenticated") {
+    return { status: "unauthenticated" };
+  }
+
+  if (
+    result.errorCode === "connection_not_found" ||
+    result.errorCode === "invalid_connection"
+  ) {
+    return {
+      status: "error",
+      message: "That connection is no longer available.",
+    };
+  }
+
+  if (result.errorCode === "forbidden") {
+    return {
+      status: "error",
+      message: "You do not have permission to update that connection.",
+    };
+  }
+
+  if (result.errorCode === "invalid_state") {
+    return {
+      status: "error",
+      message: "That connection has already been removed.",
+    };
+  }
+
+  return {
+    status: "error",
+    message: "Unable to remove that connection right now.",
   };
 }

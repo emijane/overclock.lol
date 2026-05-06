@@ -1,6 +1,7 @@
 import type {
   ExpirePlayInvitesResult,
   PlayInviteStatus,
+  RemoveProfileConnectionResult,
   SendPlayInviteResult,
   UpdatePlayInviteResult,
 } from "@/lib/matches/play-invite-rpc-types";
@@ -180,5 +181,59 @@ export function normalizeExpirePlayInvitesResult(
       typeof nestedCandidate.expired_count === "number"
         ? nestedCandidate.expired_count
         : 0,
+  };
+}
+
+export function normalizeRemoveProfileConnectionResult(
+  value: unknown
+): RemoveProfileConnectionResult {
+  if (typeof value === "string") {
+    try {
+      return normalizeRemoveProfileConnectionResult(JSON.parse(value));
+    } catch {
+      return {
+        connectionId: null,
+        errorCode: "invalid_response",
+        updated: false,
+      };
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0
+      ? normalizeRemoveProfileConnectionResult(value[0])
+      : {
+          connectionId: null,
+          errorCode: "invalid_response",
+          updated: false,
+        };
+  }
+
+  if (!value || typeof value !== "object") {
+    return {
+      connectionId: null,
+      errorCode: "invalid_response",
+      updated: false,
+    };
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const nestedCandidate =
+    candidate.remove_profile_connection &&
+    typeof candidate.remove_profile_connection === "object" &&
+    !Array.isArray(candidate.remove_profile_connection)
+      ? (candidate.remove_profile_connection as Record<string, unknown>)
+      : candidate;
+
+  return {
+    connectionId:
+      typeof nestedCandidate.connection_id === "string"
+        ? nestedCandidate.connection_id
+        : null,
+    errorCode:
+      typeof nestedCandidate.error_code === "string"
+        ? nestedCandidate.error_code
+        : null,
+    updated: nestedCandidate.updated === true,
   };
 }

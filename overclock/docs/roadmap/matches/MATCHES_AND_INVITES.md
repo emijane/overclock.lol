@@ -1,6 +1,6 @@
-# Matches And Invites
+# Connections And Invites
 
-This document explains how the current Invite to Play and `/matches` system
+This document explains how the current Invite to Play and `/connections` system
 works in the live codebase.
 
 Use this as the maintenance reference for product behavior, not as a future
@@ -8,7 +8,11 @@ spec.
 
 ## Overview
 
-The current system is built around a single lifecycle table: `play_invites`.
+The current system is built around two related pieces:
+
+- `play_invites` stores pending and historical invite lifecycle rows
+- `profile_connections` stores the current active connection between two
+  profiles
 
 An invite can move through these states:
 
@@ -18,8 +22,8 @@ An invite can move through these states:
 - `expired`
 - `cancelled`
 
-Accepted invites are treated as matches. There is no separate `matches` table
-right now.
+Accepted invites create or refresh a durable active connection. Pending invites
+can still expire. Active connections do not expire on their own.
 
 ## Where Invites Can Start
 
@@ -37,7 +41,7 @@ Invite-capable surfaces currently use these states:
 
 - `Invite to Play`
 - `Invite Sent`
-- `Matched`
+- `Connected`
 - `Sign in to invite`
 - `Profile Required`
 
@@ -52,7 +56,7 @@ When a user sends an invite, a `pending` row is created in `play_invites`.
 Pending invites:
 
 - appear for the recipient in the main notification bell
-- appear for the sender in `/matches` under outgoing invites
+- appear for the sender in `/connections` under outgoing invites
 - can be accepted or declined by the recipient
 - can be cancelled by the sender
 - can expire automatically
@@ -62,11 +66,21 @@ Pending invites:
 If the recipient accepts:
 
 - the invite becomes `accepted`
-- the row becomes part of match history
-- both participants can see the match in `/matches`
+- the pair is upserted into `profile_connections`
+- both participants can see the connection in `/connections`
 - Discord and Battle.net contact info can be shown there
+- both public profiles show the active connection count
 
-Accepted matches do not expire.
+Active connections do not expire.
+
+### Unmatched
+
+If either participant removes the connection:
+
+- the `profile_connections` row is marked disconnected
+- the invite history stays in `play_invites`
+- the pair no longer counts toward profile connection totals
+- the pair can send invites again later
 
 ### Declined
 
@@ -92,16 +106,16 @@ Expired invites:
 
 - cannot be accepted
 - cannot be declined as active invites
-- do not appear as matches
+- do not appear as active connections
 
 ## Expiry Behavior
 
-Pending invites expire. Accepted matches do not.
+Pending invites expire. Active connections do not.
 
 The app currently enforces expiry in two ways:
 
 - lifecycle RPC logic prevents expired pending invites from being accepted
-- `/matches` performs an expiry sweep before rendering so stale pending rows are
+- `/connections` performs an expiry sweep before rendering so stale pending rows are
   cleaned up
 
 Realtime refresh behavior also helps the UI stop showing rows once they change.
@@ -122,39 +136,40 @@ It currently shows:
 
 It does not act as a full historical inbox.
 
-## Matches Page
+## Connections Page
 
-`/matches` is the authenticated home for accepted matches and pending invite
-management.
+`/connections` is the authenticated home for active connections and pending
+invite management.
 
 It currently includes:
 
-- `Recent Matches`
+- `Recent Connections`
 - tabbed pending invites card with `Incoming` and `Outgoing`
-- `Past Matches` when enough accepted matches exist
+- `Earlier Connections` when enough active connections exist
 
-### Recent Matches
+### Active Connections
 
-Recent matches show:
+Active connection cards show:
 
 - participant avatar
 - display name and username
 - role, rank, and region
 - source post title if available
 - optional invite message
-- accepted timestamp
+- connected timestamp
 - unlocked contact details when present
+- `Unmatch`
 
 ### Incoming Invites
 
-Incoming pending invites on `/matches` can be:
+Incoming pending invites on `/connections` can be:
 
 - accepted
 - declined
 
 ### Outgoing Invites
 
-Outgoing pending invites on `/matches` can be:
+Outgoing pending invites on `/connections` can be:
 
 - cancelled
 
@@ -164,7 +179,7 @@ Private contact details are intentionally gated.
 
 Current rule:
 
-- Discord and Battle.net info are only shown on accepted matches
+- Discord and Battle.net info are only shown on active connections
 
 They should not be exposed on:
 
@@ -190,6 +205,8 @@ This keeps the bell and `/matches` updated when invites are:
 - declined
 - cancelled
 - expired
+- accepted into connections
+- removed from connections
 
 ## Security Model
 
@@ -208,12 +225,14 @@ Important rules:
 Primary storage:
 
 - `play_invites`
+- `profile_connections`
 
 Important supporting helpers and surfaces:
 
 - `lib/matches/play-invites.ts`
 - `app/matches/actions.ts`
 - `app/matches/page.tsx`
+- `app/connections/page.tsx`
 - `app/components/global-notifications-menu-client.tsx`
 - `app/u/[username]/profile/invite-to-play-button.tsx`
 - `app/lfg/components/lfg-invite-button.tsx`
@@ -232,10 +251,10 @@ that build profile and LFG invite state from live data.
 
 ## Practical Rules For Future Changes
 
-- Treat `play_invites` as the source of truth unless there is a strong reason to
-  introduce a dedicated matches table.
-- Keep contact unlock logic tied to `accepted` state only.
+- Treat `play_invites` as invite history and `profile_connections` as the
+  current active relationship source of truth.
+- Keep contact unlock logic tied to active connected state only.
 - Keep invite state derivation centralized so profiles, LFG cards, the bell,
-  and `/matches` do not drift.
+  and `/connections` do not drift.
 - If product adds rematch or replay flows later, do not overload the current
-  `matched` UI state without defining the new lifecycle clearly.
+  `connected` UI state without defining the new lifecycle clearly.
