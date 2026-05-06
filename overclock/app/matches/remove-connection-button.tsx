@@ -42,18 +42,18 @@ export function RemoveConnectionButton({
   }
 
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="flex shrink-0 flex-col items-end gap-1.5">
       <button
         type="button"
         disabled={isPending}
         aria-disabled={isPending}
         onClick={handleRemoveConnection}
-        className="inline-flex h-8 items-center rounded-full border border-rose-400/20 bg-rose-500/10 px-3 text-[11px] font-semibold text-rose-100 transition hover:bg-rose-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+        className="text-[11px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Removing..." : "Unmatch"}
+        {isPending ? "Removing..." : "Remove"}
       </button>
       {feedback ? (
-        <p className="max-w-[180px] text-right text-[11px] text-rose-200">
+        <p className="max-w-[160px] text-right text-[11px] text-rose-300">
           {feedback}
         </p>
       ) : null}

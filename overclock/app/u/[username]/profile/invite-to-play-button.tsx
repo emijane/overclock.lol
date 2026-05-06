@@ -113,7 +113,7 @@ export function InviteToPlayButton({
           onClick={handleUnmatch}
           className="inline-flex h-8 items-center rounded-full border border-rose-400/20 bg-rose-500/10 px-3 text-xs font-medium text-rose-200 transition-all duration-200 hover:bg-rose-500/15 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending ? "Removing..." : "Unmatch"}
+          {isPending ? "Removing..." : "Remove connection"}
         </button>
         {feedback ? <p className="max-w-[220px] text-xs text-rose-300">{feedback}</p> : null}
       </div>

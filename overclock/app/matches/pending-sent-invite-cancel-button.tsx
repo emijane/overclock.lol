@@ -42,17 +42,17 @@ export function PendingSentInviteCancelButton({
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex shrink-0 flex-col items-end gap-1.5">
       <button
         type="button"
         disabled={isPending}
         aria-disabled={isPending}
         onClick={handleCancel}
-        className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/[0.025] px-3 text-xs font-semibold text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.045] hover:text-zinc-50 disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.02] disabled:text-zinc-500"
+        className="text-[11px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Cancelling..." : "Cancel invite"}
+        {isPending ? "Cancelling..." : "Cancel"}
       </button>
-      {feedback ? <p className="text-xs text-rose-300">{feedback}</p> : null}
+      {feedback ? <p className="max-w-[160px] text-right text-[11px] text-rose-300">{feedback}</p> : null}
     </div>
   );
 }
