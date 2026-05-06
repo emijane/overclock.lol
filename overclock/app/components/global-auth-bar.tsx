@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BellIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
+import { GlobalNotificationsMenu } from "@/app/components/global-notifications-menu";
 import { UserMenu } from "@/app/components/user-menu";
 
 type GlobalAuthBarProps = {
@@ -66,13 +66,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
             ))}
           </nav>
 
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            <BellIcon className="h-4.5 w-4.5" />
-          </button>
+          <GlobalNotificationsMenu />
 
           <UserMenu
             avatarFallback={avatarFallback}
