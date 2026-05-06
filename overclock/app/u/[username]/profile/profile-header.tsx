@@ -5,9 +5,7 @@ import { Clock3Icon, Globe2Icon } from "lucide-react";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
-import { ProfilePresenceBadges } from "./profile-presence-badges";
 import { ProfileSocialLinks } from "./profile-social-links";
-import { LookingToPlayBadge } from "@/app/components/looking-to-play-badge";
 import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
 
@@ -40,17 +38,6 @@ type ProfileHeaderProps = {
   profileAction?: React.ReactNode;
 };
 
-const rankBadgeClassNameByTier: Record<string, string> = {
-  Bronze: "border-[#D08050]/30 bg-[#A05030]/15",
-  Silver: "border-[#D0E0E8]/25 bg-[#A0B0C0]/12",
-  Gold: "border-[#F0E080]/30 bg-[#D0A030]/15",
-  Platinum: "border-[#D0FFFF]/30 bg-[#A0C0D0]/14",
-  Diamond: "border-[#80B0F0]/30 bg-[#4060A0]/18",
-  Master: "border-[#C0E0D0]/30 bg-[#306040]/18",
-  Grandmaster: "border-[#F0E0FF]/30 bg-[#403070]/20",
-  Champion: "border-[#F0ABFC]/35 bg-[#A855F7]/18",
-  "Top 500": "border-[#F0E090]/35 bg-[#E0B040]/16",
-};
 
 export function ProfileHeader({
   avatarUrl,
@@ -74,10 +61,6 @@ export function ProfileHeader({
   onEditProfile,
   profileAction,
 }: ProfileHeaderProps) {
-  const rankBadgeClassName =
-    rankBadgeClassNameByTier[currentRankTier ?? ""] ??
-    "border-white/10 bg-white/[0.02]";
-
   return (
     <section className="bg-[#05070b]">
       <div className="pb-6 sm:pb-7">
@@ -166,26 +149,34 @@ export function ProfileHeader({
               <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <LookingToPlayBadge
-                  className={`${rankBadgeClassName} text-zinc-100`}
-                  tone="neutral"
-                >
-                  {connectionCount} {connectionCount === 1 ? "Connection" : "Connections"}
-                </LookingToPlayBadge>
-                {platform ? (
-                  <LookingToPlayBadge
-                    className={`${rankBadgeClassName} text-zinc-100`}
-                    tone="neutral"
-                  >
-                    {platform}
-                  </LookingToPlayBadge>
-                ) : null}
-                <ProfilePresenceBadges
-                  badgeClassName={`${rankBadgeClassName} text-zinc-100`}
-                  isLookingToPlay={isLookingToPlay}
-                />
+
+              <div className="mt-3">
+                <span className="text-sm font-semibold text-zinc-100">
+                  {connectionCount}
+                </span>
+                <span className="ml-1 text-sm text-zinc-500">
+                  {connectionCount === 1 ? "Connection" : "Connections"}
+                </span>
               </div>
+
+              {(platform || isLookingToPlay) ? (
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  {platform ? (
+                    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-zinc-300">
+                      {platform}
+                    </span>
+                  ) : null}
+                  {isLookingToPlay ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/20 bg-sky-400/10 px-2.5 py-1 text-xs font-medium text-sky-300">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sky-400" />
+                      </span>
+                      Looking to play
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
 
             <div className="sm:min-w-[220px]">
