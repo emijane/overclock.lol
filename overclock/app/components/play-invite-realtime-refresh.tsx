@@ -20,7 +20,13 @@ export function PlayInviteRealtimeRefresh({
     }
 
     const supabase = createClient();
-    const channel = supabase.channel(`play-invites:${currentProfileId}`);
+    const channelInstanceId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const channel = supabase.channel(
+      `play-invites:${currentProfileId}:${channelInstanceId}`
+    );
     let refreshTimeoutId: number | null = null;
 
     function scheduleRefresh() {
