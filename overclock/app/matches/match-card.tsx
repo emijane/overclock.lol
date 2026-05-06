@@ -32,10 +32,10 @@ export function MatchCard({ match, acceptedAtLabel }: MatchCardProps) {
     Boolean(match.participant.battlenetHandle);
 
   return (
-    <article className="rounded-[20px] bg-white/[0.02] p-4 sm:p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
-          <Avatar className="h-12 w-12 border border-white/10">
+    <article className="rounded-[18px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.018))] px-4 py-3.5 shadow-[0_16px_36px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-4.5 sm:py-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <Avatar className="h-11 w-11 shrink-0 border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.18)]">
             {match.participant.avatarUrl ? (
               <AvatarImage
                 src={match.participant.avatarUrl}
@@ -50,67 +50,85 @@ export function MatchCard({ match, acceptedAtLabel }: MatchCardProps) {
             </AvatarFallback>
           </Avatar>
 
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold tracking-[-0.02em] text-zinc-50">
+              <h3 className="truncate text-[15px] font-semibold tracking-[-0.025em] text-zinc-50">
                 {match.participant.displayName ?? "Unknown player"}
               </h3>
               {participantHref ? (
                 <Link
                   href={participantHref}
-                  className="text-sm text-zinc-400 transition hover:text-zinc-100"
+                  className="truncate text-xs text-zinc-500 transition hover:text-zinc-200"
                 >
                   @{match.participant.username}
                 </Link>
               ) : null}
             </div>
-            <div className="mt-1 flex flex-wrap gap-2 text-xs font-medium text-zinc-400">
-              {roleLabel ? <span>{roleLabel}</span> : null}
-              <span>{match.participant.rankLabel}</span>
-              {match.participant.region ? <span>{match.participant.region}</span> : null}
+            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] font-medium">
+              {roleLabel ? (
+                <span className="rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 text-zinc-300">
+                  {roleLabel}
+                </span>
+              ) : null}
+              <span className="rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 text-zinc-300">
+                {match.participant.rankLabel}
+              </span>
+              {match.participant.region ? (
+                <span className="rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 text-zinc-400">
+                  {match.participant.region}
+                </span>
+              ) : null}
             </div>
             {match.sourcePostTitle ? (
-              <p className="mt-2 text-sm text-zinc-400">
+              <p className="mt-2 text-xs text-zinc-500">
                 From post: <span className="text-zinc-200">{match.sourcePostTitle}</span>
               </p>
             ) : null}
             {match.message ? (
-              <p className="mt-2 text-sm leading-6 text-zinc-400">{match.message}</p>
+              <p className="mt-2 text-sm leading-5 text-zinc-400">
+                {match.message}
+              </p>
             ) : null}
           </div>
         </div>
 
-        <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+        <div className="shrink-0 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-200">
           Matched
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 sm:grid-cols-2">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Accepted
-          </p>
-          <p className="mt-1 text-sm text-zinc-300">{acceptedAtLabel}</p>
-        </div>
+      <div className="mt-3 border-t border-white/8 pt-3">
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
+              Accepted
+            </span>
+            <span className="truncate text-sm text-zinc-300">{acceptedAtLabel}</span>
+          </div>
 
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Contact unlock
-          </p>
-          {hasContacts ? (
-            <div className="mt-1 space-y-1 text-sm text-zinc-300">
-              {match.participant.discordUsername ? (
-                <p>Discord: @{match.participant.discordUsername}</p>
-              ) : null}
-              {match.participant.battlenetHandle ? (
-                <p>Battle.net: {match.participant.battlenetHandle}</p>
-              ) : null}
-            </div>
-          ) : (
-            <p className="mt-1 text-sm text-zinc-500">
-              This player has not added Discord or Battle.net to their profile.
-            </p>
-          )}
+          <div className="flex min-w-0 items-start gap-2 sm:items-center">
+            <span className="pt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600 sm:pt-0">
+              Contact
+            </span>
+            {hasContacts ? (
+              <div className="flex flex-wrap gap-1.5 text-[11px] text-zinc-300">
+                {match.participant.discordUsername ? (
+                  <span className="rounded-full border border-white/8 bg-black/20 px-2 py-1">
+                    Discord: @{match.participant.discordUsername}
+                  </span>
+                ) : null}
+                {match.participant.battlenetHandle ? (
+                  <span className="rounded-full border border-white/8 bg-black/20 px-2 py-1">
+                    Battle.net: {match.participant.battlenetHandle}
+                  </span>
+                ) : null}
+              </div>
+            ) : (
+              <span className="text-sm text-zinc-500">
+                No Discord or Battle.net added.
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </article>
