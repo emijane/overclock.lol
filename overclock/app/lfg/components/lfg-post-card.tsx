@@ -41,6 +41,7 @@ type LFGPostCardProps = {
   currentProfileId?: string | null;
   post: LFGPost;
   inviteState?: ProfileInviteState;
+  onInviteSent?: (profileId: string) => void;
   returnPath?: string;
   sectionLabel?: string | null;
   showActions?: boolean;
@@ -56,6 +57,7 @@ export function LFGPostCard({
   currentProfileId,
   post,
   inviteState = "invite_to_play",
+  onInviteSent,
   returnPath,
   sectionLabel,
   showActions = true,
@@ -282,6 +284,7 @@ export function LFGPostCard({
               {!isOwner && post.profileId ? (
                 <LFGInviteButton
                   initialState={inviteState}
+                  onInviteSent={onInviteSent}
                   recipientProfileId={post.profileId}
                   sourceLFGPostId={post.id}
                   viewerState={viewerState}

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 import type {
@@ -72,6 +75,12 @@ export function LFGPostList({
   tone = "default",
   viewerState = "guest",
 }: LFGPostListProps) {
+  const [invitedProfileIds, setInvitedProfileIds] = useState<Set<string>>(new Set());
+
+  function handleInviteSent(profileId: string) {
+    setInvitedProfileIds((prev) => new Set([...prev, profileId]));
+  }
+
   if (errorMessage) {
     return (
       <section className="px-5 py-2 sm:px-6 sm:py-3">
@@ -112,12 +121,19 @@ export function LFGPostList({
         }
       >
         {posts.map((post) => {
+          const serverState = inviteStates?.[post.id] ?? "invite_to_play";
+          const effectiveState =
+            post.profileId && invitedProfileIds.has(post.profileId)
+              ? "invite_sent"
+              : serverState;
+
           return (
             <div key={post.id}>
               <LFGPostCard
                 cardClassName={cardClassName}
                 currentProfileId={currentProfileId}
-                inviteState={inviteStates?.[post.id] ?? "invite_to_play"}
+                inviteState={effectiveState}
+                onInviteSent={handleInviteSent}
                 post={post}
                 returnPath={`/${post.lfgType}`}
                 tone={tone}
