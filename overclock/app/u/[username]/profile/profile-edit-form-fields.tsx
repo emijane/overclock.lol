@@ -59,17 +59,15 @@ function DropdownField({
   value: string;
 }) {
   return (
-    <label className="grid gap-1.5">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
-        {label}
-      </span>
+    <div>
       <input type="hidden" name={inputName} value={value} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
             disabled={disabled}
-            className={`inline-flex h-11 w-full items-center justify-between rounded-2xl border px-3.5 text-left text-sm outline-none transition ${
+            aria-label={label}
+            className={`inline-flex h-9 w-full items-center justify-between rounded-xl border px-3 text-left text-sm outline-none transition ${
               disabled
                 ? "cursor-not-allowed border-white/6 bg-white/2 text-zinc-600 opacity-60"
                 : "border-white/10 bg-white/4 text-zinc-100 hover:border-white/20"
@@ -78,7 +76,7 @@ function DropdownField({
             <span className={value ? "text-zinc-100" : "text-zinc-500"}>
               {value || placeholder}
             </span>
-            <ChevronDownIcon className="h-4 w-4 shrink-0 text-zinc-600" />
+            <ChevronDownIcon className="h-3.5 w-3.5 shrink-0 text-zinc-600" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -103,21 +101,21 @@ function DropdownField({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-    </label>
+    </div>
   );
 }
 
 const socialInput =
-  "h-11 w-full rounded-2xl border border-white/10 bg-white/4 pl-10 pr-3.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20";
+  "h-9 w-full rounded-xl border border-white/10 bg-white/4 pl-9 pr-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20";
 
 export function ProfileEditFormFields({
   form,
   profile,
 }: ProfileEditFormFieldsProps) {
   return (
-    <div>
+    <div className="grid gap-3">
       {/* Identity */}
-      <div className="grid gap-2.5 pb-6">
+      <div className="grid gap-2">
         <input
           name="display_name"
           type="text"
@@ -125,42 +123,42 @@ export function ProfileEditFormFields({
           onChange={(e) => form.setDisplayName(e.target.value)}
           placeholder="Display name"
           aria-label="Display name"
-          className="h-11 w-full rounded-2xl border border-white/10 bg-white/4 px-3.5 text-[15px] text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
+          className="h-9 w-full rounded-xl border border-white/10 bg-white/4 px-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
         />
-        <div>
+        <div className="relative">
           <textarea
             name="bio"
-            rows={3}
+            rows={2}
             value={form.bio}
             onChange={(e) => form.setBio(e.target.value)}
             maxLength={PROFILE_BIO_MAX_CHARACTERS}
             placeholder="Bio"
             aria-label="Bio"
-            className="w-full resize-none rounded-2xl border border-white/10 bg-white/4 px-3.5 py-2.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
+            className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 py-2 pb-5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
           />
-          <p className="mt-1 text-right text-xs text-zinc-600">
+          <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-zinc-600">
             {form.bio.length}/{PROFILE_BIO_MAX_CHARACTERS}
-          </p>
+          </span>
         </div>
       </div>
 
-      {/* Socials */}
-      <div className="grid gap-2.5 border-t border-white/6 py-6">
+      {/* Socials — 2-col grid */}
+      <div className="grid grid-cols-2 gap-2">
         {profile.discordUsername ? (
-          <div className="flex h-11 items-center gap-3 rounded-2xl border border-white/6 bg-white/2 px-3.5">
-            <FaDiscord className="h-4 w-4 shrink-0 text-[#5865F2]" />
+          <div className="col-span-2 flex h-9 items-center gap-2.5 rounded-xl border border-white/6 bg-white/2 px-3">
+            <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
             <span className="text-sm text-zinc-400">{profile.discordUsername}</span>
           </div>
         ) : null}
 
         <div className="relative">
-          <SiBattledotnet className="pointer-events-none absolute left-3.5 top-1/2 h-3.75 w-3.75 -translate-y-1/2 text-[#00AEF0]" />
+          <SiBattledotnet className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#00AEF0]" />
           <input
             name="battlenet_handle"
             type="text"
             value={form.battleNetHandle}
             onChange={(e) => form.setBattleNetHandle(e.target.value)}
-            placeholder="Battle.net tag"
+            placeholder="Battle.net"
             aria-label="Battle.net tag"
             maxLength={40}
             className={socialInput}
@@ -168,12 +166,12 @@ export function ProfileEditFormFields({
         </div>
 
         <div className="relative">
-          <FaTwitch className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9146FF]" />
+          <FaTwitch className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9146FF]" />
           <input
             type="text"
             value={form.twitchHandle}
             onChange={(e) => form.setTwitchHandle(e.target.value)}
-            placeholder="Twitch username"
+            placeholder="Twitch"
             aria-label="Twitch username"
             maxLength={100}
             className={socialInput}
@@ -181,12 +179,12 @@ export function ProfileEditFormFields({
         </div>
 
         <div className="relative">
-          <FaXTwitter className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <FaXTwitter className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={form.xHandle}
             onChange={(e) => form.setXHandle(e.target.value)}
-            placeholder="X username"
+            placeholder="X"
             aria-label="X username"
             maxLength={60}
             className={socialInput}
@@ -194,12 +192,12 @@ export function ProfileEditFormFields({
         </div>
 
         <div className="relative">
-          <FaYoutube className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#FF0033]" />
+          <FaYoutube className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#FF0033]" />
           <input
             type="text"
             value={form.youtubeHandle}
             onChange={(e) => form.setYoutubeHandle(e.target.value)}
-            placeholder="YouTube channel"
+            placeholder="YouTube"
             aria-label="YouTube channel"
             maxLength={100}
             className={socialInput}
@@ -208,12 +206,12 @@ export function ProfileEditFormFields({
       </div>
 
       {/* Region & Server */}
-      <div className="grid gap-3 border-t border-white/6 pt-6 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-2">
         <DropdownField
           inputName="region"
           label="Region"
           value={form.selectedRegion}
-          placeholder="Select region"
+          placeholder="Region"
           options={REGION_OPTIONS}
           onSelect={form.handleRegionSelect}
         />
@@ -222,7 +220,7 @@ export function ProfileEditFormFields({
           inputName="timezone"
           label="Server"
           value={form.selectedTimezone}
-          placeholder={form.selectedRegion ? "Select server" : "Pick region first"}
+          placeholder={form.selectedRegion ? "Server" : "Region first"}
           options={form.timezoneOptions}
           onSelect={form.setSelectedTimezone}
         />

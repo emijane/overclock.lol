@@ -13,7 +13,7 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
   const form = useProfileEditForm(profile);
 
   return (
-    <form action={updateProfile}>
+    <form action={updateProfile} className="px-4 py-4 sm:px-5">
       <input type="hidden" name="return_to" value="/account" />
       {profile.lookingFor.map((option) => (
         <input key={option} type="hidden" name="looking_for" value={option} />
@@ -24,10 +24,10 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
 
       <ProfileEditFormFields form={form} profile={profile} />
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-3 flex justify-end">
         <button
           type="submit"
-          className="inline-flex h-9 items-center rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+          className="inline-flex h-8 items-center rounded-full bg-sky-500 px-4 text-sm font-semibold text-white transition hover:bg-sky-400"
         >
           Save
         </button>
