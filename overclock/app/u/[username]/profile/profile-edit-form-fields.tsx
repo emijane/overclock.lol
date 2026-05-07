@@ -116,25 +116,31 @@ export function ProfileEditFormFields({
     <div className="grid gap-3">
       {/* Identity */}
       <div className="grid gap-2">
-        <input
-          name="display_name"
-          type="text"
-          value={form.displayName}
-          onChange={(e) => form.setDisplayName(e.target.value)}
-          placeholder="Display name"
-          aria-label="Display name"
-          className="h-9 w-full rounded-xl border border-white/10 bg-white/4 px-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
-        />
         <div className="relative">
+          <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+            Name
+          </span>
+          <input
+            name="display_name"
+            type="text"
+            value={form.displayName}
+            onChange={(e) => form.setDisplayName(e.target.value)}
+            aria-label="Display name"
+            className="h-14 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+          />
+        </div>
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+            Bio
+          </span>
           <textarea
             name="bio"
-            rows={2}
+            rows={3}
             value={form.bio}
             onChange={(e) => form.setBio(e.target.value)}
             maxLength={PROFILE_BIO_MAX_CHARACTERS}
-            placeholder="Bio"
             aria-label="Bio"
-            className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 py-2 pb-5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20"
+            className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
           />
           <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-zinc-600">
             {form.bio.length}/{PROFILE_BIO_MAX_CHARACTERS}
@@ -143,15 +149,18 @@ export function ProfileEditFormFields({
       </div>
 
       {/* Socials — 2-col grid */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid gap-2">
         {profile.discordUsername ? (
-          <div className="col-span-2 flex h-9 items-center gap-2.5 rounded-xl border border-white/6 bg-white/2 px-3">
-            <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
-            <span className="text-sm text-zinc-400">{profile.discordUsername}</span>
+          <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2">
+            <p className="text-[11px] font-medium text-zinc-500">Currently logged in as</p>
+            <div className="mt-1.5 flex items-center gap-2">
+              <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
+              <span className="text-sm text-zinc-300">{profile.discordUsername}</span>
+            </div>
           </div>
         ) : null}
-
-        <div className="relative">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="relative">
           <SiBattledotnet className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#00AEF0]" />
           <input
             name="battlenet_handle"
@@ -202,6 +211,7 @@ export function ProfileEditFormFields({
             maxLength={100}
             className={socialInput}
           />
+        </div>
         </div>
       </div>
 

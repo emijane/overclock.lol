@@ -6,14 +6,17 @@ import { useProfileEditForm } from "@/app/u/[username]/profile/use-profile-edit-
 import type { ProfileEditProfile } from "@/app/u/[username]/profile/profile-edit-types";
 
 type ProfileEditFormProps = {
+  avatarUrl: string | null;
+  coverImageUrl: string | null;
   profile: ProfileEditProfile;
 };
 
-export function ProfileEditForm({ profile }: ProfileEditFormProps) {
+export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEditFormProps) {
   const form = useProfileEditForm(profile);
+  const initial = profile.displayName.slice(0, 1).toUpperCase();
 
   return (
-    <form action={updateProfile} className="px-4 py-4 sm:px-5">
+    <form action={updateProfile}>
       <input type="hidden" name="return_to" value="/account" />
       {profile.lookingFor.map((option) => (
         <input key={option} type="hidden" name="looking_for" value={option} />
@@ -22,15 +25,45 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
       <input type="hidden" name="x_url" value={form.xUrl} />
       <input type="hidden" name="youtube_url" value={form.youtubeUrl} />
 
-      <ProfileEditFormFields form={form} profile={profile} />
+      {/* Cover + avatar preview */}
+      <div className="relative mb-10">
+        <div className="h-24 overflow-hidden rounded-t-[21px]">
+          {coverImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={coverImageUrl}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full bg-linear-to-b from-[#0f1117] to-[#05070b]" />
+          )}
+        </div>
+        <div className="absolute -bottom-8 left-4 sm:left-5">
+          <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-[#05070b] bg-zinc-800">
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-base font-semibold text-zinc-100">
+                {initial}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-      <div className="mt-3 flex justify-end">
-        <button
-          type="submit"
-          className="inline-flex h-8 items-center rounded-full bg-sky-500 px-4 text-sm font-semibold text-white transition hover:bg-sky-400"
-        >
-          Save
-        </button>
+      {/* Fields */}
+      <div className="px-4 pb-4 sm:px-5">
+        <ProfileEditFormFields form={form} profile={profile} />
+        <div className="mt-3 flex justify-end">
+          <button
+            type="submit"
+            className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </form>
   );
