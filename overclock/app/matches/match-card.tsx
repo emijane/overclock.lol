@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FaDiscord } from "react-icons/fa";
+import { SiBattledotnet } from "react-icons/si";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RemoveConnectionButton } from "@/app/matches/remove-connection-button";
@@ -62,10 +64,16 @@ export function MatchCard({ connection }: MatchCardProps) {
         {hasContacts ? (
           <div className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-zinc-500">
             {connection.participant.discordUsername ? (
-              <span>@{connection.participant.discordUsername}</span>
+              <span className="flex items-center gap-1">
+                <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
+                {connection.participant.discordUsername}
+              </span>
             ) : null}
             {connection.participant.battlenetHandle ? (
-              <span>{connection.participant.battlenetHandle}</span>
+              <span className="flex items-center gap-1">
+                <SiBattledotnet className="h-3.5 w-3.5 shrink-0 text-[#148EFF]" />
+                {connection.participant.battlenetHandle}
+              </span>
             ) : null}
           </div>
         ) : null}
