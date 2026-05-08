@@ -1,14 +1,8 @@
 import { redirect } from "next/navigation";
-import Image from "next/image";
 
 import { PageContainer } from "@/app/components/page-container";
 import { PageReveal } from "@/app/components/page-reveal";
-import {
-  AuthMessage,
-  AuthenticatedPanel,
-  UnauthenticatedPanel,
-} from "@/app/login/components";
-import { createClient } from "@/lib/supabase/server";
+import { AuthMessage, UnauthenticatedPanel } from "@/app/login/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 type LoginPageProps = {
@@ -28,15 +22,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const messageType = pickValue(params.type);
 
   const { user, profile } = await getCurrentProfile();
-
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const claims = data?.claims;
-  const isAuthenticated = Boolean(claims?.sub);
   const needsOnboarding = Boolean(user && !profile);
 
   if (needsOnboarding) {
     redirect("/onboarding");
+  }
+
+  if (user && profile?.username) {
+    redirect(`/u/${profile.username}`);
   }
 
   return (
@@ -62,15 +55,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <PageReveal delay={1}>
               <div className="relative z-10 grid gap-3">
                 <AuthMessage message={message} type={messageType} />
-                {isAuthenticated ? (
-                  <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-                    <AuthenticatedPanel
-                      email={user?.email ?? claims?.email?.toString()}
-                    />
-                  </div>
-                ) : (
-                  <UnauthenticatedPanel />
-                )}
+                <UnauthenticatedPanel />
               </div>
             </PageReveal>
           </div>
