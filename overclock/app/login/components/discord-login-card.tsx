@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
@@ -72,8 +73,25 @@ export function DiscordLoginCard() {
           {isLoading ? "Redirecting..." : "Continue with Discord"}
         </button>
 
-        <p className="text-xs leading-5 text-zinc-500">
+        <p className="text-center text-xs leading-5 text-zinc-500">
           Discord is currently the only sign-in method.
+        </p>
+        <p className="-mt-1 text-center text-xs leading-5 text-zinc-500">
+          By continuing, you agree to the{" "}
+          <Link
+            href="/terms"
+            className="text-zinc-300 transition hover:text-zinc-100"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/privacy"
+            className="text-zinc-300 transition hover:text-zinc-100"
+          >
+            Privacy Policy
+          </Link>
+          .
         </p>
       </div>
     </div>
