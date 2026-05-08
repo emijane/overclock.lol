@@ -7,22 +7,22 @@ const footerGroups = [
     {
         title: "Product",
         links: [
-            { href: "/duos", label: "Placeholder Link" },
-            { href: "/stacks", label: "Placeholder Link" },
+            { href: "/duos", label: "Duos" },
+            { href: "/stacks", label: "Stacks" },
         ],
     },
     {
         title: "Community",
         links: [
-            { href: "/duos", label: "Placeholder Link" },
-            { href: "/stacks", label: "Placeholder Link" },
+            { href: "/connections", label: "Connections" },
+            { href: "/login", label: "Sign in" },
         ],
     },
     {
-        title: "Resources",
+        title: "Legal",
         links: [
-            { href: "/account", label: "Placeholder Link" },
-            { href: "/lfg", label: "Placeholder Link" },
+            { href: "/terms", label: "Terms of Service" },
+            { href: "/privacy", label: "Privacy Policy" },
         ],
     },
 ] as const;

@@ -1,6 +1,6 @@
 # Terms of Service
 
-Last updated: `[DATE]`
+Last updated: `May 8, 2026`
 
 ## 1. Overview
 These Terms of Service ("Terms") govern your access to and use of Overclock.lol ("Overclock," "we," "us," or "our"), an Overwatch-focused LFG and social platform.
@@ -89,7 +89,7 @@ You represent that:
 - We do not guarantee recovery of deleted or replaced media.
 
 ## 10. Copyright Complaints
-If you believe content on Overclock infringes your copyright, you can send a notice to `[CONTACT EMAIL OR SUPPORT URL]` with:
+If you believe content on Overclock infringes your copyright, you can send a notice through the contact method made available on Overclock.lol with:
 - your name and contact information
 - identification of the copyrighted work
 - identification of the allegedly infringing material and where it appears
@@ -180,9 +180,9 @@ You agree to defend, indemnify, and hold harmless Overclock and its owners, oper
 - We may also preserve or disclose information where reasonably necessary to investigate threats, exploitation, predatory behavior, harassment, fraud, abuse, or safety concerns.
 
 ## 22. Governing Law
-These Terms are governed by the laws of `[GOVERNING LAW STATE/COUNTRY]`, without regard to conflict of laws principles.
+These Terms are governed by the laws of the State of Florida, without regard to conflict of laws principles.
 
-Any dispute arising out of or relating to these Terms or Overclock will be resolved in the courts located in `[VENUE]`, unless applicable law requires otherwise.
+Any dispute arising out of or relating to these Terms or Overclock will be resolved in the applicable courts located in the State of Florida, unless applicable law requires otherwise.
 
 ## 23. Changes to These Terms
 - We may update these Terms from time to time.
@@ -190,6 +190,4 @@ Any dispute arising out of or relating to these Terms or Overclock will be resol
 - Your continued use of Overclock after updated Terms take effect means you accept the revised Terms.
 
 ## 24. Contact
-Questions about these Terms can be sent to:
-
-`[CONTACT EMAIL OR SUPPORT URL]`
+Questions about these Terms can be sent through the contact method made available on Overclock.lol.

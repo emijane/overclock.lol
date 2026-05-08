@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: `[DATE]`
+Last updated: `May 8, 2026`
 
 ## 1. Overview
 This Privacy Policy explains how Overclock.lol ("Overclock," "we," "us," or "our") collects, uses, stores, and shares information when you use our platform.
@@ -153,6 +153,4 @@ Keep in mind:
 - Your continued use of Overclock after an update means you accept the revised Privacy Policy.
 
 ## 18. Contact
-Questions about this Privacy Policy can be sent to:
-
-`[CONTACT EMAIL OR SUPPORT URL]`
+Questions about this Privacy Policy can be sent through the contact method made available on Overclock.lol.
