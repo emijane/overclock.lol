@@ -134,20 +134,6 @@ export default async function ProfilePage({
         profile.cover_image_updated_at
     );
     const socialLinks = [
-        profile.discord_username
-            ? {
-                  label: "Discord",
-                  platform: "discord" as const,
-                  value: `@${profile.discord_username}`,
-              }
-            : null,
-        profile.battlenet_handle
-            ? {
-                  label: "Battle.net",
-                  platform: "battlenet" as const,
-                  value: profile.battlenet_handle,
-              }
-            : null,
         profile.twitch_url
             ? {
                   label: "Twitch",
