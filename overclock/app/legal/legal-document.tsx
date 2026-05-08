@@ -12,6 +12,7 @@ type LegalDocumentProps = {
 type MarkdownNode =
   | { type: "heading1"; text: string }
   | { type: "heading2"; text: string }
+  | { type: "heading3"; text: string }
   | { type: "list"; items: string[] }
   | { type: "paragraph"; text: string };
 
@@ -84,6 +85,13 @@ function parseMarkdown(markdown: string): MarkdownNode[] {
       flushParagraph();
       flushList();
       nodes.push({ type: "heading2", text: line.slice(3).trim() });
+      continue;
+    }
+
+    if (line.startsWith("### ")) {
+      flushParagraph();
+      flushList();
+      nodes.push({ type: "heading3", text: line.slice(4).trim() });
       continue;
     }
 
@@ -169,6 +177,17 @@ export async function LegalDocument({
                         >
                           {node.text}
                         </h3>
+                      );
+                    }
+
+                    if (node.type === "heading3") {
+                      return (
+                        <h4
+                          key={`${node.type}-${index}`}
+                          className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-300"
+                        >
+                          {node.text}
+                        </h4>
                       );
                     }
 
