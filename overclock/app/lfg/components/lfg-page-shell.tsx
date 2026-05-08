@@ -322,6 +322,7 @@ export async function LFGPageShell({
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
+  const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
   const isDuosPage = type === "duos";
   const inviteStates =
@@ -393,13 +394,13 @@ export async function LFGPageShell({
                   </div>
                   {type && composerMode === "cta" ? (
                     <Link
-                      href={resolvedCreatePostHref}
+                      href={user ? resolvedCreatePostHref : guestCreateHref}
                       className={`inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:bg-[#080b10] hover:text-white ${
                         isDuosPage ? "border-white/[0.14] hover:border-white/[0.2]" : "border-white/[0.08] hover:border-white/[0.12]"
                       }`}
                     >
                       <PlusIcon className="h-4 w-4" />
-                      Create Post
+                      {user ? "Create Post" : "Log in to Post"}
                     </Link>
                   ) : shouldShowComposer && user && profile && missingProfileRequirements.length === 0 && hasConfiguredRole ? (
                     <div className="flex items-center gap-2 self-start">

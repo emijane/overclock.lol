@@ -16,9 +16,16 @@ type GlobalAuthBarProps = {
 
 // Shared top-right auth controls for any page in the app shell.
 export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
-  if (!userId) {
-    return null;
-  }
+  const signedInDiscoveryLinks = [
+    { href: "/duos", label: "Duos" },
+    { href: "/connections", label: "Connections" },
+    { href: "/stacks", label: "Stacks" },
+  ] as const;
+  const guestDiscoveryLinks = [
+    { href: "/duos", label: "Duos" },
+    { href: "/stacks", label: "Stacks" },
+    { href: "/login", label: "Sign in" },
+  ] as const;
 
   const avatarUrl = profile?.avatar_url ?? null;
   const visibleName = profile?.username ?? "Account";
@@ -26,11 +33,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
     .slice(0, 1)
     .toUpperCase();
   const profileHref = profile?.username ? `/u/${profile.username}` : "/onboarding";
-  const discoveryLinks = [
-    { href: "/duos", label: "Duos" },
-    { href: "/connections", label: "Connections" },
-    { href: "/stacks", label: "Stacks" },
-  ] as const;
+  const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
     <header className="border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
@@ -66,14 +69,18 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
             ))}
           </nav>
 
-          <GlobalNotificationsMenu currentProfileId={userId} />
+          {userId ? (
+            <>
+              <GlobalNotificationsMenu currentProfileId={userId} />
 
-          <UserMenu
-            avatarFallback={avatarFallback}
-            avatarUrl={avatarUrl}
-            profileHref={profileHref}
-            visibleName={visibleName}
-          />
+              <UserMenu
+                avatarFallback={avatarFallback}
+                avatarUrl={avatarUrl}
+                profileHref={profileHref}
+                visibleName={visibleName}
+              />
+            </>
+          ) : null}
         </div>
       </PageContainer>
     </header>
