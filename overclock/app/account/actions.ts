@@ -178,7 +178,7 @@ export async function uploadProfileAvatar(
     };
   }
 
-  const { error: mediaInsertError } = await supabase.from("profile_media").upsert(
+  await supabase.from("profile_media").upsert(
     {
       profile_id: user.id,
       storage_path: avatarPath,
@@ -187,13 +187,6 @@ export async function uploadProfileAvatar(
     },
     { onConflict: "profile_id,media_type,storage_path" }
   );
-
-  if (mediaInsertError) {
-    return {
-      status: "error",
-      message: "Avatar uploaded but media record failed. Try again.",
-    };
-  }
 
   await recordMediaUpload(supabase, user.id, "avatar");
 
@@ -303,7 +296,7 @@ export async function uploadProfileCover(
     };
   }
 
-  const { error: mediaInsertError } = await supabase.from("profile_media").upsert(
+  await supabase.from("profile_media").upsert(
     {
       profile_id: user.id,
       storage_path: coverImagePath,
@@ -312,13 +305,6 @@ export async function uploadProfileCover(
     },
     { onConflict: "profile_id,media_type,storage_path" }
   );
-
-  if (mediaInsertError) {
-    return {
-      status: "error",
-      message: "Cover uploaded but media record failed. Try again.",
-    };
-  }
 
   await recordMediaUpload(supabase, user.id, "cover");
 
