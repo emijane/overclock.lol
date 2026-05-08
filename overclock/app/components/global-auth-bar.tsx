@@ -46,7 +46,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
           className="flex items-center gap-3 text-xl font-bold tracking-tight text-white"
         >
           <Image
-            src="/branding/kitty-white-cross-white-border.png"
+            src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
             alt="Overclock logo"
             width={32}
             height={32}

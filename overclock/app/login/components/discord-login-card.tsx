@@ -36,7 +36,7 @@ export function DiscordLoginCard() {
         <div className="min-w-0 text-center">
           <div className="mb-3 flex justify-center">
             <Image
-              src="/branding/kitty-white-cross-white-border.png"
+              src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
               alt="Overclock logo"
               width={56}
               height={56}

@@ -38,7 +38,7 @@ export function GlobalFooter() {
                             className="flex items-center gap-3 text-sm font-semibold text-white/90"
                         >
                             <Image
-                                src="/branding/kitty-white-cross-white-border.png"
+                                src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
                                 alt="Overclock logo"
                                 width={28}
                                 height={28}
