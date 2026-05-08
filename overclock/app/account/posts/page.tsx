@@ -87,58 +87,62 @@ export default async function AccountPostsPage({
   const emptyState = getEmptyStateCopy(selectedStatus);
 
   return (
-    <main className="flex-1 bg-zinc-950 px-4 py-5 text-zinc-100 sm:px-6 sm:py-6">
-      <PageContainer className="flex flex-col gap-4">
+    <main className="relative flex-1 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-size-[11px_11px] opacity-68 mask-[radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-size-[11px_11px] opacity-64 mask-[radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+      />
+      <PageContainer className="relative z-10 flex flex-col gap-3" maxWidthClassName="max-w-4xl">
         <AuthMessage message={message} type={messageType} />
 
-        <section className="rounded-[28px] border border-white/10 bg-white/2.5 p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-          <div className="overflow-hidden rounded-[27px] bg-zinc-950">
-            <header className="px-5 py-5 sm:px-6 sm:py-6">
-              <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
-                My Posts
-              </h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
-                Manage your active and past LFG listings in one place.
+        <section className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <header className="px-5 py-5 sm:px-6">
+            <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
+              My Posts
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+              Manage your active and past LFG listings in one place.
+            </p>
+          </header>
+
+          <section className="border-t border-white/6 px-5 py-4 sm:px-6">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-zinc-500">
+                Filter
               </p>
-            </header>
+              <AccountPostStatusFilter selectedStatus={selectedStatus} />
+            </div>
 
-            <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
-                    Filter
-                  </p>
-                </div>
-                <AccountPostStatusFilter selectedStatus={selectedStatus} />
+            {filteredPosts.length === 0 ? (
+              <div className="rounded-[18px] border border-dashed border-white/8 px-5 py-10 text-center">
+                <p className="text-sm font-medium text-zinc-300">
+                  {emptyState.title}
+                </p>
+                <p className="mt-1.5 text-sm leading-6 text-zinc-500">
+                  {emptyState.description}
+                </p>
               </div>
+            ) : (
+              <div className="grid gap-2">
+                {filteredPosts.map((post) => {
+                  const displayStatus = getLFGPostDisplayStatus(post);
 
-              {filteredPosts.length === 0 ? (
-                <div className="rounded-[22px] border border-dashed border-white/12 bg-white/2 px-5 py-10 text-center">
-                  <p className="text-sm font-medium text-zinc-200">
-                    {emptyState.title}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-zinc-500">
-                    {emptyState.description}
-                  </p>
-                </div>
-              ) : (
-                <div className="grid gap-3">
-                  {filteredPosts.map((post) => {
-                    const displayStatus = getLFGPostDisplayStatus(post);
-
-                    return (
-                      <AccountPostCard
-                        key={post.id}
-                        displayStatus={displayStatus}
-                        post={post}
-                        showActions={displayStatus === "active"}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </section>
-          </div>
+                  return (
+                    <AccountPostCard
+                      key={post.id}
+                      displayStatus={displayStatus}
+                      post={post}
+                      showActions={displayStatus === "active"}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </section>
         </section>
       </PageContainer>
     </main>

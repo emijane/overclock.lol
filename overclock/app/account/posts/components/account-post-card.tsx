@@ -14,6 +14,14 @@ function getRoleLabel(role: LFGPost["postingRole"]) {
   return "Support";
 }
 
+function Dot() {
+  return (
+    <span aria-hidden="true" className="text-[10px] text-zinc-700">
+      &bull;
+    </span>
+  );
+}
+
 type AccountPostCardProps = {
   displayStatus: LFGPostDisplayStatus;
   post: LFGPost;
@@ -31,72 +39,117 @@ export function AccountPostCard({
   const roleLabel = getRoleLabel(post.postingRole);
   const sectionLabel = post.lfgType.charAt(0).toUpperCase() + post.lfgType.slice(1);
   const createdAtLabel = formatPostDate(post.createdAt);
+  const isActive = displayStatus === "active";
 
   return (
-    <article className="rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3.5">
-      <div className="flex items-start justify-between gap-3">
-        <p className="truncate text-sm font-semibold tracking-[-0.01em] text-zinc-100">
-          {post.title}
-        </p>
-        <div className="flex shrink-0 items-center gap-1.5">
-          <LFGPostStatusPill status={displayStatus} />
-          {showActions ? (
-            <LFGPostActionsMenu
-              postId={post.id}
-              returnPath="/account/posts"
-              viewHref={`/${post.lfgType}`}
-              viewLabel={`Open ${sectionLabel}`}
-            />
-          ) : null}
-        </div>
-      </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
-        <div className="flex items-center gap-1.5">
-          {rankIconSrc ? (
-            <Image
-              src={rankIconSrc}
-              alt=""
-              width={14}
-              height={14}
-              className="h-3.5 w-3.5 shrink-0 object-contain opacity-85"
-            />
-          ) : null}
-          <span className="text-xs font-medium text-zinc-400">{rankLabel}</span>
-        </div>
-        <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-        <span className="text-xs font-medium text-zinc-400">{roleLabel}</span>
-        <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-        <span className="text-xs font-medium text-zinc-400">{gameModeLabel}</span>
-        <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-        <span className="text-xs font-medium text-zinc-500">{sectionLabel}</span>
-        {createdAtLabel ? (
-          <>
-            <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-            <span className="text-xs text-zinc-600">{createdAtLabel}</span>
-          </>
-        ) : null}
-        {post.heroPool.length > 0 ? (
-          <div className="ml-0.5 flex items-center gap-1">
-            {post.heroPool.slice(0, 5).map((hero) => (
-              <div
-                key={hero.id}
-                title={hero.label}
-                aria-label={hero.label}
-                className="relative h-5 w-5 overflow-hidden rounded-md bg-zinc-900"
-              >
-                {hero.imageSrc ? (
-                  <Image
-                    src={hero.imageSrc}
-                    alt={hero.label}
-                    fill
-                    className="object-cover"
-                    sizes="20px"
-                  />
-                ) : null}
-              </div>
-            ))}
+    <article
+      className={`rounded-[18px] border bg-[#05070b] transition-all duration-150 ${
+        isActive
+          ? "border-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/14 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_6px_20px_rgba(0,0,0,0.24)]"
+          : "border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+      }`}
+    >
+      <div className="px-4 py-3">
+        {/* Title row: title left, status + actions right, all center-aligned */}
+        <div className="flex items-center gap-2">
+          <p
+            className={`min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 tracking-[-0.02em] ${
+              isActive ? "text-zinc-100" : "text-zinc-500"
+            }`}
+          >
+            {post.title}
+          </p>
+          <div className="flex shrink-0 items-center gap-1">
+            <LFGPostStatusPill status={displayStatus} />
+            {showActions ? (
+              <LFGPostActionsMenu
+                postId={post.id}
+                returnPath="/account/posts"
+                viewHref={`/${post.lfgType}`}
+                viewLabel={`Open ${sectionLabel}`}
+              />
+            ) : null}
           </div>
-        ) : null}
+        </div>
+
+        {/* Metadata row: rank · role · mode · section · time — heroes pinned right */}
+        <div className="mt-1.5 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+            {rankIconSrc ? (
+              <Image
+                src={rankIconSrc}
+                alt=""
+                width={13}
+                height={13}
+                className={`h-3.25 w-3.25 shrink-0 object-contain transition-opacity ${
+                  isActive ? "opacity-90" : "opacity-35"
+                }`}
+              />
+            ) : null}
+            <span
+              className={`text-[11px] font-semibold ${
+                isActive ? "text-zinc-300" : "text-zinc-600"
+              }`}
+            >
+              {rankLabel}
+            </span>
+            <Dot />
+            <span
+              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+            >
+              {roleLabel}
+            </span>
+            <Dot />
+            <span
+              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+            >
+              {gameModeLabel}
+            </span>
+            <Dot />
+            <span
+              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+            >
+              {sectionLabel}
+            </span>
+            {createdAtLabel ? (
+              <>
+                <Dot />
+                <span
+                  className={`text-[11px] ${
+                    isActive ? "text-zinc-600" : "text-zinc-700"
+                  }`}
+                >
+                  {createdAtLabel}
+                </span>
+              </>
+            ) : null}
+          </div>
+
+          {post.heroPool.length > 0 ? (
+            <div className="flex shrink-0 items-center gap-0.5">
+              {post.heroPool.slice(0, 4).map((hero) => (
+                <div
+                  key={hero.id}
+                  title={hero.label}
+                  aria-label={hero.label}
+                  className={`relative h-5.5 w-5.5 overflow-hidden rounded-md bg-zinc-900 ring-1 ring-inset transition-opacity ${
+                    isActive ? "opacity-100 ring-white/8" : "opacity-35 ring-white/4"
+                  }`}
+                >
+                  {hero.imageSrc ? (
+                    <Image
+                      src={hero.imageSrc}
+                      alt={hero.label}
+                      fill
+                      className="object-cover"
+                      sizes="22px"
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
     </article>
   );
