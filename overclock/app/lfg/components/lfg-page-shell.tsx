@@ -401,6 +401,25 @@ export async function LFGPageShell({
                       <PlusIcon className="h-4 w-4" />
                       Create Post
                     </Link>
+                  ) : shouldShowComposer && user && profile && missingProfileRequirements.length === 0 && hasConfiguredRole ? (
+                    <div className="flex items-center gap-2 self-start">
+                      <Link
+                        href={profileSetupHref}
+                        className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/2.5 px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/4 hover:text-zinc-200 ${
+                          isDuosPage ? "border-white/12 hover:border-white/18" : "border-white/[0.07] hover:border-white/10"
+                        }`}
+                      >
+                        Edit profile
+                      </Link>
+                      <Link
+                        href="/account/posts"
+                        className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/2.5 px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/4 hover:text-zinc-200 ${
+                          isDuosPage ? "border-white/12 hover:border-white/18" : "border-white/[0.07] hover:border-white/10"
+                        }`}
+                      >
+                        Manage posts
+                      </Link>
+                    </div>
                   ) : null}
                 </PageReveal>
                 {description ? (
@@ -462,29 +481,7 @@ export async function LFGPageShell({
                       }`}
                     >
                       <input type="hidden" name="lfg_type" value={type} />
-                      <PostTitleField
-                        inlineLabel
-                        actions={
-                          <>
-                            <Link
-                              href={profileSetupHref}
-                              className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
-                                isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
-                              }`}
-                            >
-                              Edit profile
-                            </Link>
-                            <Link
-                              href="/account/posts"
-                              className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/[0.025] px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.04] hover:text-zinc-200 ${
-                                isDuosPage ? "border-white/[0.12] hover:border-white/[0.18]" : "border-white/[0.07] hover:border-white/[0.1]"
-                              }`}
-                            >
-                              Manage posts
-                            </Link>
-                          </>
-                        }
-                      />
+                      <PostTitleField />
                       <LFGGameModePicker />
                       <LFGRolePicker
                         profileSummary={profileSummary}
