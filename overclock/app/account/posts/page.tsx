@@ -104,8 +104,8 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
       <PageContainer className="relative z-10 flex flex-col gap-3" maxWidthClassName="max-w-4xl">
         <AuthMessage message={message} type={messageType} />
 
-        <section className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <header className="px-5 py-4 sm:px-6 sm:py-5">
+        <section className="flex h-180 flex-col overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <header className="shrink-0 px-5 py-4 sm:px-6 sm:py-5">
             <div className="space-y-2">
               <Link
                 href="/account"
@@ -122,15 +122,17 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
 
           <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
 
-          <div className="px-5 py-4 sm:px-6">
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 py-4 sm:px-6">
             {filteredPosts.length === 0 ? (
-              <div className="rounded-[18px] border border-dashed border-white/8 px-5 py-10 text-center">
-                <p className="text-sm font-medium text-zinc-300">
-                  {emptyState.title}
-                </p>
-                <p className="mt-1.5 text-sm leading-6 text-zinc-500">
-                  {emptyState.description}
-                </p>
+              <div className="flex flex-1 items-center justify-center">
+                <div className="text-center">
+                  <p className="text-sm font-medium text-zinc-300">
+                    {emptyState.title}
+                  </p>
+                  <p className="mt-1.5 text-sm leading-6 text-zinc-500">
+                    {emptyState.description}
+                  </p>
+                </div>
               </div>
             ) : (
               <>
