@@ -96,7 +96,7 @@
 - Search only returns rows visible through current public profile access rules.
 - No extra private profile fields are exposed.
 - There is no separate disabled/deleted/private-profile flag currently filtered here beyond existing public visibility and RLS behavior.
-- Signed-in users do not see their own profile in the main-menu dropdown.
+- Current user may appear in results if their public profile matches the query.
 
 ## Future Improvements
 - mobile-specific search affordance

@@ -22,13 +22,7 @@ function getAvatarFallback(
   return source.slice(0, 1).toUpperCase();
 }
 
-type MainMenuUserSearchProps = {
-  currentUsername?: string | null;
-};
-
-export function MainMenuUserSearch({
-  currentUsername,
-}: MainMenuUserSearchProps) {
+export function MainMenuUserSearch() {
   const pathname = usePathname();
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -87,17 +81,10 @@ export function MainMenuUserSearch({
       setIsOpen(true);
 
       try {
-        const response = await fetch(
-          `/api/users/search?q=${encodeURIComponent(normalizedQuery)}${
-            currentUsername
-              ? `&exclude=${encodeURIComponent(currentUsername)}`
-              : ""
-          }`,
-          {
-            method: "GET",
-            signal: controller.signal,
-          }
-        );
+        const response = await fetch(`/api/users/search?q=${encodeURIComponent(normalizedQuery)}`, {
+          method: "GET",
+          signal: controller.signal,
+        });
         const payload = (await response.json()) as {
           error?: string;
           results?: PublicProfileSearchResult[];
@@ -130,7 +117,7 @@ export function MainMenuUserSearch({
       controller.abort();
       window.clearTimeout(timeoutId);
     };
-  }, [currentUsername, query]);
+  }, [query]);
 
   function handleOpenProfile(username: string) {
     setIsOpen(false);
@@ -192,7 +179,7 @@ export function MainMenuUserSearch({
       </div>
 
       {showDropdown ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
           {isLoading ? (
             <div className="px-4 py-3 text-sm text-zinc-500">Searching...</div>
           ) : errorMessage ? (

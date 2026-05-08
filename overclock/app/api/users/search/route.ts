@@ -21,9 +21,7 @@ export async function GET(request: Request) {
 
   const requestUrl = new URL(request.url);
   const rawQuery = requestUrl.searchParams.get("q");
-  const rawExcludedUsername = requestUrl.searchParams.get("exclude");
   const query = normalizeProfileSearchQuery(rawQuery);
-  const excludedUsername = normalizeProfileSearchQuery(rawExcludedUsername);
 
   if (!query) {
     return NextResponse.json({ results: [] });
@@ -34,7 +32,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const results = await searchPublicProfiles(query, excludedUsername);
+    const results = await searchPublicProfiles(query);
     return NextResponse.json({ results });
   } catch {
     return NextResponse.json(

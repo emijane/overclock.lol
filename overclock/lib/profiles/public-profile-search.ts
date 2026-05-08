@@ -29,12 +29,8 @@ function mapProfileSearchRow(row: ProfileSearchRow): PublicProfileSearchResult |
   };
 }
 
-export async function searchPublicProfiles(
-  rawQuery: string,
-  excludeUsername?: string | null
-) {
+export async function searchPublicProfiles(rawQuery: string) {
   const query = normalizeProfileSearchQuery(rawQuery);
-  const normalizedExcludedUsername = normalizeProfileSearchQuery(excludeUsername);
 
   if (!query) {
     return [];
@@ -77,14 +73,6 @@ export async function searchPublicProfiles(
     const mappedResult = mapProfileSearchRow(row);
 
     if (!mappedResult || seenUsernames.has(mappedResult.username)) {
-      continue;
-    }
-
-    if (
-      normalizedExcludedUsername &&
-      mappedResult.username.toLowerCase() ===
-        normalizedExcludedUsername.toLowerCase()
-    ) {
       continue;
     }
 

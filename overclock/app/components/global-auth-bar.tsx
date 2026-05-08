@@ -37,7 +37,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
   const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
-    <header className="border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
+    <header className="relative z-[70] border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
       <PageContainer
         className="flex items-center justify-between gap-4"
         maxWidthClassName="max-w-[96rem]"
@@ -58,7 +58,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
         </Link>
 
         <div className="flex items-center gap-3">
-          <MainMenuUserSearch currentUsername={profile?.username ?? null} />
+          <MainMenuUserSearch />
 
           <nav className="flex items-center gap-1">
             {discoveryLinks.map((link) => (
