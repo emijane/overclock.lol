@@ -62,9 +62,9 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   return (
     <section className="bg-[#05070b]">
-      <div className="pb-6 sm:pb-7">
+      <div className="pb-5 sm:pb-6">
         <div
-          className="relative overflow-hidden px-4 py-4 sm:px-6"
+          className="relative overflow-hidden px-4 py-3.5 sm:px-6"
           style={{ aspectRatio: PROFILE_COVER_ASPECT_RATIO }}
         >
           {coverImageUrl ? (
@@ -112,7 +112,7 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="pointer-events-none relative z-20 -mt-14 px-4 sm:-mt-16 sm:px-6">
+        <div className="pointer-events-none relative z-20 -mt-[3.25rem] px-4 sm:-mt-[3.75rem] sm:px-6">
           <div className="pointer-events-auto w-fit">
             <ProfileAvatar
               avatarUrl={avatarUrl}
@@ -126,10 +126,10 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-6 px-4 sm:-mt-10 sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+        <div className="mt-5 px-4 sm:-mt-9 sm:px-6">
+          <div className="flex flex-col gap-3.5 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
             <div className="min-w-0 flex-1">
-              <div className="sm:h-14" aria-hidden="true" />
+              <div className="sm:h-12" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-[29px] font-semibold leading-[1.02] tracking-[-0.045em] text-zinc-50 sm:text-[31px]">
                   {displayName}
@@ -147,11 +147,11 @@ export function ProfileHeader({
               <p className="mt-0.5 text-[14px] font-medium tracking-[-0.01em] text-zinc-600">
                 @{username}
               </p>
-              <p className="mt-1.5 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+              <p className="mt-1 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                 {bio || "This player has not added a bio yet."}
               </p>
 
-              <div className="mt-3">
+              <div className="mt-2.5">
                 <span className="text-sm font-semibold text-zinc-100">
                   {connectionCount}
                 </span>
@@ -161,7 +161,7 @@ export function ProfileHeader({
               </div>
 
               {(platform || isLookingToPlay) ? (
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                   {platform ? (
                     <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-zinc-300">
                       {platform}
@@ -180,7 +180,7 @@ export function ProfileHeader({
               ) : null}
             </div>
 
-            <div className="sm:min-w-[220px]">
+            <div className="sm:min-w-[220px] sm:pt-0.5">
               <ProfileSocialLinks
                 leadingAction={
                   isOwner ? (

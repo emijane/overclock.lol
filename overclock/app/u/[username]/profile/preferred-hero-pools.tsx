@@ -95,7 +95,7 @@ export function PreferredHeroPools({
   );
 
   return (
-    <section className="border-t border-white/[0.06] px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+    <section className="border-t border-white/[0.06] px-5 pb-4 pt-3.5 sm:px-6 sm:pb-5 sm:pt-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
@@ -116,11 +116,11 @@ export function PreferredHeroPools({
       </div>
 
       {selectedHeroes.length === 0 ? (
-        <div className="mt-4 rounded-[18px] border border-white/8 bg-white/2 px-4 py-3 text-sm text-zinc-500">
+        <div className="mt-3 rounded-[18px] border border-white/8 bg-white/2 px-4 py-3 text-sm text-zinc-500">
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
-        <div className="mt-4 grid gap-2.5 lg:grid-cols-3">
+        <div className="mt-3 grid gap-2.5 lg:grid-cols-3">
           {getOrderedHeroPoolGroups(competitiveProfile.mainRole).map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
             const roleProfile = competitiveProfile.roles.find(
