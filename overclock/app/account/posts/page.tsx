@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 
 import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
+import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
 import { AccountPostStatusFilter } from "@/app/account/posts/components/account-post-status-filter";
-import { LFGPostCard } from "@/app/lfg/components/lfg-post-card";
-import { LFGPostStatusPill } from "@/app/lfg/components/lfg-post-status-pill";
 import {
   getLFGPostDisplayStatus,
   isLFGPostDisplayStatus,
@@ -92,7 +91,7 @@ export default async function AccountPostsPage({
       <PageContainer className="flex flex-col gap-4">
         <AuthMessage message={message} type={messageType} />
 
-        <section className="rounded-[28px] border border-white/10 bg-white/[0.025] p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <section className="rounded-[28px] border border-white/10 bg-white/2.5 p-px shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           <div className="overflow-hidden rounded-[27px] bg-zinc-950">
             <header className="px-5 py-5 sm:px-6 sm:py-6">
               <h1 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-50 sm:text-3xl">
@@ -114,7 +113,7 @@ export default async function AccountPostsPage({
               </div>
 
               {filteredPosts.length === 0 ? (
-                <div className="rounded-[22px] border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">
+                <div className="rounded-[22px] border border-dashed border-white/12 bg-white/2 px-5 py-10 text-center">
                   <p className="text-sm font-medium text-zinc-200">
                     {emptyState.title}
                   </p>
@@ -128,16 +127,11 @@ export default async function AccountPostsPage({
                     const displayStatus = getLFGPostDisplayStatus(post);
 
                     return (
-                      <LFGPostCard
+                      <AccountPostCard
                         key={post.id}
-                        currentProfileId={profile.id}
+                        displayStatus={displayStatus}
                         post={post}
-                        returnPath="/account/posts"
-                        sectionLabel={post.lfgType}
                         showActions={displayStatus === "active"}
-                        statusPill={<LFGPostStatusPill status={displayStatus} />}
-                        viewHref={`/${post.lfgType}`}
-                        viewLabel={`Open ${post.lfgType.charAt(0).toUpperCase()}${post.lfgType.slice(1)}`}
                       />
                     );
                   })}
