@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ChevronLeftIcon } from "lucide-react";
 
 import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
@@ -100,20 +102,23 @@ export default async function AccountPostsPage({
         <AuthMessage message={message} type={messageType} />
 
         <section className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <header className="px-5 py-5 sm:px-6">
-            <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
-              My Posts
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
-              Manage your active and past LFG listings in one place.
-            </p>
+          <header className="px-5 py-4 sm:px-6 sm:py-5">
+            <div className="space-y-2">
+              <Link
+                href="/account"
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+              >
+                <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
+                Account
+              </Link>
+              <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
+                My Posts
+              </h1>
+            </div>
           </header>
 
           <section className="border-t border-white/6 px-5 py-4 sm:px-6">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-zinc-500">
-                Filter
-              </p>
+            <div className="mb-4 flex items-center justify-end">
               <AccountPostStatusFilter selectedStatus={selectedStatus} />
             </div>
 
