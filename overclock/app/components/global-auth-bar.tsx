@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PageContainer } from "@/app/components/page-container";
 import { GlobalNotificationsMenu } from "@/app/components/global-notifications-menu";
+import { MainMenuUserSearch } from "@/app/components/main-menu-user-search";
 import { UserMenu } from "@/app/components/user-menu";
 
 type GlobalAuthBarProps = {
@@ -57,6 +58,8 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
         </Link>
 
         <div className="flex items-center gap-3">
+          <MainMenuUserSearch currentUsername={profile?.username ?? null} />
+
           <nav className="flex items-center gap-1">
             {discoveryLinks.map((link) => (
               <Link
