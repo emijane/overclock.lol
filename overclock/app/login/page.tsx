@@ -53,10 +53,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         className="relative z-10 flex flex-1 flex-col justify-center"
         maxWidthClassName="max-w-4xl"
       >
-        <section className="mx-auto w-full max-w-xl rounded-[28px]">
+        <section className="relative mx-auto w-full max-w-[42rem] rounded-[28px]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-10 inset-y-8 rounded-full bg-white/[0.05] blur-3xl"
+          />
           <div className="overflow-hidden rounded-[28px]">
             <PageReveal delay={1}>
-              <div className="grid gap-3">
+              <div className="relative z-10 grid gap-3">
                 <AuthMessage message={message} type={messageType} />
                 {isAuthenticated ? (
                   <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
