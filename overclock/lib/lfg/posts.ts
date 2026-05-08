@@ -1,7 +1,7 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
-import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
 import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
@@ -107,10 +107,10 @@ function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
   const candidate = value as Record<string, unknown>;
 
   return {
-    avatarUrl:
-      typeof candidate.discord_avatar_url === "string"
-        ? candidate.discord_avatar_url
-        : null,
+    avatarUrl: getProfileAvatarUrl(
+      typeof candidate.avatar_url === "string" ? candidate.avatar_url : null,
+      typeof candidate.avatar_updated_at === "string" ? candidate.avatar_updated_at : null
+    ),
     badges,
     coverImageUrl: getProfileCoverUrl(
       typeof candidate.cover_image_path === "string"
@@ -219,7 +219,7 @@ export async function getActiveLFGPosts(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("lfg_type", lfgType)
@@ -344,7 +344,7 @@ export async function getRecentPostsByProfileId(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("profile_id", profileId)
@@ -387,7 +387,7 @@ export async function getPostsByProfileId(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
-        "profiles:profile_id(username,display_name,discord_avatar_url,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("profile_id", profileId)

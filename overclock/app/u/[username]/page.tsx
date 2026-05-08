@@ -6,7 +6,7 @@ import { AuthMessage } from "@/app/login/components";
 import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
 import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-current-invite-viewer";
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
-import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
 import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
 import {
@@ -194,7 +194,10 @@ export default async function ProfilePage({
                         style={profileAccentStyle}
                     >
                         <EditableProfileHeader
-                            avatarUrl={profile.discord_avatar_url}
+                            avatarUrl={getProfileAvatarUrl(
+                                profile.avatar_url ?? null,
+                                profile.avatar_updated_at ?? null
+                            )}
                             bio={profile.bio}
                             badges={badges}
                             connectionCount={connectionCount}

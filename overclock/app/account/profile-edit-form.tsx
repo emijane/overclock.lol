@@ -1,6 +1,8 @@
 "use client";
 
 import { updateProfile } from "@/app/account/actions";
+import { AvatarUploadButton } from "@/app/account/avatar-upload-button";
+import { ProfileCoverUploadButton } from "@/app/u/[username]/profile/profile-cover-upload-button";
 import { ProfileEditFormFields } from "@/app/u/[username]/profile/profile-edit-form-fields";
 import { useProfileEditForm } from "@/app/u/[username]/profile/use-profile-edit-form";
 import type { ProfileEditProfile } from "@/app/u/[username]/profile/profile-edit-types";
@@ -27,7 +29,7 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
 
       {/* Cover + avatar preview */}
       <div className="relative mb-10">
-        <div className="h-24 overflow-hidden rounded-t-[21px]">
+        <div className="relative h-24 overflow-hidden rounded-t-[21px]">
           {coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -38,17 +40,13 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
           ) : (
             <div className="h-full w-full bg-linear-to-b from-[#0f1117] to-[#05070b]" />
           )}
+          <div className="absolute bottom-2 right-2">
+            <ProfileCoverUploadButton />
+          </div>
         </div>
         <div className="absolute -bottom-8 left-4 sm:left-5">
           <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-[#05070b] bg-zinc-800">
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-base font-semibold text-zinc-100">
-                {initial}
-              </div>
-            )}
+            <AvatarUploadButton avatarUrl={avatarUrl} initial={initial} />
           </div>
         </div>
       </div>

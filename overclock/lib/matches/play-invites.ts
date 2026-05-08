@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import {
   normalizeExpirePlayInvitesResult,
   normalizeRemoveProfileConnectionResult,
@@ -28,10 +29,11 @@ type PlayInviteSnapshot = {
 };
 
 type MatchProfileRow = {
+  avatar_updated_at: string | null;
+  avatar_url: string | null;
   battlenet_handle: string | null;
   current_rank_division: number | null;
   current_rank_tier: string | null;
-  discord_avatar_url: string | null;
   discord_username: string | null;
   display_name: string | null;
   id: string;
@@ -134,6 +136,12 @@ function normalizeMatchProfileRow(value: unknown): MatchProfileRow | null {
   }
 
   return {
+    avatar_updated_at:
+      typeof candidate.avatar_updated_at === "string"
+        ? candidate.avatar_updated_at
+        : null,
+    avatar_url:
+      typeof candidate.avatar_url === "string" ? candidate.avatar_url : null,
     battlenet_handle:
       typeof candidate.battlenet_handle === "string"
         ? candidate.battlenet_handle
@@ -145,10 +153,6 @@ function normalizeMatchProfileRow(value: unknown): MatchProfileRow | null {
     current_rank_tier:
       typeof candidate.current_rank_tier === "string"
         ? candidate.current_rank_tier
-        : null,
-    discord_avatar_url:
-      typeof candidate.discord_avatar_url === "string"
-        ? candidate.discord_avatar_url
         : null,
     discord_username:
       typeof candidate.discord_username === "string"
@@ -219,7 +223,11 @@ function toParticipant(input: {
     input.snapshot?.rankDivision ?? input.profile?.current_rank_division ?? null;
 
   return {
-    avatarUrl: input.snapshot?.avatarUrl ?? input.profile?.discord_avatar_url ?? null,
+    avatarUrl:
+      input.snapshot?.avatarUrl ??
+      (input.profile
+        ? getProfileAvatarUrl(input.profile.avatar_url, input.profile.avatar_updated_at)
+        : null),
     battlenetHandle: input.profile?.battlenet_handle ?? null,
     discordUsername: input.profile?.discord_username ?? null,
     displayName: input.snapshot?.displayName ?? input.profile?.display_name ?? null,
@@ -242,7 +250,7 @@ async function getMatchProfilesById(profileIds: string[]) {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "id, username, display_name, discord_avatar_url, region, current_rank_tier, current_rank_division, discord_username, battlenet_handle"
+      "id, username, display_name, avatar_url, avatar_updated_at, region, current_rank_tier, current_rank_division, discord_username, battlenet_handle"
     )
     .in("id", profileIds);
 

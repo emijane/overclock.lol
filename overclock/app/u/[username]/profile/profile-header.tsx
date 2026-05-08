@@ -4,7 +4,6 @@ import { Clock3Icon, Globe2Icon } from "lucide-react";
 
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
-import { ProfileCoverUploadButton } from "./profile-cover-upload-button";
 import { ProfileSocialLinks } from "./profile-social-links";
 import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
@@ -88,9 +87,7 @@ export function ProfileHeader({
             />
           )}
           <div className="relative z-10 flex items-start justify-between gap-3">
-            <div>
-              {isOwner ? <ProfileCoverUploadButton /> : null}
-            </div>
+            <div />
 
             <div className="flex items-start gap-1.5">
               {region ? (

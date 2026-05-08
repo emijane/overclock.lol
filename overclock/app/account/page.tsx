@@ -4,7 +4,7 @@ import { PageContainer } from "@/app/components/page-container";
 import { PageReveal } from "@/app/components/page-reveal";
 import { AuthMessage } from "@/app/login/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-import { getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 
 import { AvailabilityToggleCard } from "./availability-toggle-card";
 import { PresencePrivacyToggleCard } from "./presence-privacy-toggle-card";
@@ -74,7 +74,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <div className="grid gap-3">
                 <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
                   <ProfileEditForm
-            avatarUrl={profile.discord_avatar_url ?? null}
+            avatarUrl={getProfileAvatarUrl(
+              profile.avatar_url ?? null,
+              profile.avatar_updated_at ?? null
+            )}
             coverImageUrl={getProfileCoverUrl(
               profile.cover_image_path ?? null,
               profile.cover_image_updated_at ?? null

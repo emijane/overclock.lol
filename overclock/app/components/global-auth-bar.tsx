@@ -7,7 +7,7 @@ import { UserMenu } from "@/app/components/user-menu";
 
 type GlobalAuthBarProps = {
   profile: {
-    discord_avatar_url: string | null;
+    avatar_url: string | null;
     display_name: string | null;
     username: string;
   } | null;
@@ -20,7 +20,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
     return null;
   }
 
-  const avatarUrl = profile?.discord_avatar_url ?? null;
+  const avatarUrl = profile?.avatar_url ?? null;
   const visibleName = profile?.username ?? "Account";
   const avatarFallback = (profile?.display_name ?? visibleName)
     .slice(0, 1)

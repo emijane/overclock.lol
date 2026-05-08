@@ -6,6 +6,7 @@ import { GlobalBackgroundShell } from "@/app/components/global-background-shell"
 import { GlobalFooter } from "@/app/components/global-footer";
 import { PresenceProvider } from "@/app/components/presence-provider";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 
 import "./globals.css";
 
@@ -46,8 +47,10 @@ export default async function RootLayout({
                             profile={
                                 profile
                                     ? {
-                                          discord_avatar_url:
-                                              profile.discord_avatar_url ?? null,
+                                          avatar_url: getProfileAvatarUrl(
+                                              profile.avatar_url ?? null,
+                                              profile.avatar_updated_at ?? null
+                                          ),
                                           display_name: profile.display_name ?? null,
                                           username: profile.username,
                                       }
