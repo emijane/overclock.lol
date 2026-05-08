@@ -5,7 +5,8 @@ import { ChevronLeftIcon } from "lucide-react";
 import { PageContainer } from "@/app/components/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
-import { AccountPostStatusFilter } from "@/app/account/posts/components/account-post-status-filter";
+import { AccountPostPagination } from "@/app/account/posts/components/account-post-pagination";
+import { AccountPostTabs } from "@/app/account/posts/components/account-post-tabs";
 import {
   getLFGPostDisplayStatus,
   isLFGPostDisplayStatus,
@@ -13,6 +14,8 @@ import {
 } from "@/lib/lfg/lfg-post-display-status";
 import { getPostsByProfileId } from "@/lib/lfg/posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+
+const PAGE_SIZE = 10;
 
 type AccountPostsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -22,70 +25,70 @@ function pickValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-type AccountPostStatusFilterValue = "all" | LFGPostDisplayStatus;
+type TabValue = "all" | LFGPostDisplayStatus;
 
-function getSelectedStatusFilter(value: string | undefined): AccountPostStatusFilterValue {
-  if (!value || value === "all") {
-    return "all";
-  }
-
+function getSelectedStatus(value: string | undefined): TabValue {
+  if (!value || value === "all") return "all";
   return isLFGPostDisplayStatus(value) ? value : "all";
 }
 
-function getEmptyStateCopy(statusFilter: AccountPostStatusFilterValue) {
-  if (statusFilter === "active") {
+function getEmptyStateCopy(status: TabValue) {
+  if (status === "active") {
     return {
       description: "Live listings will show up here until you close them or they expire.",
       title: "No active posts",
     };
   }
-
-  if (statusFilter === "closed") {
+  if (status === "closed") {
     return {
       description: "Posts you close manually will show up here for your own reference.",
       title: "No closed posts",
     };
   }
-
-  if (statusFilter === "expired") {
+  if (status === "expired") {
     return {
       description: "Posts older than the 12-hour active window will show up here.",
       title: "No expired posts",
     };
   }
-
   return {
-    description:
-      "Your active, closed, and expired listings will show up here once you start posting.",
-    title: "You have not created any posts yet.",
+    description: "Your active, closed, and expired listings will show up here once you start posting.",
+    title: "You haven't created any posts yet.",
   };
 }
 
-export default async function AccountPostsPage({
-  searchParams,
-}: AccountPostsPageProps) {
+export default async function AccountPostsPage({ searchParams }: AccountPostsPageProps) {
   const params = searchParams ? await searchParams : {};
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
-  const selectedStatus = getSelectedStatusFilter(pickValue(params.status));
+  const selectedStatus = getSelectedStatus(pickValue(params.status));
+  const currentPage = Math.max(1, Number(pickValue(params.page)) || 1);
+
   const { user, profile } = await getCurrentProfile();
 
-  if (!user) {
-    redirect("/login");
-  }
-
-  if (!profile) {
-    redirect("/onboarding");
-  }
+  if (!user) redirect("/login");
+  if (!profile) redirect("/onboarding");
 
   const posts = await getPostsByProfileId(profile.id);
-  const filteredPosts = posts.filter((post) => {
-    if (selectedStatus === "all") {
-      return true;
-    }
 
-    return getLFGPostDisplayStatus(post) === selectedStatus;
-  });
+  const counts: Record<TabValue, number> = {
+    all: posts.length,
+    active: posts.filter((p) => getLFGPostDisplayStatus(p) === "active").length,
+    closed: posts.filter((p) => getLFGPostDisplayStatus(p) === "closed").length,
+    expired: posts.filter((p) => getLFGPostDisplayStatus(p) === "expired").length,
+  };
+
+  const filteredPosts = selectedStatus === "all"
+    ? posts
+    : posts.filter((p) => getLFGPostDisplayStatus(p) === selectedStatus);
+
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedPosts = filteredPosts.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE
+  );
+
   const emptyState = getEmptyStateCopy(selectedStatus);
 
   return (
@@ -117,11 +120,9 @@ export default async function AccountPostsPage({
             </div>
           </header>
 
-          <section className="border-t border-white/6 px-5 py-4 sm:px-6">
-            <div className="mb-4 flex items-center justify-end">
-              <AccountPostStatusFilter selectedStatus={selectedStatus} />
-            </div>
+          <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
 
+          <div className="px-5 py-4 sm:px-6">
             {filteredPosts.length === 0 ? (
               <div className="rounded-[18px] border border-dashed border-white/8 px-5 py-10 text-center">
                 <p className="text-sm font-medium text-zinc-300">
@@ -132,22 +133,28 @@ export default async function AccountPostsPage({
                 </p>
               </div>
             ) : (
-              <div className="grid gap-2">
-                {filteredPosts.map((post) => {
-                  const displayStatus = getLFGPostDisplayStatus(post);
-
-                  return (
-                    <AccountPostCard
-                      key={post.id}
-                      displayStatus={displayStatus}
-                      post={post}
-                      showActions={displayStatus === "active"}
-                    />
-                  );
-                })}
-              </div>
+              <>
+                <div className="grid gap-2">
+                  {paginatedPosts.map((post) => {
+                    const displayStatus = getLFGPostDisplayStatus(post);
+                    return (
+                      <AccountPostCard
+                        key={post.id}
+                        displayStatus={displayStatus}
+                        post={post}
+                        showActions={displayStatus === "active"}
+                      />
+                    );
+                  })}
+                </div>
+                <AccountPostPagination
+                  currentPage={safePage}
+                  selectedStatus={selectedStatus}
+                  totalPages={totalPages}
+                />
+              </>
             )}
-          </section>
+          </div>
         </section>
       </PageContainer>
     </main>
