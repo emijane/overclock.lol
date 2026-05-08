@@ -27,7 +27,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 const MEDIA_UPLOAD_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const MEDIA_UPLOAD_RATE_LIMIT_MAX = 10;
+const MEDIA_UPLOAD_RATE_LIMIT_MAX = 2;
 
 type UploadMediaResult =
   | { status: "success"; message: string }
@@ -178,12 +178,22 @@ export async function uploadProfileAvatar(
     };
   }
 
-  await supabase.from("profile_media").insert({
-    profile_id: user.id,
-    storage_path: avatarPath,
-    media_type: "avatar",
-    is_active: true,
-  });
+  const { error: mediaInsertError } = await supabase.from("profile_media").upsert(
+    {
+      profile_id: user.id,
+      storage_path: avatarPath,
+      media_type: "avatar",
+      is_active: true,
+    },
+    { onConflict: "profile_id,media_type,storage_path" }
+  );
+
+  if (mediaInsertError) {
+    return {
+      status: "error",
+      message: "Avatar uploaded but media record failed. Try again.",
+    };
+  }
 
   await recordMediaUpload(supabase, user.id, "avatar");
 
@@ -293,12 +303,22 @@ export async function uploadProfileCover(
     };
   }
 
-  await supabase.from("profile_media").insert({
-    profile_id: user.id,
-    storage_path: coverImagePath,
-    media_type: "cover",
-    is_active: true,
-  });
+  const { error: mediaInsertError } = await supabase.from("profile_media").upsert(
+    {
+      profile_id: user.id,
+      storage_path: coverImagePath,
+      media_type: "cover",
+      is_active: true,
+    },
+    { onConflict: "profile_id,media_type,storage_path" }
+  );
+
+  if (mediaInsertError) {
+    return {
+      status: "error",
+      message: "Cover uploaded but media record failed. Try again.",
+    };
+  }
 
   await recordMediaUpload(supabase, user.id, "cover");
 

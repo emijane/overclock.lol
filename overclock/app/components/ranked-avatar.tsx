@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 
 import { getRankBorderClassName } from "@/lib/competitive/rank-border-styles";
 
@@ -25,6 +27,7 @@ export function RankedAvatar({
   rankTier,
   ringClassName = "-inset-[2px] opacity-75",
 }: RankedAvatarProps) {
+  const [imgFailed, setImgFailed] = useState(false);
   const borderClassName = getRankBorderClassName(rankTier).replace(
     /\s*shadow-\[[^\]]+\]/g,
     ""
@@ -38,11 +41,12 @@ export function RankedAvatar({
         className={`absolute ${ringClassName} rounded-full ${borderClassName}`}
         aria-hidden="true"
       />
-      {avatarUrl ? (
+      {avatarUrl && !imgFailed ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={avatarUrl}
           alt={`${displayName} avatar`}
+          onError={() => setImgFailed(true)}
           className={`relative h-full w-full rounded-full bg-zinc-800 object-cover ${imageClassName}`.trim()}
         />
       ) : (

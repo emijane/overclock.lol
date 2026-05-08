@@ -10,7 +10,7 @@ export const PROFILE_COVER_OUTPUT_HEIGHT = 350;
 export const PROFILE_AVATAR_MAX_MB = 5;
 export const PROFILE_AVATAR_MAX_BYTES = PROFILE_AVATAR_MAX_MB * 1024 * 1024;
 export const PROFILE_AVATAR_OUTPUT_SIZE = 400;
-export const PROFILE_AVATAR_DEFAULT_PATH = "profile-pictures/default_icon";
+export const PROFILE_AVATAR_DEFAULT_PATH = "profile-pictures/default_icon.png";
 
 export const PROFILE_MEDIA_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -25,7 +25,7 @@ export function getProfileCoverPath(userId: string) {
 }
 
 export function getProfileAvatarPath(userId: string) {
-  return `avatars/${userId}/avatar`;
+  return `profile-pictures/${userId}/avatar`;
 }
 
 function buildStorageUrl(path: string) {

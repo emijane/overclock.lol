@@ -23,6 +23,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [clientError, setClientError] = useState<string | null>(null);
+  const [imgFailed, setImgFailed] = useState(false);
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -125,9 +126,14 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
         className="group relative h-full w-full"
         aria-label="Upload profile picture"
       >
-        {avatarUrl ? (
+        {avatarUrl && !imgFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+          <img
+            src={avatarUrl}
+            alt=""
+            onError={() => setImgFailed(true)}
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-base font-semibold text-zinc-100">
             {initial}
@@ -140,7 +146,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
 
       {imageSrc && typeof document !== "undefined"
         ? createPortal(
-            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6">
+            <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 px-4 py-6">
               <div className="w-full max-w-sm rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 shadow-2xl shadow-black/40">
                 <div className="flex items-start justify-between gap-4">
                   <div>

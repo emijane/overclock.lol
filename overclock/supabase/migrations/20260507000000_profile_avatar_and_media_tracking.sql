@@ -18,6 +18,9 @@ CREATE TABLE IF NOT EXISTS profile_media (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS profile_media_path_unique_idx
+  ON profile_media(profile_id, media_type, storage_path);
+
 CREATE INDEX IF NOT EXISTS profile_media_profile_id_idx ON profile_media(profile_id);
 CREATE INDEX IF NOT EXISTS profile_media_pending_delete_idx
   ON profile_media(delete_after)
@@ -71,14 +74,14 @@ CREATE POLICY "profile_media_avatar_insert"
   ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (
     bucket_id = 'profile-media' AND
-    name = 'avatars/' || auth.uid()::text || '/avatar'
+    name = 'profile-pictures/' || auth.uid()::text || '/avatar'
   );
 
 CREATE POLICY "profile_media_avatar_update"
   ON storage.objects FOR UPDATE TO authenticated
   USING (
     bucket_id = 'profile-media' AND
-    name = 'avatars/' || auth.uid()::text || '/avatar'
+    name = 'profile-pictures/' || auth.uid()::text || '/avatar'
   );
 
 -- Authenticated users can upload/replace their own cover.
