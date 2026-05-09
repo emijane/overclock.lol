@@ -304,20 +304,10 @@ export async function LFGPageShell({
         timezone: profile.timezone ?? null,
       })
     : [];
-  const isMissingPlatformOnly =
-    missingProfileRequirements.length === 1 &&
-    missingProfileRequirements[0] === "platform";
-  const profileSetupHref = isMissingPlatformOnly
-    ? "/account/competitive"
-    : profile?.username
-      ? `/u/${profile.username}?edit=profile`
-      : "/account";
-  const profileSetupDescriptionSuffix = isMissingPlatformOnly
-    ? " This opens your competitive profile settings directly."
-    : " This opens your profile editor directly.";
-  const profileSetupCtaLabel = isMissingPlatformOnly
-    ? "Open competitive profile"
-    : "Open profile editor";
+  const profileSetupHref = "/account/competitive";
+  const profileSetupDescriptionSuffix =
+    " This opens your competitive profile settings directly.";
+  const profileSetupCtaLabel = "Open Competitive Profile";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
   const displayTitle = type ? `/ ${title}` : title;

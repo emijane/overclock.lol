@@ -27,7 +27,10 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 const MEDIA_UPLOAD_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const MEDIA_UPLOAD_RATE_LIMIT_MAX = 2;
+const MEDIA_UPLOAD_RATE_LIMIT_MAX_BY_TYPE = {
+  avatar: 6,
+  cover: 2,
+} as const;
 
 type UploadMediaResult =
   | { status: "success"; message: string }
@@ -46,7 +49,7 @@ async function checkMediaUploadRateLimit(
     .eq("media_type", mediaType)
     .gte("uploaded_at", windowStart);
 
-  return (count ?? 0) >= MEDIA_UPLOAD_RATE_LIMIT_MAX;
+  return (count ?? 0) >= MEDIA_UPLOAD_RATE_LIMIT_MAX_BY_TYPE[mediaType];
 }
 
 async function recordMediaUpload(
