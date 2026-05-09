@@ -35,7 +35,7 @@ export function AvailabilityToggleCard({
       <div className="min-w-0">
         <p className="text-[15px] font-semibold text-zinc-100">Looking to play</p>
         <p className="mt-0.5 text-sm text-zinc-500">
-          Let others know you're open to invites right now.
+          Let others know you&apos;re open to invites right now.
         </p>
       </div>
       <Switch
