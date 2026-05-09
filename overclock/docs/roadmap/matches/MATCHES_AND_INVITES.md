@@ -236,7 +236,7 @@ Important supporting helpers and surfaces:
 - `app/matches/actions.ts`
 - `app/matches/page.tsx`
 - `app/connections/page.tsx`
-- `app/components/global-notifications-menu-client.tsx`
+- `components/navigation/global-notifications-menu-client.tsx`
 - `app/u/[username]/profile/invite-to-play-button.tsx`
 - `app/lfg/components/lfg-invite-button.tsx`
 

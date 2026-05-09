@@ -1,4 +1,4 @@
-import { getRankIconSrc } from "./rank-icons";
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
   CompetitiveProfile,

@@ -10,6 +10,12 @@ Working plan. Update this document as refactor phases land.
 - Phase 2C: Shared matches/realtime UI relocation completed
 - Phase 3A: Competitive shared UI extraction completed
 
+## Historical Phase Log
+
+These completed-phase notes are intentionally historical. They preserve the
+exact migration record, including old paths that were valid when each phase was
+executed.
+
 ### Phase 1 Completed
 
 - created governance docs:
@@ -72,9 +78,54 @@ Working plan. Update this document as refactor phases land.
 
 ## Legacy Cleanup Pending
 
-- remove thin route-local wrappers only after all direct imports are updated
 - review remaining route-local profile media editor files before any shared extraction
 - defer deletion of generated artifacts to the dedicated cleanup phase
+
+## Current Active State
+
+This section reflects the current repo structure after completed cleanup work.
+Treat it as the current-state source of truth inside this document.
+
+### Current Structure
+
+- `overclock/app/` is route-focused
+- shared shell, navigation, presence, and matches UI now live under:
+  - `overclock/components/app-shell/*`
+  - `overclock/components/navigation/*`
+  - `overclock/components/presence/*`
+  - `overclock/components/matches/*`
+- shared profile edit UI now lives under:
+  - `overclock/features/profile/components/*`
+  - `overclock/features/profile/hooks/*`
+  - `overclock/features/profile/types/*`
+- shared competitive hero-picker UI now lives under:
+  - `overclock/features/competitive/components/role-hero-picker.tsx`
+- route-local competitive forms, public-profile rendering, profile media upload,
+  and featured clips remain in `overclock/app/*`
+
+### Current Cleanup Reality
+
+- placeholder folders removed in cleanup:
+  - `overclock/app/scrims`
+  - `overclock/app/teams`
+  - `overclock/app/theme`
+  - `overclock/app/auth/confirm`
+  - accidental `overclock/app/u/\`[username`]/profile`
+- removed dead wrappers:
+  - `overclock/app/u/[username]/profile/rank-icons.ts`
+  - `overclock/app/u/[username]/profile/rank-border-styles.ts`
+- removed unused `overclock/components/profile-editor/*` files
+- remaining cleanup focus:
+  - route-local profile media editor files
+  - generated artifacts if tracked or cluttering audits
+  - stale app-local docs and old-path references in historical notes
+
+### Current Maintenance Guidance
+
+- use the current-state sections above for repo audits
+- treat old path references below as historical unless a section explicitly says
+  it reflects current state
+- keep `/teams` and `/scrims` documented as roadmap-only, not shipped routes
 
 ## Scope
 
@@ -165,6 +216,12 @@ QA.md should include:
 
 These governance docs must exist before execution phases begin.
 
+## Historical Migration Record
+
+The sections below preserve the original audit, planning snapshot, and
+migration record. They intentionally include old paths, placeholder folders, and
+pre-cleanup recommendations so completed work remains traceable.
+
 ## Re-Audit Summary
 
 The repo is already mostly domain-oriented, but the boundaries are inconsistent.
@@ -196,7 +253,7 @@ The safest refactor is a boundary cleanup:
   Reason: actively consumed by `overclock/app/legal/legal-document.tsx`
 - `overclock/app/login/components/index.ts`
   Reason: actively imported as a barrel
-- `overclock/components/competitive/role-hero-picker.tsx`
+- `overclock/features/competitive/components/role-hero-picker.tsx`
   Reason: actively used by competitive profile UI
 
 ### Move
@@ -232,17 +289,8 @@ The safest refactor is a boundary cleanup:
 
 Only after implementation or migration is complete and imports are updated:
 
-- empty folders:
-  - `overclock/app/scrims`
-  - `overclock/app/teams`
-  - `overclock/app/theme`
-  - `overclock/app/auth/confirm`
-  - `overclock/app/u/\`[username`]/profile`
-- unused profile-editor components:
-  - `overclock/components/profile-editor/section-card.tsx`
-  - `overclock/components/profile-editor/setup-section.tsx`
-  - `overclock/components/profile-editor/socials-section.tsx`
-  Verified unused by import search, and they do not contain unique business logic.
+- empty placeholder folders and unused `overclock/components/profile-editor/*`
+  files were already removed in cleanup checkpoints
 - generated artifacts from tracked or source audits, not source:
   - `overclock/.next`
   - `overclock/.test-dist`
@@ -253,8 +301,6 @@ Only after implementation or migration is complete and imports are updated:
 
 ### Review Manually
 
-- `overclock/app/components/*`
-  Some are truly global, some are feature-specific.
 - `overclock/app/u/[username]/profile/featured-clips/*`
   The folder is valid, but some exports may be better shared under a profile feature module.
 - `overclock/app/account/competitive/components/*`

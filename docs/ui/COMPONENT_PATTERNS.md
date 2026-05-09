@@ -7,7 +7,10 @@
   - `overclock/app/u/[username]/profile/*`
   - `overclock/app/account/*`
   - `overclock/app/matches/*`
-  - `overclock/app/components/*`
+  - `overclock/components/app-shell/*`
+  - `overclock/components/navigation/*`
+  - `overclock/components/presence/*`
+  - `overclock/features/competitive/*`
 
 ## Cards
 | Component | Purpose | Current pattern |
@@ -116,10 +119,10 @@
   - ghost icon button
   - tiny text action
 - References:
-  - `global-auth-bar.tsx`
+  - `components/navigation/global-auth-bar.tsx`
   - `account/profile-edit-form.tsx`
   - `lfg-role-picker.tsx`
-  - `global-notifications-menu-client.tsx`
+  - `components/navigation/global-notifications-menu-client.tsx`
 - Rules:
   - short copy
   - compact height
@@ -176,7 +179,7 @@
   - clear selected state via border/fill change
   - small count indicator
   - lightweight clear action
-- Reference: `components/competitive/role-hero-picker.tsx`
+- Reference: `features/competitive/components/role-hero-picker.tsx`
 - Rules:
   - keep hero tiles small
   - cap selection count visibly
@@ -206,7 +209,7 @@
   - transparent border idle
   - dark capsule on hover
   - medium or semibold small text
-- Reference: `global-auth-bar.tsx`
+- Reference: `components/navigation/global-auth-bar.tsx`
 - Rules:
   - nav should feel quiet until interacted with
   - utility controls sit in the same visual family as nav pills
@@ -216,7 +219,7 @@
 - Pattern:
   - bell icon button with sky count badge
   - dropdown card with header, rows, and compact accept/decline actions
-- Reference: `global-notifications-menu-client.tsx`
+- Reference: `components/navigation/global-notifications-menu-client.tsx`
 - Rules:
   - unread count stays tiny
   - row content truncates aggressively

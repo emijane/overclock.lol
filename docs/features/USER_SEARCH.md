@@ -8,7 +8,7 @@
 
 ## Architecture
 - Main nav UI:
-  - `overclock/app/components/main-menu-user-search.tsx`
+  - `overclock/components/navigation/main-menu-user-search.tsx`
 - Search API route:
   - `overclock/app/api/users/search/route.ts`
 - Shared client/server query helpers:
@@ -18,7 +18,7 @@
 - Rate limiting:
   - `overclock/lib/profiles/profile-search-rate-limit.ts`
 - Nav integration:
-  - `overclock/app/components/global-auth-bar.tsx`
+  - `overclock/components/navigation/global-auth-bar.tsx`
 
 ## Query Behavior
 - Input is trimmed before search.

@@ -3,8 +3,8 @@
 ## Scope
 - Based on current shipped identity only
 - Sources:
-  - `overclock/app/components/global-auth-bar.tsx`
-  - `overclock/app/components/global-footer.tsx`
+  - `overclock/components/navigation/global-auth-bar.tsx`
+  - `overclock/components/app-shell/global-footer.tsx`
   - `overclock/app/layout.tsx`
   - `overclock/public/branding/*`
   - `overclock/public/oc-logos/*`

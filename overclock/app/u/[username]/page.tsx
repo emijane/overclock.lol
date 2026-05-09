@@ -15,6 +15,7 @@ import {
   getProfileConnectionCount,
   getProfileInviteState,
 } from "@/lib/matches/play-invites";
+import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
@@ -22,9 +23,6 @@ import {
 } from "./profile/featured-clips";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
 import { RecentProfilePosts } from "./profile/recent-profile-posts";
-import {
-  getRankAccentStyle,
-} from "./profile/rank-border-styles";
 import { getCompetitiveRankDisplay } from "./profile/profile-rank";
 
 type ProfilePageProps = {
