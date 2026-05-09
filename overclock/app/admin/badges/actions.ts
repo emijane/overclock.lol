@@ -7,7 +7,11 @@ import { canAccessAdmin } from "@/lib/admin/admin-access";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
-function redirectToAdmin(message: string, type: "error" | "success", username?: string) {
+function redirectToAdmin(
+  message: string,
+  type: "error" | "success",
+  username?: string
+): never {
   const params = new URLSearchParams({ message, type });
 
   if (username) {
@@ -89,11 +93,14 @@ export async function assignBadgeToUsername(formData: FormData) {
     redirectToAdmin("That badge could not be found.", "error", username);
   }
 
+  const resolvedTargetProfile = targetProfile;
+  const resolvedBadge = badge;
+
   const { error } = await supabase.from("profile_badges").upsert(
     {
-      badge_id: badge.id,
+      badge_id: resolvedBadge.id,
       granted_by: adminProfile.id,
-      profile_id: targetProfile.id,
+      profile_id: resolvedTargetProfile.id,
     },
     {
       onConflict: "profile_id,badge_id",
@@ -104,8 +111,8 @@ export async function assignBadgeToUsername(formData: FormData) {
     if (error.message.toLowerCase().includes("granted_by")) {
       const fallbackResult = await supabase.from("profile_badges").upsert(
         {
-          badge_id: badge.id,
-          profile_id: targetProfile.id,
+          badge_id: resolvedBadge.id,
+          profile_id: resolvedTargetProfile.id,
         },
         {
           onConflict: "profile_id,badge_id",
@@ -120,9 +127,13 @@ export async function assignBadgeToUsername(formData: FormData) {
     }
   }
 
-  revalidatePath(`/u/${targetProfile.username}`);
+  revalidatePath(`/u/${resolvedTargetProfile.username}`);
   revalidatePath("/admin/badges");
-  redirectToAdmin(`${badge.label} assigned to @${targetProfile.username}.`, "success", username);
+  redirectToAdmin(
+    `${resolvedBadge.label} assigned to @${resolvedTargetProfile.username}.`,
+    "success",
+    username
+  );
 }
 
 export async function removeBadgeFromUsername(formData: FormData) {
@@ -153,17 +164,24 @@ export async function removeBadgeFromUsername(formData: FormData) {
     redirectToAdmin("That badge assignment could not be found.", "error", username);
   }
 
+  const resolvedTargetProfile = targetProfile;
+  const resolvedBadge = badge;
+
   const { error } = await supabase
     .from("profile_badges")
     .delete()
-    .eq("profile_id", targetProfile.id)
-    .eq("badge_id", badge.id);
+    .eq("profile_id", resolvedTargetProfile.id)
+    .eq("badge_id", resolvedBadge.id);
 
   if (error) {
     throw error;
   }
 
-  revalidatePath(`/u/${targetProfile.username}`);
+  revalidatePath(`/u/${resolvedTargetProfile.username}`);
   revalidatePath("/admin/badges");
-  redirectToAdmin(`${badge.label} removed from @${targetProfile.username}.`, "success", username);
+  redirectToAdmin(
+    `${resolvedBadge.label} removed from @${resolvedTargetProfile.username}.`,
+    "success",
+    username
+  );
 }

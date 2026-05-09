@@ -34,7 +34,12 @@ const PresenceContext = createContext<PresenceContextValue>({
   isUserOnline: () => false,
 });
 
-function collectOnlineUserIds(state: Record<string, Array<{ userId?: string }>>) {
+type PresenceStateEntry = {
+  userId?: string | null;
+  [key: string]: unknown;
+};
+
+function collectOnlineUserIds(state: Record<string, PresenceStateEntry[]>) {
   const nextOnlineIds = new Set<string>();
 
   Object.values(state).forEach((presences) => {

@@ -54,7 +54,10 @@ export function LFGInviteButton({
         sourceLFGPostId,
       });
 
-      if (result.status === "success" || result.message?.includes("pending invite")) {
+      if (
+        result.status === "success" ||
+        (result.status === "error" && result.message.includes("pending invite"))
+      ) {
         setInviteState("invite_sent");
         onInviteSent?.(recipientProfileId);
         return;
