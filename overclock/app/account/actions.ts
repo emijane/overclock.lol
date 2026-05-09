@@ -24,6 +24,7 @@ import {
   getProfileAvatarPath,
   getProfileCoverPath,
 } from "@/lib/profiles/profile-media";
+import { updateLastSeen as updateSharedLastSeen } from "@/features/presence/actions";
 import { createClient } from "@/lib/supabase/server";
 
 const MEDIA_UPLOAD_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
@@ -31,6 +32,10 @@ const MEDIA_UPLOAD_RATE_LIMIT_MAX_BY_TYPE = {
   avatar: 6,
   cover: 2,
 } as const;
+
+export async function updateLastSeen() {
+  return updateSharedLastSeen();
+}
 
 type UploadMediaResult =
   | { status: "success"; message: string }
@@ -316,11 +321,6 @@ export async function uploadProfileCover(
   return { status: "success", message: "Cover image updated." };
 }
 
-export type UpdateLastSeenResult =
-  | { status: "success" }
-  | { status: "unauthenticated" }
-  | { status: "error"; message: string };
-
 export type SetLookingToPlayResult =
   | { status: "success"; isLookingToPlay: boolean }
   | { status: "unauthenticated" }
@@ -542,38 +542,6 @@ export async function updateProfile(formData: FormData) {
   }
 
   accountRedirect("Profile settings saved.", returnTo, "success");
-}
-
-export async function updateLastSeen(): Promise<UpdateLastSeenResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    return { status: "unauthenticated" };
-  }
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      last_seen_at: new Date().toISOString(),
-    })
-    .eq("id", user.id);
-
-  if (error) {
-    console.error("Last seen update failed", {
-      error,
-      profileId: user.id,
-    });
-    return {
-      status: "error",
-      message: "Unable to update presence activity right now.",
-    };
-  }
-
-  return { status: "success" };
 }
 
 export async function setLookingToPlay(

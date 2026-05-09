@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { updateLastSeen } from "@/app/account/actions";
+import { updateLastSeen } from "@/features/presence/actions";
 import { createClient } from "@/lib/supabase/client";
 
 const PRESENCE_CHANNEL = "presence:profiles";

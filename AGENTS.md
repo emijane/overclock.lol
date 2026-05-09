@@ -54,6 +54,7 @@ Read AGENTS.md first.
 - `overclock/components/presence/`: shared presence state and badges
 - `overclock/features/`: cross-route feature-owned shared code
 - `overclock/features/auth/`: shared auth-domain entrypoints
+- `overclock/features/presence/`: shared presence-domain entrypoints
 - `overclock/features/competitive/`: shared competitive-domain UI
 - `overclock/lib/`: infra and domain helpers
 - `overclock/tests/`: tests
