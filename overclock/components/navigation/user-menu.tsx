@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useTransition } from "react";
 
-import { signOut } from "@/app/auth/actions";
+import { signOut } from "@/features/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
