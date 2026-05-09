@@ -1,15 +1,19 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import Cropper, { type Area, type Point } from "react-easy-crop";
 import { CameraIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
+import AvatarEditor, {
+  type AvatarEditorRef,
+  type Position,
+} from "react-avatar-editor";
 
 import { uploadProfileAvatar } from "@/app/account/actions";
 import { createCroppedAvatarFile } from "@/app/account/avatar-crop";
 import {
+  PROFILE_AVATAR_OUTPUT_SIZE,
   PROFILE_AVATAR_MAX_MB,
   PROFILE_MEDIA_IMAGE_ACCEPT_ATTRIBUTE,
 } from "@/lib/profiles/profile-media";
@@ -20,36 +24,21 @@ type AvatarUploadButtonProps = {
 };
 
 export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonProps) {
+  const editorRef = useRef<AvatarEditorRef | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [clientError, setClientError] = useState<string | null>(null);
   const [imgFailed, setImgFailed] = useState(false);
-  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [zoom, setZoom] = useState(1);
-
-  useEffect(() => {
-    return () => {
-      if (imageSrc) {
-        URL.revokeObjectURL(imageSrc);
-      }
-    };
-  }, [imageSrc]);
+  const [position, setPosition] = useState<Position>({ x: 0.5, y: 0.5 });
+  const [scale, setScale] = useState(1);
 
   function closeModal() {
     setClientError(null);
-    setCrop({ x: 0, y: 0 });
-    setCroppedAreaPixels(null);
-    setZoom(1);
-    setImageSrc((current) => {
-      if (current) {
-        URL.revokeObjectURL(current);
-      }
-
-      return null;
-    });
+    setImageFile(null);
+    setPosition({ x: 0.5, y: 0.5 });
+    setScale(1);
 
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -64,19 +53,13 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
     }
 
     setClientError(null);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setImageSrc((current) => {
-      if (current) {
-        URL.revokeObjectURL(current);
-      }
-
-      return URL.createObjectURL(file);
-    });
+    setImageFile(file);
+    setPosition({ x: 0.5, y: 0.5 });
+    setScale(1);
   }
 
   async function handleUpload() {
-    if (!imageSrc || !croppedAreaPixels) {
+    if (!imageFile || !editorRef.current) {
       setClientError("Choose and position an image before uploading.");
       return;
     }
@@ -87,7 +70,9 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
     let croppedFile: File;
 
     try {
-      croppedFile = await createCroppedAvatarFile(imageSrc, croppedAreaPixels);
+      croppedFile = await createCroppedAvatarFile(
+        editorRef.current.getImageScaledToCanvas()
+      );
     } catch (error) {
       setIsSubmitting(false);
       setClientError(
@@ -144,7 +129,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
         </div>
       </button>
 
-      {imageSrc && typeof document !== "undefined"
+      {imageFile && typeof document !== "undefined"
         ? createPortal(
             <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 px-4 py-6">
               <div className="w-full max-w-sm rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 shadow-2xl shadow-black/40">
@@ -171,18 +156,25 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                   className="relative mt-5 overflow-hidden rounded-full bg-zinc-950"
                   style={{ aspectRatio: "1 / 1" }}
                 >
-                  <Cropper
-                    image={imageSrc}
-                    crop={crop}
-                    zoom={zoom}
-                    aspect={1}
-                    cropShape="round"
-                    onCropChange={setCrop}
-                    onCropComplete={(_, areaPixels) =>
-                      setCroppedAreaPixels(areaPixels)
+                  <AvatarEditor
+                    ref={editorRef}
+                    image={imageFile}
+                    width={PROFILE_AVATAR_OUTPUT_SIZE}
+                    height={PROFILE_AVATAR_OUTPUT_SIZE}
+                    border={0}
+                    borderRadius={PROFILE_AVATAR_OUTPUT_SIZE / 2}
+                    color={[9, 9, 11, 0.45]}
+                    backgroundColor="transparent"
+                    scale={scale}
+                    position={position}
+                    onPositionChange={setPosition}
+                    onLoadFailure={() =>
+                      setClientError("Unable to load selected image.")
                     }
-                    onZoomChange={setZoom}
-                    objectFit="cover"
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                    }}
                   />
                 </div>
 
@@ -196,8 +188,8 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     min={1}
                     max={3}
                     step={0.01}
-                    value={zoom}
-                    onChange={(e) => setZoom(Number(e.target.value))}
+                    value={scale}
+                    onChange={(e) => setScale(Number(e.target.value))}
                     className="w-full accent-sky-400"
                   />
                   <p className="text-xs text-zinc-500">

@@ -1,20 +1,6 @@
-import type { Area } from "react-easy-crop";
-
 import { PROFILE_AVATAR_OUTPUT_SIZE } from "@/lib/profiles/profile-media";
 
-function loadImage(imageSrc: string) {
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image();
-    image.addEventListener("load", () => resolve(image));
-    image.addEventListener("error", () =>
-      reject(new Error("Unable to load selected image."))
-    );
-    image.src = imageSrc;
-  });
-}
-
-export async function createCroppedAvatarFile(imageSrc: string, pixelCrop: Area) {
-  const image = await loadImage(imageSrc);
+export async function createCroppedAvatarFile(sourceCanvas: HTMLCanvasElement) {
   const canvas = document.createElement("canvas");
   canvas.width = PROFILE_AVATAR_OUTPUT_SIZE;
   canvas.height = PROFILE_AVATAR_OUTPUT_SIZE;
@@ -25,17 +11,28 @@ export async function createCroppedAvatarFile(imageSrc: string, pixelCrop: Area)
     throw new Error("Unable to prepare the avatar image.");
   }
 
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.clearRect(0, 0, PROFILE_AVATAR_OUTPUT_SIZE, PROFILE_AVATAR_OUTPUT_SIZE);
+  context.save();
+  context.beginPath();
+  context.arc(
+    PROFILE_AVATAR_OUTPUT_SIZE / 2,
+    PROFILE_AVATAR_OUTPUT_SIZE / 2,
+    PROFILE_AVATAR_OUTPUT_SIZE / 2,
+    0,
+    Math.PI * 2
+  );
+  context.closePath();
+  context.clip();
   context.drawImage(
-    image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    sourceCanvas,
     0,
     0,
     PROFILE_AVATAR_OUTPUT_SIZE,
     PROFILE_AVATAR_OUTPUT_SIZE
   );
+  context.restore();
 
   const blob = await new Promise<Blob | null>((resolve) => {
     canvas.toBlob(resolve, "image/webp", 0.92);
