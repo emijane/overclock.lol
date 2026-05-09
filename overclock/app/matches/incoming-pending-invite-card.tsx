@@ -72,7 +72,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
           {participantHref ? (
             <Link
               href={participantHref}
-              className="text-[15px] font-semibold text-zinc-100 hover:underline"
+              className="cursor-pointer text-[15px] font-semibold text-zinc-100 hover:underline"
             >
               {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
             </Link>
@@ -101,7 +101,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
           disabled={isPending}
           aria-disabled={isPending}
           onClick={() => handleInviteAction("accept")}
-          className="inline-flex h-7 items-center rounded-full bg-zinc-100 px-3 text-xs font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-7 cursor-pointer items-center rounded-full bg-zinc-100 px-3 text-xs font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isPending ? "..." : "Accept"}
         </button>
@@ -110,7 +110,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
           disabled={isPending}
           aria-disabled={isPending}
           onClick={() => handleInviteAction("decline")}
-          className="text-[11px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="cursor-pointer text-[11px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isPending ? "..." : "Decline"}
         </button>

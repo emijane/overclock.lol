@@ -118,6 +118,10 @@
   - sky confirm/save pill
   - ghost icon button
   - tiny text action
+- Interaction:
+  - enabled buttons, links, and explicit button-role controls should show a
+    pointer cursor
+  - disabled controls should not
 - References:
   - `components/navigation/global-auth-bar.tsx`
   - `account/profile-edit-form.tsx`

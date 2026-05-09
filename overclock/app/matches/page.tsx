@@ -59,7 +59,7 @@ export default async function MatchesPage() {
                   <div className="space-y-2">
                     <Link
                       href="/account"
-                      className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                      className="inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
                     >
                       <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
                       Account

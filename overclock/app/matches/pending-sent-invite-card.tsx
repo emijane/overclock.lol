@@ -37,7 +37,7 @@ export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
           {participantHref ? (
             <Link
               href={participantHref}
-              className="text-[15px] font-semibold text-zinc-100 hover:underline"
+              className="cursor-pointer text-[15px] font-semibold text-zinc-100 hover:underline"
             >
               {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
             </Link>

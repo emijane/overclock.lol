@@ -45,7 +45,7 @@ export function MatchCard({ connection }: MatchCardProps) {
           {participantHref ? (
             <Link
               href={participantHref}
-              className="text-[15px] font-semibold text-zinc-100 hover:underline"
+              className="cursor-pointer text-[15px] font-semibold text-zinc-100 hover:underline"
             >
               {connection.participant.displayName ?? connection.participant.username ?? "Unknown player"}
             </Link>

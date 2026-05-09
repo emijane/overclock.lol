@@ -31,7 +31,7 @@ export function MatchInvitesTabs({
         <button
           type="button"
           onClick={() => setActiveTab("incoming")}
-          className={`inline-flex h-8 items-center rounded-full px-3 text-sm font-semibold transition ${
+          className={`inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-sm font-semibold transition ${
             activeTab === "incoming"
               ? "bg-white/8 text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"
@@ -45,7 +45,7 @@ export function MatchInvitesTabs({
         <button
           type="button"
           onClick={() => setActiveTab("outgoing")}
-          className={`inline-flex h-8 items-center rounded-full px-3 text-sm font-semibold transition ${
+          className={`inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-sm font-semibold transition ${
             activeTab === "outgoing"
               ? "bg-white/8 text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"

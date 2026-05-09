@@ -24,6 +24,13 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
 }
 
+button:not(:disabled),
+a[href],
+[role="button"]:not([aria-disabled="true"]),
+summary {
+  cursor: pointer;
+}
+
 @keyframes page-enter {
   from {
     opacity: 0;
