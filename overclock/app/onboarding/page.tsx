@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { createProfile } from "@/app/onboarding/actions";
-import { PageContainer } from "@/app/components/page-container";
+import { PageContainer } from "@/components/app-shell/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { getDiscordProfile } from "@/lib/profiles/discord-profile";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";

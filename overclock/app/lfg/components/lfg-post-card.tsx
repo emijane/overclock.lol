@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { PresenceIndicator } from "@/app/components/presence-indicator";
+import { PresenceIndicator } from "@/components/presence/presence-indicator";
 import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";

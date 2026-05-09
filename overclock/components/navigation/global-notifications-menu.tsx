@@ -1,0 +1,27 @@
+import {
+  expirePlayInvitesRecord,
+  getIncomingPendingPlayInvites,
+} from "@/lib/matches/play-invites";
+import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
+
+type GlobalNotificationsMenuProps = {
+  currentProfileId: string;
+};
+
+export async function GlobalNotificationsMenu({
+  currentProfileId,
+}: GlobalNotificationsMenuProps) {
+  await expirePlayInvitesRecord();
+
+  const { invites, totalCount } = await getIncomingPendingPlayInvites({
+    currentProfileId,
+  });
+
+  return (
+    <GlobalNotificationsMenuClient
+      currentProfileId={currentProfileId}
+      initialInvites={invites}
+      initialTotalCount={totalCount}
+    />
+  );
+}

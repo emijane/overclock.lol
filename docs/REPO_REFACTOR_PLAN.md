@@ -5,7 +5,9 @@ Planning only. No files moved, deleted, or edited as part of this plan.
 ## Status
 
 - Phase 1: Inventory and doc alignment completed
-- Phase 2: Not started
+- Phase 2A: Shared app-shell/navigation/presence relocation completed
+- Phase 2B: Not started
+- Phase 2C: Not started
 
 ### Phase 1 Completed
 
@@ -20,6 +22,27 @@ Planning only. No files moved, deleted, or edited as part of this plan.
 - preserved legal-doc behavior by leaving `docs/legal/*` as the source of truth
 - marked app-local drift docs as legacy or in-transition instead of deleting them
 - confirmed `/teams` and `/scrims` should be treated as roadmap-only, not current shipped routes
+
+### Phase 2A Completed
+
+- copied obvious shared app-shell components from `overclock/app/components/*` to:
+  - `overclock/components/app-shell/page-container.tsx`
+  - `overclock/components/app-shell/page-reveal.tsx`
+  - `overclock/components/app-shell/global-background-shell.tsx`
+  - `overclock/components/app-shell/global-footer.tsx`
+- copied obvious shared navigation components from `overclock/app/components/*` to:
+  - `overclock/components/navigation/global-auth-bar.tsx`
+  - `overclock/components/navigation/global-notifications-menu.tsx`
+  - `overclock/components/navigation/global-notifications-menu-client.tsx`
+  - `overclock/components/navigation/main-menu-user-search.tsx`
+  - `overclock/components/navigation/user-menu.tsx`
+- copied obvious shared presence components from `overclock/app/components/*` to:
+  - `overclock/components/presence/presence-provider.tsx`
+  - `overclock/components/presence/presence-indicator.tsx`
+  - `overclock/components/presence/looking-to-play-badge.tsx`
+- updated route imports to consume the new shared component paths
+- intentionally kept the legacy `overclock/app/components/*` copies in place until import resolution and verification were complete
+- left matches/realtime code in place for now; `global-notifications-menu-client.tsx` still references `@/app/components/play-invite-realtime-refresh`
 
 ## Scope
 

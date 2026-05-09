@@ -1,0 +1,95 @@
+import Image from "next/image";
+import Link from "next/link";
+
+import { PageContainer } from "@/components/app-shell/page-container";
+
+const footerGroups = [
+  {
+    title: "Product",
+    links: [
+      { href: "/duos", label: "Duos" },
+      { href: "/stacks", label: "Stacks" },
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      { href: "/connections", label: "Connections" },
+      { href: "/login", label: "Sign in" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { href: "/terms", label: "Terms of Service" },
+      { href: "/privacy", label: "Privacy Policy" },
+    ],
+  },
+] as const;
+
+export function GlobalFooter() {
+  return (
+    <footer className="mt-auto border-t border-white/5 bg-black/40">
+      <PageContainer className="px-4 py-8 sm:px-6 sm:py-10">
+        <div className="grid gap-8 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
+          <div className="max-w-sm">
+            <Link
+              href="/"
+              className="flex items-center gap-3 text-sm font-semibold text-white/90"
+            >
+              <Image
+                src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
+                alt="Overclock logo"
+                width={28}
+                height={28}
+                className="h-7 w-7 shrink-0"
+              />
+              <span>overclock.lol</span>
+            </Link>
+            <p className="mt-3 text-xs font-medium leading-4 text-white/55">
+              developed by{" "}
+              <Link
+                href="https://x.com/pcexplodes"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-white/70 transition-colors hover:text-white"
+              >
+                emi
+              </Link>
+            </p>
+            <p className="mt-1 text-xs font-medium leading-4 text-white/55">
+              logo art by{" "}
+              <Link
+                href="https://ioananenciu.carrd.co/"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-white/70 transition-colors hover:text-white"
+              >
+                neo
+              </Link>
+            </p>
+          </div>
+
+          {footerGroups.map((group) => (
+            <div key={group.title}>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+                {group.title}
+              </p>
+              <div className="mt-3 flex flex-col gap-2">
+                {group.links.map((link) => (
+                  <Link
+                    key={`${group.title}-${link.href}`}
+                    href={link.href}
+                    className="text-sm text-white/55 transition-all duration-200 hover:text-white/85"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </PageContainer>
+    </footer>
+  );
+}

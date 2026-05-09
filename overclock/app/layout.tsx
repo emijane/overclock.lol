@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
-import { GlobalAuthBar } from "@/app/components/global-auth-bar";
-import { GlobalBackgroundShell } from "@/app/components/global-background-shell";
-import { GlobalFooter } from "@/app/components/global-footer";
-import { PresenceProvider } from "@/app/components/presence-provider";
+import { GlobalBackgroundShell } from "@/components/app-shell/global-background-shell";
+import { GlobalFooter } from "@/components/app-shell/global-footer";
+import { GlobalAuthBar } from "@/components/navigation/global-auth-bar";
+import { PresenceProvider } from "@/components/presence/presence-provider";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 

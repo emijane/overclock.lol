@@ -1,6 +1,6 @@
 "use client";
 
-import { LookingToPlayBadge } from "@/app/components/looking-to-play-badge";
+import { LookingToPlayBadge } from "@/components/presence/looking-to-play-badge";
 
 type ProfilePresenceBadgesProps = {
   badgeClassName?: string;

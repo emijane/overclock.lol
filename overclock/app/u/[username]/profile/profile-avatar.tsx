@@ -1,5 +1,5 @@
 import { RankedAvatar } from "@/app/components/ranked-avatar";
-import { PresenceIndicator } from "@/app/components/presence-indicator";
+import { PresenceIndicator } from "@/components/presence/presence-indicator";
 
 type ProfileAvatarProps = {
   avatarUrl: string | null;

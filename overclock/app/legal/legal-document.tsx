@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { PageContainer } from "@/app/components/page-container";
+import { PageContainer } from "@/components/app-shell/page-container";
 
 type LegalDocumentProps = {
   description: string;

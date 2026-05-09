@@ -5,8 +5,8 @@ import { ChevronLeftIcon } from "lucide-react";
 import { MatchInvitesTabs } from "@/app/matches/match-invites-tabs";
 import { MatchCard } from "@/app/matches/match-card";
 import { MatchesRealtimeRefresh } from "@/app/matches/matches-realtime-refresh";
-import { PageContainer } from "@/app/components/page-container";
-import { PageReveal } from "@/app/components/page-reveal";
+import { PageContainer } from "@/components/app-shell/page-container";
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import {
   expirePlayInvitesRecord,
   getActiveProfileConnections,

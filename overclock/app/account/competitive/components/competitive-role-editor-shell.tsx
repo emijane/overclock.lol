@@ -5,7 +5,7 @@ import {
   removeCompetitiveRoleProfile,
   saveCompetitiveRoleProfile,
 } from "@/app/account/competitive/actions";
-import { PageReveal } from "@/app/components/page-reveal";
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import {
   DropdownMenu,

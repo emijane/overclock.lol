@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 
 import { CompetitiveProfileHeader } from "@/app/account/competitive/components/competitive-profile-header";
 import { CompetitiveProfileManager } from "@/app/account/competitive/components/competitive-profile-manager";
-import { PageContainer } from "@/app/components/page-container";
-import { PageReveal } from "@/app/components/page-reveal";
+import { PageContainer } from "@/components/app-shell/page-container";
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/app/login/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";

@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { PageContainer } from "@/app/components/page-container";
+import { PageContainer } from "@/components/app-shell/page-container";
 import { AuthMessage } from "@/app/login/components";
 import { assignBadgeToUsername, removeBadgeFromUsername } from "@/app/admin/badges/actions";
 import { canAccessAdmin } from "@/lib/admin/admin-access";

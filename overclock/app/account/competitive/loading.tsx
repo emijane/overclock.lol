@@ -1,4 +1,4 @@
-import { PageContainer } from "@/app/components/page-container";
+import { PageContainer } from "@/components/app-shell/page-container";
 
 function SkeletonBlock({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-2xl bg-white/[0.06] ${className}`} />;
