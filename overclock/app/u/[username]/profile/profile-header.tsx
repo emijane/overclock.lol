@@ -147,9 +147,11 @@ export function ProfileHeader({
               <p className="mt-0.5 text-[14px] font-medium tracking-[-0.01em] text-zinc-600">
                 @{username}
               </p>
-              <p className="mt-1 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
-                {bio || "This player has not added a bio yet."}
-              </p>
+              {bio ? (
+                <p className="mt-1 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+                  {bio}
+                </p>
+              ) : null}
 
               <div className="mt-2.5">
                 <span className="text-sm font-semibold text-zinc-100">
