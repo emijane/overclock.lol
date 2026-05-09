@@ -100,6 +100,8 @@ Treat it as the current-state source of truth inside this document.
   - `overclock/features/profile/types/*`
 - shared competitive hero-picker UI now lives under:
   - `overclock/features/competitive/components/role-hero-picker.tsx`
+- shared matches-domain action entrypoints now live under:
+  - `overclock/features/matches/actions.ts`
 - route-local competitive forms, public-profile rendering, profile media upload,
   and featured clips remain in `overclock/app/*`
 

@@ -5,9 +5,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BellIcon } from "lucide-react";
 
-import { acceptPlayInvite, declinePlayInvite } from "@/app/matches/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
+import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
