@@ -133,16 +133,18 @@ export function MainMenuUserSearch() {
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
+      const cap = Math.min(results.length, PROFILE_SEARCH_DROPDOWN_LIMIT);
       setActiveIndex((currentIndex) =>
-        currentIndex >= results.length - 1 ? 0 : currentIndex + 1
+        currentIndex >= cap - 1 ? 0 : currentIndex + 1
       );
       return;
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
+      const cap = Math.min(results.length, PROFILE_SEARCH_DROPDOWN_LIMIT);
       setActiveIndex((currentIndex) =>
-        currentIndex <= 0 ? results.length - 1 : currentIndex - 1
+        currentIndex <= 0 ? cap - 1 : currentIndex - 1
       );
       return;
     }
@@ -157,7 +159,7 @@ export function MainMenuUserSearch() {
 
   return (
     <div ref={containerRef} className="relative hidden md:block">
-      <div className="flex h-9 w-56 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 text-zinc-300 transition hover:border-white/16 focus-within:border-white/18 sm:w-60 lg:w-64">
+      <div className="flex h-9 w-56 items-center gap-2 rounded-full border border-white/10 bg-white/3 px-3 text-zinc-300 transition hover:border-white/16 focus-within:border-white/18 sm:w-60 lg:w-64">
         <SearchIcon className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
         <input
           type="search"
@@ -180,7 +182,7 @@ export function MainMenuUserSearch() {
       </div>
 
       {showDropdown ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-80 w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
           {isLoading ? (
             <div className="px-4 py-3 text-sm text-zinc-500">Searching...</div>
           ) : errorMessage ? (
@@ -206,7 +208,7 @@ export function MainMenuUserSearch() {
                       }}
                       onMouseEnter={() => setActiveIndex(index)}
                       className={`flex items-center gap-3 px-4 py-3 transition ${
-                        isActive ? "bg-white/[0.04]" : "hover:bg-white/[0.025]"
+                        isActive ? "bg-white/4" : "hover:bg-white/2.5"
                       }`}
                     >
                       <Avatar className="h-8 w-8 shrink-0 rounded-full">
