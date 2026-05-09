@@ -1,0 +1,17 @@
+# Repo-level generated and local artifacts
+
+# active app artifacts
+/overclock/.next/
+/overclock/.test-dist/
+/overclock/node_modules/
+/overclock/tsconfig.tsbuildinfo
+
+# root or nested dependency caches
+/node_modules/
+
+# root Supabase temp state
+/supabase/.temp/
+
+# common local noise
+.DS_Store
+Thumbs.db
