@@ -163,6 +163,12 @@ Active connection cards show:
 - unlocked contact details when present
 - `Unmatch`
 
+The active connections section currently:
+
+- shows a connection count in the card header
+- keeps the header fixed while the list body scrolls when the connection list
+  grows tall
+
 ### Incoming Invites
 
 Incoming pending invites on `/matches` can be:

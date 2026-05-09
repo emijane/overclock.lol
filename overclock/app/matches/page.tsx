@@ -80,17 +80,30 @@ export default async function MatchesPage() {
                 />
 
                 <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                  <div className="flex items-center justify-between border-b border-white/6 px-4 py-3 sm:px-5">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                        Active connections
+                      </p>
+                    </div>
+                    <span className="inline-flex min-w-8 items-center justify-center rounded-full border border-white/8 bg-white/[0.04] px-2.5 py-1 text-xs font-semibold tabular-nums text-zinc-300">
+                      {connections.length}
+                    </span>
+                  </div>
+
                   {connections.length > 0 ? (
-                    <ul>
-                      {connections.map((connection, index) => (
-                        <li
-                          key={connection.id}
-                          className={index < connections.length - 1 ? "border-b border-white/6" : ""}
-                        >
-                          <MatchCard connection={connection} />
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="max-h-[32rem] overflow-y-auto">
+                      <ul>
+                        {connections.map((connection, index) => (
+                          <li
+                            key={connection.id}
+                            className={index < connections.length - 1 ? "border-b border-white/6" : ""}
+                          >
+                            <MatchCard connection={connection} />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ) : (
                     <div className="px-5 py-10 text-center">
                       <p className="text-sm text-zinc-500">No connections yet.</p>
