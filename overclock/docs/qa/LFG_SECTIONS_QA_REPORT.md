@@ -1,9 +1,15 @@
+> Legacy route-scope note:
+> This report contains historical audit scope for `/teams` and `/scrims`.
+> Current shipped LFG routes are `/lfg`, `/duos`, `/duos/create`, and `/stacks`.
+> Treat `/teams` and `/scrims` references here as historical or roadmap-only unless
+> a newer root doc says otherwise.
+
 # LFG Sections QA Report
 
 Date: 2026-04-27
 
 This report supersedes the older archived snapshot at
-`docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`.
+`overclock/docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`.
 
 Scope audited:
 - `/duos`

@@ -1,7 +1,7 @@
 # Overclock UI System
 
 ## Scope
-- Source of truth: current implementation in `overclock/app`, `overclock/components`, `overclock/docs/SITE_STYLES.md`
+- Source of truth: this doc plus current implementation in `overclock/app` and `overclock/components`
 - Intent: standardize the existing Overclock look, not introduce a new system
 
 ## Visual Identity
@@ -237,6 +237,15 @@
   - oversized 44px+ chips everywhere
   - loud color coding for every category
   - decorative illustrations unrelated to player identity
+
+## Motion Helpers
+- Current shared motion classes in `overclock/app/globals.css`:
+  - `page-enter`
+  - `page-fade-enter`
+  - `page-enter-delay-1`
+  - `page-enter-delay-2`
+- Motion should stay subtle, fast to scan, and compatible with reduced-motion
+  preferences.
 
 ## Do
 - Reuse `rounded-[28px]` page shell + `rounded-[22px]` primary card structure

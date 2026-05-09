@@ -22,6 +22,9 @@ featured videos, and create LFG posts.
 - `/teams` and `/scrims` are not currently implemented routes, even though some roadmap
   notes still discuss them as future surfaces.
 
+Canonical repo docs live in `../docs/`. App-local docs in `overclock/docs/` should be
+treated as working notes or legacy material unless a root doc explicitly points to them.
+
 ## Stack
 
 - Next.js 16 App Router
@@ -71,3 +74,4 @@ npm run lint
   pools, and recent active LFG posts.
 - The global header currently exposes Duos and Stacks navigation plus placeholder
   notifications for signed-in users.
+- Root `docs/legal/*` is intentionally the source of truth for legal page content.

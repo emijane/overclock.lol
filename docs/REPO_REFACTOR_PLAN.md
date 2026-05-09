@@ -2,6 +2,25 @@
 
 Planning only. No files moved, deleted, or edited as part of this plan.
 
+## Status
+
+- Phase 1: Inventory and doc alignment completed
+- Phase 2: Not started
+
+### Phase 1 Completed
+
+- created governance docs:
+  - `AGENTS.md`
+  - `docs/README.md`
+  - `docs/agents/CLEANUP.md`
+  - `docs/agents/QA.md`
+  - `overclock/docs/README.md`
+- aligned root `README.md` and `overclock/README.md` on current shipped route truth
+- established root `docs/` as the canonical documentation home
+- preserved legal-doc behavior by leaving `docs/legal/*` as the source of truth
+- marked app-local drift docs as legacy or in-transition instead of deleting them
+- confirmed `/teams` and `/scrims` should be treated as roadmap-only, not current shipped routes
+
 ## Scope
 
 - `overclock/` is the active Next.js app

@@ -10,14 +10,15 @@ The current product is focused on:
 - public player profiles at `/u/[username]`
 - owner-side profile editing from the public profile modal
 - hero pool setup by role
-- placeholder LFG channel shells for duos, stacks, scrims, and teams
+- active LFG surfaces for duos and stacks
 
-The broader LFG posting system is still being built; current LFG pages are
-structure-only shells.
+The broader LFG system is still being built. `/teams` and `/scrims` remain
+roadmap topics and are not current shipped routes.
 
 ## Repo layout
 
 - `overclock/` - the active Next.js app
+- `docs/` - canonical repository documentation
 - `README.md` - repository overview
 
 ## App setup
@@ -44,13 +45,20 @@ callback route: `/auth/callback`.
 - `/login` - auth entry point
 - `/onboarding` - profile creation
 - `/u/[username]` - public profile
-- `/account` - placeholder route for future settings
+- `/account` - account settings, availability, and presence privacy
 - `/account/competitive` - saved LFG preferences and competitive role setup
 - `/account/hero-pools` - redirects to competitive setup
 - `/lfg` - main LFG shell
-- `/duos`, `/stacks`, `/scrims`, `/teams` - LFG channel shells
+- `/duos` - browse-first duo feed
+- `/duos/create` - dedicated duo post composer
+- `/stacks` - stacks feed and inline composer
+
+Roadmap-only, not currently shipped:
+
+- `/teams`
+- `/scrims`
 
 ## Status
 
 Active work is currently centered on profile quality, onboarding polish, hero pools,
-and general codebase cleanup.
+LFG quality, and general codebase cleanup.

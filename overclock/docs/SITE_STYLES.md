@@ -1,3 +1,7 @@
+> Legacy note:
+> Canonical style guidance now lives in `docs/ui/OVERCLOCK_UI_SYSTEM.md`.
+> Keep this file only as a temporary reference while app-local docs are being consolidated.
+
 # Site Styles & Theme
 
 Dark-first, zinc-based palette. Tailwind v4 + `react-icons` + `lucide-react`. Font: Geist Sans.
