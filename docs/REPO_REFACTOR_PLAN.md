@@ -8,6 +8,7 @@ Working plan. Update this document as refactor phases land.
 - Phase 2A: Shared app-shell/navigation/presence relocation completed
 - Phase 2B: Shared profile edit UI relocation completed
 - Phase 2C: Shared matches/realtime UI relocation completed
+- Phase 3A: Competitive shared UI extraction completed
 
 ### Phase 1 Completed
 
@@ -60,6 +61,14 @@ Working plan. Update this document as refactor phases land.
 - updated the shared notification menu client and the route-local matches refresh wrapper to import the shared helper from `overclock/components/matches/*`
 - completed the Phase 2 cleanup checkpoint by deleting the replaced legacy `overclock/app/components/play-invite-realtime-refresh.tsx` copy after active imports were verified
 - left notification business logic, matches business logic, presence architecture, and realtime infrastructure unchanged
+
+### Phase 3A Completed
+
+- moved the clearly shared competitive hero-picker UI into:
+  - `overclock/features/competitive/components/role-hero-picker.tsx`
+- updated the competitive role editor to import the picker from `overclock/features/competitive/components/*`
+- deleted the replaced legacy `overclock/components/competitive/role-hero-picker.tsx` copy after active imports were verified
+- left account-only competitive forms, onboarding logic, public-profile rendering, and competitive persistence logic unchanged
 
 ## Legacy Cleanup Pending
 

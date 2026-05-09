@@ -6,7 +6,6 @@ import {
   saveCompetitiveRoleProfile,
 } from "@/app/account/competitive/actions";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { RoleHeroPicker } from "@/components/competitive/role-hero-picker";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
+import { RoleHeroPicker } from "@/features/competitive/components/role-hero-picker";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import type {
   CompetitiveRankTier,

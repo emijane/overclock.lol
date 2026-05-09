@@ -53,6 +53,7 @@ Read AGENTS.md first.
 - `overclock/components/navigation/`: shared navigation and menu UI
 - `overclock/components/presence/`: shared presence state and badges
 - `overclock/features/`: cross-route feature-owned shared code
+- `overclock/features/competitive/`: shared competitive-domain UI
 - `overclock/lib/`: infra and domain helpers
 - `overclock/tests/`: tests
 - `overclock/supabase/`: active migrations
