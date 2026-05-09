@@ -74,7 +74,7 @@ Working plan. Update this document as refactor phases land.
 
 - remove thin route-local wrappers only after all direct imports are updated
 - review remaining route-local profile media editor files before any shared extraction
-- defer deletion of placeholder folders and generated artifacts to the dedicated cleanup phase
+- defer deletion of generated artifacts to the dedicated cleanup phase
 
 ## Scope
 
