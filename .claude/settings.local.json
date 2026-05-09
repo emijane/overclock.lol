@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell -Command \"\\(Get-Content 'c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\account\\\\posts\\\\page.tsx'\\) -replace 'flex h-180 flex-col', 'flex h-270 flex-col' | Set-Content 'c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\account\\\\posts\\\\page.tsx' -Encoding utf8\")"
+      "Bash(powershell -Command \"\\(Get-Content 'c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\account\\\\posts\\\\page.tsx'\\) -replace 'flex h-180 flex-col', 'flex h-270 flex-col' | Set-Content 'c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\account\\\\posts\\\\page.tsx' -Encoding utf8\")",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)"
     ]
   }
 }

@@ -43,6 +43,7 @@
   - actions stay small and right-aligned
   - bio width stays capped
   - username remains muted
+  - owner "Edit profile" button routes to `/account` — there is no inline edit modal on the profile page
 - Avoid:
   - moving actions above identity
   - large stat dashboards under the name
@@ -116,7 +117,7 @@
   - tiny text action
 - References:
   - `global-auth-bar.tsx`
-  - `profile-edit-modal-shell.tsx`
+  - `account/profile-edit-form.tsx`
   - `lfg-role-picker.tsx`
   - `global-notifications-menu-client.tsx`
 - Rules:
@@ -130,21 +131,24 @@
 - Purpose: focused editing without leaving context
 - Structure:
   - dark scrim
-  - centered or bottom-sheet container
-  - rounded top on mobile, full rounded on desktop
-  - bordered header/footer
-  - scrollable body
+  - centered container
+  - `rounded-[28px]` shell, `border border-white/8 bg-[#05070b]`
+  - standard card shadow
+  - `border-b border-white/6` header divider
+  - `border-t border-white/6` footer divider
 - References:
-  - `profile-edit-modal-shell.tsx`
   - `featured-video-modal.tsx`
-  - upload flows in avatar/cover buttons
+  - `avatar-upload-button.tsx` (avatar crop modal)
+  - `profile-cover-upload-button.tsx` (cover crop modal)
 - Rules:
-  - body scrolls, shell stays fixed
-  - close action is top-right circular icon
-  - footer actions stay compact
+  - close action is top-right circular icon button (`h-8 w-8`, `XIcon`, `border-white/10 bg-white/5`)
+  - footer cancel uses `inline-flex h-9 items-center border border-white/10 bg-white/5`
+  - footer confirm uses `inline-flex h-9 items-center bg-sky-400`
+  - footer actions stay compact and right-aligned
 - Avoid:
   - huge empty margins
   - full-screen light modals
+  - text pill cancel buttons in the header
 
 ## Forms
 - Purpose: low-friction editing in dense dark surfaces
@@ -247,6 +251,25 @@
   - `account/profile-edit-form.tsx`
 - Avoid:
   - bright untreated covers behind white text
+
+## Profile Edit Page (`/account`)
+- Purpose: single hub for all profile updates — avatar, cover, bio, socials, region, timezone
+- Structure:
+  - inline cover strip (`h-24`, `rounded-t-[21px]`) with "Update cover" pill button bottom-right
+  - avatar circle (`h-20 w-20`, `rounded-full`) overlapping the cover bottom-left
+  - form fields below (`px-4 pb-4 sm:px-5`)
+  - "Save" button right-aligned at the bottom
+- References:
+  - `account/profile-edit-form.tsx` — layout shell
+  - `account/avatar-upload-button.tsx` — avatar crop modal trigger
+  - `profile-cover-upload-button.tsx` — cover crop modal trigger
+  - `profile-edit-form-fields.tsx` — all text/select fields
+- Rules:
+  - clicking the avatar circle opens the avatar crop modal (`AvatarUploadButton`)
+  - clicking "Update cover" opens the cover crop modal (`ProfileCoverUploadButton`)
+  - there is no profile edit modal on `/u/[username]` — the "Edit profile" button routes here
+- Avoid:
+  - adding separate edit modals on the profile page
 
 ## Edit Actions
 - Pattern:

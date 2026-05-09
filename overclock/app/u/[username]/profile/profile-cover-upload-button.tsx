@@ -2,7 +2,7 @@
 
 import type { ChangeEvent } from "react";
 import Cropper, { type Area, type Point } from "react-easy-crop";
-import { CameraIcon } from "lucide-react";
+import { CameraIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -136,7 +136,7 @@ export function ProfileCoverUploadButton() {
         type="button"
         onClick={handleOpenPicker}
         disabled={isSubmitting}
-        className="inline-flex h-7 items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-950/90 px-2.5 text-[11px] font-medium tracking-[-0.01em] text-zinc-100 shadow-sm shadow-black/30 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-950 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/8 bg-zinc-950/90 px-2.5 text-[11px] font-medium tracking-[-0.01em] text-zinc-100 shadow-sm shadow-black/30 transition-all duration-200 hover:border-white/12 hover:bg-zinc-950 disabled:cursor-wait disabled:opacity-70"
       >
         <CameraIcon className="h-3 w-3 shrink-0" />
         {isSubmitting ? "Uploading..." : "Update cover"}
@@ -145,13 +145,13 @@ export function ProfileCoverUploadButton() {
       {imageSrc && typeof document !== "undefined"
         ? createPortal(
             <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6">
-          <div className="w-full max-w-3xl rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 shadow-2xl shadow-black/40 sm:p-6">
-            <div className="flex items-start justify-between gap-4">
+          <div className="w-full max-w-3xl rounded-[28px] border border-white/8 bg-[#05070b] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
+            <div className="flex items-start justify-between gap-4 border-b border-white/6 pb-5">
               <div>
-                <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
+                <h2 className="text-[17px] font-semibold tracking-[-0.04em] text-zinc-50">
                   Adjust cover photo
                 </h2>
-                <p className="mt-1 text-sm text-zinc-400">
+                <p className="mt-1 text-sm text-zinc-500">
                   Drag to reposition and use zoom to frame your cover.
                 </p>
               </div>
@@ -160,14 +160,15 @@ export function ProfileCoverUploadButton() {
                 type="button"
                 onClick={closeModal}
                 disabled={isSubmitting}
-                className="rounded-full border border-zinc-800 px-3 py-1.5 text-sm text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label="Close"
               >
-                Cancel
+                <XIcon className="h-4 w-4" />
               </button>
             </div>
 
             <div
-              className="relative mt-5 overflow-hidden rounded-[24px] bg-zinc-950"
+              className="relative mt-5 overflow-hidden rounded-[22px] bg-zinc-950"
               style={{ aspectRatio: PROFILE_COVER_ASPECT_RATIO }}
             >
               <Cropper
@@ -183,7 +184,7 @@ export function ProfileCoverUploadButton() {
             </div>
 
             <div className="mt-5 grid gap-2">
-              <label className="text-sm text-zinc-300" htmlFor="cover-zoom">
+              <label className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500" htmlFor="cover-zoom">
                 Zoom
               </label>
               <input
@@ -194,7 +195,7 @@ export function ProfileCoverUploadButton() {
                 step={0.01}
                 value={zoom}
                 onChange={(event) => setZoom(Number(event.target.value))}
-                className="w-full accent-sky-400"
+                className="w-full accent-zinc-400"
               />
               <p className="text-xs text-zinc-500">
                 Processed as WebP. Original uploads can be up to {PROFILE_COVER_IMAGE_MAX_MB} MB.
@@ -207,12 +208,12 @@ export function ProfileCoverUploadButton() {
               </div>
             ) : null}
 
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="mt-5 flex justify-end gap-3 border-t border-white/6 pt-4">
               <button
                 type="button"
                 onClick={closeModal}
                 disabled={isSubmitting}
-                className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -220,7 +221,7 @@ export function ProfileCoverUploadButton() {
                 type="button"
                 onClick={() => void handleUpload()}
                 disabled={isSubmitting}
-                className="rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Uploading..." : "Save cover"}
               </button>

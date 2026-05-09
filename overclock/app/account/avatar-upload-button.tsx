@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { CameraIcon } from "lucide-react";
+import { CameraIcon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -132,13 +132,13 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
       {imageFile && typeof document !== "undefined"
         ? createPortal(
             <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 px-4 py-6">
-              <div className="w-full max-w-sm rounded-[28px] border border-zinc-800 bg-zinc-900 p-5 shadow-2xl shadow-black/40">
-                <div className="flex items-start justify-between gap-4">
+              <div className="w-full max-w-sm rounded-[28px] border border-white/8 bg-[#05070b] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="flex items-start justify-between gap-4 border-b border-white/6 pb-5">
                   <div>
-                    <h2 className="text-lg font-semibold tracking-[-0.03em] text-zinc-50">
+                    <h2 className="text-[17px] font-semibold tracking-[-0.04em] text-zinc-50">
                       Adjust profile photo
                     </h2>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-zinc-500">
                       Drag to reposition and zoom to frame.
                     </p>
                   </div>
@@ -146,9 +146,10 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     type="button"
                     onClick={closeModal}
                     disabled={isSubmitting}
-                    className="rounded-full border border-zinc-800 px-3 py-1.5 text-sm text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label="Close"
                   >
-                    Cancel
+                    <XIcon className="h-4 w-4" />
                   </button>
                 </div>
 
@@ -179,7 +180,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                 </div>
 
                 <div className="mt-5 grid gap-2">
-                  <label className="text-sm text-zinc-300" htmlFor="avatar-zoom">
+                  <label className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500" htmlFor="avatar-zoom">
                     Zoom
                   </label>
                   <input
@@ -190,7 +191,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     step={0.01}
                     value={scale}
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="w-full accent-sky-400"
+                    className="w-full accent-zinc-400"
                   />
                   <p className="text-xs text-zinc-500">
                     Processed as WebP. Original uploads can be up to {PROFILE_AVATAR_MAX_MB} MB.
@@ -203,12 +204,12 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                   </div>
                 ) : null}
 
-                <div className="mt-5 flex justify-end gap-3">
+                <div className="mt-5 flex justify-end gap-3 border-t border-white/6 pt-4">
                   <button
                     type="button"
                     onClick={closeModal}
                     disabled={isSubmitting}
-                    className="rounded-full border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     Cancel
                   </button>
@@ -216,7 +217,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     type="button"
                     onClick={() => void handleUpload()}
                     disabled={isSubmitting}
-                    className="rounded-full bg-sky-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                    className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSubmitting ? "Uploading..." : "Save photo"}
                   </button>
