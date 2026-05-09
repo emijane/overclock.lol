@@ -1,19 +1,22 @@
 # User Search
 
 ## Overview
-- Adds compact user search to the main menu.
+- Compact user search in the main menu with a live dropdown.
+- Full search results page at `/search/users?q=`.
 - Searches public profiles by `username` and `display_name`.
-- Shows a live dropdown with avatar, display name, and `@username`.
+- Shows avatar, display name, and `@username` in both surfaces.
 - Selecting a result opens that user's public profile.
 
 ## Architecture
-- Main nav UI:
+- Main nav dropdown UI:
   - `overclock/components/navigation/main-menu-user-search.tsx`
-- Search API route:
+- Full search results page:
+  - `overclock/app/search/users/page.tsx`
+- Search API route (used by dropdown):
   - `overclock/app/api/users/search/route.ts`
-- Shared client/server query helpers:
+- Shared client/server constants and types:
   - `overclock/lib/profiles/profile-search-shared.ts`
-- Query + sanitization helpers:
+- Server-side query function:
   - `overclock/lib/profiles/public-profile-search.ts`
 - Rate limiting:
   - `overclock/lib/profiles/profile-search-rate-limit.ts`
@@ -30,7 +33,7 @@
   - username prefix match: `username ILIKE '{query}%'`
   - display name contains match: `display_name ILIKE '%{query}%'`
 - Results are merged and deduplicated by username.
-- Result limit: `6`
+- Result limit: `6` for the API route, `5` shown in the dropdown, `20` on the search page
 
 ## Sanitization And Security
 - Input normalization:
@@ -56,19 +59,31 @@
 - Client also debounces requests by `220ms` to reduce load.
 
 ## UI Behavior
-- Compact search input is added to the main menu.
-- Hidden on smaller screens to preserve current mobile/nav behavior.
+
+### Main menu dropdown
+- Compact search input in the main menu, hidden on small screens.
 - Dropdown opens while typing valid input.
+- Shows up to `5` results.
+- Footer row "View all results for '{query}'" links to `/search/users?q=`.
 - Dropdown states:
   - loading: `Searching...`
   - no results: `No players found.`
   - error: route error message
-- Result row contents:
-  - avatar
-  - display name
-  - `@username`
+
+### Search results page (`/search/users?q=`)
+- Server component — reads `q` from URL search params.
+- Renders a search input (form GET) pre-populated from the URL.
+- Shows up to `20` results.
+- Calls `searchPublicProfiles` directly (no extra API hop).
+- Page states:
+  - no query: prompt to enter a username or display name
+  - no results: "No players found for '{query}'"
+  - error: "Unable to search right now."
+
+### Both surfaces
+- Result row: avatar, display name, `@username`
 - Missing avatar uses first-letter fallback.
-- Duplicate display names are handled by always showing `@username`.
+- Duplicate display names handled by always showing `@username`.
 
 ## Interaction Handling
 - Clicking a result opens `/u/[username]`.
@@ -88,9 +103,11 @@
 - duplicate display names
 - missing avatar
 - no results
-- loading state
+- loading state (dropdown)
 - network/server error state
 - special character input
+- query read from URL on page load
+- URL change resets search page results
 
 ## Visibility And Exclusions
 - Search only returns rows visible through current public profile access rules.

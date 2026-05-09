@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   normalizeProfileSearchQuery,
   PROFILE_SEARCH_QUERY_MAX_LENGTH,
+  PROFILE_SEARCH_DROPDOWN_LIMIT,
   type PublicProfileSearchResult,
 } from "@/lib/profiles/profile-search-shared";
 
@@ -188,14 +189,14 @@ export function MainMenuUserSearch() {
             <div className="px-4 py-3 text-sm text-zinc-500">No players found.</div>
           ) : (
             <ul>
-              {results.map((result, index) => {
+              {results.slice(0, PROFILE_SEARCH_DROPDOWN_LIMIT).map((result, index) => {
                 const href = `/u/${result.username}`;
                 const isActive = index === activeIndex;
 
                 return (
                   <li
                     key={result.username}
-                    className={index < results.length - 1 ? "border-b border-white/6" : ""}
+                    className="border-b border-white/6"
                   >
                     <Link
                       href={href}
@@ -232,6 +233,18 @@ export function MainMenuUserSearch() {
                   </li>
                 );
               })}
+              <li>
+                <Link
+                  href={`/search/users?q=${encodeURIComponent(normalizeProfileSearchQuery(query))}`}
+                  onClick={() => {
+                    setIsOpen(false);
+                    setActiveIndex(-1);
+                  }}
+                  className="flex items-center px-4 py-3 text-[13px] text-zinc-400 transition hover:bg-white/2.5 hover:text-zinc-100"
+                >
+                  View all results for &ldquo;{normalizeProfileSearchQuery(query)}&rdquo;
+                </Link>
+              </li>
             </ul>
           )}
         </div>

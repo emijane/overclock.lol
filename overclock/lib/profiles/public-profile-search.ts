@@ -6,6 +6,8 @@ import {
   type PublicProfileSearchResult,
 } from "@/lib/profiles/profile-search-shared";
 
+export type { PublicProfileSearchResult };
+
 type ProfileSearchRow = {
   avatar_updated_at: string | null;
   avatar_url: string | null;
@@ -29,7 +31,7 @@ function mapProfileSearchRow(row: ProfileSearchRow): PublicProfileSearchResult |
   };
 }
 
-export async function searchPublicProfiles(rawQuery: string) {
+export async function searchPublicProfiles(rawQuery: string, limit = PROFILE_SEARCH_RESULT_LIMIT) {
   const query = normalizeProfileSearchQuery(rawQuery);
 
   if (!query) {
@@ -45,13 +47,13 @@ export async function searchPublicProfiles(rawQuery: string) {
       .select("username, display_name, avatar_url, avatar_updated_at")
       .not("username", "is", null)
       .ilike("username", `${escapedQuery}%`)
-      .limit(PROFILE_SEARCH_RESULT_LIMIT),
+      .limit(limit),
     supabase
       .from("profiles")
       .select("username, display_name, avatar_url, avatar_updated_at")
       .not("username", "is", null)
       .ilike("display_name", `%${escapedQuery}%`)
-      .limit(PROFILE_SEARCH_RESULT_LIMIT),
+      .limit(limit),
   ]);
 
   if (usernameMatchesResult.error) {
@@ -79,7 +81,7 @@ export async function searchPublicProfiles(rawQuery: string) {
     seenUsernames.add(mappedResult.username);
     results.push(mappedResult);
 
-    if (results.length >= PROFILE_SEARCH_RESULT_LIMIT) {
+    if (results.length >= limit) {
       break;
     }
   }
