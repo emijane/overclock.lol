@@ -1,6 +1,6 @@
 "use client";
 
-import { PlayInviteRealtimeRefresh } from "@/app/components/play-invite-realtime-refresh";
+import { PlayInviteRealtimeRefresh } from "@/components/matches/play-invite-realtime-refresh";
 
 type MatchesRealtimeRefreshProps = {
   currentProfileId: string;

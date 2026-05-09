@@ -3,9 +3,9 @@
 import { updateProfile } from "@/app/account/actions";
 import { AvatarUploadButton } from "@/app/account/avatar-upload-button";
 import { ProfileCoverUploadButton } from "@/app/u/[username]/profile/profile-cover-upload-button";
-import { ProfileEditFormFields } from "@/app/u/[username]/profile/profile-edit-form-fields";
-import { useProfileEditForm } from "@/app/u/[username]/profile/use-profile-edit-form";
-import type { ProfileEditProfile } from "@/app/u/[username]/profile/profile-edit-types";
+import { ProfileEditFormFields } from "@/features/profile/components/profile-edit-form-fields";
+import { useProfileEditForm } from "@/features/profile/hooks/use-profile-edit-form";
+import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";
 
 type ProfileEditFormProps = {
   avatarUrl: string | null;

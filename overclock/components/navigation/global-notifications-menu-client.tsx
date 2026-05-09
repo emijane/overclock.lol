@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlayInviteRealtimeRefresh } from "@/app/components/play-invite-realtime-refresh";
+import { PlayInviteRealtimeRefresh } from "@/components/matches/play-invite-realtime-refresh";
 
 type GlobalNotificationsMenuClientProps = {
   currentProfileId: string;

@@ -11,10 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { REGION_OPTIONS } from "@/lib/profiles/profile-options";
 import { PROFILE_BIO_MAX_CHARACTERS } from "@/lib/profiles/profile-bio";
+import { REGION_OPTIONS } from "@/lib/profiles/profile-options";
 
-import type { ProfileEditProfile } from "./profile-edit-types";
+import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";
 
 type ProfileEditFormState = {
   battleNetHandle: string;
@@ -114,7 +114,6 @@ export function ProfileEditFormFields({
 }: ProfileEditFormFieldsProps) {
   return (
     <div className="grid gap-3">
-      {/* Identity */}
       <div className="grid gap-2">
         <div className="relative">
           <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
@@ -148,7 +147,6 @@ export function ProfileEditFormFields({
         </div>
       </div>
 
-      {/* Socials — 2-col grid */}
       <div className="grid gap-2">
         {profile.discordUsername ? (
           <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2">
@@ -161,61 +159,60 @@ export function ProfileEditFormFields({
         ) : null}
         <div className="grid grid-cols-2 gap-2">
           <div className="relative">
-          <SiBattledotnet className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#00AEF0]" />
-          <input
-            name="battlenet_handle"
-            type="text"
-            value={form.battleNetHandle}
-            onChange={(e) => form.setBattleNetHandle(e.target.value)}
-            placeholder="Battle.net"
-            aria-label="Battle.net tag"
-            maxLength={40}
-            className={socialInput}
-          />
-        </div>
+            <SiBattledotnet className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#00AEF0]" />
+            <input
+              name="battlenet_handle"
+              type="text"
+              value={form.battleNetHandle}
+              onChange={(e) => form.setBattleNetHandle(e.target.value)}
+              placeholder="Battle.net"
+              aria-label="Battle.net tag"
+              maxLength={40}
+              className={socialInput}
+            />
+          </div>
 
-        <div className="relative">
-          <FaTwitch className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9146FF]" />
-          <input
-            type="text"
-            value={form.twitchHandle}
-            onChange={(e) => form.setTwitchHandle(e.target.value)}
-            placeholder="Twitch"
-            aria-label="Twitch username"
-            maxLength={100}
-            className={socialInput}
-          />
-        </div>
+          <div className="relative">
+            <FaTwitch className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9146FF]" />
+            <input
+              type="text"
+              value={form.twitchHandle}
+              onChange={(e) => form.setTwitchHandle(e.target.value)}
+              placeholder="Twitch"
+              aria-label="Twitch username"
+              maxLength={100}
+              className={socialInput}
+            />
+          </div>
 
-        <div className="relative">
-          <FaXTwitter className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="text"
-            value={form.xHandle}
-            onChange={(e) => form.setXHandle(e.target.value)}
-            placeholder="X"
-            aria-label="X username"
-            maxLength={60}
-            className={socialInput}
-          />
-        </div>
+          <div className="relative">
+            <FaXTwitter className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            <input
+              type="text"
+              value={form.xHandle}
+              onChange={(e) => form.setXHandle(e.target.value)}
+              placeholder="X"
+              aria-label="X username"
+              maxLength={60}
+              className={socialInput}
+            />
+          </div>
 
-        <div className="relative">
-          <FaYoutube className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#FF0033]" />
-          <input
-            type="text"
-            value={form.youtubeHandle}
-            onChange={(e) => form.setYoutubeHandle(e.target.value)}
-            placeholder="YouTube"
-            aria-label="YouTube channel"
-            maxLength={100}
-            className={socialInput}
-          />
-        </div>
+          <div className="relative">
+            <FaYoutube className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#FF0033]" />
+            <input
+              type="text"
+              value={form.youtubeHandle}
+              onChange={(e) => form.setYoutubeHandle(e.target.value)}
+              placeholder="YouTube"
+              aria-label="YouTube channel"
+              maxLength={100}
+              className={socialInput}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Region & Server */}
       <div className="grid grid-cols-2 gap-2">
         <DropdownField
           inputName="region"

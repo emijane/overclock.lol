@@ -49,8 +49,10 @@ Read AGENTS.md first.
 - `overclock/app/`: route files and route-local UI
 - `overclock/components/`: shared UI
 - `overclock/components/app-shell/`: shared layout and shell primitives
+- `overclock/components/matches/`: shared matches and realtime UI helpers
 - `overclock/components/navigation/`: shared navigation and menu UI
 - `overclock/components/presence/`: shared presence state and badges
+- `overclock/features/`: cross-route feature-owned shared code
 - `overclock/lib/`: infra and domain helpers
 - `overclock/tests/`: tests
 - `overclock/supabase/`: active migrations

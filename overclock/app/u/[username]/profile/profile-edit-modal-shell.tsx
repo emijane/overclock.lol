@@ -5,10 +5,9 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import { updateProfile } from "@/app/account/actions";
-
-import { ProfileEditFormFields } from "./profile-edit-form-fields";
-import type { ProfileEditProfile } from "./profile-edit-types";
-import { useProfileEditForm } from "./use-profile-edit-form";
+import { ProfileEditFormFields } from "@/features/profile/components/profile-edit-form-fields";
+import { useProfileEditForm } from "@/features/profile/hooks/use-profile-edit-form";
+import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";
 
 type ProfileEditModalShellProps = {
   isOpen: boolean;

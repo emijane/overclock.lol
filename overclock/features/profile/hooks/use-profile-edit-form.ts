@@ -10,7 +10,7 @@ import {
   stripSocialPrefix,
 } from "@/lib/profiles/profile-editor";
 
-import type { ProfileEditProfile } from "./profile-edit-types";
+import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";
 
 export function useProfileEditForm(profile: ProfileEditProfile) {
   const [battleNetHandle, setBattleNetHandle] = useState(profile.socials.battlenet);

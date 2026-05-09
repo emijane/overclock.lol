@@ -1,13 +1,13 @@
 # Overclock Repo Refactor Plan
 
-Planning only. No files moved, deleted, or edited as part of this plan.
+Working plan. Update this document as refactor phases land.
 
 ## Status
 
 - Phase 1: Inventory and doc alignment completed
 - Phase 2A: Shared app-shell/navigation/presence relocation completed
-- Phase 2B: Not started
-- Phase 2C: Not started
+- Phase 2B: Shared profile edit UI relocation completed
+- Phase 2C: Shared matches/realtime UI relocation completed
 
 ### Phase 1 Completed
 
@@ -25,24 +25,47 @@ Planning only. No files moved, deleted, or edited as part of this plan.
 
 ### Phase 2A Completed
 
-- copied obvious shared app-shell components from `overclock/app/components/*` to:
+- moved obvious shared app-shell components from `overclock/app/components/*` to:
   - `overclock/components/app-shell/page-container.tsx`
   - `overclock/components/app-shell/page-reveal.tsx`
   - `overclock/components/app-shell/global-background-shell.tsx`
   - `overclock/components/app-shell/global-footer.tsx`
-- copied obvious shared navigation components from `overclock/app/components/*` to:
+- moved obvious shared navigation components from `overclock/app/components/*` to:
   - `overclock/components/navigation/global-auth-bar.tsx`
   - `overclock/components/navigation/global-notifications-menu.tsx`
   - `overclock/components/navigation/global-notifications-menu-client.tsx`
   - `overclock/components/navigation/main-menu-user-search.tsx`
   - `overclock/components/navigation/user-menu.tsx`
-- copied obvious shared presence components from `overclock/app/components/*` to:
+- moved obvious shared presence components from `overclock/app/components/*` to:
   - `overclock/components/presence/presence-provider.tsx`
   - `overclock/components/presence/presence-indicator.tsx`
   - `overclock/components/presence/looking-to-play-badge.tsx`
 - updated route imports to consume the new shared component paths
-- intentionally kept the legacy `overclock/app/components/*` copies in place until import resolution and verification were complete
-- left matches/realtime code in place for now; `global-notifications-menu-client.tsx` still references `@/app/components/play-invite-realtime-refresh`
+- completed the Phase 2 cleanup checkpoint by deleting the replaced legacy `overclock/app/components/*` duplicates after active imports were verified
+
+### Phase 2B Completed
+
+- moved the clearly shared profile edit UI cluster into `overclock/features/profile/*`:
+  - `overclock/features/profile/components/profile-edit-form-fields.tsx`
+  - `overclock/features/profile/hooks/use-profile-edit-form.ts`
+  - `overclock/features/profile/types/profile-edit-types.ts`
+- updated both account profile editing and public profile editing to import the shared profile edit UI from `overclock/features/profile/*`
+- completed the Phase 2 cleanup checkpoint by deleting the replaced legacy route-local profile edit duplicates after active imports were verified
+- left avatar and cover upload flows in their existing route-local locations because they are not yet clearly shared and still depend on account-route actions
+
+### Phase 2C Completed
+
+- moved the shared realtime refresh helper into:
+  - `overclock/components/matches/play-invite-realtime-refresh.tsx`
+- updated the shared notification menu client and the route-local matches refresh wrapper to import the shared helper from `overclock/components/matches/*`
+- completed the Phase 2 cleanup checkpoint by deleting the replaced legacy `overclock/app/components/play-invite-realtime-refresh.tsx` copy after active imports were verified
+- left notification business logic, matches business logic, presence architecture, and realtime infrastructure unchanged
+
+## Legacy Cleanup Pending
+
+- remove thin route-local wrappers only after all direct imports are updated
+- review remaining route-local profile media editor files before any shared extraction
+- defer deletion of placeholder folders and generated artifacts to the dedicated cleanup phase
 
 ## Scope
 
@@ -536,31 +559,31 @@ Only after migration or verification is complete:
 
 ## Migration Strategy
 
-### Phase 1: Inventory and Doc Alignment
+### Migration Phase 1: Inventory and Doc Alignment
 
 - no behavior changes
 - confirm ownership of docs, Supabase, shared components
 
-### Phase 2: Shared-Component Relocation
+### Migration Phase 2: Shared-Component Relocation
 
 Phase 2A:
 - move obvious app-shell/navigation/presence shared components
 
 Phase 2B:
-- move profile-related shared UI
+- move clearly shared profile edit UI
 
 Phase 2C:
-- move realtime/matches shared systems
+- move clearly shared matches/realtime UI helpers
 
-### Phase 3: Feature Extraction
+### Migration Phase 3: Feature Extraction
 
 - move profile and competitive cross-route code into feature folders
 
-### Phase 4: Cleanup
+### Migration Phase 4: Cleanup
 
 - delete unused wrappers, empty folders, stale placeholders
 
-### Phase 5: Consistency Pass
+### Migration Phase 5: Consistency Pass
 
 - update READMEs, docs references, and import conventions
 
@@ -586,7 +609,7 @@ Phase 2C:
 - notification infrastructure
 until structural cleanup is stable.
 
-## ## Documentation Rules
+## Documentation Rules
 
 - Every structural change must update affected docs immediately
 - Do not allow docs to become stale between phases
@@ -596,7 +619,7 @@ until structural cleanup is stable.
 - Keep docs concise and optimized for AI scanning
 - AGENTS.md should remain the canonical AI entrypoint
 
-## ## Execution Constraints
+## Execution Constraints
 
 - Execute one phase at a time
 - Do not combine phases
