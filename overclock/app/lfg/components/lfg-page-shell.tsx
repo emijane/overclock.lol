@@ -374,11 +374,9 @@ export async function LFGPageShell({
                     ) : null}
                     <h1
                       className={`font-semibold tracking-[-0.075em] text-zinc-50 ${
-                        isComposerOnlyPage
+                        isComposerOnlyPage || isDuosPage || type === "stacks"
                           ? "text-4xl sm:text-5xl"
-                          : isDuosPage
-                            ? "text-4xl sm:text-5xl"
-                            : "text-5xl sm:text-6xl"
+                          : "text-5xl sm:text-6xl"
                       }`}
                     >
                       {displayTitle}
