@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 
@@ -192,7 +193,7 @@ function buildRoleOptions(
   return COMPETITIVE_ROLE_OPTIONS.map((role) => {
     const roleProfile =
       competitiveProfile.roles.find((candidate) => candidate.role === role) ?? null;
-    const heroPool = heroPools.heroPicks[role]
+    const heroPool = (heroPools.heroPicks[role] ?? [])
       .map((heroId) => HERO_ROSTER.find((hero) => hero.id === heroId) ?? null)
       .filter((hero): hero is (typeof HERO_ROSTER)[number] => Boolean(hero));
 
@@ -231,9 +232,9 @@ async function getLFGPageData(
   }
 
   const [activePostCounts, competitiveProfile, heroPools] = await Promise.all([
-    getActiveLFGPostCountsByRole({ lfgType: type, profileId }),
-    getCompetitiveProfile(profileId),
-    getProfileHeroPools(profileId),
+    getActiveLFGPostCountsByRole({ lfgType: type, profileId }).catch(() => ({ tank: 0, dps: 0, support: 0 })),
+    getCompetitiveProfile(profileId).catch(() => null),
+    getProfileHeroPools(profileId).catch(() => ({ heroPicks: { tank: [], dps: [], support: [] } })),
   ]);
 
   return {
@@ -241,7 +242,7 @@ async function getLFGPageData(
     competitiveProfile,
     posts: postsResult.posts,
     postsErrorMessage: postsResult.postsErrorMessage,
-    roleOptions: buildRoleOptions(competitiveProfile, heroPools),
+    roleOptions: competitiveProfile ? buildRoleOptions(competitiveProfile, heroPools) : [],
   };
 }
 
@@ -277,18 +278,21 @@ export async function LFGPageShell({
     type && shouldShowFeed
       ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
       : emptyPageData;
-  const composerRoleOptions =
+  const composerOnlyProfile =
     shouldShowComposer && !shouldShowFeed && profile?.id
-      ? buildRoleOptions(
-          await getCompetitiveProfile(profile.id),
-          await getProfileHeroPools(profile.id)
-        )
-      : pageData.roleOptions;
+      ? await Promise.all([
+          getCompetitiveProfile(profile.id),
+          getProfileHeroPools(profile.id),
+        ])
+      : null;
+  const composerRoleOptions = composerOnlyProfile
+    ? buildRoleOptions(composerOnlyProfile[0], composerOnlyProfile[1])
+    : pageData.roleOptions;
   const competitiveProfileForComposer =
     shouldShowComposer && profile?.id
-      ? shouldShowFeed
-        ? pageData.competitiveProfile
-        : await getCompetitiveProfile(profile.id)
+      ? composerOnlyProfile
+        ? composerOnlyProfile[0]
+        : pageData.competitiveProfile
       : null;
   const hasConfiguredRole = composerRoleOptions.some(
     (roleOption) => roleOption.isConfigured
@@ -323,7 +327,7 @@ export async function LFGPageShell({
             id: post.id,
             profileId: post.profileId,
           })),
-        })
+        }).catch(() => ({}))
       : {};
 
   return (
@@ -488,11 +492,13 @@ export async function LFGPageShell({
             {shouldShowFeed ? (
               <>
                 {type === "duos" || type === "stacks" ? (
-                  <LFGFeedFiltersPanel
-                    activeCount={visiblePostCount}
-                    selectedFilters={feedFilters}
-                    tone={isDuosPage ? "duos" : "default"}
-                  />
+                  <Suspense fallback={<div className="h-14" />}>
+                    <LFGFeedFiltersPanel
+                      activeCount={visiblePostCount}
+                      selectedFilters={feedFilters}
+                      tone={isDuosPage ? "duos" : "default"}
+                    />
+                  </Suspense>
                 ) : (
                   <LFGFiltersBar description={filtersDescription} />
                 )}

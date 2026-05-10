@@ -5,6 +5,11 @@ import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-
 export const LFG_TYPE_OPTIONS = ["duos", "stacks", "scrims", "teams"] as const;
 export type LFGType = (typeof LFG_TYPE_OPTIONS)[number];
 
+export const SHIPPED_LFG_TYPES = ["duos", "stacks"] as const;
+export type ShippedLFGType = (typeof SHIPPED_LFG_TYPES)[number];
+
+export const LFG_POST_TITLE_MAX_CHARACTERS = 80;
+
 export const LFG_POST_STATUS_OPTIONS = ["active", "closed", "archived"] as const;
 export type LFGPostStatus = (typeof LFG_POST_STATUS_OPTIONS)[number];
 
@@ -93,6 +98,10 @@ export function getLFGLookingForRoleLabel(role: LFGLookingForRole) {
 
 export function isLFGType(value: string): value is LFGType {
   return LFG_TYPE_OPTIONS.includes(value as LFGType);
+}
+
+export function isShippedLFGType(value: string): value is ShippedLFGType {
+  return SHIPPED_LFG_TYPES.includes(value as ShippedLFGType);
 }
 
 export function isLFGGameMode(value: string): value is LFGGameMode {

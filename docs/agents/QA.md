@@ -10,6 +10,7 @@ Current shipped LFG routes:
 - `/duos`
 - `/duos/create`
 - `/stacks`
+- `/stacks/create`
 
 Roadmap-only, not currently shipped:
 

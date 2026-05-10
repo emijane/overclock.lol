@@ -86,6 +86,7 @@ export function LFGPostCard({
     tone === "duos" ? "border-white/[0.08]" : "border-white/[0.05]";
   const article = (
     <article
+      aria-label={post.title}
       className={`group h-full rounded-[22px] border ${outerBorderClassName} bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
@@ -150,7 +151,7 @@ export function LFGPostCard({
               ) : null}
             </div>
             {createdAtLabel ? (
-              <p className="text-right text-[10px] font-medium text-zinc-700">
+              <p suppressHydrationWarning className="text-right text-[10px] font-medium text-zinc-700">
                 Posted {createdAtLabel}
               </p>
             ) : null}

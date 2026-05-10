@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-const MAX_POST_TITLE_LENGTH = 80;
+import { LFG_POST_TITLE_MAX_CHARACTERS } from "@/lib/lfg/lfg-post-types";
 
 export function PostTitleField() {
   const inputId = useId();
@@ -23,14 +23,14 @@ export function PostTitleField() {
             type="text"
             required
             name="title"
-            maxLength={MAX_POST_TITLE_LENGTH}
+            maxLength={LFG_POST_TITLE_MAX_CHARACTERS}
             value={value}
             onChange={(event) => setValue(event.target.value)}
             placeholder="Looking for hitscan duo for comp climb..."
             className="h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500"
           />
           <span className="shrink-0 text-xs text-zinc-600">
-            {value.length}/{MAX_POST_TITLE_LENGTH}
+            {value.length}/{LFG_POST_TITLE_MAX_CHARACTERS}
           </span>
         </div>
       </div>

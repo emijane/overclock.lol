@@ -32,6 +32,7 @@ Current shipped LFG surfaces:
 - `/duos`
 - `/duos/create`
 - `/stacks`
+- `/stacks/create`
 
 Roadmap-only, not currently shipped routes:
 

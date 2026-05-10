@@ -6,6 +6,8 @@ import {
 } from "@/app/lfg/section-page";
 
 const STACKS_PAGE_CONFIG = {
+  composerMode: "cta",
+  createPostHref: "/stacks/create",
   title: "Stacks",
   description: "Build a group for flexible sessions or full team queue.",
   filtersDescription:

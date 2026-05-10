@@ -673,6 +673,23 @@ export async function closeOwnedActiveLFGPost(input: {
   profileId: string;
 }) {
   const supabase = await createClient();
+
+  const { data: ownerCheck, error: ownerError } = await supabase
+    .from("lfg_posts")
+    .select("id")
+    .eq("id", input.postId)
+    .eq("profile_id", input.profileId)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (ownerError) {
+    throw ownerError;
+  }
+
+  if (!ownerCheck) {
+    return normalizeLFGCloseResult({ updated: false, error_code: "forbidden" });
+  }
+
   const { data, error } = await supabase.rpc("close_owned_lfg_post", {
     p_post_id: input.postId,
   });

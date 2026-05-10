@@ -15,7 +15,8 @@ import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { normalizeLFGPostTitle } from "@/lib/lfg/lfg-post-title";
 import {
   isLFGGameMode,
-  isLFGType,
+  isShippedLFGType,
+  LFG_POST_TITLE_MAX_CHARACTERS,
   normalizeLFGLookingForRoles,
   type CompetitiveProfileSnapshot,
   type LFGGameMode,
@@ -24,6 +25,8 @@ import {
   closeOwnedActiveLFGPost,
   createLFGPostAtomically,
   hasMatchingActiveLFGPost,
+  hasReachedActiveLFGPostLimit,
+  hasReachedLFGPostCreationLimit,
 } from "@/lib/lfg/posts";
 
 function lfgRedirect(
@@ -48,7 +51,7 @@ function redirectWithMessage(
 function getSafeReturnPath(value: FormDataEntryValue | null) {
   const path = value?.toString().trim() ?? "";
 
-  if (!path.startsWith("/") || path.startsWith("//")) {
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) {
     return null;
   }
 
@@ -99,7 +102,7 @@ export async function createLFGPost(formData: FormData) {
   const title = normalizeLFGPostTitle(formData.get("title")?.toString() ?? "");
   const postingRoleValue = formData.get("posting_role")?.toString().trim() ?? "";
 
-  if (!isLFGType(lfgTypeValue)) {
+  if (!isShippedLFGType(lfgTypeValue)) {
     redirect("/duos?message=Unable+to+create+that+post.&type=error");
   }
 
@@ -115,8 +118,8 @@ export async function createLFGPost(formData: FormData) {
     lfgRedirect(lfgTypeValue, "Choose a mode before posting.");
   }
 
-  if (title.length > 80) {
-    lfgRedirect(lfgTypeValue, "Title must be 80 characters or fewer.");
+  if (title.length > LFG_POST_TITLE_MAX_CHARACTERS) {
+    lfgRedirect(lfgTypeValue, `Title must be ${LFG_POST_TITLE_MAX_CHARACTERS} characters or fewer.`);
   }
 
   const { user, profile } = await getCurrentProfile();
@@ -143,6 +146,26 @@ export async function createLFGPost(formData: FormData) {
     lfgRedirect(lfgTypeValue, requiredProfileError);
   }
 
+  let reachedCreationLimit = false;
+  let reachedActiveLimit = false;
+
+  try {
+    [reachedCreationLimit, reachedActiveLimit] = await Promise.all([
+      hasReachedLFGPostCreationLimit({ lfgType: lfgTypeValue, profileId: profile.id }),
+      hasReachedActiveLFGPostLimit({ lfgType: lfgTypeValue, postingRole: postingRoleValue as CompetitiveRole, profileId: profile.id }),
+    ]);
+  } catch {
+    lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
+  }
+
+  if (reachedCreationLimit) {
+    lfgRedirect(lfgTypeValue, "You've created too many posts recently. Try again later.");
+  }
+
+  if (reachedActiveLimit) {
+    lfgRedirect(lfgTypeValue, "You already have the maximum number of active posts for this role.");
+  }
+
   const postingRole = postingRoleValue as CompetitiveRole;
   const gameMode = gameModeValue as LFGGameMode;
   const roleProfile =
@@ -155,7 +178,7 @@ export async function createLFGPost(formData: FormData) {
     );
   }
 
-  const heroPoolSnapshot = buildHeroPoolSnapshot(heroPools.heroPicks[postingRole]);
+  const heroPoolSnapshot = buildHeroPoolSnapshot(heroPools.heroPicks[postingRole] ?? []);
   const competitiveProfileSnapshot: CompetitiveProfileSnapshot = {
     hero_pool: heroPoolSnapshot,
     main_role: competitiveProfile.mainRole,
@@ -240,6 +263,7 @@ export async function createLFGPost(formData: FormData) {
   }
 
   revalidatePath(`/${lfgTypeValue}`);
+  revalidatePath("/lfg");
   if (profile.username) {
     revalidatePath(`/u/${profile.username}`);
   }
