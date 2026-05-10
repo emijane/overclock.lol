@@ -83,32 +83,27 @@
 - Do not fork the design language between them
 
 ## Filters
-- Current expectation:
-  - quick horizontal wrap
-  - dropdown-based
-  - immediately reflected in URL
-  - active chips shown beneath
-- Reference: `lfg-feed-filters-panel.tsx`
+- Duos and Stacks use a sticky left sidebar on desktop (`lg:flex`), hidden on mobile
+- Mobile fallback: horizontal dropdown panel (`LFGFeedFiltersPanel`) shown only on `< lg`
+- All filter state is URL-driven (searchParams), immediately reflected
+- Sidebar reference: `lfg-sidebar.tsx`
+- Horizontal panel reference: `lfg-feed-filters-panel.tsx`
 - Rules:
   - `Role` and `Needs` remain separate
-  - min/max rank stay explicit
-  - region is optional and lightweight
-  - clear-all should stay visible only when useful
+  - Rank: single-tier selection sets both `min_rank` and `max_rank` to the same value
+  - Region is optional and lightweight
+  - Clear Filters link shown only when any filter is active
 
-## Dropdown Usage Rules
-- Use dropdowns for constrained enums:
-  - mode
-  - role
-  - needs
-  - rank bounds
-  - region
-- Keep labels short:
-  - `Mode`
-  - `Role`
-  - `Needs`
-  - `Min rank`
-  - `Max rank`
-- Do not convert these into long form sections or side panels
+## Sidebar Layout Rules (Duos / Stacks)
+- Sidebar width: `w-52` (208px)
+- Contains: LFG section nav, Create Post CTA, inline filter sections per category
+- LFG nav items: Overview, Duos, Stacks (Scrims + Teams marked "Soon", non-interactive)
+- Filter sections: Mode, Role, Needs, Region, Rank — each collapsible, open by default
+- Selected item indicator: filled `bg-sky-400` dot; unselected: transparent dot placeholder
+- Create Post button: `bg-violet-600/80` pill, links to create page or login for guests
+- Sidebar is a flex sibling to the main section inside `PageContainer`
+- `PageContainer` uses `flex items-start gap-6` when sidebar layout is active
+- Main section gets `min-w-0 flex-1` to fill remaining width
 
 ## Role Selection
 - Posting role is a primary identity choice

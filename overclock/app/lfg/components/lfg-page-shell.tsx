@@ -29,6 +29,7 @@ import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
 import { LFGGameModePicker } from "./lfg-game-mode-picker";
 import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
 import { LFGPostList } from "./lfg-post-list";
+import { LFGSidebar } from "./lfg-sidebar";
 import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
@@ -234,7 +235,7 @@ async function getLFGPageData(
   const [activePostCounts, competitiveProfile, heroPools] = await Promise.all([
     getActiveLFGPostCountsByRole({ lfgType: type, profileId }).catch(() => ({ tank: 0, dps: 0, support: 0 })),
     getCompetitiveProfile(profileId).catch(() => null),
-    getProfileHeroPools(profileId).catch(() => ({ heroPicks: { tank: [], dps: [], support: [] } })),
+    getProfileHeroPools(profileId).catch(() => ({ heroPicks: { tank: [], dps: [], support: [] }, roles: [] })),
   ]);
 
   return {
@@ -319,6 +320,7 @@ export async function LFGPageShell({
   const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
   const isDuosPage = type === "duos";
+  const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const inviteStates =
     shouldShowFeed
       ? await getLFGPostInviteStates({
@@ -348,12 +350,26 @@ export async function LFGPageShell({
       />
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer
-        className={`relative z-10 flex flex-col ${
-          isComposerOnlyPage ? "gap-2" : "gap-3"
+        className={`relative z-10 ${
+          isComposerOnlyPage
+            ? "flex flex-col gap-2"
+            : useSidebarLayout
+              ? "flex items-start gap-6"
+              : "flex flex-col gap-3"
         }`}
         maxWidthClassName={isComposerOnlyPage ? "max-w-4xl" : "max-w-[96rem]"}
       >
-        <section className="rounded-[28px]">
+        {useSidebarLayout && type ? (
+          <Suspense fallback={<div className="hidden w-52 shrink-0 lg:block" />}>
+            <LFGSidebar
+              createPostHref={resolvedCreatePostHref}
+              isLoggedIn={Boolean(user)}
+              selectedFilters={feedFilters}
+              type={type}
+            />
+          </Suspense>
+        ) : null}
+        <section className={`rounded-[28px] ${useSidebarLayout ? "min-w-0 flex-1" : ""}`}>
           <div className="overflow-hidden rounded-[28px]">
             <header
               className={`px-5 sm:px-6 ${
@@ -491,7 +507,17 @@ export async function LFGPageShell({
 
             {shouldShowFeed ? (
               <>
-                {type === "duos" || type === "stacks" ? (
+                {useSidebarLayout ? (
+                  <div className="lg:hidden">
+                    <Suspense fallback={<div className="h-14" />}>
+                      <LFGFeedFiltersPanel
+                        activeCount={visiblePostCount}
+                        selectedFilters={feedFilters}
+                        tone={isDuosPage ? "duos" : "default"}
+                      />
+                    </Suspense>
+                  </div>
+                ) : type === "duos" || type === "stacks" ? (
                   <Suspense fallback={<div className="h-14" />}>
                     <LFGFeedFiltersPanel
                       activeCount={visiblePostCount}
