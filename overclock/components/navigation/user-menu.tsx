@@ -51,7 +51,7 @@ export function UserMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full cursor-pointer"
+          className="oc-profile-icon-button rounded-full cursor-pointer"
         >
           <Avatar className="h-9 w-9">
             {avatarUrl ? (
@@ -65,10 +65,10 @@ export function UserMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-56 border border-white/10 !bg-black text-zinc-100"
+        className="w-56 border border-white/[0.06] !bg-[#111111] text-zinc-100"
       >
         <DropdownMenuLabel className="px-3 py-2">
-          <span className="block text-sm font-semibold text-zinc-100">
+          <span className="oc-profile-display block text-sm font-semibold text-zinc-100">
             @{visibleName}
           </span>
         </DropdownMenuLabel>

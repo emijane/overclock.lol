@@ -159,7 +159,7 @@ export function MainMenuUserSearch() {
 
   return (
     <div ref={containerRef} className="relative hidden md:block">
-      <div className="flex h-9 w-56 items-center gap-2 rounded-full border border-white/10 bg-white/3 px-3 text-zinc-300 transition hover:border-white/16 focus-within:border-white/18 sm:w-60 lg:w-64">
+      <div className="flex h-9 w-56 items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-zinc-300 transition hover:border-white/[0.1] focus-within:border-white/[0.12] focus-within:bg-[#171717] sm:w-60 lg:w-64">
         <SearchIcon className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
         <input
           type="search"
@@ -176,19 +176,19 @@ export function MainMenuUserSearch() {
           placeholder="Search players"
           autoComplete="off"
           spellCheck={false}
-          className="h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
           aria-label="Search players by username or display name"
         />
       </div>
 
       {showDropdown ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-80 w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-80 w-full overflow-hidden rounded-[14px] border border-white/[0.06] bg-[#111111] shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
           {isLoading ? (
-            <div className="px-4 py-3 text-sm text-zinc-500">Searching...</div>
+            <div className="oc-profile-meta px-4 py-3 text-sm">Searching...</div>
           ) : errorMessage ? (
-            <div className="px-4 py-3 text-sm text-rose-300">{errorMessage}</div>
+            <div className="oc-profile-meta px-4 py-3 text-sm text-rose-300">{errorMessage}</div>
           ) : results.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-zinc-500">No players found.</div>
+            <div className="oc-profile-meta px-4 py-3 text-sm">No players found.</div>
           ) : (
             <ul>
               {results.slice(0, PROFILE_SEARCH_DROPDOWN_LIMIT).map((result, index) => {
@@ -198,7 +198,7 @@ export function MainMenuUserSearch() {
                 return (
                   <li
                     key={result.username}
-                    className="border-b border-white/6"
+                    className="border-b border-white/[0.06]"
                   >
                     <Link
                       href={href}
@@ -208,7 +208,7 @@ export function MainMenuUserSearch() {
                       }}
                       onMouseEnter={() => setActiveIndex(index)}
                       className={`flex items-center gap-3 px-4 py-3 transition ${
-                        isActive ? "bg-white/4" : "hover:bg-white/2.5"
+                        isActive ? "bg-[#171717]" : "hover:bg-white/[0.02]"
                       }`}
                     >
                       <Avatar className="h-8 w-8 shrink-0 rounded-full">
@@ -224,10 +224,10 @@ export function MainMenuUserSearch() {
                       </Avatar>
 
                       <div className="min-w-0">
-                        <p className="truncate text-[13px] font-semibold text-zinc-100">
+                        <p className="oc-profile-display truncate text-[13px] font-semibold text-zinc-100">
                           {result.displayName ?? result.username}
                         </p>
-                        <p className="truncate text-[11px] text-zinc-500">
+                        <p className="oc-profile-meta truncate text-[11px]">
                           @{result.username}
                         </p>
                       </div>
@@ -242,7 +242,7 @@ export function MainMenuUserSearch() {
                     setIsOpen(false);
                     setActiveIndex(-1);
                   }}
-                  className="flex items-center px-4 py-3 text-[13px] text-zinc-400 transition hover:bg-white/2.5 hover:text-zinc-100"
+                  className="oc-profile-display flex items-center px-4 py-3 text-[13px] text-zinc-400 transition hover:bg-white/[0.02] hover:text-zinc-100"
                 >
                   View all results for &ldquo;{normalizeProfileSearchQuery(query)}&rdquo;
                 </Link>

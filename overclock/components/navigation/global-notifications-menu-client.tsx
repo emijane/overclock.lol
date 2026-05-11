@@ -149,11 +149,11 @@ export function GlobalNotificationsMenuClient({
           <button
             type="button"
             aria-label="Notifications"
-            className="relative inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-zinc-300 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-zinc-100"
+            className="oc-profile-icon-button relative inline-flex h-9 w-9 cursor-pointer items-center justify-center text-zinc-300 hover:text-zinc-100"
           >
             <BellIcon className="h-4.5 w-4.5" />
             {totalCount > 0 ? (
-              <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full border border-sky-300/30 bg-sky-400 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-slate-950">
+              <span className="oc-profile-meta absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full border border-sky-300/30 bg-sky-400 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-slate-950">
                 {visibleBadgeLabel}
               </span>
             ) : null}
@@ -162,30 +162,30 @@ export function GlobalNotificationsMenuClient({
 
         <DropdownMenuContent
           align="end"
-          className="w-[22rem] overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] p-0 text-zinc-100 shadow-[0_24px_70px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]"
+          className="w-[22rem] overflow-hidden rounded-[14px] border border-white/[0.06] bg-[#111111] p-0 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]"
         >
           {!hasNotifications ? (
             <div className="px-5 py-8 text-center">
-              <p className="text-sm font-medium text-zinc-200">No pending notifications</p>
+              <p className="oc-profile-display text-sm font-medium text-zinc-200">No pending notifications</p>
               <p className="mt-1.5 text-sm leading-6 text-zinc-500">
                 Invite and stack join requests will show up here.
               </p>
               <Link
                 href="/matches"
-                className="mt-4 inline-flex text-sm font-medium text-zinc-400 transition hover:text-zinc-100"
+                className="oc-profile-display mt-4 inline-flex text-sm font-medium text-zinc-400 transition hover:text-zinc-100"
               >
                 View all
               </Link>
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-between border-b border-white/6 px-4 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+              <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.18em]">
                   Pending
                 </p>
                 <Link
                   href="/matches"
-                  className="text-xs font-medium text-zinc-400 transition hover:text-zinc-100"
+                  className="oc-profile-display text-xs font-medium text-zinc-400 transition hover:text-zinc-100"
                 >
                   View all
                 </Link>
@@ -202,9 +202,9 @@ export function GlobalNotificationsMenuClient({
                   return (
                     <li
                       key={invite.id}
-                      className={!isLast ? "border-b border-white/6" : ""}
+                      className={!isLast ? "border-b border-white/[0.06]" : ""}
                     >
-                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/[0.025]">
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/[0.02]">
                         <Avatar className="h-8 w-8 shrink-0 rounded-full">
                           {invite.participant.avatarUrl ? (
                             <AvatarImage
@@ -225,28 +225,28 @@ export function GlobalNotificationsMenuClient({
                             {participantHref ? (
                               <Link
                                 href={participantHref}
-                                className="text-[13px] font-semibold text-zinc-100 hover:underline"
+                                className="oc-profile-display text-[13px] font-semibold text-zinc-100 hover:underline"
                               >
                                 {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
                               </Link>
                             ) : (
-                              <span className="text-[13px] font-semibold text-zinc-100">
+                              <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
                                 {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
                               </span>
                             )}
                             {invite.participant.username ? (
-                              <span className="truncate text-[11px] text-zinc-500">
+                              <span className="oc-profile-meta truncate text-[11px]">
                                 @{invite.participant.username}
                               </span>
                             ) : null}
                           </div>
                           {(invite.message ?? invite.sourcePostTitle) ? (
-                            <p className="mt-0.5 truncate text-[11px] text-zinc-500">
+                            <p className="oc-profile-meta mt-0.5 truncate text-[11px]">
                               {invite.message ?? invite.sourcePostTitle}
                             </p>
                           ) : null}
                           {feedbackByInviteId[invite.id] ? (
-                            <p className="mt-0.5 text-[11px] text-rose-300">
+                            <p className="oc-profile-meta mt-0.5 text-[11px] text-rose-300">
                               {feedbackByInviteId[invite.id]}
                             </p>
                           ) : null}
@@ -258,7 +258,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleInviteAction(invite.id, "accept")}
-                            className="inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Accept"}
                           </button>
@@ -267,7 +267,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleInviteAction(invite.id, "decline")}
-                            className="cursor-pointer text-[10px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-meta cursor-pointer text-[10px] font-medium transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Decline"}
                           </button>
@@ -288,9 +288,9 @@ export function GlobalNotificationsMenuClient({
                   return (
                     <li
                       key={req.id}
-                      className={!isLast ? "border-b border-white/6" : ""}
+                      className={!isLast ? "border-b border-white/[0.06]" : ""}
                     >
-                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/2.5">
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/[0.02]">
                         <Avatar className="h-8 w-8 shrink-0 rounded-full">
                           {req.requester.avatarUrl ? (
                             <AvatarImage
@@ -308,26 +308,26 @@ export function GlobalNotificationsMenuClient({
                             {requesterHref ? (
                               <Link
                                 href={requesterHref}
-                                className="text-[13px] font-semibold text-zinc-100 hover:underline"
+                                className="oc-profile-display text-[13px] font-semibold text-zinc-100 hover:underline"
                               >
                                 {req.requester.displayName ?? req.requester.username ?? "Unknown player"}
                               </Link>
                             ) : (
-                              <span className="text-[13px] font-semibold text-zinc-100">
+                              <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
                                 {req.requester.displayName ?? req.requester.username ?? "Unknown player"}
                               </span>
                             )}
                             {req.requester.username ? (
-                              <span className="truncate text-[11px] text-zinc-500">
+                              <span className="oc-profile-meta truncate text-[11px]">
                                 @{req.requester.username}
                               </span>
                             ) : null}
                           </div>
-                          <p className="mt-0.5 truncate text-[11px] text-zinc-500">
+                          <p className="oc-profile-meta mt-0.5 truncate text-[11px]">
                             Wants to join as {roleLabel} &mdash; {req.postTitle}
                           </p>
                           {feedbackByInviteId[req.id] ? (
-                            <p className="mt-0.5 text-[11px] text-rose-300">
+                            <p className="oc-profile-meta mt-0.5 text-[11px] text-rose-300">
                               {feedbackByInviteId[req.id]}
                             </p>
                           ) : null}
@@ -339,7 +339,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleStackRequestAction(req.id, "accept")}
-                            className="inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Accept"}
                           </button>
@@ -348,7 +348,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleStackRequestAction(req.id, "decline")}
-                            className="cursor-pointer text-[10px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-meta cursor-pointer text-[10px] font-medium transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Decline"}
                           </button>

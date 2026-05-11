@@ -37,14 +37,14 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
   const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
-    <header className="relative z-[70] border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
+    <header className="relative z-[70] border-b border-white/[0.06] bg-[#111111] px-6 py-3.5 backdrop-blur-md">
       <PageContainer
         className="flex items-center justify-between gap-4"
         maxWidthClassName="max-w-[120rem]"
       >
         <Link
           href="/"
-          className="flex items-center gap-3 text-xl font-bold tracking-tight text-white"
+          className="oc-profile-display flex items-center gap-3 text-[21px] font-bold tracking-[-0.04em] text-white"
         >
           <Image
             src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
@@ -65,7 +65,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
+                className="oc-profile-display rounded-full border border-transparent px-3 py-2 text-[13px] font-semibold tracking-[-0.02em] text-zinc-400 transition hover:border-white/[0.08] hover:bg-[#171717] hover:text-zinc-100"
               >
                 {link.label}
               </Link>
