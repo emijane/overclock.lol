@@ -61,7 +61,7 @@ export function ProfileHeader({
   profileAction,
 }: ProfileHeaderProps) {
   return (
-    <section className="bg-[#090909]">
+    <section className="bg-transparent">
       <div className="pb-4 sm:pb-5">
         <div
           className="relative overflow-hidden px-4 py-3 sm:px-6"
@@ -88,7 +88,7 @@ export function ProfileHeader({
           )}
           <div className="relative z-10 flex items-start justify-between gap-3">
             <div>
-              <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.08] bg-[#090909]/88 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+              <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.04] bg-[#090909]/74 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
                 <span className="text-zinc-500">Connections</span>
                 <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
                   {connectionCount}
@@ -97,7 +97,7 @@ export function ProfileHeader({
             </div>
             <div className="flex items-start gap-1.5">
               {platform ? (
-                <span className="oc-profile-meta inline-flex items-center rounded-[10px] border border-white/[0.08] bg-[#090909]/88 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+                <span className="oc-profile-meta inline-flex items-center rounded-[10px] border border-white/[0.04] bg-[#090909]/74 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
                   {platform}
                 </span>
               ) : null}

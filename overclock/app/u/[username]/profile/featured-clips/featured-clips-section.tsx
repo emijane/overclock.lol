@@ -35,7 +35,7 @@ export function FeaturedClipsSection({
   }
 
   return (
-    <section className="border-t border-white/[0.06] px-5 py-4 sm:px-6 sm:py-5">
+    <section className="border-t border-white/[0.04] px-5 py-4 sm:px-6 sm:py-5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
@@ -55,7 +55,7 @@ export function FeaturedClipsSection({
           ))}
         </div>
       ) : (
-        <div className="mt-3 rounded-[12px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
+        <div className="mt-3 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-4 py-3 text-sm text-zinc-400">
           Add up to two featured videos to show them here.
         </div>
       )}

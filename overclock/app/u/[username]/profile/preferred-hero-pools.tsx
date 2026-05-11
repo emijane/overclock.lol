@@ -95,7 +95,7 @@ export function PreferredHeroPools({
   );
 
   return (
-    <section className="border-t border-white/[0.06] px-5 pb-4 pt-3 sm:px-6 sm:pb-5 sm:pt-3.5">
+    <section className="border-t border-white/[0.04] px-5 pb-4 pt-3 sm:px-6 sm:pb-5 sm:pt-3.5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
@@ -116,7 +116,7 @@ export function PreferredHeroPools({
       </div>
 
       {selectedHeroes.length === 0 ? (
-        <div className="mt-3 rounded-[12px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-zinc-500">
+        <div className="mt-3 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-4 py-3 text-sm text-zinc-500">
           Add your main roles and comfort heroes to show them here.
         </div>
       ) : (
@@ -140,7 +140,7 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="oc-profile-card p-3"
+                className="rounded-[10px] border border-white/[0.07] bg-white/[0.025] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)] transition-[border-color,background-color,transform] duration-150 hover:-translate-y-px hover:border-white/[0.11] hover:bg-white/[0.035]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

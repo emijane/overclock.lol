@@ -21,7 +21,7 @@ export function FeaturedClipCard({
 
   return (
     <div
-      className="oc-profile-card group overflow-hidden"
+      className="group overflow-hidden rounded-[10px] border border-white/[0.07] bg-white/[0.025] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)] transition-[border-color,background-color,transform] duration-150 hover:-translate-y-px hover:border-white/[0.11] hover:bg-white/[0.035]"
     >
       <div className="relative aspect-video overflow-hidden bg-zinc-900">
         {isPlaying && embedUrl ? (

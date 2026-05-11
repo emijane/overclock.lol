@@ -140,6 +140,31 @@ Use one main accent color. Keep rank colors controlled. Do not use rainbow UI.
 
 ---
 
+## Atmosphere
+
+Global atmosphere should support the UI, not compete with it.
+
+Use:
+- layered dark tones instead of flat black
+- low-opacity radial lighting
+- faint dotted texture
+- soft vignette
+- slightly brighter center-content zone
+
+Reference implementation:
+
+```css
+background:
+  radial-gradient(circle at 50% 18%, rgba(255,255,255,0.045), transparent 24%),
+  radial-gradient(circle at 22% 0%, rgba(120,140,180,0.06), transparent 26%),
+  radial-gradient(circle at 80% 8%, rgba(255,255,255,0.03), transparent 20%),
+  linear-gradient(180deg, #0b0b0d 0%, #09090b 44%, #070709 100%);
+```
+
+Dot overlays should stay quiet and masked, not decorative.
+
+---
+
 ## Borders / Radius
 
 ```css
@@ -161,6 +186,26 @@ Avoid:
 
 ---
 
+## Surface Hierarchy
+
+Prefer continuous surfaces over nested dashboard boxes.
+
+Use:
+- one main page atmosphere
+- light sectional breaks
+- small local surfaces for cards and controls
+- tonal layering before explicit boxes
+
+Avoid:
+- giant feed wrappers
+- cards inside containers inside panels
+- stacked boxed widgets
+- hard toolbar rows
+
+On denser feed pages, search and filters should feel embedded into the same surface as the feed.
+
+---
+
 ## Cards
 
 Cards should feel part of the feed, not floating SaaS blocks.
@@ -171,6 +216,25 @@ Use:
 - compact padding
 - clear hierarchy
 - small metadata
+- local grounding so the object reads clearly against the page
+
+Suggested dense feed card treatment:
+
+```css
+background: rgba(255,255,255,0.025);
+border: 1px solid rgba(255,255,255,0.07);
+box-shadow:
+  inset 0 1px 0 rgba(255,255,255,0.035),
+  0 10px 22px rgba(0,0,0,0.18);
+```
+
+Hover:
+
+```css
+background: rgba(255,255,255,0.035);
+border-color: rgba(255,255,255,0.11);
+transform: translateY(-1px);
+```
 
 Avoid:
 - giant padding
@@ -216,6 +280,18 @@ Show:
 - join/request activity
 
 Reduce dead space.
+
+Composition rules:
+- title to search to feed should read as one continuous flow
+- returned-result metadata should sit quietly in the header edge, not as a standalone module
+- search should feel infrastructural, not like a detached toolbar
+- feed density should come from rhythm and grouping, not more chrome
+
+For Duos specifically:
+- narrower overall content width than broad dashboard pages
+- tighter sidebar-to-feed gap
+- three-column desktop rhythm works better than overly wide four-column spread
+- post cards should feel embedded into the feed plane, not pasted onto the background
 
 ---
 

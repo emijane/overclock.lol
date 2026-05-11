@@ -156,33 +156,36 @@ export default async function ProfilePage({
     ].filter((link): link is NonNullable<typeof link> => Boolean(link));
 
     return (
-        <main className="relative -mt-[76px] flex-1 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.045),transparent_24%),radial-gradient(circle_at_22%_0%,rgba(120,140,180,0.06),transparent_26%),radial-gradient(circle_at_80%_8%,rgba(255,255,255,0.03),transparent_20%),linear-gradient(180deg,#0b0b0d_0%,#09090b_44%,#070709_100%)] px-4 pb-4 pt-[92px] text-[15px] text-zinc-100 sm:px-6 sm:pb-5 sm:pt-[92px]">
+        <main className="oc-atmosphere-bg relative -mt-[76px] flex-1 px-4 pb-4 pt-[92px] text-[15px] text-zinc-100 sm:px-6 sm:pb-5 sm:pt-[92px]">
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 -top-24 bottom-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.5)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-24 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+                className="oc-atmosphere-dots-primary pointer-events-none absolute inset-x-0 -top-24 bottom-0"
             />
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 -top-24 bottom-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.42)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-18 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+                className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-x-0 -top-24 bottom-0"
             />
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 -top-24 bottom-0 bg-[radial-gradient(circle_at_50%_22%,rgba(255,255,255,0.03),transparent_30%)]"
+                className="oc-atmosphere-spotlight pointer-events-none absolute inset-x-0 -top-24 bottom-0"
             />
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 -top-24 bottom-0 bg-[radial-gradient(circle_at_center,transparent_46%,rgba(0,0,0,0.18)_78%,rgba(0,0,0,0.34)_100%)]"
+                className="oc-atmosphere-vignette pointer-events-none absolute inset-x-0 -top-24 bottom-0"
             />
             <div className="relative z-10 mx-auto grid w-full max-w-4xl gap-2.5">
                 {isOwner ? (
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
                 <div
-                    className="oc-profile-shell rounded-[12px] bg-[var(--profile-rank-border)] p-px shadow-none"
-                    style={profileAccentStyle}
+                    className="rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.014)_0%,rgba(255,255,255,0.006)_100%)] shadow-none"
+                    style={{
+                        ...profileAccentStyle,
+                        borderColor: "var(--profile-rank-border)",
+                    }}
                 >
                     <div
-                        className="overflow-hidden rounded-[11px] bg-[#090909]"
+                        className="overflow-hidden rounded-[9px] bg-transparent"
                         style={profileAccentStyle}
                     >
                         <EditableProfileHeader
