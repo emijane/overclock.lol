@@ -37,34 +37,42 @@ export default async function MatchesPage() {
   ]);
 
   return (
-    <main className="relative flex-1 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
+    <main className="relative flex-1 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.045),transparent_24%),radial-gradient(circle_at_22%_0%,rgba(120,140,180,0.06),transparent_26%),radial-gradient(circle_at_80%_8%,rgba(255,255,255,0.03),transparent_20%),linear-gradient(180deg,#0b0b0d_0%,#09090b_44%,#070709_100%)] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-size-[11px_11px] opacity-68 mask-[radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.42)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-18 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-size-[11px_11px] opacity-64 mask-[radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.36)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-14 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.03),transparent_30%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_46%,rgba(0,0,0,0.18)_78%,rgba(0,0,0,0.34)_100%)]"
       />
       <PageContainer
         className="relative z-10 flex flex-col gap-3"
         maxWidthClassName="max-w-4xl"
       >
         <MatchesRealtimeRefresh currentProfileId={profile.id} />
-        <section className="rounded-[28px]">
-          <div className="overflow-hidden rounded-[28px]">
+        <section className="oc-profile-shell rounded-[12px] bg-[#111111] p-px">
+          <div className="overflow-hidden rounded-[11px] bg-[#090909]">
             <PageReveal>
-              <header className="py-4 sm:py-5">
+              <header className="px-5 py-4 sm:px-6 sm:py-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-2">
                     <Link
                       href="/account"
-                      className="inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                      className="oc-profile-meta inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
                     >
                       <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
                       Account
                     </Link>
-                    <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
+                    <h1 className="oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]">
                       Connections
                     </h1>
                   </div>
@@ -73,20 +81,20 @@ export default async function MatchesPage() {
             </PageReveal>
 
             <PageReveal delay={1}>
-              <section className="grid gap-4">
+              <section className="grid gap-3 px-5 pb-5 sm:px-6 sm:pb-6">
                 <MatchInvitesTabs
                   incomingInvites={incomingPendingInvites}
                   outgoingInvites={pendingSentInvites}
                 />
 
-                <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-                  <div className="flex items-center justify-between border-b border-white/6 px-4 py-3 sm:px-5">
+                <div className="overflow-hidden rounded-[12px] border border-white/[0.06] bg-white/[0.02]">
+                  <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 sm:px-5">
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                      <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.18em]">
                         Active connections
                       </p>
                     </div>
-                    <span className="inline-flex min-w-8 items-center justify-center rounded-full border border-white/8 bg-white/[0.04] px-2.5 py-1 text-xs font-semibold tabular-nums text-zinc-300">
+                    <span className="oc-profile-meta inline-flex min-w-8 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold tabular-nums text-zinc-300">
                       {connections.length}
                     </span>
                   </div>
@@ -97,7 +105,7 @@ export default async function MatchesPage() {
                         {connections.map((connection, index) => (
                           <li
                             key={connection.id}
-                            className={index < connections.length - 1 ? "border-b border-white/6" : ""}
+                            className={index < connections.length - 1 ? "border-b border-white/[0.06]" : ""}
                           >
                             <MatchCard connection={connection} />
                           </li>
@@ -105,8 +113,8 @@ export default async function MatchesPage() {
                       </ul>
                     </div>
                   ) : (
-                    <div className="px-5 py-10 text-center">
-                      <p className="text-sm text-zinc-500">No connections yet.</p>
+                    <div className="px-5 py-8 text-center">
+                      <p className="oc-profile-meta text-sm">No connections yet.</p>
                     </div>
                   )}
                 </div>

@@ -26,34 +26,34 @@ export function MatchInvitesTabs({
   const visibleInvites = activeTab === "incoming" ? incomingInvites : outgoingInvites;
 
   return (
-    <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <div className="flex items-center gap-1 border-b border-white/6 px-3 py-2 sm:px-4">
+    <div className="overflow-hidden rounded-[12px] border border-white/[0.06] bg-white/[0.02]">
+      <div className="flex items-center gap-1 border-b border-white/[0.06] px-3 py-2 sm:px-4">
         <button
           type="button"
           onClick={() => setActiveTab("incoming")}
-          className={`inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-sm font-semibold transition ${
+          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
             activeTab === "incoming"
-              ? "bg-white/8 text-zinc-100"
+              ? "bg-white/[0.08] text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
           Incoming
           {incomingInvites.length > 0 ? (
-            <span className="ml-1.5 tabular-nums text-zinc-400">{incomingInvites.length}</span>
+            <span className="oc-profile-meta ml-1.5 tabular-nums text-zinc-400">{incomingInvites.length}</span>
           ) : null}
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("outgoing")}
-          className={`inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-sm font-semibold transition ${
+          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
             activeTab === "outgoing"
-              ? "bg-white/8 text-zinc-100"
+              ? "bg-white/[0.08] text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
           Outgoing
           {outgoingInvites.length > 0 ? (
-            <span className="ml-1.5 tabular-nums text-zinc-400">{outgoingInvites.length}</span>
+            <span className="oc-profile-meta ml-1.5 tabular-nums text-zinc-400">{outgoingInvites.length}</span>
           ) : null}
         </button>
       </div>
@@ -63,7 +63,7 @@ export function MatchInvitesTabs({
           {visibleInvites.map((invite, index) => (
             <li
               key={invite.id}
-              className={index < visibleInvites.length - 1 ? "border-b border-white/6" : ""}
+              className={index < visibleInvites.length - 1 ? "border-b border-white/[0.06]" : ""}
             >
               {activeTab === "incoming" ? (
                 <IncomingPendingInviteCard invite={invite as IncomingPendingPlayInvite} />
@@ -74,8 +74,8 @@ export function MatchInvitesTabs({
           ))}
         </ul>
       ) : (
-        <div className="px-5 py-8 text-center">
-          <p className="text-sm text-zinc-500">
+        <div className="px-5 py-7 text-center">
+          <p className="oc-profile-meta text-sm">
             {activeTab === "incoming" ? "No incoming invites." : "No outgoing invites."}
           </p>
         </div>

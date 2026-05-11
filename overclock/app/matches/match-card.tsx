@@ -24,7 +24,7 @@ export function MatchCard({ connection }: MatchCardProps) {
     Boolean(connection.participant.battlenetHandle);
 
   return (
-    <div className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.025] sm:px-5">
+    <div className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02] sm:px-5">
       <Avatar className="h-10 w-10 shrink-0 rounded-full">
         {connection.participant.avatarUrl ? (
           <AvatarImage
@@ -45,24 +45,24 @@ export function MatchCard({ connection }: MatchCardProps) {
           {participantHref ? (
             <Link
               href={participantHref}
-              className="cursor-pointer text-[15px] font-semibold text-zinc-100 hover:underline"
+              className="oc-profile-display cursor-pointer text-[15px] font-semibold tracking-[-0.02em] text-zinc-100 hover:underline"
             >
               {connection.participant.displayName ?? connection.participant.username ?? "Unknown player"}
             </Link>
           ) : (
-            <span className="text-[15px] font-semibold text-zinc-100">
+            <span className="oc-profile-display text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
               {connection.participant.displayName ?? connection.participant.username ?? "Unknown player"}
             </span>
           )}
           {connection.participant.username ? (
-            <span className="truncate text-sm text-zinc-500">
+            <span className="oc-profile-meta truncate text-[11px]">
               @{connection.participant.username}
             </span>
           ) : null}
         </div>
 
         {hasContacts ? (
-          <div className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-zinc-500">
+          <div className="oc-profile-meta mt-0.5 flex flex-wrap gap-x-3 text-[11px]">
             {connection.participant.discordUsername ? (
               <span className="flex items-center gap-1">
                 <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />

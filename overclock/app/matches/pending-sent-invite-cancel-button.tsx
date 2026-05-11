@@ -48,11 +48,11 @@ export function PendingSentInviteCancelButton({
         disabled={isPending}
         aria-disabled={isPending}
         onClick={handleCancel}
-        className="cursor-pointer text-[11px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
+        className="oc-profile-meta cursor-pointer text-[10px] font-medium transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isPending ? "Cancelling..." : "Cancel"}
       </button>
-      {feedback ? <p className="max-w-[160px] text-right text-[11px] text-rose-300">{feedback}</p> : null}
+      {feedback ? <p className="oc-profile-meta max-w-[160px] text-right text-[11px] text-rose-300">{feedback}</p> : null}
     </div>
   );
 }

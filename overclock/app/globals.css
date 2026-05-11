@@ -44,6 +44,39 @@ body {
   color: var(--oc-text-subtle);
 }
 
+.oc-atmosphere-bg {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.045), transparent 24%),
+    radial-gradient(circle at 22% 0%, rgba(120, 140, 180, 0.06), transparent 26%),
+    radial-gradient(circle at 80% 8%, rgba(255, 255, 255, 0.03), transparent 20%),
+    linear-gradient(180deg, #0b0b0d 0%, #09090b 44%, #070709 100%);
+}
+
+.oc-atmosphere-dots-primary {
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.5) 0.6px, transparent 0.95px);
+  background-size: 11px 11px;
+  opacity: 0.24;
+  mask-image: radial-gradient(circle at 34% 12%, black 0, black 12%, transparent 28%);
+}
+
+.oc-atmosphere-dots-secondary {
+  background:
+    radial-gradient(circle at center, rgba(224, 242, 254, 0.42) 0.6px, transparent 0.95px);
+  background-size: 11px 11px;
+  opacity: 0.18;
+  mask-image: radial-gradient(circle at 72% 62%, black 0, black 10%, transparent 24%);
+}
+
+.oc-atmosphere-spotlight {
+  background: radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.03), transparent 30%);
+}
+
+.oc-atmosphere-vignette {
+  background:
+    radial-gradient(circle at center, transparent 46%, rgba(0, 0, 0, 0.18) 78%, rgba(0, 0, 0, 0.34) 100%);
+}
+
 .oc-profile-shell {
   border: 1px solid var(--oc-border);
   border-radius: 12px;
