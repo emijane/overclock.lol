@@ -215,6 +215,13 @@ export async function createLFGPost(formData: FormData) {
         );
       }
 
+      if (result.errorCode === "already_in_active_stack") {
+        lfgRedirect(
+          lfgTypeValue,
+          "You already belong to an active stack. Leave or close it before creating another."
+        );
+      }
+
       if (
         result.errorCode === "unauthenticated" ||
         result.errorCode === "forbidden"

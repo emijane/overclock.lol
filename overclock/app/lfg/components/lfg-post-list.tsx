@@ -9,6 +9,9 @@ import type {
 } from "@/lib/matches/play-invite-types";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
+import { StackPostCard } from "./stack-post-card";
+
+type StackRequestStateMap = Record<string, "none" | "pending" | "accepted" | "declined">;
 
 type LFGPostListProps = {
   cardClassName?: string;
@@ -21,6 +24,7 @@ type LFGPostListProps = {
   layout?: "list" | "grid-3";
   posts: LFGPost[];
   retryHref?: string;
+  stackRequestStates?: StackRequestStateMap;
   tone?: "default" | "duos";
   viewerState?: InviteViewerState;
 };
@@ -72,6 +76,7 @@ export function LFGPostList({
   layout = "list",
   posts,
   retryHref,
+  stackRequestStates,
   tone = "default",
   viewerState = "guest",
 }: LFGPostListProps) {
@@ -121,6 +126,21 @@ export function LFGPostList({
         }
       >
         {posts.map((post) => {
+          if (post.lfgType === "stacks") {
+            const requestState = stackRequestStates?.[post.id] ?? "none";
+            return (
+              <div key={post.id}>
+                <StackPostCard
+                  cardClassName={cardClassName}
+                  currentProfileId={currentProfileId}
+                  post={post}
+                  requestState={requestState}
+                  returnPath="/stacks"
+                />
+              </div>
+            );
+          }
+
           const serverState = inviteStates?.[post.id] ?? "invite_to_play";
           const effectiveState =
             post.profileId && invitedProfileIds.has(post.profileId)

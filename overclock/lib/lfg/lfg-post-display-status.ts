@@ -39,6 +39,10 @@ export function getLFGPostDisplayStatus(input: {
     return "closed";
   }
 
+  if (input.status === "expired") {
+    return "expired";
+  }
+
   if (isLFGPostExpired(input.createdAt)) {
     return "expired";
   }

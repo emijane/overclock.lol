@@ -7,7 +7,9 @@ import { BellIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
+import type { IncomingPendingStackRequest } from "@/lib/lfg/stack-request-types";
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
+import { acceptStackJoinRequest, declineStackJoinRequest } from "@/app/stacks/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +17,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PlayInviteRealtimeRefresh } from "@/components/matches/play-invite-realtime-refresh";
 
+const ROLE_LABELS: Record<string, string> = {
+  tank: "Tank",
+  dps: "DPS",
+  support: "Support",
+};
+
 type GlobalNotificationsMenuClientProps = {
   currentProfileId: string;
   initialInvites: IncomingPendingPlayInvite[];
+  initialStackRequests: IncomingPendingStackRequest[];
   initialTotalCount: number;
 };
 
@@ -29,10 +38,12 @@ function getAvatarFallback(name: string | null, username: string | null) {
 export function GlobalNotificationsMenuClient({
   currentProfileId,
   initialInvites,
+  initialStackRequests,
   initialTotalCount,
 }: GlobalNotificationsMenuClientProps) {
   const router = useRouter();
   const [invites, setInvites] = useState(initialInvites);
+  const [stackRequests, setStackRequests] = useState(initialStackRequests);
   const [totalCount, setTotalCount] = useState(initialTotalCount);
   const [activeInviteId, setActiveInviteId] = useState<string | null>(null);
   const [feedbackByInviteId, setFeedbackByInviteId] = useState<
@@ -50,6 +61,47 @@ export function GlobalNotificationsMenuClient({
   function removeInvite(inviteId: string) {
     setInvites((current) => current.filter((invite) => invite.id !== inviteId));
     setTotalCount((current) => Math.max(0, current - 1));
+  }
+
+  function removeStackRequest(requestId: string) {
+    setStackRequests((current) => current.filter((req) => req.id !== requestId));
+    setTotalCount((current) => Math.max(0, current - 1));
+  }
+
+  function handleStackRequestAction(requestId: string, action: "accept" | "decline") {
+    setFeedbackByInviteId((prev) => ({ ...prev, [requestId]: null }));
+    setActiveInviteId(requestId);
+
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("request_id", requestId);
+      const result =
+        action === "accept"
+          ? await acceptStackJoinRequest(formData)
+          : await declineStackJoinRequest(formData);
+
+      if (result.success) {
+        removeStackRequest(requestId);
+        setActiveInviteId(null);
+        router.refresh();
+        return;
+      }
+
+      setFeedbackByInviteId((prev) => ({
+        ...prev,
+        [requestId]:
+          result.errorCode === "stack_full"
+            ? "Stack is now full."
+            : result.errorCode === "already_in_active_stack"
+              ? "That player already belongs to another active stack."
+            : result.errorCode === "role_not_needed"
+              ? "That role is no longer needed."
+              : result.errorCode === "blocked_users"
+                ? "This player can no longer join this stack."
+                : "Something went wrong. Try again.",
+      }));
+      setActiveInviteId(null);
+    });
   }
 
   function handleInviteAction(inviteId: string, action: "accept" | "decline") {
@@ -87,6 +139,7 @@ export function GlobalNotificationsMenuClient({
   }
 
   const visibleBadgeLabel = totalCount > 9 ? "9+" : String(totalCount);
+  const hasNotifications = invites.length > 0 || stackRequests.length > 0;
 
   return (
     <>
@@ -111,11 +164,11 @@ export function GlobalNotificationsMenuClient({
           align="end"
           className="w-[22rem] overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] p-0 text-zinc-100 shadow-[0_24px_70px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]"
         >
-          {invites.length === 0 ? (
+          {!hasNotifications ? (
             <div className="px-5 py-8 text-center">
-              <p className="text-sm font-medium text-zinc-200">No pending invites</p>
+              <p className="text-sm font-medium text-zinc-200">No pending notifications</p>
               <p className="mt-1.5 text-sm leading-6 text-zinc-500">
-                When someone sends you a connection request, it&apos;ll show up here.
+                Invite and stack join requests will show up here.
               </p>
               <Link
                 href="/matches"
@@ -128,7 +181,7 @@ export function GlobalNotificationsMenuClient({
             <>
               <div className="flex items-center justify-between border-b border-white/6 px-4 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                  Pending invites
+                  Pending
                 </p>
                 <Link
                   href="/matches"
@@ -144,11 +197,12 @@ export function GlobalNotificationsMenuClient({
                   const participantHref = invite.participant.username
                     ? `/u/${invite.participant.username}`
                     : null;
+                  const isLast = index === invites.length - 1 && stackRequests.length === 0;
 
                   return (
                     <li
                       key={invite.id}
-                      className={index < invites.length - 1 ? "border-b border-white/6" : ""}
+                      className={!isLast ? "border-b border-white/6" : ""}
                     >
                       <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/[0.025]">
                         <Avatar className="h-8 w-8 shrink-0 rounded-full">
@@ -213,6 +267,87 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleInviteAction(invite.id, "decline")}
+                            className="cursor-pointer text-[10px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {rowPending ? "..." : "Decline"}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+
+                {stackRequests.map((req, index) => {
+                  const rowPending = isPending && activeInviteId === req.id;
+                  const requesterHref = req.requester.username
+                    ? `/u/${req.requester.username}`
+                    : null;
+                  const isLast = index === stackRequests.length - 1;
+                  const roleLabel = ROLE_LABELS[req.requestedRole] ?? req.requestedRole;
+
+                  return (
+                    <li
+                      key={req.id}
+                      className={!isLast ? "border-b border-white/6" : ""}
+                    >
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/2.5">
+                        <Avatar className="h-8 w-8 shrink-0 rounded-full">
+                          {req.requester.avatarUrl ? (
+                            <AvatarImage
+                              src={req.requester.avatarUrl}
+                              alt={`${req.requester.displayName ?? req.requester.username ?? "Player"} avatar`}
+                            />
+                          ) : null}
+                          <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
+                            {getAvatarFallback(req.requester.displayName, req.requester.username)}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline gap-1">
+                            {requesterHref ? (
+                              <Link
+                                href={requesterHref}
+                                className="text-[13px] font-semibold text-zinc-100 hover:underline"
+                              >
+                                {req.requester.displayName ?? req.requester.username ?? "Unknown player"}
+                              </Link>
+                            ) : (
+                              <span className="text-[13px] font-semibold text-zinc-100">
+                                {req.requester.displayName ?? req.requester.username ?? "Unknown player"}
+                              </span>
+                            )}
+                            {req.requester.username ? (
+                              <span className="truncate text-[11px] text-zinc-500">
+                                @{req.requester.username}
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="mt-0.5 truncate text-[11px] text-zinc-500">
+                            Wants to join as {roleLabel} &mdash; {req.postTitle}
+                          </p>
+                          {feedbackByInviteId[req.id] ? (
+                            <p className="mt-0.5 text-[11px] text-rose-300">
+                              {feedbackByInviteId[req.id]}
+                            </p>
+                          ) : null}
+                        </div>
+
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <button
+                            type="button"
+                            disabled={isPending}
+                            aria-disabled={isPending}
+                            onClick={() => handleStackRequestAction(req.id, "accept")}
+                            className="inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {rowPending ? "..." : "Accept"}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isPending}
+                            aria-disabled={isPending}
+                            onClick={() => handleStackRequestAction(req.id, "decline")}
                             className="cursor-pointer text-[10px] font-medium text-zinc-600 transition hover:text-rose-400 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Decline"}

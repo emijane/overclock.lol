@@ -10,7 +10,13 @@ export type ShippedLFGType = (typeof SHIPPED_LFG_TYPES)[number];
 
 export const LFG_POST_TITLE_MAX_CHARACTERS = 80;
 
-export const LFG_POST_STATUS_OPTIONS = ["active", "closed", "archived"] as const;
+export const LFG_POST_STATUS_OPTIONS = [
+  "active",
+  "filled",
+  "closed",
+  "expired",
+  "archived",
+] as const;
 export type LFGPostStatus = (typeof LFG_POST_STATUS_OPTIONS)[number];
 
 export const LFG_GAME_MODE_OPTIONS = ["ranked", "quick_play"] as const;
@@ -34,6 +40,15 @@ export type CompetitiveProfileSnapshot = {
   timezone: string | null;
 };
 
+export type StackMember = {
+  avatarUrl: string | null;
+  displayName: string | null;
+  isOwner: boolean;
+  profileId: string;
+  role: CompetitiveRole;
+  username: string | null;
+};
+
 export type LFGPost = {
   author: {
     avatarUrl: string | null;
@@ -46,17 +61,21 @@ export type LFGPost = {
     username: string | null;
   };
   createdAt: string;
+  currentMemberCount: number;
+  description: string | null;
   gameMode: LFGGameMode;
   heroPool: LFGHeroSnapshot[];
   id: string;
   lfgType: LFGType;
   lookingForRoles: LFGLookingForRole[];
+  maxGroupSize: number | null;
   profileId: string | null;
   postingRole: CompetitiveRole;
   platform: string | null;
   rankDivision: number | null;
   rankTier: string;
   region: string | null;
+  stackMembers: StackMember[];
   status: LFGPostStatus;
   timezone: string | null;
   title: string;

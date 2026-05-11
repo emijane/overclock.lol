@@ -22,6 +22,7 @@ import {
   getActiveLFGPosts,
 } from "@/lib/lfg/posts";
 import { getLFGPostInviteStates } from "@/lib/matches/play-invites";
+import { getStackRequestStatesForPosts } from "@/lib/lfg/stack-requests";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -320,17 +321,26 @@ export async function LFGPageShell({
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
   const displayTitle = isComposerOnlyPage ? `/ ${title}` : title;
   const isDuosPage = type === "duos";
+  const isStacksPage = type === "stacks";
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
-  const inviteStates =
+  const isStacksFeed = shouldShowFeed && type === "stacks";
+  const [inviteStates, stackRequestStates] = await Promise.all([
     shouldShowFeed
-      ? await getLFGPostInviteStates({
+      ? getLFGPostInviteStates({
           currentProfileId: profile?.id ?? null,
           posts: pageData.posts.map((post) => ({
             id: post.id,
             profileId: post.profileId,
           })),
         }).catch(() => ({}))
-      : {};
+      : Promise.resolve({}),
+    isStacksFeed && profile?.id
+      ? getStackRequestStatesForPosts({
+          currentProfileId: profile.id,
+          postIds: pageData.posts.map((p) => p.id),
+        }).catch(() => ({}))
+      : Promise.resolve({}),
+  ]);
 
   return (
     <main
@@ -492,7 +502,13 @@ export async function LFGPageShell({
                       }`}
                     >
                       <input type="hidden" name="lfg_type" value={type} />
-                      <PostTitleField />
+                      <PostTitleField
+                        placeholder={
+                          isStacksPage
+                            ? "Building a chill ranked stack for tonight..."
+                            : undefined
+                        }
+                      />
                       <LFGGameModePicker />
                       <LFGRolePicker
                         profileSummary={profileSummary}
@@ -543,6 +559,7 @@ export async function LFGPageShell({
                   layout={type === "duos" || type === "stacks" ? "grid-3" : "list"}
                   posts={pageData.posts}
                   retryHref={sectionHref}
+                  stackRequestStates={stackRequestStates}
                   tone={isDuosPage ? "duos" : "default"}
                   viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                 />

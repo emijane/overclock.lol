@@ -4,8 +4,12 @@ import { getProfileBadges } from "@/lib/badges/badges";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
-import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
+import {
+  ACTIVE_LFG_POST_WINDOW_HOURS,
+  STACK_MAX_GROUP_SIZE,
+} from "./lfg-post-policy";
 import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
+import { expireStackPostsRecord } from "./stack-requests";
 import {
   isLFGGameMode,
   isLFGType,
@@ -19,6 +23,7 @@ import type {
   LFGPost,
   LFGPostStatus,
   LFGType,
+  StackMember,
 } from "./lfg-post-types";
 
 export type ActiveLFGPostCountsByRole = Record<CompetitiveRole, number>;
@@ -87,7 +92,12 @@ function normalizeHeroPoolSnapshot(value: unknown): LFGHeroSnapshot[] {
 }
 
 function normalizeStatus(value: unknown): LFGPostStatus {
-  return value === "closed" || value === "archived" ? value : "active";
+  return value === "filled" ||
+    value === "closed" ||
+    value === "expired" ||
+    value === "archived"
+    ? value
+    : "active";
 }
 
 function normalizeAuthor(value: unknown, badges: ProfileBadge[]) {
@@ -164,16 +174,22 @@ function createEmptyRoleCountMap(): ActiveLFGPostCountsByRole {
 
 function normalizeLFGPostRow(
   row: Record<string, unknown>,
-  badges: ProfileBadge[]
+  badges: ProfileBadge[],
+  stackMembers: StackMember[] = []
 ): LFGPost {
   return {
     author: normalizeAuthor(row.profiles, badges),
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
+    currentMemberCount:
+      typeof row.current_member_count === "number" ? row.current_member_count : 1,
+    description: null,
     gameMode: normalizeLFGGameMode(row.game_mode),
     heroPool: normalizeHeroPoolSnapshot(row.hero_pool_snapshot),
     id: typeof row.id === "string" ? row.id : "",
     lfgType: normalizeLFGType(row.lfg_type),
     lookingForRoles: normalizeLookingForRoles(row.looking_for_roles),
+    maxGroupSize:
+      typeof row.max_group_size === "number" ? row.max_group_size : STACK_MAX_GROUP_SIZE,
     profileId: typeof row.profile_id === "string" ? row.profile_id : null,
     postingRole: normalizeCompetitiveRole(row.posting_role),
     platform:
@@ -187,6 +203,7 @@ function normalizeLFGPostRow(
         ? row.snapshot_rank_tier
         : "Unranked",
     region: typeof row.snapshot_region === "string" ? row.snapshot_region : null,
+    stackMembers,
     status: normalizeStatus(row.status),
     timezone:
       typeof row.snapshot_timezone === "string" ? row.snapshot_timezone : null,
@@ -200,6 +217,12 @@ export async function getActiveLFGPosts(
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  const isStacks = lfgType === "stacks";
+
+  if (isStacks) {
+    await expireStackPostsRecord();
+  }
+
   let query = supabase
     .from("lfg_posts")
     .select(
@@ -219,13 +242,16 @@ export async function getActiveLFGPosts(
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
+        ...(isStacks ? ["max_group_size", "current_member_count"] : []),
         "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
     .eq("lfg_type", lfgType)
-    .eq("status", "active")
-    .gte("created_at", activePostCutoffIso)
     .order("created_at", { ascending: false });
+
+  query = isStacks
+    ? query.in("status", ["active", "filled"])
+    : query.eq("status", "active").gte("created_at", activePostCutoffIso);
 
   if (filters?.role) {
     query = query.eq("posting_role", filters.role);
@@ -309,12 +335,79 @@ export async function getActiveLFGPosts(
     }
   }
 
+  // Fetch active stack members for stacks posts
+  const stackMembersByPostId = new Map<string, StackMember[]>();
+
+  if (isStacks && postRows.length > 0) {
+    const postIds = postRows
+      .map((row) => (typeof row.id === "string" ? row.id : null))
+      .filter((id): id is string => Boolean(id));
+
+    const { data: memberRows, error: memberError } = await supabase
+      .from("stack_members")
+      .select(
+        "post_id,profile_id,role,is_owner,profiles:profile_id(id,username,display_name,avatar_url,avatar_updated_at)"
+      )
+      .in("post_id", postIds)
+      .is("removed_at", null)
+      .order("is_owner", { ascending: false })
+      .order("joined_at", { ascending: true });
+
+    if (memberError) {
+      throw memberError;
+    }
+
+    for (const row of ((memberRows ?? []) as unknown) as Array<Record<string, unknown>>) {
+      const postId = typeof row.post_id === "string" ? row.post_id : null;
+      if (!postId) continue;
+
+      const profileRow =
+        row.profiles && typeof row.profiles === "object" && !Array.isArray(row.profiles)
+          ? (row.profiles as Record<string, unknown>)
+          : null;
+
+      const profileId =
+        profileRow && typeof profileRow.id === "string"
+          ? profileRow.id
+          : typeof row.profile_id === "string"
+            ? row.profile_id
+            : null;
+
+      if (!profileId) continue;
+
+      const member: StackMember = {
+        avatarUrl: profileRow
+          ? getProfileAvatarUrl(
+              typeof profileRow.avatar_url === "string" ? profileRow.avatar_url : null,
+              typeof profileRow.avatar_updated_at === "string" ? profileRow.avatar_updated_at : null
+            )
+          : null,
+        displayName:
+          profileRow && typeof profileRow.display_name === "string"
+            ? profileRow.display_name
+            : null,
+        isOwner: row.is_owner === true,
+        profileId,
+        role: normalizeCompetitiveRole(row.role),
+        username:
+          profileRow && typeof profileRow.username === "string"
+            ? profileRow.username
+            : null,
+      };
+
+      const existing = stackMembersByPostId.get(postId) ?? [];
+      existing.push(member);
+      stackMembersByPostId.set(postId, existing);
+    }
+  }
+
   return postRows.map((row) =>
     normalizeLFGPostRow(
       row,
       typeof row.profile_id === "string"
         ? badgesByProfileId.get(row.profile_id) ?? []
-        : []
+        : [],
+      typeof row.id === "string" ? stackMembersByPostId.get(row.id) ?? [] : []
     )
   );
 }
@@ -325,6 +418,7 @@ export async function getRecentPostsByProfileId(
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -348,7 +442,7 @@ export async function getRecentPostsByProfileId(
       ].join(",")
     )
     .eq("profile_id", profileId)
-    .eq("status", "active")
+    .in("status", ["active", "filled"])
     .gte("created_at", activePostCutoffIso)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -368,6 +462,7 @@ export async function getPostsByProfileId(
   limit = 30
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
+  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -411,12 +506,15 @@ export async function getActiveLFGPostCountsByRole(input: {
 }): Promise<ActiveLFGPostCountsByRole> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  if (input.lfgType === "stacks") {
+    await expireStackPostsRecord();
+  }
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("posting_role")
     .eq("profile_id", input.profileId)
     .eq("lfg_type", input.lfgType)
-    .eq("status", "active")
+    .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
     .gte("created_at", activePostCutoffIso);
 
   if (error) {
@@ -598,6 +696,9 @@ export async function hasMatchingActiveLFGPost(input: {
 }) {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  if (input.lfgType === "stacks") {
+    await expireStackPostsRecord();
+  }
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("id,title")
@@ -605,7 +706,7 @@ export async function hasMatchingActiveLFGPost(input: {
     .eq("game_mode", input.gameMode)
     .eq("lfg_type", input.lfgType)
     .eq("posting_role", input.postingRole)
-    .eq("status", "active")
+    .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
     .gte("created_at", activePostCutoffIso)
     .limit(20);
 
@@ -630,13 +731,16 @@ export async function hasReachedActiveLFGPostLimit(input: {
 }) {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  if (input.lfgType === "stacks") {
+    await expireStackPostsRecord();
+  }
   const { count, error } = await supabase
     .from("lfg_posts")
     .select("id", { count: "exact", head: true })
     .eq("profile_id", input.profileId)
     .eq("lfg_type", input.lfgType)
     .eq("posting_role", input.postingRole)
-    .eq("status", "active")
+    .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
     .gte("created_at", activePostCutoffIso);
 
   if (error) {
@@ -674,12 +778,14 @@ export async function closeOwnedActiveLFGPost(input: {
 }) {
   const supabase = await createClient();
 
+  await expireStackPostsRecord();
+
   const { data: ownerCheck, error: ownerError } = await supabase
     .from("lfg_posts")
     .select("id")
     .eq("id", input.postId)
     .eq("profile_id", input.profileId)
-    .eq("status", "active")
+    .in("status", ["active", "filled"])
     .maybeSingle();
 
   if (ownerError) {
