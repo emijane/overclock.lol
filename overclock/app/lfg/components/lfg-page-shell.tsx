@@ -315,10 +315,10 @@ export async function LFGPageShell({
   const profileSetupCtaLabel = "Open Competitive Profile";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
-  const displayTitle = type ? `/ ${title}` : title;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
+  const displayTitle = isComposerOnlyPage ? `/ ${title}` : title;
   const isDuosPage = type === "duos";
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const inviteStates =
@@ -357,10 +357,10 @@ export async function LFGPageShell({
               ? "flex items-start gap-6"
               : "flex flex-col gap-3"
         }`}
-        maxWidthClassName={isComposerOnlyPage ? "max-w-4xl" : "max-w-[96rem]"}
+        maxWidthClassName={isComposerOnlyPage ? "max-w-4xl" : "max-w-[120rem]"}
       >
         {useSidebarLayout && type ? (
-          <Suspense fallback={<div className="hidden w-52 shrink-0 lg:block" />}>
+          <Suspense fallback={<div className="hidden w-56 shrink-0 lg:block" />}>
             <LFGSidebar
               createPostHref={resolvedCreatePostHref}
               isLoggedIn={Boolean(user)}
@@ -540,7 +540,7 @@ export async function LFGPageShell({
                   errorMessage={pageData.postsErrorMessage}
                   hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
                   inviteStates={inviteStates}
-                  layout={type === "duos" ? "grid-3" : "list"}
+                  layout={type === "duos" || type === "stacks" ? "grid-3" : "list"}
                   posts={pageData.posts}
                   retryHref={sectionHref}
                   tone={isDuosPage ? "duos" : "default"}

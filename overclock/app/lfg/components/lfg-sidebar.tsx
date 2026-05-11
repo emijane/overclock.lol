@@ -44,13 +44,11 @@ function buildFilterHref(
   value?: string
 ) {
   const params = new URLSearchParams(searchParams.toString());
-
   if (value) {
     params.set(key, value);
   } else {
     params.delete(key);
   }
-
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
@@ -61,7 +59,6 @@ function buildRankFilterHref(
   rank: string | null
 ) {
   const params = new URLSearchParams(searchParams.toString());
-
   if (rank) {
     params.set("min_rank", rank);
     params.set("max_rank", rank);
@@ -69,14 +66,12 @@ function buildRankFilterHref(
     params.delete("min_rank");
     params.delete("max_rank");
   }
-
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
 
 function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) {
   const params = new URLSearchParams(searchParams.toString());
-
   params.delete("mode");
   params.delete("role");
   params.delete("looking_for");
@@ -84,7 +79,6 @@ function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) 
   params.delete("max_rank");
   params.delete("region");
   params.delete("search");
-
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
@@ -111,16 +105,16 @@ function FilterSection({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 transition hover:text-zinc-400"
+        className="flex w-full items-center justify-between py-0.5 text-[11px] font-medium text-zinc-500 transition hover:text-zinc-400"
       >
         {title}
         {isOpen ? (
-          <ChevronUpIcon className="h-3 w-3 shrink-0" />
+          <ChevronUpIcon className="h-2.5 w-2.5 shrink-0 text-zinc-600" />
         ) : (
-          <ChevronDownIcon className="h-3 w-3 shrink-0" />
+          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-600" />
         )}
       </button>
-      {isOpen ? <div className="mt-0.5 space-y-0.5">{children}</div> : null}
+      {isOpen ? <div className="mt-1 space-y-px">{children}</div> : null}
     </div>
   );
 }
@@ -137,17 +131,12 @@ function FilterItem({
   return (
     <Link
       href={href}
-      className={`flex h-7 items-center gap-2 rounded-lg px-2 text-[12px] transition ${
+      className={`flex h-6 items-center rounded-md px-2 text-[12px] transition ${
         isSelected
-          ? "bg-white/6 font-medium text-zinc-100"
-          : "font-normal text-zinc-400 hover:bg-white/4 hover:text-zinc-200"
+          ? "bg-white/5 font-medium text-zinc-100"
+          : "text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
       }`}
     >
-      <span
-        className={`h-1.5 w-1.5 shrink-0 rounded-full transition ${
-          isSelected ? "bg-sky-400" : "bg-transparent"
-        }`}
-      />
       {label}
     </Link>
   );
@@ -184,7 +173,7 @@ export function LFGSidebar({
     ? createPostHref
     : `/login?next=/${type}/create`;
 
-  // Single rank selection — sets both min and max to same tier for simple filtering
+  // Single rank selection — both min and max set to the same tier
   const selectedRank =
     selectedFilters?.minRank &&
     selectedFilters.minRank === selectedFilters?.maxRank
@@ -192,32 +181,30 @@ export function LFGSidebar({
       : undefined;
 
   return (
-    <aside className="hidden w-52 shrink-0 flex-col gap-5 self-start rounded-[28px] border border-white/[0.07] bg-[#05070b] px-5 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:py-7 lg:flex">
+    <aside className="hidden w-56 shrink-0 flex-col gap-4 self-start rounded-xl border border-white/6 bg-[#05070b] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)] lg:flex">
       {/* LFG navigation */}
       <nav>
-        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
-          LFG
-        </p>
-        <ul className="space-y-0.5">
+        <p className="mb-1.5 text-[10px] font-medium text-zinc-600">LFG</p>
+        <ul className="space-y-px">
           {LFG_NAV_ITEMS.map(({ href, label, Icon, soon }) => {
             const isActive = pathname === href;
             return (
               <li key={href}>
                 {soon ? (
-                  <div className="flex h-8 items-center gap-2.5 rounded-lg px-2 text-[12px] text-zinc-700 cursor-default select-none">
+                  <div className="flex h-7 cursor-default select-none items-center gap-2 px-2 text-[12px] text-zinc-700">
                     <Icon className="h-3.5 w-3.5 shrink-0" />
                     <span>{label}</span>
-                    <span className="ml-auto text-[9px] font-semibold uppercase tracking-[0.14em] text-zinc-700">
-                      Soon
+                    <span className="ml-auto text-[9px] font-medium tracking-wide text-zinc-700">
+                      soon
                     </span>
                   </div>
                 ) : (
                   <Link
                     href={href}
-                    className={`flex h-8 items-center gap-2.5 rounded-lg px-2 text-[12px] transition ${
+                    className={`flex h-7 items-center gap-2 rounded-md px-2 text-[12px] transition ${
                       isActive
-                        ? "bg-white/6 font-semibold text-zinc-50"
-                        : "font-medium text-zinc-400 hover:bg-white/4 hover:text-zinc-200"
+                        ? "bg-white/5 font-medium text-zinc-200"
+                        : "font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -230,18 +217,22 @@ export function LFGSidebar({
         </ul>
       </nav>
 
-      {/* Create post CTA */}
+      <div className="border-t border-white/5" />
+
+      {/* Create post */}
       <Link
         href={resolvedCreateHref}
-        className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full bg-violet-600/80 px-3.5 text-[12px] font-semibold text-white transition hover:bg-violet-500/80"
+        className="flex h-7 items-center gap-1.5 rounded-md border border-white/8 bg-white/2 px-2.5 text-[12px] font-medium text-zinc-400 transition hover:border-white/11 hover:text-zinc-200"
       >
-        <PlusIcon className="h-3.5 w-3.5" />
+        <PlusIcon className="h-3 w-3 shrink-0" />
         Create Post
       </Link>
 
+      <div className="border-t border-white/5" />
+
       {/* Filters */}
-      <div className="space-y-4">
-        <FilterSection title="Mode">
+      <div className="space-y-3">
+        <FilterSection title="/ mode">
           {LFG_GAME_MODE_OPTIONS.map((mode) => (
             <FilterItem
               key={mode}
@@ -256,7 +247,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="Role">
+        <FilterSection title="/ role">
           {COMPETITIVE_ROLE_OPTIONS.map((role) => (
             <FilterItem
               key={role}
@@ -271,7 +262,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="Needs">
+        <FilterSection title="/ needs">
           {COMPETITIVE_ROLE_OPTIONS.map((role) => (
             <FilterItem
               key={role}
@@ -286,7 +277,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="Region">
+        <FilterSection title="/ region">
           {LFG_REGION_OPTIONS.map((region) => (
             <FilterItem
               key={region}
@@ -301,7 +292,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="Rank">
+        <FilterSection title="/ rank">
           {LFG_RANK_FILTER_OPTIONS.map((rank) => (
             <FilterItem
               key={rank}
@@ -319,10 +310,10 @@ export function LFGSidebar({
         {hasActiveFilters ? (
           <Link
             href={buildClearFiltersHref(pathname, params)}
-            className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500 transition hover:text-zinc-300"
+            className="flex items-center gap-1 pt-0.5 text-[11px] font-normal text-zinc-600 transition hover:text-zinc-400"
           >
-            <RotateCcwIcon className="h-3 w-3" />
-            Clear Filters
+            <RotateCcwIcon className="h-2.5 w-2.5 shrink-0" />
+            clear filters
           </Link>
         ) : null}
       </div>

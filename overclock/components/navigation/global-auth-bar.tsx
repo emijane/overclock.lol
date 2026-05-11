@@ -40,7 +40,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
     <header className="relative z-[70] border-b border-white/5 bg-black/40 px-6 py-4 backdrop-blur-md">
       <PageContainer
         className="flex items-center justify-between gap-4"
-        maxWidthClassName="max-w-[96rem]"
+        maxWidthClassName="max-w-[120rem]"
       >
         <Link
           href="/"
