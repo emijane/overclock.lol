@@ -83,7 +83,7 @@ export function LFGPostCard({
       aria-label={post.title}
       className={`group h-full rounded-[12px] transition-[border-color,box-shadow,background-color] duration-200 ${
         tone === "duos"
-          ? "border border-white/[0.04] bg-white/[0.014] hover:border-white/[0.07] hover:bg-white/[0.022]"
+          ? "border border-white/[0.07] bg-white/[0.025] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)] hover:-translate-y-px hover:border-white/[0.11] hover:bg-white/[0.035]"
           : "border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]"
       }${
         cardClassName ? ` ${cardClassName}` : ""
