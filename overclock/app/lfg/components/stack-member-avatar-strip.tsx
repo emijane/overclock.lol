@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { StackMember } from "@/lib/lfg/lfg-post-types";
+import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { RemoveStackMemberButton } from "./remove-stack-member-button";
 
 type StackMemberAvatarStripProps = {
@@ -28,20 +29,20 @@ export function StackMemberAvatarStrip({
   );
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2.5">
       <div className="flex items-center">
         {visible.map((member, i) => (
           <div
             key={member.profileId}
             title={member.displayName ?? member.username ?? "Member"}
             aria-label={member.displayName ?? member.username ?? "Member"}
-            className="relative h-6 w-6 shrink-0"
-            style={{ marginLeft: i === 0 ? 0 : "-0.375rem", zIndex: visible.length - i }}
+            className="group/member relative h-5.5 w-5.5 shrink-0"
+            style={{ marginLeft: i === 0 ? 0 : "-0.3rem", zIndex: visible.length - i }}
           >
             {member.username ? (
               <Link
                 href={`/u/${member.username}`}
-                className="block h-6 w-6 overflow-hidden rounded-full border border-[#05070b] bg-zinc-800 transition hover:border-white/15"
+                className="block h-5.5 w-5.5 overflow-hidden rounded-[8px] border border-black/70 bg-zinc-800 transition hover:border-white/18"
               >
                 {member.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -57,7 +58,7 @@ export function StackMemberAvatarStrip({
                 )}
               </Link>
             ) : (
-              <div className="h-6 w-6 overflow-hidden rounded-full border border-[#05070b] bg-zinc-800">
+              <div className="h-5.5 w-5.5 overflow-hidden rounded-[8px] border border-black/70 bg-zinc-800">
                 {member.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -72,6 +73,17 @@ export function StackMemberAvatarStrip({
                 )}
               </div>
             )}
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-[8px] border border-white/[0.08] bg-[#090b0f]/96 px-2 py-1 text-[10px] font-medium text-zinc-300 shadow-[0_10px_24px_rgba(0,0,0,0.28)] group-hover/member:block">
+              <span className="text-zinc-100">
+                {member.username ? `@${member.username}` : member.displayName ?? "Player"}
+              </span>
+              {member.rankTier ? (
+                <span className="text-zinc-500">
+                  {" "}
+                  - {formatCurrentRank(member.rankTier, member.rankDivision)}
+                </span>
+              ) : null}
+            </div>
             {canManageMembers && !member.isOwner && postId ? (
               <RemoveStackMemberButton
                 memberProfileId={member.profileId}
@@ -82,8 +94,8 @@ export function StackMemberAvatarStrip({
         ))}
         {overflow > 0 ? (
           <div
-            className="relative h-6 w-6 shrink-0 rounded-full border border-[#05070b] bg-zinc-800"
-            style={{ marginLeft: "-0.375rem", zIndex: 0 }}
+            className="relative h-5.5 w-5.5 shrink-0 rounded-[8px] border border-black/70 bg-zinc-800"
+            style={{ marginLeft: "-0.3rem", zIndex: 0 }}
           >
             <span className="grid h-full w-full place-items-center text-[9px] font-bold text-zinc-300">
               +{overflow}
@@ -92,11 +104,11 @@ export function StackMemberAvatarStrip({
         ) : null}
       </div>
       {maxGroupSize ? (
-        <span className="text-[11px] font-medium text-zinc-500">
+        <span className="text-[11px] font-medium tracking-[-0.01em] text-zinc-400">
           {currentMemberCount}/{maxGroupSize}
         </span>
       ) : (
-        <span className="text-[11px] font-medium text-zinc-500">
+        <span className="text-[11px] font-medium tracking-[-0.01em] text-zinc-400">
           {currentMemberCount} member{currentMemberCount !== 1 ? "s" : ""}
         </span>
       )}

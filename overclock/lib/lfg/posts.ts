@@ -320,6 +320,14 @@ function normalizeStackMemberFromSnapshot(
         : null,
     isOwner,
     profileId,
+    rankDivision:
+      snapshot && typeof snapshot.rank_division === "number"
+        ? snapshot.rank_division
+        : null,
+    rankTier:
+      snapshot && typeof snapshot.rank_tier === "string"
+        ? snapshot.rank_tier
+        : null,
     role,
     username:
       snapshot && typeof snapshot.username === "string" ? snapshot.username : null,
@@ -354,6 +362,14 @@ function buildOwnerStackMember(row: Record<string, unknown>): StackMember | null
         : null,
     isOwner: true,
     profileId,
+    rankDivision:
+      profileRow && typeof profileRow.current_rank_division === "number"
+        ? profileRow.current_rank_division
+        : null,
+    rankTier:
+      profileRow && typeof profileRow.current_rank_tier === "string"
+        ? profileRow.current_rank_tier
+        : null,
     role: normalizeCompetitiveRole(row.posting_role),
     username:
       profileRow && typeof profileRow.username === "string"
@@ -598,7 +614,7 @@ export async function getActiveLFGPosts(
     const { data: memberRows, error: memberError } = await supabase
       .from("stack_members")
       .select(
-        "post_id,profile_id,role,is_owner,profiles:profile_id(id,username,display_name,avatar_url,avatar_updated_at)"
+        "post_id,profile_id,role,is_owner,profiles:profile_id(id,username,display_name,avatar_url,avatar_updated_at,current_rank_tier,current_rank_division)"
       )
       .in("post_id", postIds)
       .is("removed_at", null)
@@ -649,6 +665,14 @@ export async function getActiveLFGPosts(
               : null,
           isOwner: row.is_owner === true,
           profileId,
+          rankDivision:
+            profileRow && typeof profileRow.current_rank_division === "number"
+              ? profileRow.current_rank_division
+              : null,
+          rankTier:
+            profileRow && typeof profileRow.current_rank_tier === "string"
+              ? profileRow.current_rank_tier
+              : null,
           role: normalizeCompetitiveRole(row.role),
           username:
             profileRow && typeof profileRow.username === "string"

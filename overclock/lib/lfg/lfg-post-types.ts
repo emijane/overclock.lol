@@ -45,6 +45,8 @@ export type StackMember = {
   displayName: string | null;
   isOwner: boolean;
   profileId: string;
+  rankDivision: number | null;
+  rankTier: string | null;
   role: CompetitiveRole;
   username: string | null;
 };
