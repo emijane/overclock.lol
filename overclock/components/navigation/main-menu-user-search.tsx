@@ -173,10 +173,10 @@ export function MainMenuUserSearch() {
             }
           }}
           onKeyDown={handleKeyDown}
-          placeholder="Search players"
+          placeholder="SEARCH PLAYERS"
           autoComplete="off"
           spellCheck={false}
-          className="oc-profile-display h-6 min-w-0 flex-1 bg-transparent text-[12px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="oc-profile-meta h-6 min-w-0 flex-1 bg-transparent text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-100 outline-none placeholder:text-zinc-500"
           aria-label="Search players by username or display name"
         />
       </div>
