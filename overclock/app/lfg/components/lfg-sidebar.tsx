@@ -188,7 +188,7 @@ export function LFGSidebar({
     <aside
       className={`hidden w-56 shrink-0 flex-col gap-4 self-start p-4 lg:flex ${
         tone === "duos"
-          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+          ? "rounded-[10px] border border-white/[0.03] bg-white/[0.01]"
           : "rounded-xl border border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"
       }`}
     >
@@ -229,14 +229,14 @@ export function LFGSidebar({
         </ul>
       </nav>
 
-      <div className={tone === "duos" ? "border-t border-white/[0.06]" : "border-t border-white/5"} />
+      <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
       {/* Create post */}
       <Link
         href={resolvedCreateHref}
         className={`flex items-center gap-1.5 px-2.5 text-[12px] transition ${
           tone === "duos"
-            ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.06] bg-white/[0.03] font-semibold text-zinc-400 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-200"
+            ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.04] bg-white/[0.02] font-semibold text-zinc-400 hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-zinc-200"
             : "h-7 rounded-md border border-white/8 bg-white/2 font-medium text-zinc-400 hover:border-white/11 hover:text-zinc-200"
         }`}
       >
@@ -244,7 +244,7 @@ export function LFGSidebar({
         Create Post
       </Link>
 
-      <div className={tone === "duos" ? "border-t border-white/[0.06]" : "border-t border-white/5"} />
+      <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
       {/* Filters */}
       <div className="space-y-3">

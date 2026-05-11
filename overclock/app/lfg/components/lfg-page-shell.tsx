@@ -126,9 +126,9 @@ function LFGSearchBar({
   type: LFGType;
 }) {
   return (
-    <form action={`/${type}`} className="mt-5 sm:mt-6">
-      <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-3 py-2">
-        <span className="oc-profile-icon-button grid h-7 w-7 shrink-0 place-items-center text-zinc-500">
+    <form action={`/${type}`} className="mt-4 max-w-[30rem] sm:mt-5">
+      <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-2.5 py-2">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500">
           <SearchIcon className="h-3.5 w-3.5" />
         </span>
         <input
@@ -158,7 +158,7 @@ function LFGSearchBar({
           <input type="hidden" name="region" value={feedFilters.region} />
         ) : null}
       </div>
-      <p className="oc-profile-meta mt-2 px-1 text-[11px]">
+      <p className="oc-profile-meta mt-1.5 px-1 text-[10px]">
         Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
       </p>
     </form>
@@ -379,10 +379,16 @@ export async function LFGPageShell({
           isComposerOnlyPage
             ? "flex flex-col gap-2"
             : useSidebarLayout
-              ? "flex items-start gap-6"
+              ? `flex items-start ${isDuosPage ? "gap-4 xl:gap-5" : "gap-6"}`
               : "flex flex-col gap-3"
         }`}
-        maxWidthClassName={isComposerOnlyPage ? "max-w-4xl" : "max-w-[120rem]"}
+        maxWidthClassName={
+          isComposerOnlyPage
+            ? "max-w-4xl"
+            : isDuosPage
+              ? "max-w-[98rem]"
+              : "max-w-[120rem]"
+        }
       >
         {useSidebarLayout && type ? (
           <Suspense fallback={<div className="hidden w-56 shrink-0 lg:block" />}>
@@ -397,16 +403,22 @@ export async function LFGPageShell({
         ) : null}
         <section
           className={`${useSidebarLayout ? "min-w-0 flex-1" : ""} ${
-            isDuosPage ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"
+            isDuosPage ? "" : "rounded-[28px]"
           }`}
         >
-          <div className={isDuosPage ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
+          <div
+            className={
+              isDuosPage
+                ? "overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                : "overflow-hidden rounded-[28px]"
+            }
+          >
             <header
               className={`px-5 sm:px-6 ${
                 isComposerOnlyPage ? "py-3 sm:py-4" : isDuosPage ? "py-4 sm:py-5" : "py-5 sm:py-7"
               }`}
             >
-              <div className={isComposerOnlyPage ? "space-y-3" : "space-y-5"}>
+              <div className={isComposerOnlyPage ? "space-y-3" : isDuosPage ? "space-y-4" : "space-y-5"}>
                 <PageReveal
                   className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                   delay={0}
@@ -533,7 +545,7 @@ export async function LFGPageShell({
                       action={createLFGPost}
                       className={`px-4 py-4 sm:px-5 sm:py-4.5 ${
                         isDuosPage
-                          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+                          ? "rounded-[10px] border border-white/[0.04] bg-white/[0.015]"
                           : "rounded-[24px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]"
                       }`}
                     >
@@ -561,6 +573,13 @@ export async function LFGPageShell({
 
             {shouldShowFeed ? (
               <>
+                <div
+                  className={
+                    isDuosPage
+                      ? "border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                      : ""
+                  }
+                >
                 {useSidebarLayout ? (
                   <div className="lg:hidden">
                     <Suspense fallback={<div className="h-14" />}>
@@ -599,6 +618,7 @@ export async function LFGPageShell({
                   tone={isDuosPage ? "duos" : "default"}
                   viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                 />
+                </div>
               </>
             ) : null}
           </div>
