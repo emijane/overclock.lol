@@ -37,21 +37,21 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
   const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
-    <header className="relative z-[70] border-b border-white/[0.06] bg-[#111111] px-6 py-3.5 backdrop-blur-md">
+    <header className="relative z-[70] border-b border-white/[0.04] bg-transparent px-6 py-3.5">
       <PageContainer
         className="flex items-center justify-between gap-4"
         maxWidthClassName="max-w-[120rem]"
       >
         <Link
           href="/"
-          className="oc-profile-display flex items-center gap-3 text-[21px] font-bold tracking-[-0.04em] text-white"
+          className="oc-profile-display flex items-center gap-2.5 text-[18px] font-semibold tracking-[-0.035em] text-white/92"
         >
           <Image
             src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
             alt="Overclock logo"
             width={32}
             height={32}
-            className="h-8 w-8 shrink-0"
+            className="h-7 w-7 shrink-0 opacity-90"
             priority
           />
           <span>overclock.lol</span>

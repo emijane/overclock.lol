@@ -29,41 +29,41 @@ const footerGroups = [
 
 export function GlobalFooter() {
   return (
-    <footer className="mt-auto border-t border-white/5 bg-black/40">
-      <PageContainer className="px-4 py-8 sm:px-6 sm:py-10">
-        <div className="grid gap-8 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
-          <div className="max-w-sm">
+    <footer className="mt-auto border-t border-white/[0.035] bg-black/[0.08]">
+      <PageContainer className="px-4 py-5 sm:px-6 sm:py-6">
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1.1fr)_repeat(3,minmax(0,0.8fr))]">
+          <div className="max-w-[15rem]">
             <Link
               href="/"
-              className="flex items-center gap-3 text-sm font-semibold text-white/90"
+              className="oc-profile-display flex items-center gap-2.5 text-[13px] font-semibold tracking-[-0.02em] text-white/88"
             >
               <Image
                 src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
                 alt="Overclock logo"
                 width={28}
                 height={28}
-                className="h-7 w-7 shrink-0"
+                className="h-6 w-6 shrink-0"
               />
               <span>overclock.lol</span>
             </Link>
-            <p className="mt-3 text-xs font-medium leading-4 text-white/55">
+            <p className="oc-profile-meta mt-2.5 text-[11px] font-medium leading-4 text-white/50">
               developed by{" "}
               <Link
                 href="https://x.com/pcexplodes"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-white/70 transition-colors hover:text-white"
+                className="oc-profile-display font-semibold text-white/68 transition-colors hover:text-white/88"
               >
                 emi
               </Link>
             </p>
-            <p className="mt-1 text-xs font-medium leading-4 text-white/55">
+            <p className="oc-profile-meta mt-1 text-[11px] font-medium leading-4 text-white/50">
               logo art by{" "}
               <Link
                 href="https://ioananenciu.carrd.co/"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-white/70 transition-colors hover:text-white"
+                className="oc-profile-display font-semibold text-white/68 transition-colors hover:text-white/88"
               >
                 neo
               </Link>
@@ -72,15 +72,15 @@ export function GlobalFooter() {
 
           {footerGroups.map((group) => (
             <div key={group.title}>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+              <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.14em] text-white/38">
                 {group.title}
               </p>
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="mt-2.5 flex flex-col gap-1.5">
                 {group.links.map((link) => (
                   <Link
                     key={`${group.title}-${link.href}`}
                     href={link.href}
-                    className="text-sm text-white/55 transition-all duration-200 hover:text-white/85"
+                    className="oc-profile-display text-[13px] font-medium tracking-[-0.01em] text-white/52 transition-all duration-200 hover:text-white/82"
                   >
                     {link.label}
                   </Link>

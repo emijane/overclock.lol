@@ -159,7 +159,7 @@ export function MainMenuUserSearch() {
 
   return (
     <div ref={containerRef} className="relative hidden md:block">
-      <div className="flex h-9 w-56 items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-zinc-300 transition hover:border-white/[0.1] focus-within:border-white/[0.12] focus-within:bg-[#171717] sm:w-60 lg:w-64">
+      <div className="flex h-8 w-52 items-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-zinc-300 transition hover:border-white/[0.1] focus-within:border-white/[0.12] focus-within:bg-[#171717] sm:w-56 lg:w-60">
         <SearchIcon className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
         <input
           type="search"
@@ -176,7 +176,7 @@ export function MainMenuUserSearch() {
           placeholder="Search players"
           autoComplete="off"
           spellCheck={false}
-          className="oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="oc-profile-display h-6 min-w-0 flex-1 bg-transparent text-[12px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
           aria-label="Search players by username or display name"
         />
       </div>
