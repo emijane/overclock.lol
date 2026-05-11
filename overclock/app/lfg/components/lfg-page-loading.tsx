@@ -21,29 +21,43 @@ export function LFGPageLoading({
   showDescription?: boolean;
   title: string;
 }) {
+  const isDuosLoading = title.includes("Duos");
+
   return (
     <main
-      className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
+      className={`relative px-4 text-zinc-100 sm:px-6 ${
         composerOnly ? "pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
       }`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
-      />
+      {isDuosLoading ? (
+        <>
+          <div aria-hidden="true" className="oc-atmosphere-bg pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
+        </>
+      ) : (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+          />
+        </>
+      )}
       <PageContainer
         className={`relative z-10 flex flex-col ${composerOnly ? "gap-2" : "gap-4"}`}
         maxWidthClassName={composerOnly ? "max-w-4xl" : "max-w-[96rem]"}
       >
-        <section className="rounded-[28px]">
-          <div className="overflow-hidden rounded-[28px]">
+        <section className={isDuosLoading ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"}>
+          <div className={isDuosLoading ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
             <header
               className={`px-5 sm:px-6 ${
-                composerOnly ? "py-3 sm:py-4" : "py-5 sm:py-6"
+                composerOnly ? "py-3 sm:py-4" : isDuosLoading ? "py-4 sm:py-5" : "py-5 sm:py-6"
               }`}
             >
               <div className={composerCta ? "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" : undefined}>
@@ -52,8 +66,12 @@ export function LFGPageLoading({
                     <SkeletonBlock className="h-3 w-24 rounded-full" />
                   ) : null}
                   <h1
-                    className={`${breadcrumb ? "mt-3" : ""} font-semibold tracking-[-0.04em] text-zinc-50 ${
-                      composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
+                    className={`${breadcrumb ? "mt-3" : ""} ${
+                      isDuosLoading
+                        ? "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
+                        : `font-semibold tracking-[-0.04em] text-zinc-50 ${
+                            composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
+                          }`
                     }`}
                   >
                     {title}
@@ -116,7 +134,11 @@ export function LFGPageLoading({
                   {composerCta ? (
                   <section className="px-5 py-1.5 sm:px-6 sm:py-2">
                     <div className="mb-4">
-                      <div className="flex items-center gap-3 rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                      <div className={`flex items-center gap-3 px-4 py-3 ${
+                        isDuosLoading
+                          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+                          : "rounded-[18px] border border-white/[0.07] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]"
+                      }`}>
                         <SkeletonBlock className="h-9 w-9 rounded-full" />
                         <SkeletonBlock className="h-4 w-full max-w-md" />
                       </div>

@@ -89,9 +89,11 @@ const LFG_NAV_ITEMS = [
 
 function FilterSection({
   children,
+  tone = "default",
   title,
 }: {
   children: React.ReactNode;
+  tone?: "default" | "duos";
   title: string;
 }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -101,7 +103,11 @@ function FilterSection({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between py-0.5 text-[11px] font-medium text-zinc-400 transition hover:text-zinc-300"
+        className={`flex w-full items-center justify-between py-0.5 transition hover:text-zinc-300 ${
+          tone === "duos"
+            ? "oc-profile-meta text-[11px] font-medium uppercase tracking-[0.16em]"
+            : "text-[11px] font-medium text-zinc-400"
+        }`}
       >
         {title}
         {isOpen ? (
@@ -127,10 +133,10 @@ function FilterItem({
   return (
     <Link
       href={href}
-      className={`flex h-6 items-center rounded-md px-2 text-[12px] transition ${
+      className={`flex h-7 items-center px-2 text-[12px] transition ${
         isSelected
-          ? "bg-white/5 font-medium text-zinc-100"
-          : "text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
+          ? "bg-white/[0.06] font-medium text-zinc-100"
+          : "text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
       }`}
     >
       {label}
@@ -142,6 +148,7 @@ type LFGSidebarProps = {
   createPostHref: string;
   isLoggedIn: boolean;
   selectedFilters?: LFGFeedFilters;
+  tone?: "default" | "duos";
   type: LFGType;
 };
 
@@ -149,6 +156,7 @@ export function LFGSidebar({
   createPostHref,
   isLoggedIn,
   selectedFilters,
+  tone = "default",
   type,
 }: LFGSidebarProps) {
   const pathname = usePathname();
@@ -177,10 +185,24 @@ export function LFGSidebar({
       : undefined;
 
   return (
-    <aside className="hidden w-56 shrink-0 flex-col gap-4 self-start rounded-xl border border-white/6 bg-[#05070b] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)] lg:flex">
+    <aside
+      className={`hidden w-56 shrink-0 flex-col gap-4 self-start p-4 lg:flex ${
+        tone === "duos"
+          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+          : "rounded-xl border border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"
+      }`}
+    >
       {/* LFG navigation */}
       <nav>
-        <p className="mb-1.5 text-[10px] font-medium text-zinc-600">LFG</p>
+        <p
+          className={`mb-1.5 ${
+            tone === "duos"
+              ? "oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em]"
+              : "text-[10px] font-medium text-zinc-600"
+          }`}
+        >
+          LFG
+        </p>
         <ul className="space-y-px">
           {LFG_NAV_ITEMS.map(({ href, label, Icon }) => {
             const isActive = pathname === href;
@@ -188,10 +210,14 @@ export function LFGSidebar({
               <li key={href}>
                 <Link
                   href={href}
-                  className={`flex h-7 items-center gap-2 rounded-md px-2 text-[12px] transition ${
+                  className={`flex items-center gap-2 px-2.5 text-[12px] transition ${
                     isActive
-                      ? "bg-white/5 font-medium text-zinc-200"
-                      : "font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
+                      ? tone === "duos"
+                        ? "h-8 rounded-[8px] bg-white/[0.06] font-semibold text-zinc-200"
+                        : "h-7 rounded-md bg-white/5 font-medium text-zinc-200"
+                      : tone === "duos"
+                        ? "h-8 rounded-[8px] font-medium text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
+                        : "h-7 rounded-md font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -203,22 +229,26 @@ export function LFGSidebar({
         </ul>
       </nav>
 
-      <div className="border-t border-white/5" />
+      <div className={tone === "duos" ? "border-t border-white/[0.06]" : "border-t border-white/5"} />
 
       {/* Create post */}
       <Link
         href={resolvedCreateHref}
-        className="flex h-7 items-center gap-1.5 rounded-md border border-white/8 bg-white/2 px-2.5 text-[12px] font-medium text-zinc-400 transition hover:border-white/11 hover:text-zinc-200"
+        className={`flex items-center gap-1.5 px-2.5 text-[12px] transition ${
+          tone === "duos"
+            ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.06] bg-white/[0.03] font-semibold text-zinc-400 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-200"
+            : "h-7 rounded-md border border-white/8 bg-white/2 font-medium text-zinc-400 hover:border-white/11 hover:text-zinc-200"
+        }`}
       >
         <PlusIcon className="h-3 w-3 shrink-0" />
         Create Post
       </Link>
 
-      <div className="border-t border-white/5" />
+      <div className={tone === "duos" ? "border-t border-white/[0.06]" : "border-t border-white/5"} />
 
       {/* Filters */}
       <div className="space-y-3">
-        <FilterSection title="/ mode">
+        <FilterSection title="/ mode" tone={tone}>
           {LFG_GAME_MODE_OPTIONS.map((mode) => (
             <FilterItem
               key={mode}
@@ -233,7 +263,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="/ role">
+        <FilterSection title="/ role" tone={tone}>
           {COMPETITIVE_ROLE_OPTIONS.map((role) => (
             <FilterItem
               key={role}
@@ -248,7 +278,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="/ needs">
+        <FilterSection title="/ needs" tone={tone}>
           {COMPETITIVE_ROLE_OPTIONS.map((role) => (
             <FilterItem
               key={role}
@@ -263,7 +293,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="/ region">
+        <FilterSection title="/ region" tone={tone}>
           {LFG_REGION_OPTIONS.map((region) => (
             <FilterItem
               key={region}
@@ -278,7 +308,7 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        <FilterSection title="/ rank">
+        <FilterSection title="/ rank" tone={tone}>
           {LFG_RANK_FILTER_OPTIONS.map((rank) => (
             <FilterItem
               key={rank}
@@ -296,7 +326,11 @@ export function LFGSidebar({
         {hasActiveFilters ? (
           <Link
             href={buildClearFiltersHref(pathname, params)}
-            className="flex items-center gap-1 pt-0.5 text-[11px] font-normal text-zinc-600 transition hover:text-zinc-400"
+            className={`flex items-center gap-1 pt-0.5 transition hover:text-zinc-400 ${
+              tone === "duos"
+                ? "oc-profile-meta text-[11px] font-normal"
+                : "text-[11px] font-normal text-zinc-600"
+            }`}
           >
             <RotateCcwIcon className="h-2.5 w-2.5 shrink-0" />
             clear filters

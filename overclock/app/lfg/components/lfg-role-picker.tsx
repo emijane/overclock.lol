@@ -36,6 +36,7 @@ type LFGRolePickerProps = {
   };
   roleOptions: LFGRoleOption[];
   setupHref: string;
+  tone?: "default" | "duos";
 };
 
 const LOOKING_FOR_ALL_VALUE = "all";
@@ -66,31 +67,49 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
   return <SupportPlusIcon className={className} />;
 }
 
-function getRoleButtonClassName(isSelected: boolean) {
-  return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+function getRoleButtonClassName(isSelected: boolean, tone: "default" | "duos") {
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-white/20 bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-      : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
+      ? tone === "duos"
+        ? "border-white/[0.12] bg-white/[0.06] text-white"
+        : "border-white/20 bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+      : tone === "duos"
+        ? "border-white/[0.06] bg-white/[0.02] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.04] hover:text-zinc-100"
+        : "border-zinc-800 bg-zinc-950/80 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-zinc-100"
   }`;
 }
 
-function getLookingForButtonClassName(isSelected: boolean) {
-  return `inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+function getLookingForButtonClassName(
+  isSelected: boolean,
+  tone: "default" | "duos"
+) {
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-white/20 bg-white/[0.08] text-white"
-      : "border-white/5 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.045] hover:text-zinc-200"
+      ? tone === "duos"
+        ? "border-white/[0.12] bg-white/[0.06] text-white"
+        : "border-white/20 bg-white/[0.08] text-white"
+      : tone === "duos"
+        ? "border-white/[0.06] bg-white/[0.02] text-zinc-400 hover:border-white/[0.12] hover:bg-white/[0.04] hover:text-zinc-200"
+        : "border-white/5 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.045] hover:text-zinc-200"
   }`;
 }
 
-function getLookingForAllButtonClassName(isSelected: boolean) {
-  return `inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+function getLookingForAllButtonClassName(
+  isSelected: boolean,
+  tone: "default" | "duos"
+) {
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
-      ? "border-white/20 bg-white/[0.08] text-white"
-      : "border-white/6 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:bg-white/[0.035] hover:text-zinc-300"
+      ? tone === "duos"
+        ? "border-white/[0.12] bg-white/[0.06] text-white"
+        : "border-white/20 bg-white/[0.08] text-white"
+      : tone === "duos"
+        ? "border-white/[0.08] bg-white/[0.02] text-zinc-500 hover:border-white/[0.14] hover:bg-white/[0.04] hover:text-zinc-300"
+        : "border-white/6 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:bg-white/[0.035] hover:text-zinc-300"
   }`;
 }
 
-function CreatePostButton() {
+function CreatePostButton({ tone = "default" }: { tone?: "default" | "duos" }) {
   const { pending } = useFormStatus();
 
   return (
@@ -98,7 +117,11 @@ function CreatePostButton() {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.06] px-4 text-sm font-semibold text-zinc-50 transition hover:border-white/[0.12] hover:bg-white/[0.09] hover:text-white sm:w-auto disabled:cursor-not-allowed disabled:border-white/[0.05] disabled:bg-white/[0.04] disabled:text-zinc-500"
+      className={`inline-flex h-10 w-full items-center justify-center gap-2 rounded-full px-4 transition sm:w-auto disabled:cursor-not-allowed disabled:text-zinc-500 ${
+        tone === "duos"
+          ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[13px] font-semibold text-zinc-50 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white disabled:border-white/[0.05] disabled:bg-white/[0.03]"
+          : "border border-white/[0.08] bg-white/[0.06] text-sm font-semibold text-zinc-50 hover:border-white/[0.12] hover:bg-white/[0.09] hover:text-white disabled:border-white/[0.05] disabled:bg-white/[0.04]"
+      }`}
     >
       <PlusIcon className="h-4 w-4" />
       {pending ? "Creating..." : "Create post"}
@@ -110,6 +133,7 @@ export function LFGRolePicker({
   profileSummary,
   roleOptions,
   setupHref,
+  tone = "default",
 }: LFGRolePickerProps) {
   const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
   const [lookingForRoles, setLookingForRoles] = useState<string[]>([
@@ -152,7 +176,7 @@ export function LFGRolePicker({
   return (
     <div className="mt-3">
       <div>
-        <h2 className="text-sm font-semibold text-zinc-50">Role</h2>
+        <h2 className={`${tone === "duos" ? "oc-profile-display" : ""} text-sm font-semibold text-zinc-50`}>Role</h2>
         <div className="mt-2 flex flex-wrap gap-2">
           {roleOptions.map((roleOption) => {
             const isSelected = roleOption.role === selectedRole;
@@ -164,7 +188,7 @@ export function LFGRolePicker({
                 aria-pressed={isSelected}
                 disabled={pending}
                 onClick={() => setSelectedRole(roleOption.role)}
-                className={`${getRoleButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
+                className={`${getRoleButtonClassName(isSelected, tone)} disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
                 {COMPETITIVE_ROLE_LABELS[roleOption.role]}
@@ -174,8 +198,10 @@ export function LFGRolePicker({
         </div>
       </div>
       <div className="mt-2.5">
-        <h2 className="text-sm font-medium text-zinc-400">Looking for</h2>
-        <p className="mt-1 text-xs text-white/35">
+        <h2 className={`${tone === "duos" ? "oc-profile-display" : ""} text-sm font-medium text-zinc-400`}>
+          Looking for
+        </h2>
+        <p className={`mt-1 text-xs ${tone === "duos" ? "oc-profile-meta text-white/35" : "text-white/35"}`}>
           Pick up to two roles, or choose All.
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -189,7 +215,7 @@ export function LFGRolePicker({
                 aria-pressed={isSelected}
                 disabled={pending}
                 onClick={() => toggleLookingForRole(roleOption.role)}
-                className={`${getLookingForButtonClassName(isSelected)} disabled:cursor-not-allowed disabled:opacity-60`}
+                className={`${getLookingForButtonClassName(isSelected, tone)} disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
                 {COMPETITIVE_ROLE_LABELS[roleOption.role]}
@@ -203,7 +229,7 @@ export function LFGRolePicker({
             onClick={() => toggleLookingForRole(LOOKING_FOR_ALL_VALUE)}
             className={`${getLookingForAllButtonClassName(
               lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)
-            )} disabled:cursor-not-allowed disabled:opacity-60`}
+            , tone)} disabled:cursor-not-allowed disabled:opacity-60`}
           >
             All
           </button>
@@ -216,9 +242,9 @@ export function LFGRolePicker({
             <div className="mt-2.5 pt-2.5">
               <div className="min-w-0">
                 <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-300">
-                    <span className="text-zinc-500">Posting as</span>
-                    <span className="font-semibold text-zinc-100">
+                  <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 ${tone === "duos" ? "oc-profile-meta text-[11px] text-zinc-300" : "text-sm text-zinc-300"}`}>
+                    <span className={tone === "duos" ? "" : "text-zinc-500"}>Posting as</span>
+                    <span className={`${tone === "duos" ? "oc-profile-display text-[13px]" : ""} font-semibold text-zinc-100`}>
                       {selectedRoleOption.rankLabel} {postingAsLabel}
                     </span>
                     <span className="text-zinc-400">
@@ -233,7 +259,9 @@ export function LFGRolePicker({
                           key={hero.id}
                           title={hero.label}
                           aria-label={hero.label}
-                          className="relative h-9 w-9 overflow-hidden rounded-[10px] bg-zinc-900/90"
+                          className={`relative h-9 w-9 overflow-hidden rounded-[10px] ${
+                            tone === "duos" ? "border border-white/[0.06] bg-zinc-900/80" : "bg-zinc-900/90"
+                          }`}
                         >
                           <Image
                             src={hero.imageSrc}
@@ -246,7 +274,7 @@ export function LFGRolePicker({
                       ))}
                     </div>
                   ) : (
-                    <p className="mt-2 text-sm text-zinc-500">
+                    <p className={`${tone === "duos" ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-500"} mt-2`}>
                       No hero pool selected for this role yet.
                     </p>
                   )}
@@ -254,7 +282,7 @@ export function LFGRolePicker({
               </div>
             </div>
             <div className="mt-2.5 flex flex-col gap-2.5 pt-2.5 sm:flex-row sm:items-center sm:justify-end">
-              <CreatePostButton />
+              <CreatePostButton tone={tone} />
             </div>
           </>
         ) : (

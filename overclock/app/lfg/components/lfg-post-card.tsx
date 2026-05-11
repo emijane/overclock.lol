@@ -81,12 +81,18 @@ export function LFGPostCard({
   const article = (
     <article
       aria-label={post.title}
-      className={`group h-full rounded-[12px] border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] transition-[border-color,box-shadow] duration-200 hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]${
+      className={`group h-full rounded-[12px] transition-[border-color,box-shadow,background-color] duration-200 ${
+        tone === "duos"
+          ? "border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.03]"
+          : "border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]"
+      }${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-[#06070a]">
-        <div className="relative h-14 overflow-hidden bg-zinc-950/95">
+      <div className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] ${
+        tone === "duos" ? "bg-[#090909]" : "bg-[#06070a]"
+      }`}>
+        <div className={`relative h-14 overflow-hidden ${tone === "duos" ? "bg-[#111111]" : "bg-zinc-950/95"}`}>
           {post.author.coverImageUrl ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -97,22 +103,26 @@ export function LFGPostCard({
               />
             </>
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 to-[#06070a]" />
-          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[#06070a]" />
+          <div className={`absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 ${tone === "duos" ? "to-[#090909]" : "to-[#06070a]"}`} />
+          <div className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent ${tone === "duos" ? "to-[#090909]" : "to-[#06070a]"}`} />
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
           <div className="absolute left-3 top-0 z-20">
             <RankedAvatar
               avatarUrl={post.author.avatarUrl}
-              className="-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+              className={`-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${
+                tone === "duos" ? "border-[#090909]" : "border-[#06070a]"
+              }`}
               displayName={visibleName}
               fallbackClassName="text-xs font-semibold text-zinc-100"
               fallbackText={visibleName.slice(0, 2).toUpperCase()}
               overlay={
                 post.profileId ? (
                   <PresenceIndicator
-                    className="absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                    className={`absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)] ${
+                      tone === "duos" ? "bg-[#090909]" : "bg-[#06070a]"
+                    }`}
                     hideOfflinePresence={post.author.hideOfflinePresence}
                     isLookingToPlay={post.author.isLookingToPlay}
                     lastSeenAt={post.author.lastSeenAt}
@@ -127,17 +137,17 @@ export function LFGPostCard({
           </div>
           <div className="absolute right-3 top-2 z-20 flex items-center gap-1">
               {post.platform ? (
-                <span className="inline-flex h-4.5 items-center rounded-[5px] border border-white/[0.07] bg-black/46 px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
+                <span className="oc-profile-meta inline-flex h-4.5 items-center rounded-[5px] border border-white/[0.06] bg-black/40 px-1.5 text-[9px] font-medium text-zinc-300">
                   {post.platform}
                 </span>
               ) : null}
               <span
-                className={`shrink-0 rounded-[5px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}
+                className={`oc-profile-meta shrink-0 rounded-[5px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}
               >
                 {gameModeLabel}
               </span>
               {createdAtLabel ? (
-                <span suppressHydrationWarning className="text-[9px] font-medium text-zinc-500">
+                <span suppressHydrationWarning className="oc-profile-meta text-[9px] font-medium">
                   {createdAtLabel}
                 </span>
               ) : null}
@@ -154,7 +164,7 @@ export function LFGPostCard({
           {sectionLabel || statusPill ? (
             <div className="flex flex-wrap items-center gap-1">
               {sectionLabel ? (
-                <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-600">
+                <p className="oc-profile-meta text-[10px] font-medium uppercase tracking-[0.14em]">
                   {sectionLabel}
                 </p>
               ) : null}
@@ -169,12 +179,12 @@ export function LFGPostCard({
                   {profileHref ? (
                     <Link
                       href={profileHref}
-                      className="truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-50 transition hover:text-white"
+                      className="oc-profile-display truncate text-[15px] font-semibold tracking-[-0.02em] text-zinc-50 transition hover:text-white"
                     >
                       {displayName}
                     </Link>
                   ) : (
-                    <p className="truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-50">
+                    <p className="oc-profile-display truncate text-[15px] font-semibold tracking-[-0.02em] text-zinc-50">
                       {displayName}
                     </p>
                   )}
@@ -182,12 +192,12 @@ export function LFGPostCard({
                     profileHref ? (
                       <Link
                         href={profileHref}
-                        className="truncate text-[11px] font-medium text-zinc-500 transition hover:text-zinc-300"
+                        className="oc-profile-meta truncate text-[11px] font-medium transition hover:text-zinc-300"
                       >
                         @{post.author.username}
                       </Link>
                     ) : (
-                      <p className="truncate text-[11px] font-medium text-zinc-500">
+                      <p className="oc-profile-meta truncate text-[11px] font-medium">
                         @{post.author.username}
                       </p>
                     )
@@ -231,7 +241,7 @@ export function LFGPostCard({
                   })}
                 </div>
 
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-medium text-zinc-500">
+                <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-medium">
                   {rankIconSrc ? (
                     <Image
                       src={rankIconSrc}
@@ -252,7 +262,7 @@ export function LFGPostCard({
           </div>
 
           <div className="mt-1.5 min-w-0">
-            <h2 className="line-clamp-2 min-h-[2.6rem] text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
+            <h2 className="oc-profile-display line-clamp-2 min-h-[2.6rem] text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
               {post.title}
             </h2>
           </div>
@@ -265,7 +275,9 @@ export function LFGPostCard({
                     key={`${post.id}-${hero.id}`}
                     title={hero.label}
                     aria-label={hero.label}
-                    className="relative h-8 w-8 overflow-hidden rounded-[8px] border border-white/[0.06] bg-zinc-900/90 shadow-[0_5px_12px_rgba(0,0,0,0.14)]"
+                    className={`relative h-8 w-8 overflow-hidden rounded-[8px] border border-white/[0.06] ${
+                      tone === "duos" ? "bg-zinc-900/80" : "bg-zinc-900/90 shadow-[0_5px_12px_rgba(0,0,0,0.14)]"
+                    }`}
                   >
                     {hero.imageSrc ? (
                       <Image
@@ -285,6 +297,7 @@ export function LFGPostCard({
                   onInviteSent={onInviteSent}
                   recipientProfileId={post.profileId}
                   sourceLFGPostId={post.id}
+                  tone={tone}
                   viewerState={viewerState}
                 />
               ) : null}

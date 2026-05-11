@@ -101,14 +101,16 @@ function formatMissingFields(fields: string[]) {
 function LFGFiltersBar({ description }: { description: string }) {
   return (
     <section className="px-5 py-5 sm:px-6">
-      <div className="flex min-h-16 flex-col justify-center rounded-[18px] border border-white/[0.07] bg-[#05070b] px-4 py-3 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-h-16 flex-col justify-center rounded-[12px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
+          <span className="oc-profile-icon-button grid h-9 w-9 place-items-center text-zinc-400">
             <FilterIcon className="h-4 w-4" />
           </span>
           <div>
-            <h2 className="text-sm font-semibold text-zinc-100">Browse Feed</h2>
-            <p className="mt-0.5 text-sm text-zinc-500">{description}</p>
+            <h2 className="oc-profile-display text-sm font-semibold text-zinc-100">
+              Browse Feed
+            </h2>
+            <p className="oc-profile-meta mt-0.5 text-[11px]">{description}</p>
           </div>
         </div>
       </div>
@@ -125,8 +127,8 @@ function LFGSearchBar({
 }) {
   return (
     <form action={`/${type}`} className="mt-5 sm:mt-6">
-      <div className="flex items-center gap-2.5 rounded-[16px] border border-white/[0.12] bg-[#05070b] px-3.5 py-2 shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/[0.04] text-zinc-500">
+      <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+        <span className="oc-profile-icon-button grid h-7 w-7 shrink-0 place-items-center text-zinc-500">
           <SearchIcon className="h-3.5 w-3.5" />
         </span>
         <input
@@ -135,7 +137,7 @@ function LFGSearchBar({
           defaultValue={feedFilters?.search ?? ""}
           maxLength={LFG_SEARCH_MAX_CHARACTERS}
           placeholder={`Search ${type} posts`}
-          className="duos-search-input h-7 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="duos-search-input oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
         />
         {feedFilters?.mode ? (
           <input type="hidden" name="mode" value={feedFilters.mode} />
@@ -156,7 +158,7 @@ function LFGSearchBar({
           <input type="hidden" name="region" value={feedFilters.region} />
         ) : null}
       </div>
-      <p className="mt-2 px-1 text-xs text-zinc-500">
+      <p className="oc-profile-meta mt-2 px-1 text-[11px]">
         Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
       </p>
     </form>
@@ -175,12 +177,12 @@ function LFGActionNotice({
   title: string;
 }) {
   return (
-    <div className="mt-4 rounded-[20px] border border-white/[0.12] bg-[#05070b] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
+    <div className="mt-4 rounded-[12px] border border-white/[0.06] bg-white/[0.02] p-4">
+      <h3 className="oc-profile-display text-sm font-semibold text-zinc-100">{title}</h3>
+      <p className="oc-profile-meta mt-2 text-[11px] leading-5 text-zinc-400">{description}</p>
       <Link
         href={ctaHref}
-        className="mt-4 inline-flex h-10 items-center rounded-full bg-white/[0.07] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
+        className="oc-profile-display mt-4 inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
       >
         {ctaLabel}
       </Link>
@@ -344,20 +346,33 @@ export async function LFGPageShell({
 
   return (
     <main
-      className={`relative bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] px-4 text-zinc-100 sm:px-6 ${
+      className={`relative px-4 text-zinc-100 sm:px-6 ${
         isComposerOnlyPage
           ? "pb-0 pt-2 sm:pb-0 sm:pt-3"
-          : "flex-1 py-6 sm:py-8"
+          : isDuosPage
+            ? "oc-atmosphere-bg flex-1 py-6 sm:py-8"
+            : "flex-1 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] py-6 sm:py-8"
       }`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
-      />
+      {isDuosPage ? (
+        <>
+          <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
+          <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
+        </>
+      ) : (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+          />
+        </>
+      )}
       <AuthMessage message={message} type={messageType} variant="toast" />
       <PageContainer
         className={`relative z-10 ${
@@ -375,15 +390,20 @@ export async function LFGPageShell({
               createPostHref={resolvedCreatePostHref}
               isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
+              tone={isDuosPage ? "duos" : "default"}
               type={type}
             />
           </Suspense>
         ) : null}
-        <section className={`rounded-[28px] ${useSidebarLayout ? "min-w-0 flex-1" : ""}`}>
-          <div className="overflow-hidden rounded-[28px]">
+        <section
+          className={`${useSidebarLayout ? "min-w-0 flex-1" : ""} ${
+            isDuosPage ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"
+          }`}
+        >
+          <div className={isDuosPage ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
             <header
               className={`px-5 sm:px-6 ${
-                isComposerOnlyPage ? "py-3 sm:py-4" : "py-5 sm:py-7"
+                isComposerOnlyPage ? "py-3 sm:py-4" : isDuosPage ? "py-4 sm:py-5" : "py-5 sm:py-7"
               }`}
             >
               <div className={isComposerOnlyPage ? "space-y-3" : "space-y-5"}>
@@ -396,18 +416,26 @@ export async function LFGPageShell({
                     {breadcrumbHref && breadcrumbLabel ? (
                       <Link
                         href={breadcrumbHref}
-                        className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                        className={
+                          isDuosPage
+                            ? "oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
+                            : "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                        }
                       >
                         <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
                         {breadcrumbLabel}
                       </Link>
                     ) : null}
                     <h1
-                      className={`font-semibold tracking-[-0.075em] text-zinc-50 ${
-                        isComposerOnlyPage || isDuosPage || type === "stacks"
-                          ? "text-4xl sm:text-5xl"
-                          : "text-5xl sm:text-6xl"
-                      }`}
+                      className={
+                        isDuosPage
+                          ? "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
+                          : `font-semibold tracking-[-0.075em] text-zinc-50 ${
+                              isComposerOnlyPage || type === "stacks"
+                                ? "text-4xl sm:text-5xl"
+                                : "text-5xl sm:text-6xl"
+                            }`
+                      }
                     >
                       {displayTitle}
                     </h1>
@@ -415,8 +443,10 @@ export async function LFGPageShell({
                   {type && composerMode === "cta" && !useSidebarLayout ? (
                     <Link
                       href={user ? resolvedCreatePostHref : guestCreateHref}
-                      className={`inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:bg-[#080b10] hover:text-white ${
-                        isDuosPage ? "border-white/[0.14] hover:border-white/[0.2]" : "border-white/[0.08] hover:border-white/[0.12]"
+                      className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
+                        isDuosPage
+                          ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                          : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
                       }`}
                     >
                       <PlusIcon className="h-4 w-4" />
@@ -426,16 +456,20 @@ export async function LFGPageShell({
                     <div className="flex items-center gap-2 self-start">
                       <Link
                         href={profileSetupHref}
-                        className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/2.5 px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/4 hover:text-zinc-200 ${
-                          isDuosPage ? "border-white/12 hover:border-white/18" : "border-white/[0.07] hover:border-white/10"
+                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
+                          isDuosPage
+                            ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
+                            : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"
                         }`}
                       >
                         Edit profile
                       </Link>
                       <Link
                         href="/account/posts"
-                        className={`inline-flex h-8 shrink-0 items-center rounded-full border bg-white/2.5 px-3 text-xs font-semibold text-zinc-400 transition hover:bg-white/4 hover:text-zinc-200 ${
-                          isDuosPage ? "border-white/12 hover:border-white/18" : "border-white/[0.07] hover:border-white/10"
+                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
+                          isDuosPage
+                            ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
+                            : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"
                         }`}
                       >
                         Manage posts
@@ -444,12 +478,12 @@ export async function LFGPageShell({
                   ) : null}
                 </PageReveal>
                 {description ? (
-                  <p className="max-w-xl text-sm leading-6 text-zinc-400">
+                  <p className={`max-w-xl leading-5 ${isDuosPage ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-400"}`}>
                     {description}
                   </p>
                 ) : null}
                 {helperText ? (
-                  <p className="text-sm leading-6 text-zinc-500">
+                  <p className={isDuosPage ? "oc-profile-meta text-[11px] leading-5" : "text-sm leading-6 text-zinc-500"}>
                     {helperText}
                   </p>
                 ) : null}
@@ -497,8 +531,10 @@ export async function LFGPageShell({
                   ) : (
                     <form
                       action={createLFGPost}
-                      className={`rounded-[24px] border bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5 sm:py-4.5 ${
-                        isDuosPage ? "border-white/[0.12]" : "border-white/[0.08]"
+                      className={`px-4 py-4 sm:px-5 sm:py-4.5 ${
+                        isDuosPage
+                          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+                          : "rounded-[24px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]"
                       }`}
                     >
                       <input type="hidden" name="lfg_type" value={type} />
@@ -508,12 +544,14 @@ export async function LFGPageShell({
                             ? "Building a chill ranked stack for tonight..."
                             : undefined
                         }
+                        tone={isDuosPage ? "duos" : "default"}
                       />
-                      <LFGGameModePicker />
+                      <LFGGameModePicker tone={isDuosPage ? "duos" : "default"} />
                       <LFGRolePicker
                         profileSummary={profileSummary}
                         roleOptions={composerRoleOptions}
                         setupHref="/account/competitive"
+                        tone={isDuosPage ? "duos" : "default"}
                       />
                     </form>
                   )}
@@ -546,9 +584,7 @@ export async function LFGPageShell({
                 )}
                 <LFGPostList
                   cardClassName={
-                    type === "duos"
-                      ? "shadow-[0_16px_36px_rgba(0,0,0,0.26),inset_0_-8px_0_0_rgba(255,255,255,1)]"
-                      : undefined
+                    undefined
                   }
                   currentProfileId={profile?.id ?? null}
                   emptyStateDescription={emptyStateDescription}

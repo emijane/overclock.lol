@@ -43,19 +43,23 @@ function LFGFeedPlaceholder({
   title: string;
 }) {
   return (
-    <div className={`grid min-h-[280px] place-items-center rounded-[20px] border bg-[#05070b] px-5 py-10 text-center shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)] ${
-      tone === "duos" ? "border-white/[0.12]" : "border-white/[0.07]"
+    <div className={`grid min-h-[280px] place-items-center px-5 py-10 text-center ${
+      tone === "duos"
+        ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
+        : "rounded-[20px] border border-white/[0.07] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]"
     }`}>
       <div className="max-w-sm">
-        <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-white/[0.05] text-zinc-400">
+        <span className={`mx-auto grid h-11 w-11 place-items-center rounded-full text-zinc-400 ${
+          tone === "duos" ? "border border-white/[0.06] bg-white/[0.03]" : "bg-white/[0.05]"
+        }`}>
           <span className="text-lg">?</span>
         </span>
-        <h2 className="mt-4 text-base font-semibold text-zinc-100">{title}</h2>
-        <p className="mt-2 text-sm leading-6 text-zinc-500">{description}</p>
+        <h2 className="oc-profile-display mt-4 text-base font-semibold text-zinc-100">{title}</h2>
+        <p className="oc-profile-meta mt-2 text-[11px] leading-5">{description}</p>
         {ctaHref && ctaLabel ? (
           <Link
             href={ctaHref}
-            className="mt-5 inline-flex h-10 items-center rounded-full bg-white/[0.07] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.11] hover:text-zinc-50"
+            className="oc-profile-display mt-5 inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-4 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
           >
             {ctaLabel}
           </Link>

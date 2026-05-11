@@ -15,6 +15,7 @@ type LFGInviteButtonProps = {
   onInviteSent?: (profileId: string) => void;
   recipientProfileId: string;
   sourceLFGPostId: string;
+  tone?: "default" | "duos";
   viewerState: InviteViewerState;
 };
 
@@ -23,6 +24,7 @@ export function LFGInviteButton({
   onInviteSent,
   recipientProfileId,
   sourceLFGPostId,
+  tone = "default",
   viewerState,
 }: LFGInviteButtonProps) {
   const [inviteState, setInviteState] = useState<ProfileInviteState>(initialState);
@@ -41,7 +43,11 @@ export function LFGInviteButton({
     return (
       <Link
         href={presentation.href}
-        className="inline-flex h-7 shrink-0 items-center rounded-full border border-sky-400/30 bg-sky-400/10 px-3 text-[11px] font-semibold text-sky-200 transition hover:bg-sky-400/15"
+        className={`inline-flex h-7 shrink-0 items-center rounded-full px-3 transition ${
+          tone === "duos"
+            ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[11px] font-semibold text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06]"
+            : "border border-sky-400/30 bg-sky-400/10 text-[11px] font-semibold text-sky-200 hover:bg-sky-400/15"
+        }`}
       >
         {presentation.label}
       </Link>
@@ -71,7 +77,13 @@ export function LFGInviteButton({
 
   if (inviteState === "connected") {
     return (
-      <span className="inline-flex h-7 shrink-0 items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 text-[11px] font-semibold text-emerald-300">
+      <span
+        className={`inline-flex h-7 shrink-0 items-center rounded-full px-3 ${
+          tone === "duos"
+            ? "oc-profile-meta border border-white/[0.06] bg-white/[0.03] text-[11px] font-semibold text-zinc-300"
+            : "border border-emerald-400/20 bg-emerald-500/10 text-[11px] font-semibold text-emerald-300"
+        }`}
+      >
         Connected
       </span>
     );
@@ -79,7 +91,7 @@ export function LFGInviteButton({
 
   if (inviteState === "invite_sent") {
     return (
-      <span className="inline-flex h-7 shrink-0 items-center rounded-full border border-white/8 bg-white/4 px-3 text-[11px] font-semibold text-zinc-500">
+      <span className="oc-profile-meta inline-flex h-7 shrink-0 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-semibold text-zinc-500">
         Invited
       </span>
     );
@@ -92,12 +104,18 @@ export function LFGInviteButton({
         disabled={isPending || !presentation.canSendInvite}
         aria-disabled={isPending || !presentation.canSendInvite}
         onClick={handleSendInvite}
-        className="inline-flex h-7 shrink-0 cursor-pointer items-center rounded-full border border-sky-400/30 bg-sky-400/10 px-3 text-[11px] font-semibold text-sky-200 transition hover:bg-sky-400/15 disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/4 disabled:text-zinc-500"
+        className={`inline-flex h-7 shrink-0 cursor-pointer items-center rounded-full px-3 transition disabled:cursor-not-allowed disabled:text-zinc-500 ${
+          tone === "duos"
+            ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[11px] font-semibold text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06] disabled:border-white/[0.06] disabled:bg-white/[0.03]"
+            : "border border-sky-400/30 bg-sky-400/10 text-[11px] font-semibold text-sky-200 hover:bg-sky-400/15 disabled:border-white/8 disabled:bg-white/4"
+        }`}
       >
         {isPending ? "..." : presentation.label}
       </button>
       {errorMessage ? (
-        <p className="text-[10px] text-red-400">{errorMessage}</p>
+        <p className={`${tone === "duos" ? "oc-profile-meta text-rose-300" : "text-red-400"} text-[10px]`}>
+          {errorMessage}
+        </p>
       ) : null}
     </div>
   );

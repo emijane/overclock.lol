@@ -101,14 +101,26 @@ function FilterDropdown({
 }) {
   const borderClassName =
     tone === "duos"
-      ? "border-white/[0.14] hover:border-white/[0.2]"
+      ? "border-white/[0.06] hover:border-white/[0.12]"
       : "border-white/[0.08] hover:border-white/[0.12]";
   const triggerClassName =
     variant === "primary"
-      ? `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-50 transition hover:text-white`
+      ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
+          tone === "duos"
+            ? "bg-white/[0.03] text-zinc-50 hover:bg-white/[0.06] hover:text-white"
+            : "bg-[#05070b] text-zinc-50 hover:text-white"
+        }`
       : variant === "secondary"
-        ? `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-medium text-zinc-200 transition hover:text-zinc-50`
-        : `inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} bg-[#05070b] px-2.5 text-[12px] font-semibold text-zinc-100 transition hover:text-zinc-50`;
+        ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-medium transition ${
+            tone === "duos"
+              ? "bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06] hover:text-zinc-50"
+              : "bg-[#05070b] text-zinc-200 hover:text-zinc-50"
+          }`
+        : `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
+            tone === "duos"
+              ? "bg-white/[0.03] text-zinc-100 hover:bg-white/[0.06] hover:text-zinc-50"
+              : "bg-[#05070b] text-zinc-100 hover:text-zinc-50"
+          }`;
 
   return (
     <DropdownMenu>
@@ -123,11 +135,11 @@ function FilterDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="w-48 border border-white/10 bg-zinc-950 text-zinc-100"
+        className="w-48 border border-white/[0.08] bg-[#0a0a0b] text-zinc-100"
       >
         <DropdownMenuItem
           asChild
-          className="text-zinc-400 focus:bg-white/[0.04] focus:text-zinc-100"
+          className="oc-profile-display text-zinc-400 focus:bg-white/[0.04] focus:text-zinc-100"
         >
           <Link href={buildFilterHref(pathname, searchParams, paramKey)}>{anyLabel}</Link>
         </DropdownMenuItem>
@@ -137,8 +149,8 @@ function FilterDropdown({
             asChild
             className={
               item.selected
-                ? "text-zinc-50 focus:bg-white/[0.04]"
-                : "text-zinc-400 focus:bg-white/[0.04] focus:text-zinc-100"
+                ? "oc-profile-display text-zinc-50 focus:bg-white/[0.04]"
+                : "oc-profile-display text-zinc-400 focus:bg-white/[0.04] focus:text-zinc-100"
             }
           >
             <Link href={item.href}>{item.label}</Link>
@@ -346,7 +358,7 @@ export function LFGFeedFiltersPanel({
           />
         </div>
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+          <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.18em]">
             {activeCount} active listings
           </p>
         </div>
@@ -357,24 +369,24 @@ export function LFGFeedFiltersPanel({
             <Link
               key={chip.key}
               href={chip.href}
-              className={`inline-flex h-7 items-center gap-1.5 rounded-full border bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-200 transition hover:text-zinc-50 ${
+              className={`inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 transition ${
                 tone === "duos"
-                  ? "border-white/[0.14] hover:border-white/[0.2]"
-                  : "border-white/[0.08] hover:border-white/[0.12]"
+                  ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
+                  : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12]"
               }`}
             >
-              <span className="text-zinc-400">{chip.label}:</span>
-              <span className="text-zinc-100">{chip.value}</span>
+              <span className="oc-profile-meta text-[11px]">{chip.label}:</span>
+              <span className="oc-profile-display text-[12px] font-medium text-zinc-100">{chip.value}</span>
               <XIcon className="h-3 w-3 text-zinc-400" />
             </Link>
           ))}
           {hasActiveFilters ? (
             <Link
               href={buildClearFiltersHref(pathname, params)}
-              className={`inline-flex h-7 items-center gap-1 rounded-full border border-dashed bg-[#05070b] px-2.5 text-[11px] font-medium text-zinc-400 transition hover:text-zinc-100 ${
+              className={`oc-profile-meta inline-flex h-7 items-center gap-1 rounded-full border border-dashed px-2.5 text-[11px] font-medium transition hover:text-zinc-100 ${
                 tone === "duos"
-                  ? "border-white/[0.18] hover:border-white/[0.26]"
-                  : "border-white/[0.12] hover:border-white/[0.18]"
+                  ? "border-white/[0.1] bg-white/[0.02] hover:border-white/[0.16] hover:bg-white/[0.04]"
+                  : "border-white/[0.12] bg-[#05070b] hover:border-white/[0.18]"
               }`}
             >
               Clear All
@@ -384,7 +396,7 @@ export function LFGFeedFiltersPanel({
         </div>
       ) : null}
       {hasActiveRankFilters ? (
-        <p className="mt-2 text-[11px] leading-5 text-zinc-500">
+        <p className="oc-profile-meta mt-2 text-[11px] leading-5">
           Rank filters match tier ranges only. Unranked posts are excluded while a
           min or max rank filter is active.
         </p>
