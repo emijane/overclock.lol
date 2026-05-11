@@ -9,6 +9,49 @@ import type {
   UpdateStackRequestResult,
 } from "./stack-request-types";
 
+function getErrorText(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return "";
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  return [
+    typeof candidate.code === "string" ? candidate.code : "",
+    typeof candidate.message === "string" ? candidate.message : "",
+    typeof candidate.details === "string" ? candidate.details : "",
+    typeof candidate.hint === "string" ? candidate.hint : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function isMissingDatabaseObjectError(error: unknown, objectName: string) {
+  const text = getErrorText(error);
+
+  if (!text.includes(objectName.toLowerCase())) {
+    return false;
+  }
+
+  return (
+    text.includes("42883") ||
+    text.includes("42p01") ||
+    text.includes("pgrst202") ||
+    text.includes("does not exist") ||
+    text.includes("could not find") ||
+    text.includes("not found")
+  );
+}
+
+export function isMissingExpireStackPostsSupportError(error: unknown) {
+  return isMissingDatabaseObjectError(error, "expire_stack_posts");
+}
+
+export function isMissingStackMembersSupportError(error: unknown) {
+  return isMissingDatabaseObjectError(error, "stack_members");
+}
+
 function normalizeErrorCode(value: unknown): StackRequestErrorCode | null {
   return typeof value === "string" ? (value as StackRequestErrorCode) : null;
 }
@@ -126,8 +169,14 @@ export async function expireStackPostsRecord() {
   const { error } = await supabase.rpc("expire_stack_posts");
 
   if (error) {
+    if (isMissingExpireStackPostsSupportError(error)) {
+      return false;
+    }
+
     throw error;
   }
+
+  return true;
 }
 
 export async function sendStackJoinRequestRecord(input: {
@@ -360,17 +409,23 @@ export async function getStackRequestStatesForPosts(input: {
   ]);
 
   if (membershipResult.error) {
-    throw membershipResult.error;
+    if (!isMissingStackMembersSupportError(membershipResult.error)) {
+      throw membershipResult.error;
+    }
   }
 
   if (requestResult.error) {
     throw requestResult.error;
   }
 
-  for (const row of ((membershipResult.data ?? []) as Array<Record<string, unknown>>)) {
-    const postId = typeof row.post_id === "string" ? row.post_id : null;
-    if (postId) {
-      result[postId] = "accepted";
+  const canReadStackMembers = !membershipResult.error;
+
+  if (canReadStackMembers) {
+    for (const row of ((membershipResult.data ?? []) as Array<Record<string, unknown>>)) {
+      const postId = typeof row.post_id === "string" ? row.post_id : null;
+      if (postId) {
+        result[postId] = "accepted";
+      }
     }
   }
 
@@ -381,10 +436,11 @@ export async function getStackRequestStatesForPosts(input: {
     }
 
     const status = row.status;
-    if (
-      (status === "pending" || status === "declined") &&
-      result[postId] === "none"
-    ) {
+    if (status === "accepted" && !canReadStackMembers && result[postId] === "none") {
+      result[postId] = "accepted";
+    }
+
+    if ((status === "pending" || status === "declined") && result[postId] === "none") {
       result[postId] = status;
     }
   }

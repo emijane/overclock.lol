@@ -10,6 +10,7 @@ import {
 } from "./lfg-post-policy";
 import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
 import { expireStackPostsRecord } from "./stack-requests";
+import { isMissingStackMembersSupportError } from "./stack-requests";
 import {
   isLFGGameMode,
   isLFGType,
@@ -170,6 +171,257 @@ function createEmptyRoleCountMap(): ActiveLFGPostCountsByRole {
     dps: 0,
     support: 0,
   };
+}
+
+function getErrorText(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return "";
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  return [
+    typeof candidate.code === "string" ? candidate.code : "",
+    typeof candidate.message === "string" ? candidate.message : "",
+    typeof candidate.details === "string" ? candidate.details : "",
+    typeof candidate.hint === "string" ? candidate.hint : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function isLegacyCreateLFGPostRpcError(error: unknown) {
+  const text = getErrorText(error);
+
+  return (
+    text.includes("create_lfg_post_atomic") &&
+    (text.includes("pgrst") ||
+      text.includes("could not find") ||
+      text.includes("does not exist") ||
+      text.includes("not found"))
+  );
+}
+
+async function tryCreateLFGPostAtomicVariants(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  input: {
+    competitiveProfileSnapshot: CompetitiveProfileSnapshot;
+    gameMode: LFGGameMode;
+    heroPoolSnapshot: LFGHeroSnapshot[];
+    lfgType: LFGType;
+    lookingForRoles: CompetitiveRole[];
+    platform: string | null;
+    postingRole: CompetitiveRole;
+    profileId: string;
+    rankDivision: number | null;
+    rankTier: string;
+    region: string | null;
+    timezone: string | null;
+    title: string;
+  }
+) {
+  const rpcVariants = [
+    {
+      p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
+      p_game_mode: input.gameMode,
+      p_hero_pool_snapshot: input.heroPoolSnapshot,
+      p_lfg_type: input.lfgType,
+      p_looking_for_roles: input.lookingForRoles,
+      p_platform: input.platform,
+      p_posting_role: input.postingRole,
+      p_profile_id: input.profileId,
+      p_rank_division: input.rankDivision,
+      p_rank_tier: input.rankTier,
+      p_region: input.region,
+      p_timezone: input.timezone,
+      p_title: input.title,
+    },
+    {
+      p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
+      p_game_mode: input.gameMode,
+      p_hero_pool_snapshot: input.heroPoolSnapshot,
+      p_lfg_type: input.lfgType,
+      p_platform: input.platform,
+      p_posting_role: input.postingRole,
+      p_profile_id: input.profileId,
+      p_rank_division: input.rankDivision,
+      p_rank_tier: input.rankTier,
+      p_region: input.region,
+      p_timezone: input.timezone,
+      p_title: input.title,
+      p_max_group_size: input.lfgType === "stacks" ? STACK_MAX_GROUP_SIZE : null,
+      p_description: null,
+    },
+    {
+      p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
+      p_game_mode: input.gameMode,
+      p_hero_pool_snapshot: input.heroPoolSnapshot,
+      p_lfg_type: input.lfgType,
+      p_looking_for_roles: input.lookingForRoles,
+      p_platform: input.platform,
+      p_posting_role: input.postingRole,
+      p_profile_id: input.profileId,
+      p_rank_division: input.rankDivision,
+      p_rank_tier: input.rankTier,
+      p_region: input.region,
+      p_timezone: input.timezone,
+      p_title: input.title,
+    },
+    {
+      p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
+      p_game_mode: input.gameMode,
+      p_hero_pool_snapshot: input.heroPoolSnapshot,
+      p_lfg_type: input.lfgType,
+      p_platform: input.platform,
+      p_posting_role: input.postingRole,
+      p_profile_id: input.profileId,
+      p_rank_division: input.rankDivision,
+      p_rank_tier: input.rankTier,
+      p_region: input.region,
+      p_timezone: input.timezone,
+      p_title: input.title,
+    },
+  ];
+
+  let lastError: unknown = null;
+
+  for (const args of rpcVariants) {
+    const { data, error } = await supabase.rpc("create_lfg_post_atomic", args);
+
+    if (!error) {
+      return normalizeLFGCreateResult(data);
+    }
+
+    lastError = error;
+
+    if (!isLegacyCreateLFGPostRpcError(error)) {
+      throw error;
+    }
+  }
+
+  throw lastError;
+}
+
+function normalizeStackMemberFromSnapshot(
+  profileId: string,
+  role: CompetitiveRole,
+  snapshot: Record<string, unknown> | null,
+  isOwner: boolean
+): StackMember {
+  return {
+    avatarUrl: getProfileAvatarUrl(
+      snapshot && typeof snapshot.avatar_url === "string" ? snapshot.avatar_url : null,
+      null
+    ),
+    displayName:
+      snapshot && typeof snapshot.display_name === "string"
+        ? snapshot.display_name
+        : null,
+    isOwner,
+    profileId,
+    role,
+    username:
+      snapshot && typeof snapshot.username === "string" ? snapshot.username : null,
+  };
+}
+
+function buildOwnerStackMember(row: Record<string, unknown>): StackMember | null {
+  const postId = typeof row.id === "string" ? row.id : null;
+  const profileId = typeof row.profile_id === "string" ? row.profile_id : null;
+
+  if (!postId || !profileId) {
+    return null;
+  }
+
+  const profileRow =
+    row.profiles && typeof row.profiles === "object" && !Array.isArray(row.profiles)
+      ? (row.profiles as Record<string, unknown>)
+      : null;
+
+  return {
+    avatarUrl: profileRow
+      ? getProfileAvatarUrl(
+          typeof profileRow.avatar_url === "string" ? profileRow.avatar_url : null,
+          typeof profileRow.avatar_updated_at === "string"
+            ? profileRow.avatar_updated_at
+            : null
+        )
+      : null,
+    displayName:
+      profileRow && typeof profileRow.display_name === "string"
+        ? profileRow.display_name
+        : null,
+    isOwner: true,
+    profileId,
+    role: normalizeCompetitiveRole(row.posting_role),
+    username:
+      profileRow && typeof profileRow.username === "string"
+        ? profileRow.username
+        : null,
+  };
+}
+
+async function getFallbackStackMembersByPostId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  postRows: Array<Record<string, unknown>>
+) {
+  const stackMembersByPostId = new Map<string, StackMember[]>();
+  const postIds = postRows
+    .map((row) => (typeof row.id === "string" ? row.id : null))
+    .filter((id): id is string => Boolean(id));
+
+  for (const row of postRows) {
+    const postId = typeof row.id === "string" ? row.id : null;
+    const ownerMember = buildOwnerStackMember(row);
+
+    if (!postId || !ownerMember) {
+      continue;
+    }
+
+    stackMembersByPostId.set(postId, [ownerMember]);
+  }
+
+  if (postIds.length === 0) {
+    return stackMembersByPostId;
+  }
+
+  const { data, error } = await supabase
+    .from("stack_requests")
+    .select("post_id,requester_profile_id,requested_role,requester_snapshot")
+    .in("post_id", postIds)
+    .eq("status", "accepted")
+    .order("accepted_at", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  for (const row of ((data ?? []) as unknown) as Array<Record<string, unknown>>) {
+    const postId = typeof row.post_id === "string" ? row.post_id : null;
+    const profileId =
+      typeof row.requester_profile_id === "string" ? row.requester_profile_id : null;
+
+    if (!postId || !profileId) {
+      continue;
+    }
+
+    const requestedRole = normalizeCompetitiveRole(row.requested_role);
+    const snapshot =
+      row.requester_snapshot &&
+      typeof row.requester_snapshot === "object" &&
+      !Array.isArray(row.requester_snapshot)
+        ? (row.requester_snapshot as Record<string, unknown>)
+        : null;
+    const existing = stackMembersByPostId.get(postId) ?? [];
+
+    existing.push(
+      normalizeStackMemberFromSnapshot(profileId, requestedRole, snapshot, false)
+    );
+    stackMembersByPostId.set(postId, existing);
+  }
+
+  return stackMembersByPostId;
 }
 
 function normalizeLFGPostRow(
@@ -354,50 +606,60 @@ export async function getActiveLFGPosts(
       .order("joined_at", { ascending: true });
 
     if (memberError) {
-      throw memberError;
-    }
+      if (isMissingStackMembersSupportError(memberError)) {
+        const fallbackMembers = await getFallbackStackMembersByPostId(supabase, postRows);
 
-    for (const row of ((memberRows ?? []) as unknown) as Array<Record<string, unknown>>) {
-      const postId = typeof row.post_id === "string" ? row.post_id : null;
-      if (!postId) continue;
+        for (const [postId, members] of fallbackMembers.entries()) {
+          stackMembersByPostId.set(postId, members);
+        }
+      } else {
+        throw memberError;
+      }
+    } else {
+      for (const row of ((memberRows ?? []) as unknown) as Array<Record<string, unknown>>) {
+        const postId = typeof row.post_id === "string" ? row.post_id : null;
+        if (!postId) continue;
 
-      const profileRow =
-        row.profiles && typeof row.profiles === "object" && !Array.isArray(row.profiles)
-          ? (row.profiles as Record<string, unknown>)
-          : null;
-
-      const profileId =
-        profileRow && typeof profileRow.id === "string"
-          ? profileRow.id
-          : typeof row.profile_id === "string"
-            ? row.profile_id
+        const profileRow =
+          row.profiles && typeof row.profiles === "object" && !Array.isArray(row.profiles)
+            ? (row.profiles as Record<string, unknown>)
             : null;
 
-      if (!profileId) continue;
+        const profileId =
+          profileRow && typeof profileRow.id === "string"
+            ? profileRow.id
+            : typeof row.profile_id === "string"
+              ? row.profile_id
+              : null;
 
-      const member: StackMember = {
-        avatarUrl: profileRow
-          ? getProfileAvatarUrl(
-              typeof profileRow.avatar_url === "string" ? profileRow.avatar_url : null,
-              typeof profileRow.avatar_updated_at === "string" ? profileRow.avatar_updated_at : null
-            )
-          : null,
-        displayName:
-          profileRow && typeof profileRow.display_name === "string"
-            ? profileRow.display_name
-            : null,
-        isOwner: row.is_owner === true,
-        profileId,
-        role: normalizeCompetitiveRole(row.role),
-        username:
-          profileRow && typeof profileRow.username === "string"
-            ? profileRow.username
-            : null,
-      };
+        if (!profileId) continue;
 
-      const existing = stackMembersByPostId.get(postId) ?? [];
-      existing.push(member);
-      stackMembersByPostId.set(postId, existing);
+        const member: StackMember = {
+          avatarUrl: profileRow
+            ? getProfileAvatarUrl(
+                typeof profileRow.avatar_url === "string" ? profileRow.avatar_url : null,
+                typeof profileRow.avatar_updated_at === "string"
+                  ? profileRow.avatar_updated_at
+                  : null
+              )
+            : null,
+          displayName:
+            profileRow && typeof profileRow.display_name === "string"
+              ? profileRow.display_name
+              : null,
+          isOwner: row.is_owner === true,
+          profileId,
+          role: normalizeCompetitiveRole(row.role),
+          username:
+            profileRow && typeof profileRow.username === "string"
+              ? profileRow.username
+              : null,
+        };
+
+        const existing = stackMembersByPostId.get(postId) ?? [];
+        existing.push(member);
+        stackMembersByPostId.set(postId, existing);
+      }
     }
   }
 
@@ -664,27 +926,7 @@ export async function createLFGPostAtomically(input: {
   title: string;
 }) {
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("create_lfg_post_atomic", {
-    p_competitive_profile_snapshot: input.competitiveProfileSnapshot,
-    p_game_mode: input.gameMode,
-    p_hero_pool_snapshot: input.heroPoolSnapshot,
-    p_lfg_type: input.lfgType,
-    p_looking_for_roles: input.lookingForRoles,
-    p_platform: input.platform,
-    p_posting_role: input.postingRole,
-    p_profile_id: input.profileId,
-    p_rank_division: input.rankDivision,
-    p_rank_tier: input.rankTier,
-    p_region: input.region,
-    p_timezone: input.timezone,
-    p_title: input.title,
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  return normalizeLFGCreateResult(data);
+  return tryCreateLFGPostAtomicVariants(supabase, input);
 }
 
 export async function hasMatchingActiveLFGPost(input: {

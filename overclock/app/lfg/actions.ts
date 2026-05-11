@@ -29,6 +29,45 @@ import {
   hasReachedLFGPostCreationLimit,
 } from "@/lib/lfg/posts";
 
+function getActionErrorText(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return "";
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  return [
+    typeof candidate.code === "string" ? candidate.code : "",
+    typeof candidate.message === "string" ? candidate.message : "",
+    typeof candidate.details === "string" ? candidate.details : "",
+    typeof candidate.hint === "string" ? candidate.hint : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function getPublicStackDebugMessage(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return null;
+  }
+
+  const candidate = error as Record<string, unknown>;
+  const code = typeof candidate.code === "string" ? candidate.code : null;
+  const message =
+    typeof candidate.message === "string" ? candidate.message.trim() : null;
+
+  if (!code && !message) {
+    return null;
+  }
+
+  const compactMessage = message
+    ? message.replace(/\s+/g, " ").slice(0, 120)
+    : "Unknown stack create error";
+
+  return `Stack debug: ${code ?? "no-code"} ${compactMessage}`;
+}
+
 function lfgRedirect(
   lfgType: string,
   message: string,
@@ -154,8 +193,21 @@ export async function createLFGPost(formData: FormData) {
       hasReachedLFGPostCreationLimit({ lfgType: lfgTypeValue, profileId: profile.id }),
       hasReachedActiveLFGPostLimit({ lfgType: lfgTypeValue, postingRole: postingRoleValue as CompetitiveRole, profileId: profile.id }),
     ]);
-  } catch {
-    lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
+  } catch (error) {
+    if (lfgTypeValue === "stacks") {
+      const debugMessage = getPublicStackDebugMessage(error);
+
+      if (debugMessage) {
+        lfgRedirect(lfgTypeValue, debugMessage);
+      }
+    }
+
+    lfgRedirect(
+      lfgTypeValue,
+      lfgTypeValue === "stacks"
+        ? "Stacks are syncing right now. Try again in a moment."
+        : "Unable to create your post right now."
+    );
   }
 
   if (reachedCreationLimit) {
@@ -263,6 +315,22 @@ export async function createLFGPost(formData: FormData) {
       lfgRedirect(
         lfgTypeValue,
         "You already have an active post in this section with this title."
+      );
+    }
+
+    const errorText = getActionErrorText(error);
+
+    if (
+      lfgTypeValue === "stacks" &&
+      (errorText.includes("create_lfg_post_atomic") ||
+        errorText.includes("stack_members") ||
+        errorText.includes("expire_stack_posts"))
+    ) {
+      const debugMessage = getPublicStackDebugMessage(error);
+
+      lfgRedirect(
+        lfgTypeValue,
+        debugMessage ?? "Stacks are still syncing on the server. Try again in a moment."
       );
     }
 
