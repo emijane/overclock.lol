@@ -179,14 +179,14 @@ export function ProfileHeader({
               ) : null}
             </div>
 
-            <div className="sm:min-w-[220px] sm:pt-0.5">
+            <div className="sm:min-w-[220px] sm:-mt-6">
               <ProfileSocialLinks
                 leadingAction={
                   isOwner ? (
                     <button
                       type="button"
                       onClick={onEditProfile}
-                      className="oc-profile-display oc-profile-text-button inline-flex h-8 items-center px-3 text-[12px] font-semibold text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                      className="oc-profile-display oc-profile-text-button inline-flex h-8 items-center px-3 text-[12px] font-medium text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                     >
                       Edit profile
                     </button>
