@@ -98,7 +98,7 @@ export function PreferredHeroPools({
     <section className="border-t border-white/[0.06] px-5 pb-4 pt-3.5 sm:px-6 sm:pb-5 sm:pt-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
+          <h2 className="text-[12px] font-semibold tracking-[-0.01em] text-zinc-100/70">
             Competitive Roles
           </h2>
         </div>
@@ -140,7 +140,7 @@ export function PreferredHeroPools({
             return (
               <section
                 key={group.label}
-                className="rounded-[18px] border border-white/8 bg-white/4 p-3.5 transition-colors duration-200 hover:bg-white/6"
+                className="rounded-[10px] border border-white/8  p-3.5 transition-colors duration-200 hover:bg-white/6"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -186,7 +186,7 @@ export function PreferredHeroPools({
                       <div
                         key={hero.id}
                         title={hero.label}
-                        className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[9px] border border-white/12 bg-zinc-900"
+                        className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[10px]"
                       >
                         <Image
                           src={hero.imageSrc}
