@@ -22,8 +22,14 @@ Current shipped LFG routes:
 - `/duos`
 - `/duos/create`
 - `/stacks`
+- `/stacks/create`
 
 Roadmap-only, not currently shipped:
 
 - `/teams`
 - `/scrims`
+
+## Next Steps
+
+- Keep this route list aligned with root `docs/README.md` and the repo/app READMEs.
+- Prefer moving newly-stable stack behavior notes into root `docs/` before adding more app-local copies.

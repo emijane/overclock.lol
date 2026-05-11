@@ -22,8 +22,8 @@
 | Surface | Current intent |
 | --- | --- |
 | `Duos` | most developed LFG surface, denser and more card-forward |
-| `Stacks` | same shell language with less specialized tone |
-| Create post | inline composer inside the page shell, not a separate product flow |
+| `Stacks` | same shell language with a denser heist.lol-inspired social card treatment |
+| Create post | composer stays inside the shared LFG architecture, with dedicated create routes where shipped |
 | Account posts | management layer, not discovery layer |
 
 ## How Users Scan Posts
@@ -31,8 +31,10 @@
 2. Player identity
 3. Rank + posting role
 4. Mode / platform
-5. Hero pool
-6. Invite action
+5. Social state:
+  - hero pool on duos
+  - member count, accepted avatars, and needed roles on stacks
+6. Invite / request action
 
 - Cover art is atmosphere only
 - Badges and timestamps are tertiary
@@ -48,7 +50,8 @@
   - mode
   - platform
   - looking-to-play state
-  - hero pool
+  - hero pool on duos
+  - accepted member avatars and count on stacks
 - Low:
   - timestamp
   - username
@@ -78,8 +81,12 @@
 - Prefer more posts per viewport over larger individual cards
 
 ## Duos Vs Stacks
-- `Duos` gets slightly stronger borders and a more tuned grid layout
-- `Stacks` stays in the same family but reads less emphasized
+- `Duos` and `Stacks` stay in the same family and should not feel like different products
+- `Stacks` leans more social:
+  - overlapping member avatars
+  - compact `x/5` count
+  - needed-role pills instead of hero-pool emphasis
+- `Stacks` cards should feel darker, flatter, denser, and more cohesive than older dashboard-like LFG cards
 - Do not fork the design language between them
 
 ## Filters
@@ -123,7 +130,7 @@
 - Do not merge them into one ambiguous role control
 
 ## Create-Post UX
-- Composer is embedded in the same shell as browsing
+- Composer is embedded in the same shell language as browsing
 - Blocking conditions are explicit and actionable:
   - login required
   - onboarding required
@@ -131,6 +138,13 @@
   - missing competitive role setup
 - Each blocker gives one next action
 - Reference: `lfg-page-shell.tsx`
+
+For stacks specifically:
+
+- `/stacks/create` is the dedicated creation route
+- stack creation does not ask for freeform description or custom group size
+- stack groups always start at `1/5`
+- the owner becomes the first accepted member automatically
 
 ## Profile Integration
 - LFG posts are extensions of profiles, not anonymous listings
@@ -164,6 +178,44 @@
   - decline
 - Current UX avoids threaded chat, negotiation states, or complex invite forms
 - Matches page acts as a compact inbox + connection list, not a social hub
+
+Stacks reuse that lightweight pattern through notifications:
+
+- requesters use `Request to Join`
+- the requester chooses one currently-needed role
+- owners accept or decline from the existing notification dropdown
+- only accepted members become public on the stack card
+
+## Stack Card Patterns
+
+- Keep stack cards dense, flatter, and more social than dashboard-like
+- Banner treatment:
+  - darker and atmospheric
+  - softer overlay
+  - banner supports mood, not content density
+- Metadata:
+  - compact pills over the banner
+  - timestamp stays quieter than identity and title
+- Identity:
+  - bright white reserved for display name and title
+  - username, rank, region, and secondary metadata stay dimmer
+- Group row:
+  - overlapping clickable avatars inline with `x/5`
+  - max `4` visible avatars, then `+X`
+  - only accepted members render publicly
+- Needed roles:
+  - flatter pills
+  - muted semantic tinting
+  - show only currently open role slots
+
+## Heist-Inspired Direction
+
+- dark, minimal, premium
+- reduced radius globally
+- subtle borders
+- flatter surfaces
+- minimal glow and restrained gradients
+- stronger social-object feel, less stacked-component feel
 
 ## Responsive Considerations
 - On mobile:
@@ -201,3 +253,10 @@
 - Prefer pills and rows over paragraphs
 - Keep create-post blockers actionable and single-path
 - Treat Duos as the strongest LFG reference surface
+
+## Next Steps
+
+- Verify stack card readability across bright and dark cover images.
+- Unify remaining small spacing differences between duos and stacks cards.
+- Improve accessible labeling for compact metadata and role/status pills.
+- Keep deferred features like realtime party/chat out of LFG card scope.

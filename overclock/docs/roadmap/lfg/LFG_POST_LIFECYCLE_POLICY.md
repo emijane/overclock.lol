@@ -55,18 +55,65 @@ Once that window passes, the post should no longer appear as active in:
 
 Current implementation detail:
 
-- expired posts are treated as inactive at read time
-- `/account/posts` derives an `Expired` presentation state even if the stored
-  row is still `status = "active"`
-
-Recommended eventual stored state:
+- duos still derive expiry through the shared active-window rules
+- stacks proactively move expired posts to:
 
 ```text
-status = "closed"
+status = "expired"
 ```
 
-That keeps the stored model simple: active posts are currently live, and closed
-posts are no longer live.
+- stack expiry also frees active members and cancels pending requests
+
+## Stack Lifecycle
+
+Stacks currently ship as fixed-size groups with:
+
+```text
+min = 1
+max = 5
+```
+
+Rules:
+
+- owner is automatically inserted as the first accepted member on create
+- all new stack posts start at `1/5`
+- accepted members increase the visible count:
+  - `1/5`
+  - `2/5`
+  - `3/5`
+  - `4/5`
+  - `5/5`
+- reaching `5/5` automatically moves the post to:
+
+```text
+status = "filled"
+```
+
+- leaving or removing a member below `5/5` reverts a filled stack back to:
+
+```text
+status = "active"
+```
+
+## One-Active-Stack Rule
+
+Users can belong to only one active stack at a time.
+
+Occupied statuses:
+
+- `active`
+- `filled`
+
+Freeing statuses:
+
+- `closed`
+- `expired`
+
+This rule is enforced server-side for:
+
+- stack creation
+- request submission
+- request acceptance
 
 ## Manual Close Behavior
 
@@ -79,6 +126,26 @@ Manual close rules:
 - closed posts cannot be reopened
 - closing a post immediately removes it from active surfaces
 - closing a post does not affect posting rate limits
+
+For stacks, closing also means:
+
+- all current members are freed from that stack
+- pending join requests are cancelled automatically
+- the stack cannot be reopened
+
+## Stack Leave / Remove / Disband
+
+Additional stack-only lifecycle actions:
+
+- members can leave their current stack
+- owners can remove non-owner members
+- owners can disband by closing the stack
+
+Behavior:
+
+- leaving or removing decrements the public member count
+- the removed role slot is reopened in `looking_for_roles`
+- if the stack was `filled`, it becomes `active` again once a member leaves
 
 This matches the product shape of lightweight "looking right now" listings
 rather than long-lived posts.
@@ -125,6 +192,12 @@ Closed and expired posts should stay hidden from:
 - section feeds
 - public profile active listing modules
 
+Stacks also follow a stricter membership visibility rule:
+
+- only accepted members are public
+- pending and declined requests stay private
+- public cards show accepted members through overlapping clickable avatars
+
 ## Current Enforcement Model
 
 These rules are enforced on the server.
@@ -141,8 +214,42 @@ Before creating a new post, validate:
 - the post is not a duplicate active post with the same normalized title +
   section + mode + posting role
 
+For stacks, also validate:
+
+- the user is not already in another `active` or `filled` stack
+- the owner becomes the initial accepted member automatically
+- the stack starts at `1/5`
+
 Client-side UI may explain the rule, but the server remains the source of
 truth.
+
+### Stack request and accept checks
+
+Before a stack request is created or accepted, validate:
+
+- authenticated user exists
+- requester is not the owner
+- post is still `active` or `filled` where appropriate
+- post is not expired or closed
+- requested role is still needed
+- stack is not already full
+- requester is not already a member
+- duplicate pending requests do not exist
+- blocked-user rules apply when supported by the runtime database
+- acceptance still passes the one-active-stack rule
+
+### Notification Integration
+
+Stacks reuse the existing notification dropdown instead of introducing a new
+stack inbox.
+
+Current flow:
+
+- requester clicks `Request to Join`
+- requester chooses one currently-needed role
+- owner receives a notification dropdown item with accept/decline controls
+- accept inserts the member, updates count/roles, and revalidates stack surfaces
+- decline follows the existing lightweight dismissal pattern
 
 ### Read-time active filtering
 
@@ -180,11 +287,20 @@ The current LFG model already supports this shape with:
 - `status`
 - `created_at`
 
+Stacks additionally rely on:
+
+- `looking_for_roles`
+- `current_member_count`
+- `max_group_size`
+- `stack_requests`
+- `stack_members`
+
 Important implementation expectations:
 
 - consistent use of `created_at` for rolling-window checks
 - consistent use of `status` for manual close behavior
 - shared query helpers that define what counts as "active"
+- stack helpers that treat both `active` and `filled` as occupying membership
 
 No major route redesign is needed for this policy.
 
@@ -214,6 +330,12 @@ The current implementation already includes:
 - hidden closed and expired posts on public surfaces
 - read-time expiry for active feeds
 - private post management through `/account/posts`
+- stack owner auto-membership at create
+- stack request submission with role choice
+- owner-side accept/decline through notifications
+- accepted-member public avatar strip on stack cards
+- leave/remove support for stack membership
+- `active` / `filled` / `closed` / `expired` stack statuses
 
 Current enforcement note:
 
@@ -225,6 +347,27 @@ Current enforcement note:
 
 Follow-up work that still makes sense:
 
-- add background cleanup to mark expired posts as closed if explicit stored
-  closure becomes important
-- add tests around create, close, and expiry behavior
+- add broader live QA around create/request/accept/leave/remove/close flows
+- tighten docs and tests around notification outcomes for declines
+- keep deferred realtime party/chat features out of the lifecycle layer
+
+## Stack Card UI Notes
+
+Current stack cards lean into a heist.lol-inspired social object style:
+
+- dark, dense, flatter presentation
+- reduced radius and subtle borders
+- atmospheric banner treatment
+- compact metadata pills over the banner
+- overlapping accepted-member avatars inline with the `x/5` count
+- flatter available-role pills with restrained semantic tinting
+
+The card should feel cohesive and social rather than like stacked dashboard
+modules.
+
+## Next Steps
+
+- Add live regression coverage for stack membership edge cases and expiry cleanup.
+- Improve accessibility labeling for compact stack metadata and role pills.
+- Keep stack UI polish focused on density and cohesion, not new feature scope.
+- Revisit stored-status consistency for duos only if shared lifecycle behavior changes.

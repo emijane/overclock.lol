@@ -51,7 +51,8 @@ callback route: `/auth/callback`.
 - `/lfg` - main LFG shell
 - `/duos` - browse-first duo feed
 - `/duos/create` - dedicated duo post composer
-- `/stacks` - stacks feed and inline composer
+- `/stacks` - stacks feed
+- `/stacks/create` - dedicated stack post composer with fixed `1/5` group start
 
 Roadmap-only, not currently shipped:
 
@@ -62,3 +63,20 @@ Roadmap-only, not currently shipped:
 
 Active work is currently centered on profile quality, onboarding polish, hero pools,
 LFG quality, and general codebase cleanup.
+
+## Stacks Notes
+
+- Stack posts start at `1/5` with the owner automatically inserted as the first member.
+- Stack membership is exclusive across active stack posts:
+  - `active` and `filled` stacks occupy the user
+  - `closed` and `expired` stacks free the user
+- Stack requests reuse the existing notification dropdown flow for owner-side
+  accept and decline actions.
+- Public stack cards show only accepted members through overlapping clickable
+  avatars, plus the remaining needed role pills.
+
+## Next Steps
+
+- Apply visual QA for `/stacks` on mobile and narrow desktop widths.
+- Keep stack lifecycle docs aligned with any future DB or notification changes.
+- Document any future owner/member moderation changes only after they ship.

@@ -2,9 +2,34 @@
 
 **Date:** 2026-05-10
 **Scope:** `/duos`, `/duos/create`, `/stacks`, `/stacks/create` and all shared LFG infrastructure
-**Trigger:** Implementation of `/stacks/create`, stacks `composerMode: "cta"`, and h1 font size changes
+**Trigger:** Shipped `/stacks` MVP lifecycle, membership rules, notification integration, and stack card UI refinements
 
 ---
+
+## Current Stacks State
+
+- `/stacks` and `/stacks/create` are both shipped.
+- Stacks start at `1/5` and automatically insert the owner as the first member.
+- Users may belong to only one `active` or `filled` stack at a time.
+- Public stack cards show accepted members only:
+  - overlapping clickable avatars
+  - max `4` visible, then `+X`
+  - inline `x/5` count
+- Owner-side request handling reuses the existing notification dropdown.
+- Current stack statuses are:
+  - `active`
+  - `filled`
+  - `closed`
+  - `expired`
+
+## Current Known Limits
+
+- This audit was still static-first:
+  - `npm run typecheck`
+  - `npm run lint`
+  - repo inspection
+- No live authenticated browser pass or remote Supabase QA evidence is embedded here.
+- Requester-side follow-up notifications still follow the current lightweight pattern rather than a brand-new inbox flow.
 
 ## Priority Summary
 
@@ -184,3 +209,10 @@ Added `revalidatePath("/lfg")` alongside the section-specific revalidation in `c
 - File: `overclock/app/lfg/components/lfg-page-shell.tsx`
 - Root cause: `type?: LFGType` allows callers to pass `composerMode="cta"` without a `type`, producing a `guestCreateHref` of `/login?next=/lfg/create` which does not exist.
 - Fix: Make `type` required when `composerMode !== "none"`.
+
+## Next Steps
+
+- Run live QA for stack create, request, accept, decline, leave, remove, and disband flows.
+- Confirm one-active-stack enforcement against real concurrent requests.
+- Verify notification dropdown behavior after accept/decline in a seeded environment.
+- Re-check stack card mobile overflow and focus states in-browser.

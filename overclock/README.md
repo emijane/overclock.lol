@@ -17,8 +17,12 @@ featured videos, and create LFG posts.
 - `/lfg` is the main LFG hub.
 - `/duos` is the browse-first duo feed with server-rendered filters, feed search, and
   a dedicated create route at `/duos/create`.
-- `/stacks` currently supports inline creating and browsing posts with the same first-pass
-  filter model as Duos.
+- `/stacks` is the stack feed with a dedicated create route at `/stacks/create`.
+- Stacks currently ship as fixed-size `1/5` groups:
+  - the owner is inserted automatically on create
+  - accepted members increase the count up to `5/5`
+  - `active` and `filled` stacks occupy the user for one-stack-at-a-time rules
+  - public cards expose accepted members only through overlapping clickable avatars
 - `/teams` and `/scrims` are not currently implemented routes, even though some roadmap
   notes still discuss them as future surfaces.
 
@@ -77,3 +81,9 @@ npm run verify
 - The global header currently exposes Duos and Stacks navigation plus placeholder
   notifications for signed-in users.
 - Root `docs/legal/*` is intentionally the source of truth for legal page content.
+
+## Next Steps
+
+- Run live regression QA against stack create/request/accept/leave/remove flows after DB changes.
+- Continue tightening shared LFG docs so route truth lives in root `docs/` first.
+- Keep `/teams` and `/scrims` documented as roadmap-only until real routes ship.
