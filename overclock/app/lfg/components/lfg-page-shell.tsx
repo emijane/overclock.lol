@@ -126,42 +126,46 @@ function LFGSearchBar({
   type: LFGType;
 }) {
   return (
-    <form action={`/${type}`} className="mt-4 max-w-[30rem] sm:mt-5">
-      <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-2.5 py-2">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500">
-          <SearchIcon className="h-3.5 w-3.5" />
-        </span>
-        <input
-          type="search"
-          name="search"
-          defaultValue={feedFilters?.search ?? ""}
-          maxLength={LFG_SEARCH_MAX_CHARACTERS}
-          placeholder={`Search ${type} posts`}
-          className="duos-search-input oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
-        />
-        {feedFilters?.mode ? (
-          <input type="hidden" name="mode" value={feedFilters.mode} />
-        ) : null}
-        {feedFilters?.role ? (
-          <input type="hidden" name="role" value={feedFilters.role} />
-        ) : null}
-        {feedFilters?.lookingFor ? (
-          <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
-        ) : null}
-        {feedFilters?.minRank ? (
-          <input type="hidden" name="min_rank" value={feedFilters.minRank} />
-        ) : null}
-        {feedFilters?.maxRank ? (
-          <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
-        ) : null}
-        {feedFilters?.region ? (
-          <input type="hidden" name="region" value={feedFilters.region} />
-        ) : null}
+    <div className="mt-4 space-y-1.5 sm:mt-5">
+      <form action={`/${type}`} className="max-w-[30rem]">
+        <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-2.5 py-2">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500">
+            <SearchIcon className="h-3.5 w-3.5" />
+          </span>
+          <input
+            type="search"
+            name="search"
+            defaultValue={feedFilters?.search ?? ""}
+            maxLength={LFG_SEARCH_MAX_CHARACTERS}
+            placeholder={`Search ${type} posts`}
+            className="duos-search-input oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
+          />
+          {feedFilters?.mode ? (
+            <input type="hidden" name="mode" value={feedFilters.mode} />
+          ) : null}
+          {feedFilters?.role ? (
+            <input type="hidden" name="role" value={feedFilters.role} />
+          ) : null}
+          {feedFilters?.lookingFor ? (
+            <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
+          ) : null}
+          {feedFilters?.minRank ? (
+            <input type="hidden" name="min_rank" value={feedFilters.minRank} />
+          ) : null}
+          {feedFilters?.maxRank ? (
+            <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
+          ) : null}
+          {feedFilters?.region ? (
+            <input type="hidden" name="region" value={feedFilters.region} />
+          ) : null}
+        </div>
+      </form>
+      <div className="px-1">
+        <p className="oc-profile-meta text-[10px]">
+          Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
+        </p>
       </div>
-      <p className="oc-profile-meta mt-1.5 px-1 text-[10px]">
-        Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
-      </p>
-    </form>
+    </div>
   );
 }
 
@@ -318,6 +322,7 @@ export async function LFGPageShell({
   const profileSetupCtaLabel = "Open Competitive Profile";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
+  const duosResultsLabel = `${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} returned`;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
@@ -415,7 +420,7 @@ export async function LFGPageShell({
           >
             <header
               className={`px-5 sm:px-6 ${
-                isComposerOnlyPage ? "py-3 sm:py-4" : isDuosPage ? "py-4 sm:py-5" : "py-5 sm:py-7"
+                isComposerOnlyPage ? "py-3 sm:py-4" : isDuosPage ? "relative py-4 sm:py-5" : "py-5 sm:py-7"
               }`}
             >
               <div className={isComposerOnlyPage ? "space-y-3" : isDuosPage ? "space-y-4" : "space-y-5"}>
@@ -487,8 +492,8 @@ export async function LFGPageShell({
                         Manage posts
                       </Link>
                     </div>
-                  ) : null}
-                </PageReveal>
+                    ) : null}
+                  </PageReveal>
                 {description ? (
                   <p className={`max-w-xl leading-5 ${isDuosPage ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-400"}`}>
                     {description}
@@ -499,10 +504,16 @@ export async function LFGPageShell({
                     {helperText}
                   </p>
                 ) : null}
-                {type === "duos" && shouldShowFeed ? (
-                  <LFGSearchBar feedFilters={feedFilters} type={type} />
+                  {type === "duos" && shouldShowFeed ? (
+                    <LFGSearchBar feedFilters={feedFilters} type={type} />
+                  ) : null}
+                </div>
+                {isDuosPage ? (
+                  <p className="oc-profile-meta pointer-events-none absolute bottom-4 right-5 text-[10px] text-right sm:bottom-5 sm:right-6">
+                    {duosResultsLabel}
+                    {hasActiveLFGFeedFilters(feedFilters) ? " with current filters." : "."}
+                  </p>
                 ) : null}
-              </div>
 
               {type && shouldShowComposer ? (
                 <PageReveal
