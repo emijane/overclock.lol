@@ -44,7 +44,8 @@ export function FeaturedClipCard({
                 loading={priority ? "eager" : "lazy"}
               />
             ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-black/28" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/34 to-transparent" />
 
             <button
               type="button"

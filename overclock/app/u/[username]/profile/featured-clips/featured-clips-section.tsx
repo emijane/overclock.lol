@@ -38,7 +38,7 @@ export function FeaturedClipsSection({
     <section className="border-t border-white/[0.04] px-5 py-4 sm:px-6 sm:py-5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
+          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
             Featured videos
           </h2>
         </div>
