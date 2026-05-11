@@ -32,15 +32,15 @@ type StackPostCardProps = {
 
 function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {
-    return "border-white/[0.08] bg-white/[0.04] text-zinc-300";
+    return "border-white/[0.07] bg-black/36 text-zinc-300";
   }
-  return "border-white/[0.08] bg-white/[0.04] text-zinc-300";
+  return "border-white/[0.07] bg-black/36 text-zinc-300";
 }
 
 function getRoleClassName(role: CompetitiveRole) {
-  if (role === "tank") return "border-white/[0.08] bg-white/[0.03] text-zinc-300";
-  if (role === "dps") return "border-white/[0.08] bg-white/[0.03] text-zinc-300";
-  return "border-white/[0.08] bg-white/[0.03] text-zinc-300";
+  if (role === "tank") return "border-sky-400/16 bg-sky-400/[0.06] text-sky-100/78";
+  if (role === "dps") return "border-rose-400/16 bg-rose-400/[0.06] text-rose-100/78";
+  return "border-emerald-400/16 bg-emerald-400/[0.06] text-emerald-100/78";
 }
 
 function getPostingRoleLabel(role: LFGPost["postingRole"]) {
@@ -94,41 +94,41 @@ export function StackPostCard({
   return (
     <article
       aria-label={post.title}
-      className={`group h-full rounded-[16px] border border-white/[0.08] bg-[#06070a] shadow-[0_10px_26px_rgba(0,0,0,0.2)] transition-[border-color,transform,box-shadow] duration-200 hover:border-white/[0.14] hover:shadow-[0_14px_30px_rgba(0,0,0,0.24)]${
+      className={`group h-full rounded-[14px] border border-white/[0.07] bg-[#06070a] shadow-[0_8px_20px_rgba(0,0,0,0.18)] transition-[border-color,box-shadow] duration-200 hover:border-white/[0.12] hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[15px] bg-[#06070a]">
-        <div className="relative h-16 overflow-hidden bg-zinc-950/90">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[13px] bg-[#06070a]">
+        <div className="relative h-15 overflow-hidden bg-zinc-950/90">
           {post.author.coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={post.author.coverImageUrl}
               alt=""
-              className="h-full w-full object-cover brightness-[0.4] saturate-[0.72]"
+              className="h-full w-full object-cover brightness-[0.36] saturate-[0.68]"
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/28 via-black/48 to-[#06070a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/42 to-[#06070a]" />
         </div>
 
-        <div className="relative z-10 flex flex-1 flex-col px-3.5 pb-3 pt-2.5">
-          <div className="absolute right-3.5 top-2.5 z-20 flex items-center gap-1.5">
+        <div className="relative z-10 flex flex-1 flex-col px-3.5 pb-3 pt-2">
+          <div className="absolute right-3.5 top-2.5 z-20 flex items-center gap-1">
             {createdAtLabel ? (
-              <p suppressHydrationWarning className="hidden text-right text-[10px] font-medium text-zinc-600 sm:block">
+              <p suppressHydrationWarning className="hidden text-right text-[9px] font-medium text-zinc-700 sm:block">
                 {createdAtLabel}
               </p>
             ) : null}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {post.platform ? (
-                <span className="inline-flex items-center rounded-[7px] border border-white/[0.08] bg-black/35 px-1.5 py-0.5 text-[9px] font-medium text-zinc-300">
+                <span className="inline-flex h-5 items-center rounded-[6px] border border-white/[0.07] bg-black/38 px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
                   {post.platform}
                 </span>
               ) : null}
-              <span className={`shrink-0 rounded-[7px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}>
+              <span className={`shrink-0 rounded-[6px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}>
                 {gameModeLabel}
               </span>
               {isFull ? (
-                <span className="shrink-0 rounded-[7px] border border-white/[0.08] bg-white/[0.05] px-1.5 py-0.5 text-[9px] font-medium text-zinc-200">
+                <span className="shrink-0 rounded-[6px] border border-white/[0.08] bg-white/[0.045] px-1.5 py-0.5 text-[9px] font-medium text-zinc-200">
                   Filled
                 </span>
               ) : null}
@@ -144,7 +144,7 @@ export function StackPostCard({
           </div>
 
           {sectionLabel || statusPill ? (
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {sectionLabel ? (
                 <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-600">
                   {sectionLabel}
@@ -154,11 +154,11 @@ export function StackPostCard({
             </div>
           ) : null}
 
-          <div className="min-w-0 pt-2">
+          <div className="min-w-0 pt-1.5">
             <div className="flex min-w-0 flex-col items-start">
               <RankedAvatar
                 avatarUrl={post.author.avatarUrl}
-                className="-mt-[1.9rem] h-[56px] w-[56px] shrink-0 rounded-[14px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.05)]"
+                className="-mt-[1.75rem] h-[52px] w-[52px] shrink-0 rounded-[12px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
                 displayName={visibleName}
                 fallbackClassName="text-xs font-semibold text-zinc-100"
                 fallbackText={visibleName.slice(0, 2).toUpperCase()}
@@ -177,8 +177,8 @@ export function StackPostCard({
                 rankTier={post.rankTier}
                 ringClassName="hidden"
               />
-              <div className="min-w-0 pt-2">
-                <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <div className="min-w-0 pt-1.5">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
                   {profileHref ? (
                     <Link
                       href={profileHref}
@@ -212,7 +212,7 @@ export function StackPostCard({
                     return badgePreset ? (
                       <span
                         key={badge.id}
-                        className={`inline-flex items-center gap-1 rounded-[7px] border px-1.5 py-0.5 text-[9px] ${badgePreset.lfgClassName}`}
+                        className={`inline-flex items-center gap-1 rounded-[6px] border px-1.5 py-0.5 text-[9px] ${badgePreset.lfgClassName}`}
                       >
                         <badgePreset.Icon className={`h-3 w-3 shrink-0 ${badgePreset.iconClassName}`} />
                         {badge.label}
@@ -230,7 +230,7 @@ export function StackPostCard({
                   })}
                 </div>
 
-                <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[11px] font-medium text-zinc-500">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-medium text-zinc-500">
                   {rankIconSrc ? (
                     <Image
                       src={rankIconSrc}
@@ -248,25 +248,25 @@ export function StackPostCard({
                     </>
                   ) : null}
                 </div>
-                <div className="mt-1 text-[11px] font-medium text-zinc-500">
+                <div className="mt-0.5 text-[11px] font-medium text-zinc-500">
                   {postingRoleLabel}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-2 min-w-0">
-            <h2 className="line-clamp-2 text-[15px] font-semibold leading-5 tracking-[-0.025em] text-zinc-50">
+          <div className="mt-1.5 min-w-0">
+            <h2 className="line-clamp-2 text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
               {post.title}
             </h2>
           </div>
 
           {availableRoleCounts.size > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-1">
+            <div className="mt-1.5 flex flex-wrap gap-1">
               {Array.from(availableRoleCounts.entries()).map(([role, count]) => (
                 <span
                   key={role}
-                  className={`inline-flex h-4.5 items-center rounded-[7px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.06em] ${getRoleClassName(role)}`}
+                  className={`inline-flex h-4.5 items-center rounded-[6px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.05em] ${getRoleClassName(role)}`}
                 >
                   {count} {COMPETITIVE_ROLE_LABELS[role]}
                 </span>
@@ -274,8 +274,8 @@ export function StackPostCard({
             </div>
           ) : null}
 
-          <div className="mt-auto flex flex-wrap items-end justify-between gap-2.5 pt-2.5">
-            <div className="flex min-w-0 flex-col gap-2">
+          <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-2">
+            <div className="flex min-w-0 flex-col gap-1.5">
               <StackMemberAvatarStrip
                 currentProfileId={currentProfileId}
                 currentMemberCount={post.currentMemberCount}

@@ -53,7 +53,7 @@ export function RequestToJoinButton({
     return (
       <a
         href="/login?next=/stacks"
-        className="flex h-7.5 items-center gap-1.5 rounded-[8px] border border-white/[0.08] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-zinc-100"
+        className="flex h-7 items-center gap-1.5 rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
       >
         <Users2Icon className="h-3.5 w-3.5 shrink-0" />
         Request to Join
@@ -85,7 +85,7 @@ export function RequestToJoinButton({
             setUiState("error");
           })
         }
-        className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-200 transition hover:border-white/[0.14] hover:bg-white/[0.07] disabled:opacity-60"
+        className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] disabled:opacity-60"
       >
         {isPending ? "Leaving..." : "Leave Stack"}
       </button>
@@ -94,7 +94,7 @@ export function RequestToJoinButton({
 
   if (uiState === "pending" || uiState === "sent") {
     return (
-      <span className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.03] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
         Request sent
       </span>
     );
@@ -102,7 +102,7 @@ export function RequestToJoinButton({
 
   if (uiState === "declined") {
     return (
-      <span className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.03] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
         Request declined
       </span>
     );
@@ -110,7 +110,7 @@ export function RequestToJoinButton({
 
   if (uiState === "full") {
     return (
-      <span className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.03] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
         Stack full
       </span>
     );
@@ -118,7 +118,7 @@ export function RequestToJoinButton({
 
   if (uiState === "already_in_stack") {
     return (
-      <span className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.03] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
         Already in stack
       </span>
     );
@@ -161,7 +161,7 @@ export function RequestToJoinButton({
             type="button"
             disabled={isPending}
             onClick={() => handleRoleSelect(role)}
-            className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-zinc-100 disabled:opacity-50"
+            className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:opacity-50"
           >
             {ROLE_LABELS[role]}
           </button>
@@ -169,7 +169,7 @@ export function RequestToJoinButton({
         <button
           type="button"
           onClick={() => setUiState("idle")}
-          className="flex h-7.5 items-center rounded-[8px] border border-white/[0.06] px-2.5 text-[11px] font-medium text-zinc-600 transition hover:border-white/[0.1] hover:text-zinc-400"
+          className="flex h-7 items-center rounded-[7px] border border-white/[0.06] px-2.5 text-[11px] font-medium text-zinc-600 transition hover:border-white/[0.1] hover:text-zinc-400"
         >
           Cancel
         </button>
@@ -182,7 +182,7 @@ export function RequestToJoinButton({
       <button
         type="button"
         onClick={() => setUiState("selecting_role")}
-        className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.04] px-2.5 text-[11px] font-medium text-zinc-300 transition hover:border-white/[0.14] hover:bg-white/[0.07]"
+        className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-medium text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06]"
       >
         Try again
       </button>
@@ -193,7 +193,7 @@ export function RequestToJoinButton({
     <button
       type="button"
       onClick={() => setUiState("selecting_role")}
-      className="flex h-7.5 items-center gap-1.5 rounded-[8px] border border-white/[0.08] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-zinc-100"
+      className="flex h-7 items-center gap-1.5 rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
     >
       <Users2Icon className="h-3.5 w-3.5 shrink-0" />
       Request to Join
