@@ -24,9 +24,9 @@ export function ProfileBadge({
 
   return (
     <span
-      className={`inline-flex h-7 items-center gap-1 rounded-full border px-2.5 text-[11px] font-medium tracking-[-0.01em] transition-all duration-200 ${tone === "cover" ? "" : "backdrop-blur-md"} ${palette} ${className}`}
+      className={`inline-flex h-7 items-center gap-1 rounded-[10px] border px-2.5 text-[10px] font-medium tracking-[-0.01em] transition-all duration-200 ${tone === "cover" ? "" : "backdrop-blur-md"} ${palette} ${className}`}
     >
-      {Icon ? <Icon className={`h-3.5 w-3.5 shrink-0 ${iconClassName}`} /> : null}
+      {Icon ? <Icon className={`h-3 w-3 shrink-0 ${iconClassName}`} /> : null}
       {children}
     </span>
   );

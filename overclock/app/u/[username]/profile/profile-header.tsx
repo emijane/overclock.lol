@@ -131,7 +131,7 @@ export function ProfileHeader({
             <div className="min-w-0 flex-1">
               <div className="sm:h-12" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-[29px] font-semibold leading-[1.02] tracking-[-0.045em] text-zinc-50 sm:text-[31px]">
+                <h1 className="text-[20px] font-semibold leading-[1.02] tracking-[-0.045em] text-zinc-50 sm:text-[31px]">
                   {displayName}
                 </h1>
                 {currentRankIconSrc && currentRank ? (
