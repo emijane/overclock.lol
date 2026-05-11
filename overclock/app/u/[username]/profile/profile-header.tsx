@@ -61,10 +61,10 @@ export function ProfileHeader({
   profileAction,
 }: ProfileHeaderProps) {
   return (
-    <section className="bg-[#05070b]">
-      <div className="pb-5 sm:pb-6">
+    <section className="bg-[#090909]">
+      <div className="pb-4 sm:pb-5">
         <div
-          className="relative overflow-hidden px-4 py-3.5 sm:px-6"
+          className="relative overflow-hidden px-4 py-3 sm:px-6"
           style={{ aspectRatio: PROFILE_COVER_ASPECT_RATIO }}
         >
           {coverImageUrl ? (
@@ -76,20 +76,31 @@ export function ProfileHeader({
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div
-                className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#05070b] via-[#05070b]/60 to-transparent"
+                className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#090909] via-[#090909]/60 to-transparent"
                 aria-hidden="true"
               />
             </>
           ) : (
             <div
-              className="absolute inset-0 bg-gradient-to-b from-[#0a0b10] via-[#07080d] to-[#05070b]"
+              className="absolute inset-0 bg-gradient-to-b from-[#111111] via-[#0d0d0d] to-[#090909]"
               aria-hidden="true"
             />
           )}
           <div className="relative z-10 flex items-start justify-between gap-3">
-            <div />
-
+            <div>
+              <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.08] bg-[#090909]/88 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+                <span className="text-zinc-500">Connections</span>
+                <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
+                  {connectionCount}
+                </span>
+              </span>
+            </div>
             <div className="flex items-start gap-1.5">
+              {platform ? (
+                <span className="oc-profile-meta inline-flex items-center rounded-[10px] border border-white/[0.08] bg-[#090909]/88 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+                  {platform}
+                </span>
+              ) : null}
               {region ? (
                 <ProfileBadge
                   Icon={Globe2Icon}
@@ -126,12 +137,12 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-5 px-4 sm:-mt-9 sm:px-6">
-          <div className="flex flex-col gap-3.5 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
+        <div className="mt-4 px-4 sm:-mt-9 sm:px-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div className="min-w-0 flex-1">
-              <div className="sm:h-12" aria-hidden="true" />
+              <div className="h-3 sm:h-14" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-[20px] font-semibold leading-[1.02] tracking-[-0.045em] text-zinc-50 sm:text-[31px]">
+                <h1 className="oc-profile-display text-[28px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[36px]">
                   {displayName}
                 </h1>
                 {currentRankIconSrc && currentRank ? (
@@ -140,40 +151,26 @@ export function ProfileHeader({
                     alt={`${currentRank} rank icon`}
                     width={44}
                     height={44}
-                    className="h-7 w-7 object-contain"
+                    className="h-6 w-6 object-contain sm:h-7 sm:w-7"
                   />
                 ) : null}
               </div>
-              <p className="mt-0.5 text-[14px] font-medium tracking-[-0.01em] text-zinc-600">
+              <p className="oc-profile-meta mt-0.5 text-[12px] font-medium tracking-[0.01em]">
                 @{username}
               </p>
               {bio ? (
-                <p className="mt-1 max-w-xl break-words text-[16px] leading-7 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
+                <p className="mt-1.5 max-w-xl break-words text-[15px] leading-6 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
                   {bio}
                 </p>
               ) : null}
 
-              <div className="mt-2.5">
-                <span className="text-sm font-semibold text-zinc-100">
-                  {connectionCount}
-                </span>
-                <span className="ml-1 text-sm text-zinc-500">
-                  {connectionCount === 1 ? "Connection" : "Connections"}
-                </span>
-              </div>
-
               {(platform || isLookingToPlay) ? (
-                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                  {platform ? (
-                    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-zinc-300">
-                      {platform}
-                    </span>
-                  ) : null}
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   {isLookingToPlay ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/20 bg-sky-400/10 px-2.5 py-1 text-xs font-medium text-sky-300">
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
-                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sky-400" />
+                    <span className="oc-profile-meta inline-flex items-center gap-1 rounded-full border border-sky-400/20 bg-sky-400/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-sky-300">
+                      <span className="relative flex h-1.25 w-1.25">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-60" />
+                        <span className="relative inline-flex h-1.25 w-1.25 rounded-full bg-sky-400" />
                       </span>
                       Looking to play
                     </span>
@@ -189,7 +186,7 @@ export function ProfileHeader({
                     <button
                       type="button"
                       onClick={onEditProfile}
-                      className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                      className="oc-profile-display oc-profile-text-button inline-flex h-8 items-center px-3 text-[12px] font-semibold text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                     >
                       Edit profile
                     </button>

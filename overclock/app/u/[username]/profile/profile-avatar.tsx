@@ -35,7 +35,7 @@ export function ProfileAvatar({
         />
       }
       rankTier={currentRankTier}
-      ringClassName="-inset-[3px] opacity-100"
+      ringClassName="-inset-[2px] opacity-70"
     />
   );
 }

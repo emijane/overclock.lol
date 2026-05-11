@@ -35,10 +35,10 @@ export function FeaturedClipsSection({
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-4 sm:px-6 sm:py-5">
+    <section className="border-t border-white/[0.06] px-5 py-4 sm:px-6 sm:py-5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-white/85">
+          <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
             Featured videos
           </h2>
         </div>
@@ -49,13 +49,13 @@ export function FeaturedClipsSection({
       </div>
 
       {clips.length > 0 ? (
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="mt-3 grid gap-2.5 md:grid-cols-2">
           {clips.map((clip, index) => (
             <FeaturedClipCard key={clip.id} clip={clip} priority={index === 0} />
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-[18px] border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
+        <div className="mt-3 rounded-[12px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-zinc-400">
           Add up to two featured videos to show them here.
         </div>
       )}

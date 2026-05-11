@@ -9,6 +9,17 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+:root {
+  --oc-surface: #111111;
+  --oc-surface-hover: #171717;
+  --oc-text: #f5f5f5;
+  --oc-text-muted: #a1a1a1;
+  --oc-text-subtle: #737373;
+  --oc-border: rgba(255, 255, 255, 0.06);
+  --oc-border-hover: rgba(255, 255, 255, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,6 +33,75 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
+}
+
+.oc-profile-display {
+  font-family: var(--font-inter-tight), var(--font-geist-sans), sans-serif;
+}
+
+.oc-profile-meta {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  color: var(--oc-text-subtle);
+}
+
+.oc-profile-shell {
+  border: 1px solid var(--oc-border);
+  border-radius: 12px;
+  background: var(--oc-surface);
+}
+
+.oc-profile-card {
+  border: 1px solid var(--oc-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.oc-profile-card:hover {
+  border-color: var(--oc-border-hover);
+  background: var(--oc-surface-hover);
+  transform: translateY(-1px);
+}
+
+.oc-profile-pill {
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.oc-profile-icon-button {
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.oc-profile-icon-button:hover {
+  border-color: var(--oc-border-hover);
+  background: var(--oc-surface-hover);
+  transform: translateY(-1px);
+}
+
+.oc-profile-text-button {
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.oc-profile-text-button:hover {
+  border-color: var(--oc-border-hover);
+  background: var(--oc-surface-hover);
+  transform: translateY(-1px);
 }
 
 button:not(:disabled),

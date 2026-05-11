@@ -91,17 +91,17 @@ export function RecentProfilePosts({
   }
 
   return (
-    <section className="border-t border-white/[0.06] px-5 pb-4 pt-3.5 sm:px-6 sm:pb-5 sm:pt-4">
+    <section className="border-t border-white/[0.06] px-5 pb-4 pt-3 sm:px-6 sm:pb-5 sm:pt-3.5">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
+          <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
             Active Listings
           </h2>
         </div>
       </div>
 
       {posts.length === 0 ? (
-        <div className="mt-3 rounded-[18px] border border-white/8 bg-white/2 px-4 py-3 text-sm text-zinc-500">
+        <div className="mt-3 rounded-[12px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-zinc-500">
           Your active LFG listings will show up here.
         </div>
       ) : (
@@ -113,10 +113,10 @@ export function RecentProfilePosts({
             return (
               <article
                 key={post.id}
-                className="rounded-[18px] border border-white/8 bg-white/4 p-3.5 transition-colors duration-200 hover:bg-white/6"
+                className="oc-profile-card p-3.5"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="truncate pr-1.5 text-[14px] font-semibold tracking-[-0.01em] text-zinc-100">
+                  <h3 className="oc-profile-display truncate pr-1.5 text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
                     {post.title}
                   </h3>
                   {isOwner ? (
@@ -131,7 +131,7 @@ export function RecentProfilePosts({
                   ) : null}
                 </div>
 
-                <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-white/65">
+                <div className="oc-profile-meta mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-white/65">
                   <span
                     className="inline-flex items-center gap-1.5 font-medium text-zinc-200"
                     title={COMPETITIVE_ROLE_LABELS[post.postingRole]}
@@ -152,7 +152,7 @@ export function RecentProfilePosts({
                   {post.lookingForRoles.map((role) => (
                     <span
                       key={`${post.id}-recent-looking-for-${role}`}
-                      className="rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 font-medium tracking-[-0.01em] text-zinc-100"
+                      className="oc-profile-meta oc-profile-pill px-2 py-0.5 font-medium uppercase tracking-[0.08em] text-zinc-100"
                     >
                       LF {getLFGLookingForRoleLabel(role)}
                     </span>

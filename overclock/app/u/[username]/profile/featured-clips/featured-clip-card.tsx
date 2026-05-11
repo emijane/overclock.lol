@@ -21,7 +21,7 @@ export function FeaturedClipCard({
 
   return (
     <div
-      className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.02] transition-all duration-200 hover:border-white/20"
+      className="oc-profile-card group overflow-hidden"
     >
       <div className="relative aspect-video overflow-hidden bg-zinc-900">
         {isPlaying && embedUrl ? (
@@ -39,26 +39,26 @@ export function FeaturedClipCard({
                 src={clip.thumbnailUrl}
                 alt={clip.title || "Featured YouTube thumbnail"}
                 fill
-                className="object-cover transition-all duration-200 group-hover:scale-[1.02]"
+                className="object-cover transition-all duration-150 group-hover:scale-[1.01]"
                 sizes="(min-width: 768px) 50vw, 100vw"
                 loading={priority ? "eager" : "lazy"}
               />
             ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/24 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/20 to-transparent" />
 
             <button
               type="button"
               onClick={() => setIsPlaying(true)}
               aria-label="Play featured video"
-              className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center transition-all duration-200"
+              className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center transition-all duration-150"
             >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-zinc-100 backdrop-blur-sm transition-all duration-200 group-hover:scale-105">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] bg-black/40 text-zinc-100 transition-all duration-150 group-hover:translate-y-[-1px]">
                 <PlayIcon className="ml-0.5 h-4 w-4" />
               </span>
             </button>
 
-            <div className="absolute inset-x-5 bottom-0 z-20 px-5 pb-6 pt-5">
-              <p className="text-sm font-medium leading-5 tracking-[-0.015em] text-white/90">
+            <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-4">
+              <p className="oc-profile-display text-[14px] font-medium leading-5 tracking-[-0.015em] text-white/90">
                 {clip.title || "Featured video"}
               </p>
             </div>

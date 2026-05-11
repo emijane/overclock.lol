@@ -104,14 +104,14 @@ export function ProfileSocialLinks({
           const Icon = ICONS[link.platform];
           const isActive = activeLabel === link.label;
           const shouldOpen = isExternalUrl(link.value);
-          const buttonClassName = `group inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border text-zinc-200 backdrop-blur-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+          const buttonClassName = `oc-profile-icon-button group inline-flex h-8 w-8 cursor-pointer items-center justify-center text-zinc-200 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             isActive
               ? "border-sky-400/60 bg-sky-400/12"
-              : `border-white/10 bg-white/5 ${BUTTON_ACCENTS[link.platform]}`
+              : BUTTON_ACCENTS[link.platform]
           }`;
           const icon = (
             <Icon
-              className={`h-4 w-4 shrink-0 transition group-hover:scale-105 ${ICON_COLORS[link.platform]}`}
+              className={`h-4 w-4 shrink-0 transition duration-150 group-hover:translate-y-[-1px] ${ICON_COLORS[link.platform]}`}
             />
           );
 
@@ -148,7 +148,7 @@ export function ProfileSocialLinks({
 
       {statusMessage ? (
         <div
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.02] px-2.5 py-1 text-[12px] font-medium tracking-[-0.01em] text-zinc-300 backdrop-blur-md"
+          className="oc-profile-meta inline-flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-zinc-300 backdrop-blur-md"
           aria-live="polite"
         >
           <CheckIcon className="h-3.5 w-3.5 text-emerald-400" />

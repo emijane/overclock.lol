@@ -159,22 +159,18 @@ export default async function ProfilePage({
         <main className="relative flex-1 bg-transparent px-4 py-4 text-[15px] text-zinc-100 sm:px-6 sm:py-5">
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
-            />
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_44%)]"
             />
             <div className="relative z-10 mx-auto grid w-full max-w-4xl gap-2.5">
                 {isOwner ? (
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
                 <div
-                    className="rounded-[10px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_16px_var(--profile-rank-glow)]"
+                    className="oc-profile-shell rounded-[12px] bg-[var(--profile-rank-border)] p-px shadow-none"
                     style={profileAccentStyle}
                 >
                     <div
-                        className="overflow-hidden rounded-[10px] bg-[#05070b] ring-1 ring-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+                        className="overflow-hidden rounded-[11px] bg-[#090909]"
                         style={profileAccentStyle}
                     >
                         <EditableProfileHeader
