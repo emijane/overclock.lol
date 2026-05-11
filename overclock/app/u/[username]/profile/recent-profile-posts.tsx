@@ -91,7 +91,7 @@ export function RecentProfilePosts({
   }
 
   return (
-    <section className="border-t border-white/[0.04] px-5 pb-4 pt-3 sm:px-6 sm:pb-5 sm:pt-3.5">
+    <section className="border-t border-white/[0.04] px-5 pb-3 pt-2.5 sm:px-6 sm:pb-4 sm:pt-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">

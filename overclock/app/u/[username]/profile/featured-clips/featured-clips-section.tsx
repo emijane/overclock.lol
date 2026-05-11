@@ -35,7 +35,7 @@ export function FeaturedClipsSection({
   }
 
   return (
-    <section className="border-t border-white/[0.04] px-5 py-4 sm:px-6 sm:py-5">
+    <section className="border-t border-white/[0.04] px-5 py-3 sm:px-6 sm:py-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
