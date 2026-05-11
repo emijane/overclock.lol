@@ -29,7 +29,7 @@ const footerGroups = [
 
 export function GlobalFooter() {
   return (
-    <footer className="mt-auto border-t border-white/[0.035] bg-black/[0.08]">
+    <footer className="mt-auto border-t border-white/[0.035] bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.045),transparent_24%),radial-gradient(circle_at_22%_0%,rgba(120,140,180,0.06),transparent_26%),radial-gradient(circle_at_80%_8%,rgba(255,255,255,0.03),transparent_20%),linear-gradient(180deg,#0b0b0d_0%,#09090b_44%,#070709_100%)]">
       <PageContainer className="px-4 py-5 sm:px-6 sm:py-6">
         <div className="grid gap-6 md:grid-cols-[minmax(0,1.1fr)_repeat(3,minmax(0,0.8fr))]">
           <div className="max-w-[15rem]">
