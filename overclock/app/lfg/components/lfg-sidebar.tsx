@@ -8,8 +8,6 @@ import {
   LayoutGridIcon,
   PlusIcon,
   RotateCcwIcon,
-  ShieldIcon,
-  TrophyIcon,
   Users2Icon,
   UsersIcon,
 } from "lucide-react";
@@ -84,11 +82,9 @@ function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) 
 }
 
 const LFG_NAV_ITEMS = [
-  { href: "/lfg", label: "Overview", Icon: LayoutGridIcon, soon: false },
-  { href: "/duos", label: "Duos", Icon: UsersIcon, soon: false },
-  { href: "/stacks", label: "Stacks", Icon: Users2Icon, soon: false },
-  { href: "/scrims", label: "Scrims", Icon: ShieldIcon, soon: true },
-  { href: "/teams", label: "Teams", Icon: TrophyIcon, soon: true },
+  { href: "/lfg", label: "Overview", Icon: LayoutGridIcon },
+  { href: "/duos", label: "Duos", Icon: UsersIcon },
+  { href: "/stacks", label: "Stacks", Icon: Users2Icon },
 ] as const;
 
 function FilterSection({
@@ -105,13 +101,13 @@ function FilterSection({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between py-0.5 text-[11px] font-medium text-zinc-500 transition hover:text-zinc-400"
+        className="flex w-full items-center justify-between py-0.5 text-[11px] font-medium text-zinc-400 transition hover:text-zinc-300"
       >
         {title}
         {isOpen ? (
-          <ChevronUpIcon className="h-2.5 w-2.5 shrink-0 text-zinc-600" />
+          <ChevronUpIcon className="h-2.5 w-2.5 shrink-0 text-zinc-500" />
         ) : (
-          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-600" />
+          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-500" />
         )}
       </button>
       {isOpen ? <div className="mt-1 space-y-px">{children}</div> : null}
@@ -186,31 +182,21 @@ export function LFGSidebar({
       <nav>
         <p className="mb-1.5 text-[10px] font-medium text-zinc-600">LFG</p>
         <ul className="space-y-px">
-          {LFG_NAV_ITEMS.map(({ href, label, Icon, soon }) => {
+          {LFG_NAV_ITEMS.map(({ href, label, Icon }) => {
             const isActive = pathname === href;
             return (
               <li key={href}>
-                {soon ? (
-                  <div className="flex h-7 cursor-default select-none items-center gap-2 px-2 text-[12px] text-zinc-700">
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
-                    <span>{label}</span>
-                    <span className="ml-auto text-[9px] font-medium tracking-wide text-zinc-700">
-                      soon
-                    </span>
-                  </div>
-                ) : (
-                  <Link
-                    href={href}
-                    className={`flex h-7 items-center gap-2 rounded-md px-2 text-[12px] transition ${
-                      isActive
-                        ? "bg-white/5 font-medium text-zinc-200"
-                        : "font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
-                    {label}
-                  </Link>
-                )}
+                <Link
+                  href={href}
+                  className={`flex h-7 items-center gap-2 rounded-md px-2 text-[12px] transition ${
+                    isActive
+                      ? "bg-white/5 font-medium text-zinc-200"
+                      : "font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  {label}
+                </Link>
               </li>
             );
           })}

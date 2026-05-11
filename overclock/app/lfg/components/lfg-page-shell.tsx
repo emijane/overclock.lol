@@ -402,7 +402,7 @@ export async function LFGPageShell({
                       {displayTitle}
                     </h1>
                   </div>
-                  {type && composerMode === "cta" ? (
+                  {type && composerMode === "cta" && !useSidebarLayout ? (
                     <Link
                       href={user ? resolvedCreatePostHref : guestCreateHref}
                       className={`inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border bg-[#05070b] px-3.5 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:bg-[#080b10] hover:text-white ${
