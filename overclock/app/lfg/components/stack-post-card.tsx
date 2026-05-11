@@ -32,21 +32,15 @@ type StackPostCardProps = {
 
 function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {
-    return "border-white/[0.07] bg-black/36 text-zinc-300";
+    return "border-white/[0.07] bg-black/44 text-zinc-300";
   }
-  return "border-white/[0.07] bg-black/36 text-zinc-300";
+  return "border-white/[0.07] bg-black/44 text-zinc-300";
 }
 
 function getRoleClassName(role: CompetitiveRole) {
-  if (role === "tank") return "border-sky-400/16 bg-sky-400/[0.06] text-sky-100/78";
-  if (role === "dps") return "border-rose-400/16 bg-rose-400/[0.06] text-rose-100/78";
-  return "border-emerald-400/16 bg-emerald-400/[0.06] text-emerald-100/78";
-}
-
-function getPostingRoleLabel(role: LFGPost["postingRole"]) {
-  if (role === "tank") return "Tank";
-  if (role === "dps") return "DPS";
-  return "Support";
+  if (role === "tank") return "border-sky-400/14 bg-sky-400/[0.045] text-sky-100/72";
+  if (role === "dps") return "border-rose-400/14 bg-rose-400/[0.045] text-rose-100/72";
+  return "border-emerald-400/14 bg-emerald-400/[0.045] text-emerald-100/72";
 }
 
 function getAvailableRoleCounts(roles: CompetitiveRole[]) {
@@ -72,7 +66,6 @@ export function StackPostCard({
   viewLabel,
 }: StackPostCardProps) {
   const rankLabel = formatCurrentRank(post.rankTier, post.rankDivision);
-  const postingRoleLabel = getPostingRoleLabel(post.postingRole);
   const rankIconSrc = getRankIconSrc(post.rankTier);
   const modeBadgeClassName = getModeBadgeClassName(post.gameMode);
   const createdAtLabel = formatPostDate(post.createdAt);
@@ -94,53 +87,52 @@ export function StackPostCard({
   return (
     <article
       aria-label={post.title}
-      className={`group h-full rounded-[14px] border border-white/[0.07] bg-[#06070a] shadow-[0_8px_20px_rgba(0,0,0,0.18)] transition-[border-color,box-shadow] duration-200 hover:border-white/[0.12] hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]${
+      className={`group h-full rounded-[12px] border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] transition-[border-color,box-shadow] duration-200 hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[13px] bg-[#06070a]">
-        <div className="relative h-15 overflow-hidden bg-zinc-950/90">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-[#06070a]">
+        <div className="relative h-14 overflow-hidden bg-zinc-950/95">
           {post.author.coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={post.author.coverImageUrl}
               alt=""
-              className="h-full w-full object-cover brightness-[0.36] saturate-[0.68]"
+              className="h-full w-full object-cover brightness-[0.28] saturate-[0.56] opacity-80"
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/42 to-[#06070a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 to-[#06070a]" />
+          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[#06070a]" />
         </div>
 
-        <div className="relative z-10 flex flex-1 flex-col px-3.5 pb-3 pt-2">
-          <div className="absolute right-3.5 top-2.5 z-20 flex items-center gap-1">
-            {createdAtLabel ? (
-              <p suppressHydrationWarning className="hidden text-right text-[9px] font-medium text-zinc-700 sm:block">
-                {createdAtLabel}
-              </p>
-            ) : null}
-            <div className="flex items-center gap-1">
-              {post.platform ? (
-                <span className="inline-flex h-5 items-center rounded-[6px] border border-white/[0.07] bg-black/38 px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
-                  {post.platform}
-                </span>
-              ) : null}
-              <span className={`shrink-0 rounded-[6px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}>
-                {gameModeLabel}
+        <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
+          <div className="absolute right-3 top-2 z-20 flex items-center gap-1">
+            {post.platform ? (
+              <span className="inline-flex h-4.5 items-center rounded-[5px] border border-white/[0.07] bg-black/46 px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
+                {post.platform}
               </span>
-              {isFull ? (
-                <span className="shrink-0 rounded-[6px] border border-white/[0.08] bg-white/[0.045] px-1.5 py-0.5 text-[9px] font-medium text-zinc-200">
-                  Filled
-                </span>
-              ) : null}
-              {showActions && isOwner && returnPath ? (
-                <LFGPostActionsMenu
-                  postId={post.id}
-                  returnPath={returnPath}
-                  viewHref={viewHref}
-                  viewLabel={viewLabel}
-                />
-              ) : null}
-            </div>
+            ) : null}
+            <span className={`shrink-0 rounded-[5px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}>
+              {gameModeLabel}
+            </span>
+            {createdAtLabel ? (
+              <span className="text-[9px] font-medium text-zinc-500">
+                • {createdAtLabel}
+              </span>
+            ) : null}
+            {isFull ? (
+              <span className="shrink-0 rounded-[5px] border border-white/[0.08] bg-black/44 px-1.5 py-0.5 text-[9px] font-medium text-zinc-200">
+                Filled
+              </span>
+            ) : null}
+            {showActions && isOwner && returnPath ? (
+              <LFGPostActionsMenu
+                postId={post.id}
+                returnPath={returnPath}
+                viewHref={viewHref}
+                viewLabel={viewLabel}
+              />
+            ) : null}
           </div>
 
           {sectionLabel || statusPill ? (
@@ -158,7 +150,7 @@ export function StackPostCard({
             <div className="flex min-w-0 flex-col items-start">
               <RankedAvatar
                 avatarUrl={post.author.avatarUrl}
-                className="-mt-[1.75rem] h-[52px] w-[52px] shrink-0 rounded-[12px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+                className="-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
                 displayName={visibleName}
                 fallbackClassName="text-xs font-semibold text-zinc-100"
                 fallbackText={visibleName.slice(0, 2).toUpperCase()}
@@ -234,7 +226,7 @@ export function StackPostCard({
                   {rankIconSrc ? (
                     <Image
                       src={rankIconSrc}
-                      alt={`${rankLabel} ${postingRoleLabel} rank icon`}
+                      alt={`${rankLabel} rank icon`}
                       width={16}
                       height={16}
                       className="h-3.5 w-3.5 shrink-0 object-contain opacity-85"
@@ -247,9 +239,6 @@ export function StackPostCard({
                       <span>{post.region}</span>
                     </>
                   ) : null}
-                </div>
-                <div className="mt-0.5 text-[11px] font-medium text-zinc-500">
-                  {postingRoleLabel}
                 </div>
               </div>
             </div>
@@ -266,7 +255,7 @@ export function StackPostCard({
               {Array.from(availableRoleCounts.entries()).map(([role, count]) => (
                 <span
                   key={role}
-                  className={`inline-flex h-4.5 items-center rounded-[6px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.05em] ${getRoleClassName(role)}`}
+                  className={`inline-flex h-4 items-center rounded-[5px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.05em] ${getRoleClassName(role)}`}
                 >
                   {count} {COMPETITIVE_ROLE_LABELS[role]}
                 </span>
@@ -274,8 +263,8 @@ export function StackPostCard({
             </div>
           ) : null}
 
-          <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-2">
-            <div className="flex min-w-0 flex-col gap-1.5">
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+            <div className="min-w-0">
               <StackMemberAvatarStrip
                 currentProfileId={currentProfileId}
                 currentMemberCount={post.currentMemberCount}
@@ -292,7 +281,7 @@ export function StackPostCard({
                 viewerState={viewerState}
               />
             ) : isFull && !isOwner && !isMember ? (
-              <span className="flex h-7.5 items-center rounded-[8px] border border-white/[0.08] bg-white/[0.03] px-2.5 text-[11px] font-medium text-zinc-500">
+              <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
                 Stack full
               </span>
             ) : null}

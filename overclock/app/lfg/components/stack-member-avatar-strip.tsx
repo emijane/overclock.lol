@@ -29,20 +29,20 @@ export function StackMemberAvatarStrip({
   );
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <div className="flex items-center">
         {visible.map((member, i) => (
           <div
             key={member.profileId}
             title={member.displayName ?? member.username ?? "Member"}
             aria-label={member.displayName ?? member.username ?? "Member"}
-            className="group/member relative h-5 w-5 shrink-0"
-            style={{ marginLeft: i === 0 ? 0 : "-0.3rem", zIndex: visible.length - i }}
+            className="group/member relative h-4.5 w-4.5 shrink-0"
+            style={{ marginLeft: i === 0 ? 0 : "-0.25rem", zIndex: visible.length - i }}
           >
             {member.username ? (
               <Link
                 href={`/u/${member.username}`}
-                className="block h-5 w-5 overflow-hidden rounded-[7px] border border-black/70 bg-zinc-800 transition hover:border-white/16"
+                className="block h-4.5 w-4.5 overflow-hidden rounded-[6px] border border-black/70 bg-zinc-800 transition hover:border-white/16"
               >
                 {member.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -58,7 +58,7 @@ export function StackMemberAvatarStrip({
                 )}
               </Link>
             ) : (
-              <div className="h-5 w-5 overflow-hidden rounded-[7px] border border-black/70 bg-zinc-800">
+              <div className="h-4.5 w-4.5 overflow-hidden rounded-[6px] border border-black/70 bg-zinc-800">
                 {member.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -94,8 +94,8 @@ export function StackMemberAvatarStrip({
         ))}
         {overflow > 0 ? (
           <div
-            className="relative h-5 w-5 shrink-0 rounded-[7px] border border-black/70 bg-zinc-800"
-            style={{ marginLeft: "-0.3rem", zIndex: 0 }}
+            className="relative h-4.5 w-4.5 shrink-0 rounded-[6px] border border-black/70 bg-zinc-800"
+            style={{ marginLeft: "-0.25rem", zIndex: 0 }}
           >
             <span className="grid h-full w-full place-items-center text-[9px] font-bold text-zinc-300">
               +{overflow}
