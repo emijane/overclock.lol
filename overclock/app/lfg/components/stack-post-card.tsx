@@ -251,7 +251,7 @@ export function StackPostCard({
           </div>
 
           {availableRoleCounts.size > 0 ? (
-            <div className="mt-1.5 flex flex-wrap gap-1">
+            <div className="mt-2 flex flex-wrap gap-1">
               {Array.from(availableRoleCounts.entries()).map(([role, count]) => (
                 <span
                   key={role}
