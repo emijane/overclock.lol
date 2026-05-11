@@ -6,7 +6,7 @@ export default function Loading() {
   return (
     <main className="flex-1 bg-transparent px-4 py-5 text-[15px] text-zinc-100 sm:px-6 sm:py-7">
       <div className="mx-auto grid w-full max-w-4xl gap-3">
-        <div className="rounded-[28px] bg-white/10 p-px shadow-[0_0_24px_rgba(255,255,255,0.06)]">
+        <div className="rounded-[28px] bg-white/10 p-px shadow-[0_0_16px_rgba(255,255,255,0.02)]">
           <div className="overflow-hidden rounded-[27px] bg-[#05070b] ring-1 ring-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
             <section className="bg-[#05070b]">
               <div className="pb-6 sm:pb-7">

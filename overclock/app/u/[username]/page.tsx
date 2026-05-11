@@ -170,11 +170,11 @@ export default async function ProfilePage({
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
                 <div
-                    className="rounded-[28px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_24px_var(--profile-rank-glow)]"
+                    className="rounded-[10px] bg-[var(--profile-rank-border)] p-px shadow-[0_0_16px_var(--profile-rank-glow)]"
                     style={profileAccentStyle}
                 >
                     <div
-                        className="overflow-hidden rounded-[27px] bg-[#05070b] ring-1 ring-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+                        className="overflow-hidden rounded-[10px] bg-[#05070b] ring-1 ring-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                         style={profileAccentStyle}
                     >
                         <EditableProfileHeader
