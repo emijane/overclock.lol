@@ -1,12 +1,12 @@
 import type React from "react";
 import Image from "next/image";
-import { Clock3Icon, Globe2Icon } from "lucide-react";
 
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileSocialLinks } from "./profile-social-links";
 import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
 import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -60,6 +60,7 @@ export function ProfileHeader({
   onEditProfile,
   profileAction,
 }: ProfileHeaderProps) {
+  const ltpColors = getRankPillColors(currentRankTier);
   return (
     <section className="bg-transparent">
       <div className="pb-4 sm:pb-5">
@@ -88,33 +89,37 @@ export function ProfileHeader({
           )}
           <div className="relative z-10 flex items-start justify-between gap-3">
             <div>
-              <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.04] bg-[#090909]/74 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
-                <span className="text-zinc-500">Connections</span>
-                <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
+              <span
+                className="oc-profile-meta inline-flex h-6 items-center gap-1.5 rounded-[10px] border bg-black/88 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] backdrop-blur-sm shadow-[0_0_0_1px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.07)]"
+                style={{ borderColor: ltpColors.border, color: ltpColors.text }}
+              >
+                <span className="oc-profile-display font-semibold">
                   {connectionCount}
                 </span>
+                <span style={{ opacity: 0.65 }}>Connections</span>
               </span>
             </div>
             <div className="flex items-start gap-1.5">
               {platform ? (
-                <span className="oc-profile-meta inline-flex items-center rounded-[10px] border border-white/[0.04] bg-[#090909]/74 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-200">
+                <span
+                  className="oc-profile-meta inline-flex items-center rounded-[10px] border bg-black/88 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] backdrop-blur-sm shadow-[0_0_0_1px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.07)]"
+                  style={{ borderColor: ltpColors.border, color: ltpColors.text }}
+                >
                   {platform}
                 </span>
               ) : null}
               {region ? (
                 <ProfileBadge
-                  Icon={Globe2Icon}
-                  iconClassName="text-sky-400/80"
                   tone="cover"
+                  style={{ borderColor: ltpColors.border, color: ltpColors.text }}
                 >
                   {region}
                 </ProfileBadge>
               ) : null}
               {timezone ? (
                 <ProfileBadge
-                  Icon={Clock3Icon}
-                  iconClassName="text-amber-400/80"
                   tone="cover"
+                  style={{ borderColor: ltpColors.border, color: ltpColors.text }}
                 >
                   {timezone}
                 </ProfileBadge>
@@ -167,10 +172,13 @@ export function ProfileHeader({
               {(platform || isLookingToPlay) ? (
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   {isLookingToPlay ? (
-                    <span className="oc-profile-meta inline-flex items-center gap-1 rounded-full border border-sky-400/20 bg-sky-400/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-sky-300">
+                    <span
+                      className="oc-profile-meta inline-flex items-center gap-1 rounded-[10px] border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em]"
+                      style={{ background: ltpColors.bgSolid, borderColor: ltpColors.border, color: ltpColors.text }}
+                    >
                       <span className="relative flex h-1.25 w-1.25">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-60" />
-                        <span className="relative inline-flex h-1.25 w-1.25 rounded-full bg-sky-400" />
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ backgroundColor: ltpColors.dot }} />
+                        <span className="relative inline-flex h-1.25 w-1.25 rounded-full" style={{ backgroundColor: ltpColors.dot }} />
                       </span>
                       Looking to play
                     </span>

@@ -148,7 +148,7 @@ export function ProfileSocialLinks({
 
       {statusMessage ? (
         <div
-          className="oc-profile-meta inline-flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-zinc-300 backdrop-blur-md"
+          className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/6 bg-white/3 px-2.5 py-1 text-[11px] font-medium text-zinc-300 backdrop-blur-md"
           aria-live="polite"
         >
           <CheckIcon className="h-3.5 w-3.5 text-emerald-400" />

@@ -6,11 +6,13 @@ import {
   type LFGPost,
 } from "@/lib/lfg/lfg-post-types";
 import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type RecentProfilePostsProps = {
   isOwner: boolean;
   posts: LFGPost[];
   profileUsername: string;
+  rankTier?: string | null;
 };
 
 function SupportPlusIcon({ className }: { className: string }) {
@@ -85,7 +87,10 @@ export function RecentProfilePosts({
   isOwner,
   posts,
   profileUsername,
+  rankTier,
 }: RecentProfilePostsProps) {
+  const rankColors = getRankPillColors(rankTier);
+
   if (posts.length === 0 && !isOwner) {
     return null;
   }
@@ -94,7 +99,7 @@ export function RecentProfilePosts({
     <section className="border-t border-white/[0.04] px-5 pb-3 pt-2.5 sm:px-6 sm:pb-4 sm:pt-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
+          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: rankColors.text, opacity: 0.6 }}>
             Active Listings
           </h2>
         </div>

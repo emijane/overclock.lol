@@ -79,3 +79,35 @@ export function getRankBorderClassName(rankTier: string | null | undefined) {
 export function getRankAccentStyle(rankTier: string | null | undefined) {
   return rankAccentStyleByTier[rankTier ?? ""] ?? defaultRankAccentStyle;
 }
+
+type RankPillColors = {
+  bg: string;
+  bgSolid: string;
+  border: string;
+  text: string;
+  dot: string;
+};
+
+const rankPillColorsByTier: Record<string, RankPillColors> = {
+  Bronze:      { bg: "rgba(160,80,48,0.12)",  bgSolid: "rgba(90,45,25,0.90)",   border: "rgba(200,100,60,0.35)",  text: "#D09070", dot: "#C07050" },
+  Silver:      { bg: "rgba(160,176,192,0.10)", bgSolid: "rgba(48,60,72,0.90)",   border: "rgba(192,208,224,0.35)", text: "#C0D4E0", dot: "#A0B8C8" },
+  Gold:        { bg: "rgba(200,152,40,0.12)",  bgSolid: "rgba(100,76,16,0.90)",  border: "rgba(234,192,60,0.35)",  text: "#E8C850", dot: "#D0A030" },
+  Platinum:    { bg: "rgba(160,204,220,0.12)", bgSolid: "rgba(36,76,92,0.90)",   border: "rgba(200,244,255,0.35)", text: "#C0ECF8", dot: "#80C4E0" },
+  Diamond:     { bg: "rgba(76,108,188,0.14)",  bgSolid: "rgba(20,40,112,0.90)",  border: "rgba(120,168,240,0.35)", text: "#98C0F4", dot: "#6090D8" },
+  Master:      { bg: "rgba(60,100,72,0.14)",   bgSolid: "rgba(20,52,32,0.90)",   border: "rgba(140,172,156,0.35)", text: "#A8CCB8", dot: "#70A88C" },
+  Grandmaster: { bg: "rgba(90,75,152,0.14)",   bgSolid: "rgba(36,28,72,0.90)",   border: "rgba(184,184,220,0.35)", text: "#C8C0E8", dot: "#9880C8" },
+  Champion:    { bg: "rgba(164,80,244,0.14)",  bgSolid: "rgba(56,12,108,0.90)",  border: "rgba(208,116,252,0.35)", text: "#D084F8", dot: "#A855F7" },
+  "Top 500":   { bg: "rgba(218,172,56,0.14)",  bgSolid: "rgba(76,56,8,0.90)",    border: "rgba(240,204,80,0.35)",  text: "#ECC854", dot: "#D0A030" },
+};
+
+const defaultRankPillColors: RankPillColors = {
+  bg:      "rgba(56,189,248,0.10)",
+  bgSolid: "rgba(8,48,72,0.90)",
+  border:  "rgba(56,189,248,0.35)",
+  text:    "#7DD3FC",
+  dot:     "#38BDF8",
+};
+
+export function getRankPillColors(rankTier: string | null | undefined): RankPillColors {
+  return rankPillColorsByTier[rankTier ?? ""] ?? defaultRankPillColors;
+}

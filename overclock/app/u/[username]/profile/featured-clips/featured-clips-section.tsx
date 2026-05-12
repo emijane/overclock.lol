@@ -5,16 +5,20 @@ import { AddFeaturedVideoButton } from "./add-featured-video-button";
 import { FeaturedClipCard } from "./featured-clip-card";
 import { FeaturedVideoModal } from "./featured-video-modal";
 import type { FeaturedClip } from "./types";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type FeaturedClipsSectionProps = {
   clips: FeaturedClip[];
   isOwner: boolean;
+  rankTier?: string | null;
 };
 
 export function FeaturedClipsSection({
   clips,
   isOwner,
+  rankTier,
 }: FeaturedClipsSectionProps) {
+  const rankColors = getRankPillColors(rankTier);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [selectedClip, setSelectedClip] = useState<FeaturedClip | null>(null);
@@ -38,7 +42,7 @@ export function FeaturedClipsSection({
     <section className="border-t border-white/[0.04] px-5 py-3 sm:px-6 sm:py-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
+          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: rankColors.text, opacity: 0.6 }}>
             Featured videos
           </h2>
         </div>

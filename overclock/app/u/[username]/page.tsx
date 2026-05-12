@@ -226,11 +226,13 @@ export default async function ProfilePage({
                         <FeaturedClipsSection
                             clips={featuredClips as FeaturedClip[]}
                             isOwner={isOwner}
+                            rankTier={profileRankTier}
                         />
                         <RecentProfilePosts
                             isOwner={isOwner}
                             posts={recentPosts}
                             profileUsername={profile.username}
+                            rankTier={profileRankTier}
                         />
                     </div>
                 </div>

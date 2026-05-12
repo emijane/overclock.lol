@@ -19,6 +19,7 @@ import {
   type HeroPoolSelections,
 } from "@/lib/heroes/profile-hero-pools";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type PreferredHeroPoolsProps = {
   competitiveProfile: CompetitiveProfile;
@@ -74,6 +75,8 @@ export function PreferredHeroPools({
   roles,
 }: PreferredHeroPoolsProps) {
   const selectedHeroes = roles.flatMap((role) => getHeroesForRole(role, heroPicks));
+  const mainRoleProfile = competitiveProfile.roles.find((r) => r.role === competitiveProfile.mainRole);
+  const rankColors = getRankPillColors(mainRoleProfile?.rankTier);
 
   if (selectedHeroes.length === 0 && !isOwner) {
     return null;
@@ -98,7 +101,7 @@ export function PreferredHeroPools({
     <section className="border-t border-white/[0.04] px-5 pb-3 pt-2.5 sm:px-6 sm:pb-4 sm:pt-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
+          <h2 className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: rankColors.text, opacity: 0.6 }}>
             Competitive Roles
           </h2>
         </div>
