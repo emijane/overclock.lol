@@ -76,11 +76,6 @@ export async function AccountBlockedUsersCard() {
                         {primaryLabel}
                       </p>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                        {blockedUser.displayName && blockedUser.username ? (
-                          <p className="oc-profile-meta truncate text-[11px] font-medium text-zinc-500">
-                            {blockedUser.displayName}
-                          </p>
-                        ) : null}
                         {blockedAtLabel ? (
                           <p className="oc-profile-meta text-[11px] font-medium text-zinc-600">
                             Blocked {blockedAtLabel}
