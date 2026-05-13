@@ -60,7 +60,7 @@ function ActionToast({ message, onDismiss }: ActionToastProps) {
   }
 
   return (
-    <div className="fixed right-4 top-[4.75rem] z-[130] w-[min(320px,calc(100vw-2rem))] rounded-[14px] border border-white/10 bg-[#05070b]/95 px-3 py-1.5 text-xs text-zinc-100 shadow-[0_14px_36px_rgba(0,0,0,0.34)] backdrop-blur-sm sm:right-6 sm:top-[5.25rem]">
+    <div className="fixed right-4 top-[4.75rem] z-[130] w-[min(300px,calc(100vw-2rem))] rounded-[12px] border border-white/[0.08] bg-[#111111]/95 px-3 py-2 text-xs text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-sm sm:right-6 sm:top-[5.25rem]">
       <div className="flex items-center justify-between gap-3">
         <p className="min-w-0 flex-1 leading-5">{message}</p>
         <button
@@ -103,23 +103,23 @@ function BlockConfirmationModal({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[125] bg-zinc-950/88" onClick={isPending ? undefined : onCancel}>
+    <div className="fixed inset-0 z-[125] bg-black/78 backdrop-blur-[2px]" onClick={isPending ? undefined : onCancel}>
       <div className="flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
         <section
           role="dialog"
           aria-modal="true"
           aria-labelledby="block-user-modal-title"
-          className="w-full max-w-md overflow-hidden rounded-t-[26px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[24px]"
+          className="w-full max-w-[30rem] overflow-hidden rounded-t-[18px] border border-white/[0.07] bg-[#0f0f11] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_18px_44px_rgba(0,0,0,0.34)] sm:rounded-[12px]"
           onClick={(event) => event.stopPropagation()}
         >
-          <header className="flex items-center justify-between gap-4 border-b border-white/6 px-4 py-4 sm:px-5">
+          <header className="flex items-start justify-between gap-4 border-b border-white/[0.06] px-4 py-3.5 sm:px-4.5">
             <div>
               <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
                 Safety
               </p>
               <h2
                 id="block-user-modal-title"
-                className="oc-profile-display mt-1 text-[20px] font-semibold tracking-[-0.04em] text-zinc-50"
+                className="oc-profile-display mt-1 text-[14px] font-semibold tracking-[-0.03em] text-zinc-50"
               >
                 Block user?
               </h2>
@@ -129,26 +129,28 @@ function BlockConfirmationModal({
               type="button"
               onClick={onCancel}
               disabled={isPending}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="oc-profile-icon-button inline-flex h-9 w-9 items-center justify-center text-zinc-300 transition hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="Close block confirmation"
             >
               <XIcon className="h-4 w-4" />
             </button>
           </header>
 
-          <div className="px-4 py-4 sm:px-5 sm:py-5">
-            <p className="text-sm leading-6 text-zinc-300">
-              {targetName} won&apos;t be able to send you invites or requests, and their
+          <div className="px-4 py-5 sm:px-4.5">
+            <p className="text-[14px] leading-7 tracking-[-0.015em] text-zinc-300">
+              {targetName}
+              {" "}
+              won&apos;t be able to send you invites or requests, and their
               profile and search results will be hidden from your account.
             </p>
           </div>
 
-          <footer className="flex items-center justify-end gap-2 border-t border-white/6 px-4 py-4 sm:px-5">
+          <footer className="flex items-center justify-end gap-2 border-t border-white/[0.06] px-4 py-3.5 sm:px-4.5">
             <button
               type="button"
               onClick={onCancel}
               disabled={isPending}
-              className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.03] px-4 text-[13px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Cancel
             </button>
@@ -156,7 +158,7 @@ function BlockConfirmationModal({
               type="button"
               onClick={onConfirm}
               disabled={isPending}
-              className="oc-profile-display inline-flex h-9 items-center rounded-full border border-rose-400/20 bg-rose-500/12 px-4 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/18 disabled:cursor-not-allowed disabled:opacity-60"
+              className="oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-[10px] border border-rose-400/22 bg-rose-500/[0.12] px-4 text-[13px] font-semibold text-rose-100 transition hover:border-rose-400/30 hover:bg-rose-500/[0.18] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPending ? "Blocking..." : "Block user"}
             </button>
@@ -212,7 +214,9 @@ export function UserBlockMenu({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { isBlocked, isPending, runAction, setToastMessage, toastMessage } =
     useUserBlockAction(initiallyBlocked);
-  const targetName = targetDisplayName ?? targetUsername ?? "This user";
+  const targetName = targetUsername
+    ? `@${targetUsername}`
+    : targetDisplayName ?? "This user";
 
   const resolvedTriggerClassName =
     triggerClassName ??
@@ -295,7 +299,7 @@ export function UnblockUserButton({
         type="button"
         disabled={isPending}
         onClick={() => runAction(targetProfileId, false)}
-        className="oc-profile-display inline-flex h-8 items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+        className="oc-profile-display inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
         aria-label={`Unblock ${targetDisplayName ?? "user"}`}
       >
         {isPending ? "Unblocking..." : "Unblock"}

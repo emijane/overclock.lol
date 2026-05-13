@@ -25,25 +25,22 @@ export async function AccountBlockedUsersCard() {
   const blockedUsers = await getBlockedUsers();
 
   return (
-    <section className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <div className="border-b border-white/6 px-4 py-3 sm:px-5">
-        <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-          Safety
-        </p>
-        <h2 className="oc-profile-display mt-1 text-[18px] font-semibold tracking-[-0.04em] text-zinc-50">
+    <section className="overflow-hidden rounded-[12px] border border-white/[0.07] bg-white/[0.025] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)]">
+      <div className="border-b border-white/[0.06] px-4 py-3 sm:px-4.5">
+        <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-50">
           Blocked users
         </h2>
-        <p className="mt-1 text-sm leading-6 text-zinc-400">
+        <p className="mt-1 text-[13px] leading-6 text-zinc-400">
           Manage the players you do not want interacting with your account.
         </p>
       </div>
 
       {blockedUsers.length === 0 ? (
-        <div className="px-4 py-5 sm:px-5 sm:py-6">
-          <p className="oc-profile-display text-sm font-medium text-zinc-200">
+        <div className="px-4 py-4.5 sm:px-4.5 sm:py-5">
+          <p className="oc-profile-display text-[14px] font-medium text-zinc-200">
             No blocked users yet.
           </p>
-          <p className="mt-1 text-sm leading-6 text-zinc-500">
+          <p className="mt-1 text-[13px] leading-6 text-zinc-500">
             Use profile and post dropdowns to block a player when you need to.
           </p>
         </div>
@@ -51,21 +48,22 @@ export async function AccountBlockedUsersCard() {
         <div className="max-h-[26rem] overflow-y-auto">
           <ul>
             {blockedUsers.map((blockedUser, index) => {
-              const displayName =
-                blockedUser.displayName ?? blockedUser.username ?? "Unknown user";
+              const primaryLabel = blockedUser.username
+                ? `@${blockedUser.username} `
+                : blockedUser.displayName ?? "Unknown user";
               const blockedAtLabel = formatBlockedAt(blockedUser.blockedAt);
 
               return (
                 <li
                   key={blockedUser.profileId}
-                  className={index < blockedUsers.length - 1 ? "border-b border-white/6" : ""}
+                  className={index < blockedUsers.length - 1 ? "border-b border-white/[0.06]" : ""}
                 >
-                  <div className="flex items-center gap-3 px-4 py-3 sm:px-5">
+                  <div className="flex items-center gap-3 px-4 py-3 sm:px-4.5">
                     <Avatar className="h-10 w-10 shrink-0 rounded-full">
                       {blockedUser.avatarUrl ? (
                         <AvatarImage
                           src={blockedUser.avatarUrl}
-                          alt={`${displayName} avatar`}
+                          alt={`${primaryLabel.trim()} avatar`}
                         />
                       ) : null}
                       <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
@@ -74,13 +72,13 @@ export async function AccountBlockedUsersCard() {
                     </Avatar>
 
                     <div className="min-w-0 flex-1">
-                      <p className="oc-profile-display truncate text-[14px] font-semibold text-zinc-100">
-                        {displayName}
+                      <p className="oc-profile-display truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-100">
+                        {primaryLabel}
                       </p>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                        {blockedUser.username ? (
+                        {blockedUser.displayName && blockedUser.username ? (
                           <p className="oc-profile-meta truncate text-[11px] font-medium text-zinc-500">
-                            @{blockedUser.username}
+                            {blockedUser.displayName}
                           </p>
                         ) : null}
                         {blockedAtLabel ? (
@@ -93,7 +91,7 @@ export async function AccountBlockedUsersCard() {
 
                     <div className="shrink-0">
                       <UnblockUserButton
-                        targetDisplayName={displayName}
+                        targetDisplayName={blockedUser.username ?? blockedUser.displayName ?? "user"}
                         targetProfileId={blockedUser.profileId}
                       />
                     </div>
