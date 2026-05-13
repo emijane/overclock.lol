@@ -8,7 +8,6 @@ import { MatchesRealtimeRefresh } from "@/app/matches/matches-realtime-refresh";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import {
-  expirePlayInvitesRecord,
   getActiveProfileConnections,
   getIncomingPendingPlayInvites,
   getPendingSentPlayInvites,
@@ -25,8 +24,6 @@ export default async function MatchesPage() {
   if (!profile) {
     redirect("/onboarding");
   }
-
-  await expirePlayInvitesRecord();
 
   const [connections, pendingSentInvites, incomingPendingInvites] = await Promise.all([
     getActiveProfileConnections({ currentProfileId: profile.id }),

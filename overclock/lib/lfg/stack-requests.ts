@@ -9,6 +9,13 @@ import type {
   UpdateStackMembershipResult,
   UpdateStackRequestResult,
 } from "./stack-request-types";
+import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
+
+function getActiveStackPostCutoffIso(now = new Date()) {
+  return new Date(
+    now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
+  ).toISOString();
+}
 
 function getErrorText(error: unknown) {
   if (!error || typeof error !== "object") {
@@ -262,9 +269,8 @@ export async function removeStackMemberRecord(input: {
 export async function getIncomingPendingStackRequests(input: {
   currentProfileId: string;
 }): Promise<{ requests: IncomingPendingStackRequest[]; totalCount: number }> {
-  await expireStackPostsRecord();
-
   const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
+  const activePostCutoffIso = getActiveStackPostCutoffIso();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("stack_requests")
@@ -275,7 +281,7 @@ export async function getIncomingPendingStackRequests(input: {
         "requested_role",
         "requester_profile_id",
         "created_at",
-        "lfg_posts:post_id(title,status)",
+        "lfg_posts:post_id(title,status,created_at)",
         "requester:requester_profile_id(id,username,display_name,avatar_url,avatar_updated_at,current_rank_tier,current_rank_division)",
       ].join(",")
     )
@@ -306,7 +312,11 @@ export async function getIncomingPendingStackRequests(input: {
         ? (row.requester as Record<string, unknown>)
         : null;
 
-    if (postRow?.status !== "active" && postRow?.status !== "filled") {
+    if (
+      (postRow?.status !== "active" && postRow?.status !== "filled") ||
+      typeof postRow?.created_at !== "string" ||
+      postRow.created_at < activePostCutoffIso
+    ) {
       continue;
     }
 
@@ -390,8 +400,6 @@ export async function getStackRequestStatesForPosts(input: {
     return {};
   }
 
-  await expireStackPostsRecord();
-
   const supabase = await createClient();
   const result: Record<string, "none" | "pending" | "accepted" | "declined"> = {};
 
@@ -399,17 +407,37 @@ export async function getStackRequestStatesForPosts(input: {
     result[id] = "none";
   }
 
+  const activePostCutoffIso = getActiveStackPostCutoffIso();
+  const { data: activePosts, error: activePostsError } = await supabase
+    .from("lfg_posts")
+    .select("id")
+    .in("id", input.postIds)
+    .in("status", ["active", "filled"])
+    .gte("created_at", activePostCutoffIso);
+
+  if (activePostsError) {
+    throw activePostsError;
+  }
+
+  const activePostIds = ((activePosts ?? []) as Array<Record<string, unknown>>)
+    .map((row) => (typeof row.id === "string" ? row.id : null))
+    .filter((postId): postId is string => Boolean(postId));
+
+  if (activePostIds.length === 0) {
+    return result;
+  }
+
   const [membershipResult, requestResult] = await Promise.all([
     supabase
       .from("stack_members")
       .select("post_id")
-      .in("post_id", input.postIds)
+      .in("post_id", activePostIds)
       .eq("profile_id", input.currentProfileId)
       .is("removed_at", null),
     supabase
       .from("stack_requests")
       .select("post_id,status")
-      .in("post_id", input.postIds)
+      .in("post_id", activePostIds)
       .eq("requester_profile_id", input.currentProfileId)
       .order("created_at", { ascending: false }),
   ]);

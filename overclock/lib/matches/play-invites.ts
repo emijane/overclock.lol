@@ -543,6 +543,7 @@ export async function getPendingSentPlayInvites(input: {
   limit?: number;
 }) {
   const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
+  const nowIso = new Date().toISOString();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("play_invites")
@@ -551,6 +552,7 @@ export async function getPendingSentPlayInvites(input: {
     )
     .eq("status", "pending")
     .eq("sender_profile_id", input.currentProfileId)
+    .gt("expires_at", nowIso)
     .order("created_at", { ascending: false })
     .limit(input.limit ?? 20);
 
@@ -609,6 +611,7 @@ export async function getIncomingPendingPlayInvites(input: {
   limit?: number;
 }) {
   const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
+  const nowIso = new Date().toISOString();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("play_invites")
@@ -618,6 +621,7 @@ export async function getIncomingPendingPlayInvites(input: {
     )
     .eq("status", "pending")
     .eq("recipient_profile_id", input.currentProfileId)
+    .gt("expires_at", nowIso)
     .order("expires_at", { ascending: true })
     .order("created_at", { ascending: false })
     .limit(input.limit ?? 9);
@@ -729,6 +733,7 @@ export async function getPendingOutgoingInviteIdForPair(input: {
     .eq("sender_profile_id", input.currentProfileId)
     .eq("recipient_profile_id", input.targetProfileId)
     .eq("status", "pending")
+    .gt("expires_at", new Date().toISOString())
     .limit(1)
     .maybeSingle();
 
@@ -755,6 +760,7 @@ export async function getProfileInviteState(input: {
     input.currentProfileId,
     input.targetProfileId,
   ].sort();
+  const nowIso = new Date().toISOString();
   const supabase = await createClient();
   const [pendingResult, acceptedResult] = await Promise.all([
     supabase
@@ -762,7 +768,8 @@ export async function getProfileInviteState(input: {
       .select("id", { head: true, count: "exact" })
       .eq("sender_profile_id", input.currentProfileId)
       .eq("recipient_profile_id", input.targetProfileId)
-      .eq("status", "pending"),
+      .eq("status", "pending")
+      .gt("expires_at", nowIso),
     supabase
       .from("profile_connections")
       .select("id", { head: true, count: "exact" })
@@ -771,12 +778,15 @@ export async function getProfileInviteState(input: {
       .eq("profile_high_id", profileHighId),
   ]);
 
-  if (pendingResult.error) {
-    throw pendingResult.error;
+  const pendingError = pendingResult.error;
+  const acceptedError = acceptedResult.error;
+
+  if (pendingError) {
+    throw pendingError;
   }
 
-  if (acceptedResult.error) {
-    throw acceptedResult.error;
+  if (acceptedError) {
+    throw acceptedError;
   }
 
   return deriveProfileInviteState({
@@ -821,38 +831,39 @@ export async function getLFGPostInviteStates(input: {
     new Set(eligiblePosts.map((post) => post.profileId))
   );
   const postIds = eligiblePosts.map((post) => post.id);
+  const nowIso = new Date().toISOString();
   const supabase = await createClient();
 
-  const [pendingResult, acceptedResult] = await Promise.all([
-    supabase
-      .from("play_invites")
-      .select("recipient_profile_id, source_lfg_post_id")
-      .eq("sender_profile_id", input.currentProfileId)
-      .eq("status", "pending")
-      .in("recipient_profile_id", recipientIds)
-      .in("source_lfg_post_id", postIds),
-    supabase
-      .from("profile_connections")
-      .select("profile_low_id, profile_high_id")
-      .is("disconnected_at", null)
-      .or(
-        [
-          `and(profile_low_id.eq.${input.currentProfileId},profile_high_id.in.(${recipientIds.join(",")}))`,
-          `and(profile_high_id.eq.${input.currentProfileId},profile_low_id.in.(${recipientIds.join(",")}))`,
-        ].join(",")
-      ),
-  ]);
+  const pendingResult = await supabase
+    .from("play_invites")
+    .select("recipient_profile_id, source_lfg_post_id")
+    .eq("sender_profile_id", input.currentProfileId)
+    .eq("status", "pending")
+    .gt("expires_at", nowIso)
+    .in("recipient_profile_id", recipientIds)
+    .in("source_lfg_post_id", postIds);
+
+  const acceptedConnectionsResult = await supabase
+    .from("profile_connections")
+    .select("profile_low_id, profile_high_id")
+    .is("disconnected_at", null)
+    .or(
+      [
+        `and(profile_low_id.eq.${input.currentProfileId},profile_high_id.in.(${recipientIds.join(",")}))`,
+        `and(profile_high_id.eq.${input.currentProfileId},profile_low_id.in.(${recipientIds.join(",")}))`,
+      ].join(",")
+    );
 
   if (pendingResult.error) {
     throw pendingResult.error;
   }
 
-  if (acceptedResult.error) {
-    throw acceptedResult.error;
+  if (acceptedConnectionsResult.error) {
+    throw acceptedConnectionsResult.error;
   }
 
   return deriveLFGInviteStates({
-    acceptedPairs: ((acceptedResult.data ?? []) as Array<Record<string, unknown>>)
+    acceptedPairs: ((acceptedConnectionsResult.data ?? []) as Array<Record<string, unknown>>)
       .filter(
         (row) =>
           typeof row.profile_low_id === "string" &&

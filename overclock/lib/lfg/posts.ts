@@ -492,10 +492,6 @@ export async function getActiveLFGPosts(
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
     : [];
 
-  if (isStacks) {
-    await expireStackPostsRecord();
-  }
-
   let query = supabase
     .from("lfg_posts")
     .select(
@@ -523,7 +519,7 @@ export async function getActiveLFGPosts(
     .order("created_at", { ascending: false });
 
   query = isStacks
-    ? query.in("status", ["active", "filled"])
+    ? query.in("status", ["active", "filled"]).gte("created_at", activePostCutoffIso)
     : query.eq("status", "active").gte("created_at", activePostCutoffIso);
 
   if (filters?.role) {
@@ -733,8 +729,6 @@ export async function getRecentPostsByProfileId(
   ) {
     return [];
   }
-
-  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -794,8 +788,6 @@ export async function getPostsByProfileId(
   ) {
     return [];
   }
-
-  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -839,9 +831,6 @@ export async function getActiveLFGPostCountsByRole(input: {
 }): Promise<ActiveLFGPostCountsByRole> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
-  if (input.lfgType === "stacks") {
-    await expireStackPostsRecord();
-  }
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("posting_role")
