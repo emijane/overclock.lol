@@ -1,4 +1,7 @@
-import { getIncomingPendingPlayInvites } from "@/lib/matches/play-invites";
+import {
+  expirePlayInvitesRecord,
+  getIncomingPendingPlayInvites,
+} from "@/lib/matches/play-invites";
 import { getIncomingPendingStackRequests } from "@/lib/lfg/stack-requests";
 import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
 
@@ -9,6 +12,8 @@ type GlobalNotificationsMenuProps = {
 export async function GlobalNotificationsMenu({
   currentProfileId,
 }: GlobalNotificationsMenuProps) {
+  await expirePlayInvitesRecord();
+
   const [{ invites, totalCount }, { requests: stackRequests, totalCount: stackCount }] =
     await Promise.all([
       getIncomingPendingPlayInvites({ currentProfileId }),
