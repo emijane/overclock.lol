@@ -97,7 +97,7 @@ export function GlobalNotificationsMenuClient({
             : result.errorCode === "role_not_needed"
               ? "That role is no longer needed."
               : result.errorCode === "blocked_users"
-                ? "This player can no longer join this stack."
+                ? "Action unavailable."
                 : "Something went wrong. Try again.",
       }));
       setActiveInviteId(null);

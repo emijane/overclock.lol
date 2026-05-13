@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   searchPublicProfiles,
 } from "@/lib/profiles/public-profile-search";
+import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-current-invite-viewer";
 import {
   normalizeProfileSearchQuery,
   PROFILE_SEARCH_QUERY_MAX_LENGTH,
@@ -32,7 +33,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const results = await searchPublicProfiles(query);
+    const viewer = await getOptionalCurrentInviteViewer();
+    const results = await searchPublicProfiles(query, undefined, viewer.profileId);
     return NextResponse.json({ results });
   } catch {
     return NextResponse.json(

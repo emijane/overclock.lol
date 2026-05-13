@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type {
@@ -263,6 +264,7 @@ export async function getIncomingPendingStackRequests(input: {
 }): Promise<{ requests: IncomingPendingStackRequest[]; totalCount: number }> {
   await expireStackPostsRecord();
 
+  const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("stack_requests")
@@ -321,6 +323,10 @@ export async function getIncomingPendingStackRequests(input: {
           : null;
 
     if (!requesterId) {
+      continue;
+    }
+
+    if (blockedProfileIds.includes(requesterId)) {
       continue;
     }
 

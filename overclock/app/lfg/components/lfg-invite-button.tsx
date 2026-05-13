@@ -71,7 +71,9 @@ export function LFGInviteButton({
         return;
       }
 
-      setErrorMessage("Couldn't send invite. Try again.");
+      setErrorMessage(
+        result.status === "error" ? result.message : "This action is unavailable."
+      );
     });
   }
 

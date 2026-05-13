@@ -57,6 +57,18 @@ test("send action mapper groups duplicate and rate limit failures", () => {
   assert.deepEqual(
     mapSendPlayInviteActionResult({
       created: false,
+      errorCode: "blocked_users",
+      inviteId: null,
+    }),
+    {
+      status: "error",
+      message: "This action is unavailable.",
+    }
+  );
+
+  assert.deepEqual(
+    mapSendPlayInviteActionResult({
+      created: false,
       errorCode: "recipient_rate_limited",
       inviteId: null,
     }),
@@ -91,6 +103,10 @@ test("update error mapper returns specific copy for known codes", () => {
   assert.equal(
     mapPlayInviteUpdateErrorMessage("invalid_state"),
     "That invite can no longer be updated."
+  );
+  assert.equal(
+    mapPlayInviteUpdateErrorMessage("blocked_users"),
+    "This action is unavailable."
   );
 });
 

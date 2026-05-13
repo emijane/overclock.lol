@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PresenceIndicator } from "@/components/presence/presence-indicator";
+import { UserBlockMenu } from "@/features/blocks/components/user-block-controls";
 import { RankedAvatar } from "@/app/components/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
@@ -131,6 +132,16 @@ export function StackPostCard({
                 returnPath={returnPath}
                 viewHref={viewHref}
                 viewLabel={viewLabel}
+              />
+            ) : showActions &&
+              currentProfileId &&
+              post.profileId &&
+              !isOwner ? (
+              <UserBlockMenu
+                targetDisplayName={displayName}
+                targetProfileId={post.profileId}
+                targetUsername={post.author.username}
+                viewProfileHref={profileHref}
               />
             ) : null}
           </div>

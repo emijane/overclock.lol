@@ -222,7 +222,7 @@ async function getLFGPageData(
   profileId: string | null,
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
-  const postsResult = await getActiveLFGPosts(type, feedFilters)
+  const postsResult = await getActiveLFGPosts(type, feedFilters, profileId)
     .then((posts) => ({ posts, postsErrorMessage: null }))
     .catch(() => ({
       posts: [],

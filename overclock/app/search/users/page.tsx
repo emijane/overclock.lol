@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-current-invite-viewer";
 import { searchPublicProfiles } from "@/lib/profiles/public-profile-search";
 import {
   normalizeProfileSearchQuery,
@@ -38,7 +39,12 @@ export default async function SearchUsersPage({ searchParams }: Props) {
 
   if (query) {
     try {
-      results = await searchPublicProfiles(query, PROFILE_SEARCH_PAGE_RESULT_LIMIT);
+      const viewer = await getOptionalCurrentInviteViewer();
+      results = await searchPublicProfiles(
+        query,
+        PROFILE_SEARCH_PAGE_RESULT_LIMIT,
+        viewer.profileId
+      );
     } catch {
       error = "Unable to search right now. Please try again.";
     }

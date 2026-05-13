@@ -64,14 +64,14 @@ export default async function ProfilePage({
     const query = searchParams ? await searchParams : {};
     const message = pickValue(query.message);
     const messageType = pickValue(query.type);
-    const [profile, viewer] = await Promise.all([
-        measureProfileStep(username, "public profile", () =>
-            getProfileByUsername(username)
-        ),
-        measureProfileStep(username, "optional invite viewer", () =>
-            getOptionalCurrentInviteViewer()
-        ),
-    ]);
+    const viewer = await measureProfileStep(
+        username,
+        "optional invite viewer",
+        () => getOptionalCurrentInviteViewer()
+    );
+    const profile = await measureProfileStep(username, "public profile", () =>
+        getProfileByUsername(username, viewer.profileId)
+    );
 
     if (!profile) {
         notFound();
@@ -92,7 +92,7 @@ export default async function ProfilePage({
                 getProfileBadges(profile.id)
             ),
             measureProfileStep(username, "recent posts", () =>
-                getRecentPostsByProfileId(profile.id)
+                getRecentPostsByProfileId(profile.id, 2, viewer.profileId)
             ),
             measureProfileStep(username, "invite state", () =>
                 getProfileInviteState({
@@ -201,6 +201,7 @@ export default async function ProfilePage({
                             currentRank={currentRank}
                             currentRankTier={profileRankTier}
                             currentRankIconSrc={currentRankIconSrc}
+                            currentViewerProfileId={viewer.profileId}
                             displayName={profile.display_name}
                             hideOfflinePresence={profile.hide_offline_presence}
                             id={profile.id}

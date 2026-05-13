@@ -56,6 +56,10 @@ export function mapPlayInviteUpdateErrorMessage(errorCode: string | null) {
     return "That player cannot be updated right now.";
   }
 
+  if (errorCode === "blocked_users") {
+    return "This action is unavailable.";
+  }
+
   return "Unable to update that invite right now.";
 }
 
@@ -87,6 +91,7 @@ export function mapSendPlayInviteActionResult(
   }
 
   if (
+    result.errorCode === "blocked_users" ||
     result.errorCode === "already_connected" ||
     result.errorCode === "invalid_recipient" ||
     result.errorCode === "recipient_not_found" ||
@@ -97,6 +102,8 @@ export function mapSendPlayInviteActionResult(
       message:
         result.errorCode === "already_connected"
           ? "You are already connected with this player."
+          : result.errorCode === "blocked_users"
+            ? "This action is unavailable."
           : "That player cannot be invited right now.",
     };
   }

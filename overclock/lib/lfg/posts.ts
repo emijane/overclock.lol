@@ -1,6 +1,7 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
+import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
@@ -481,11 +482,15 @@ function normalizeLFGPostRow(
 
 export async function getActiveLFGPosts(
   lfgType: LFGType,
-  filters?: LFGFeedFilters
+  filters?: LFGFeedFilters,
+  viewerProfileId?: string | null
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
   const isStacks = lfgType === "stacks";
+  const blockedProfileIds = viewerProfileId
+    ? await getBlockedProfileIdsForViewer(viewerProfileId)
+    : [];
 
   if (isStacks) {
     await expireStackPostsRecord();
@@ -549,6 +554,10 @@ export async function getActiveLFGPosts(
         minRank: filters?.minRank,
       })
     );
+  }
+
+  if (blockedProfileIds.length > 0) {
+    query = query.not("profile_id", "in", `(${blockedProfileIds.join(",")})`);
   }
 
   const { data, error } = await query.limit(30);
@@ -693,17 +702,30 @@ export async function getActiveLFGPosts(
       typeof row.profile_id === "string"
         ? badgesByProfileId.get(row.profile_id) ?? []
         : [],
-      typeof row.id === "string" ? stackMembersByPostId.get(row.id) ?? [] : []
+      typeof row.id === "string"
+        ? (stackMembersByPostId.get(row.id) ?? []).filter(
+            (member) => !blockedProfileIds.includes(member.profileId)
+          )
+        : []
     )
   );
 }
 
 export async function getRecentPostsByProfileId(
   profileId: string,
-  limit = 2
+  limit = 2,
+  viewerProfileId?: string | null
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
+  const blockedProfileIds = viewerProfileId
+    ? await getBlockedProfileIdsForViewer(viewerProfileId)
+    : [];
+
+  if (blockedProfileIds.includes(profileId)) {
+    return [];
+  }
+
   await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
@@ -745,9 +767,18 @@ export async function getRecentPostsByProfileId(
 
 export async function getPostsByProfileId(
   profileId: string,
-  limit = 30
+  limit = 30,
+  viewerProfileId?: string | null
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
+  const blockedProfileIds = viewerProfileId
+    ? await getBlockedProfileIdsForViewer(viewerProfileId)
+    : [];
+
+  if (blockedProfileIds.includes(profileId)) {
+    return [];
+  }
+
   await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")

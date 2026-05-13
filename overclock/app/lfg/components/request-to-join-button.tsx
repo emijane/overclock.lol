@@ -179,13 +179,9 @@ export function RequestToJoinButton({
 
   if (uiState === "error") {
     return (
-      <button
-        type="button"
-        onClick={() => setUiState("selecting_role")}
-        className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-medium text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06]"
-      >
-        Try again
-      </button>
+      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+        Action unavailable
+      </span>
     );
   }
 

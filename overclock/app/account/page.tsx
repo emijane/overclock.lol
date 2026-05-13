@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/app/login/components";
+import { AccountBlockedUsersCard } from "@/features/blocks/components/account-blocked-users-card";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 
@@ -95,6 +96,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     initialHideOfflinePresence={profile.hide_offline_presence ?? false}
                   />
                 </div>
+
+                <AccountBlockedUsersCard />
               </div>
             </PageReveal>
           </div>

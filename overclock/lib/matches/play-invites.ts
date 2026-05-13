@@ -1,4 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import {
+  getBlockedProfileIdsForViewer,
+  hasEitherUserBlocked,
+} from "@/lib/blocks/user-blocks";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import {
   normalizeExpirePlayInvitesResult,
@@ -413,6 +417,7 @@ export async function getActiveProfileConnections(input: {
   currentProfileId: string;
   limit?: number;
 }) {
+  const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("profile_connections")
@@ -432,7 +437,18 @@ export async function getActiveProfileConnections(input: {
 
   const rows = ((data ?? []) as unknown[])
     .map((row) => normalizeProfileConnectionRow(row))
-    .filter((row): row is ProfileConnectionRow => Boolean(row));
+    .filter((row): row is ProfileConnectionRow => {
+      if (!row) {
+        return false;
+      }
+
+      const participantId =
+        row.profile_low_id === input.currentProfileId
+          ? row.profile_high_id
+          : row.profile_low_id;
+
+      return !blockedProfileIds.includes(participantId);
+    });
 
   const participantIds = Array.from(
     new Set(
@@ -526,6 +542,7 @@ export async function getPendingSentPlayInvites(input: {
   currentProfileId: string;
   limit?: number;
 }) {
+  const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("play_invites")
@@ -545,6 +562,7 @@ export async function getPendingSentPlayInvites(input: {
     (row) =>
       typeof row.id === "string" &&
       typeof row.recipient_profile_id === "string" &&
+      !blockedProfileIds.includes(row.recipient_profile_id as string) &&
       typeof row.created_at === "string" &&
       typeof row.expires_at === "string"
   );
@@ -590,8 +608,9 @@ export async function getIncomingPendingPlayInvites(input: {
   currentProfileId: string;
   limit?: number;
 }) {
+  const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
   const supabase = await createClient();
-  const { data, error, count } = await supabase
+  const { data, error } = await supabase
     .from("play_invites")
     .select(
       "id, sender_profile_id, source_lfg_post_id, message, sender_snapshot, created_at, expires_at",
@@ -611,6 +630,7 @@ export async function getIncomingPendingPlayInvites(input: {
     (row) =>
       typeof row.id === "string" &&
       typeof row.sender_profile_id === "string" &&
+      !blockedProfileIds.includes(row.sender_profile_id as string) &&
       typeof row.created_at === "string" &&
       typeof row.expires_at === "string"
   );
@@ -653,7 +673,7 @@ export async function getIncomingPendingPlayInvites(input: {
           : null,
       } satisfies IncomingPendingPlayInvite;
     }),
-    totalCount: count ?? 0,
+    totalCount: rows.length,
   };
 }
 
@@ -662,6 +682,10 @@ export async function getActiveConnectionIdForPair(input: {
   targetProfileId: string;
 }): Promise<string | null> {
   if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return null;
+  }
+
+  if (await hasEitherUserBlocked(input.currentProfileId, input.targetProfileId)) {
     return null;
   }
 
@@ -694,6 +718,10 @@ export async function getPendingOutgoingInviteIdForPair(input: {
     return null;
   }
 
+  if (await hasEitherUserBlocked(input.currentProfileId, input.targetProfileId)) {
+    return null;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("play_invites")
@@ -716,6 +744,10 @@ export async function getProfileInviteState(input: {
   targetProfileId: string;
 }): Promise<ProfileInviteState> {
   if (!input.currentProfileId || input.currentProfileId === input.targetProfileId) {
+    return "invite_to_play";
+  }
+
+  if (await hasEitherUserBlocked(input.currentProfileId, input.targetProfileId)) {
     return "invite_to_play";
   }
 
@@ -772,8 +804,13 @@ export async function getLFGPostInviteStates(input: {
     return states;
   }
 
+  const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
+
   const eligiblePosts = input.posts.filter(
-    (post) => Boolean(post.profileId) && post.profileId !== input.currentProfileId
+    (post) =>
+      Boolean(post.profileId) &&
+      post.profileId !== input.currentProfileId &&
+      !blockedProfileIds.includes(post.profileId as string)
   ) as Array<{ id: string; profileId: string }>;
 
   if (eligiblePosts.length === 0) {

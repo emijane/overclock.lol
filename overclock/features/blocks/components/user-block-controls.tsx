@@ -1,0 +1,306 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
+import { MoreHorizontalIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { blockUser, unblockUser } from "@/lib/blocks/user-blocks";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+type ActionToastProps = {
+  message: string | null;
+  onDismiss: () => void;
+};
+
+type BlockConfirmationModalProps = {
+  isOpen: boolean;
+  isPending: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+  targetName: string;
+};
+
+type UserBlockMenuProps = {
+  align?: "center" | "end" | "start";
+  initiallyBlocked?: boolean;
+  targetDisplayName?: string | null;
+  targetProfileId: string;
+  targetUsername?: string | null;
+  triggerClassName?: string;
+  triggerLabel?: string;
+  viewProfileHref?: string | null;
+};
+
+type UnblockUserButtonProps = {
+  initiallyBlocked?: boolean;
+  targetDisplayName?: string | null;
+  targetProfileId: string;
+};
+
+function ActionToast({ message, onDismiss }: ActionToastProps) {
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    const timeout = window.setTimeout(onDismiss, 2200);
+    return () => window.clearTimeout(timeout);
+  }, [message, onDismiss]);
+
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <div className="fixed right-4 top-[4.75rem] z-[130] w-[min(320px,calc(100vw-2rem))] rounded-[14px] border border-white/10 bg-[#05070b]/95 px-3 py-1.5 text-xs text-zinc-100 shadow-[0_14px_36px_rgba(0,0,0,0.34)] backdrop-blur-sm sm:right-6 sm:top-[5.25rem]">
+      <div className="flex items-center justify-between gap-3">
+        <p className="min-w-0 flex-1 leading-5">{message}</p>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 transition hover:bg-white/8 hover:text-zinc-100"
+          aria-label="Dismiss message"
+        >
+          <XIcon className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function BlockConfirmationModal({
+  isOpen,
+  isPending,
+  onCancel,
+  onConfirm,
+  targetName,
+}: BlockConfirmationModalProps) {
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape" && !isPending) {
+        onCancel();
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen, isPending, onCancel]);
+
+  if (!isOpen || typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[125] bg-zinc-950/88" onClick={isPending ? undefined : onCancel}>
+      <div className="flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
+        <section
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="block-user-modal-title"
+          className="w-full max-w-md overflow-hidden rounded-t-[26px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[24px]"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <header className="flex items-center justify-between gap-4 border-b border-white/6 px-4 py-4 sm:px-5">
+            <div>
+              <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                Safety
+              </p>
+              <h2
+                id="block-user-modal-title"
+                className="oc-profile-display mt-1 text-[20px] font-semibold tracking-[-0.04em] text-zinc-50"
+              >
+                Block user?
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={isPending}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+              aria-label="Close block confirmation"
+            >
+              <XIcon className="h-4 w-4" />
+            </button>
+          </header>
+
+          <div className="px-4 py-4 sm:px-5 sm:py-5">
+            <p className="text-sm leading-6 text-zinc-300">
+              {targetName} won&apos;t be able to send you invites or requests, and their
+              profile and search results will be hidden from your account.
+            </p>
+          </div>
+
+          <footer className="flex items-center justify-end gap-2 border-t border-white/6 px-4 py-4 sm:px-5">
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={isPending}
+              className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={onConfirm}
+              disabled={isPending}
+              className="oc-profile-display inline-flex h-9 items-center rounded-full border border-rose-400/20 bg-rose-500/12 px-4 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/18 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isPending ? "Blocking..." : "Block user"}
+            </button>
+          </footer>
+        </section>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+function useUserBlockAction(initiallyBlocked: boolean) {
+  const router = useRouter();
+  const [isBlocked, setIsBlocked] = useState(initiallyBlocked);
+  const [isPending, startTransition] = useTransition();
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  function runAction(targetProfileId: string, nextBlockedState: boolean) {
+    startTransition(async () => {
+      const result = nextBlockedState
+        ? await blockUser(targetProfileId)
+        : await unblockUser(targetProfileId);
+
+      setToastMessage(result.message);
+
+      if (result.ok) {
+        setIsBlocked(nextBlockedState);
+      }
+
+      router.refresh();
+    });
+  }
+
+  return {
+    isBlocked,
+    isPending,
+    runAction,
+    setToastMessage,
+    toastMessage,
+  };
+}
+
+export function UserBlockMenu({
+  align = "end",
+  initiallyBlocked = false,
+  targetDisplayName,
+  targetProfileId,
+  targetUsername,
+  triggerClassName,
+  triggerLabel = "User actions",
+  viewProfileHref,
+}: UserBlockMenuProps) {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const { isBlocked, isPending, runAction, setToastMessage, toastMessage } =
+    useUserBlockAction(initiallyBlocked);
+  const targetName = targetDisplayName ?? targetUsername ?? "This user";
+
+  const resolvedTriggerClassName =
+    triggerClassName ??
+    "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-zinc-500 transition hover:text-zinc-100";
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={triggerLabel}
+            className={resolvedTriggerClassName}
+          >
+            <MoreHorizontalIcon className="h-3.5 w-3.5" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align={align}
+          className="w-40 rounded-[14px] border border-white/[0.08] bg-[#111111] p-1 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]"
+        >
+          {viewProfileHref ? (
+            <>
+              <DropdownMenuItem asChild className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50">
+                <Link href={viewProfileHref}>View profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-white/[0.06]" />
+            </>
+          ) : null}
+          <DropdownMenuItem
+            disabled={isPending}
+            className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+            onSelect={(event) => {
+              event.preventDefault();
+
+              if (isBlocked) {
+                runAction(targetProfileId, false);
+                return;
+              }
+
+              setIsConfirmOpen(true);
+            }}
+          >
+            {isBlocked ? "Unblock user" : "Block user"}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <BlockConfirmationModal
+        isOpen={isConfirmOpen}
+        isPending={isPending}
+        onCancel={() => setIsConfirmOpen(false)}
+        onConfirm={() => {
+          runAction(targetProfileId, true);
+          setIsConfirmOpen(false);
+        }}
+        targetName={targetName}
+      />
+
+      <ActionToast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+    </>
+  );
+}
+
+export function UnblockUserButton({
+  initiallyBlocked = true,
+  targetDisplayName,
+  targetProfileId,
+}: UnblockUserButtonProps) {
+  const { isBlocked, isPending, runAction, setToastMessage, toastMessage } =
+    useUserBlockAction(initiallyBlocked);
+
+  if (!isBlocked) {
+    return <ActionToast message={toastMessage} onDismiss={() => setToastMessage(null)} />;
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() => runAction(targetProfileId, false)}
+        className="oc-profile-display inline-flex h-8 items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+        aria-label={`Unblock ${targetDisplayName ?? "user"}`}
+      >
+        {isPending ? "Unblocking..." : "Unblock"}
+      </button>
+      <ActionToast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+    </>
+  );
+}

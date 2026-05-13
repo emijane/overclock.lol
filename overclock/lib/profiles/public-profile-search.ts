@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import {
   normalizeProfileSearchQuery,
@@ -12,6 +13,7 @@ type ProfileSearchRow = {
   avatar_updated_at: string | null;
   avatar_url: string | null;
   display_name: string | null;
+  id?: string | null;
   username: string | null;
 };
 
@@ -31,7 +33,11 @@ function mapProfileSearchRow(row: ProfileSearchRow): PublicProfileSearchResult |
   };
 }
 
-export async function searchPublicProfiles(rawQuery: string, limit = PROFILE_SEARCH_RESULT_LIMIT) {
+export async function searchPublicProfiles(
+  rawQuery: string,
+  limit = PROFILE_SEARCH_RESULT_LIMIT,
+  viewerProfileId?: string | null
+) {
   const query = normalizeProfileSearchQuery(rawQuery);
 
   if (!query) {
@@ -40,20 +46,32 @@ export async function searchPublicProfiles(rawQuery: string, limit = PROFILE_SEA
 
   const supabase = await createClient();
   const escapedQuery = escapeLikePattern(query);
+  const blockedProfileIds = viewerProfileId
+    ? await getBlockedProfileIdsForViewer(viewerProfileId)
+    : [];
+
+  const usernameQuery = supabase
+    .from("profiles")
+    .select("id, username, display_name, avatar_url, avatar_updated_at")
+    .not("username", "is", null)
+    .ilike("username", `${escapedQuery}%`)
+    .limit(limit);
+  const displayNameQuery = supabase
+    .from("profiles")
+    .select("id, username, display_name, avatar_url, avatar_updated_at")
+    .not("username", "is", null)
+    .ilike("display_name", `%${escapedQuery}%`)
+    .limit(limit);
+
+  if (blockedProfileIds.length > 0) {
+    const filter = `(${blockedProfileIds.join(",")})`;
+    usernameQuery.not("id", "in", filter);
+    displayNameQuery.not("id", "in", filter);
+  }
 
   const [usernameMatchesResult, displayNameMatchesResult] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("username, display_name, avatar_url, avatar_updated_at")
-      .not("username", "is", null)
-      .ilike("username", `${escapedQuery}%`)
-      .limit(limit),
-    supabase
-      .from("profiles")
-      .select("username, display_name, avatar_url, avatar_updated_at")
-      .not("username", "is", null)
-      .ilike("display_name", `%${escapedQuery}%`)
-      .limit(limit),
+    usernameQuery,
+    displayNameQuery,
   ]);
 
   if (usernameMatchesResult.error) {
