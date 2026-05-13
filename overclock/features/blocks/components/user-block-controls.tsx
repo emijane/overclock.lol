@@ -30,7 +30,10 @@ type BlockConfirmationModalProps = {
 
 type UserBlockMenuProps = {
   align?: "center" | "end" | "start";
+  blocked?: boolean;
   initiallyBlocked?: boolean;
+  isPending?: boolean;
+  onBlockedChange?: (nextBlocked: boolean) => void;
   targetDisplayName?: string | null;
   targetProfileId: string;
   targetUsername?: string | null;
@@ -203,7 +206,10 @@ function useUserBlockAction(initiallyBlocked: boolean) {
 
 export function UserBlockMenu({
   align = "end",
+  blocked,
   initiallyBlocked = false,
+  isPending: controlledPending,
+  onBlockedChange,
   targetDisplayName,
   targetProfileId,
   targetUsername,
@@ -214,6 +220,8 @@ export function UserBlockMenu({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { isBlocked, isPending, runAction, setToastMessage, toastMessage } =
     useUserBlockAction(initiallyBlocked);
+  const resolvedBlocked = blocked ?? isBlocked;
+  const resolvedPending = controlledPending ?? isPending;
   const targetName = targetUsername
     ? `@${targetUsername}`
     : targetDisplayName ?? "This user";
@@ -247,12 +255,17 @@ export function UserBlockMenu({
             </>
           ) : null}
           <DropdownMenuItem
-            disabled={isPending}
+            disabled={resolvedPending}
             className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
             onSelect={(event) => {
               event.preventDefault();
 
-              if (isBlocked) {
+              if (resolvedBlocked) {
+                if (onBlockedChange) {
+                  onBlockedChange(false);
+                  return;
+                }
+
                 runAction(targetProfileId, false);
                 return;
               }
@@ -260,17 +273,21 @@ export function UserBlockMenu({
               setIsConfirmOpen(true);
             }}
           >
-            {isBlocked ? "Unblock user" : "Block user"}
+            {resolvedBlocked ? "Unblock user" : "Block user"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <BlockConfirmationModal
         isOpen={isConfirmOpen}
-        isPending={isPending}
+        isPending={resolvedPending}
         onCancel={() => setIsConfirmOpen(false)}
         onConfirm={() => {
-          runAction(targetProfileId, true);
+          if (onBlockedChange) {
+            onBlockedChange(true);
+          } else {
+            runAction(targetProfileId, true);
+          }
           setIsConfirmOpen(false);
         }}
         targetName={targetName}

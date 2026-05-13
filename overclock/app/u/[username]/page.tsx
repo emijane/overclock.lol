@@ -8,6 +8,7 @@ import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-curr
 import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfileBadges } from "@/lib/badges/badges";
+import { isBlocked } from "@/lib/blocks/user-blocks";
 import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
 import {
   getActiveConnectionIdForPair,
@@ -77,7 +78,7 @@ export default async function ProfilePage({
         notFound();
     }
 
-    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount, activeConnectionId, pendingOutgoingInviteId] =
+    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount, activeConnectionId, pendingOutgoingInviteId, initiallyBlockedByViewer] =
         await Promise.all([
             measureProfileStep(username, "hero pools", () =>
                 getProfileHeroPools(profile.id)
@@ -92,7 +93,9 @@ export default async function ProfilePage({
                 getProfileBadges(profile.id)
             ),
             measureProfileStep(username, "recent posts", () =>
-                getRecentPostsByProfileId(profile.id, 2, viewer.profileId)
+                getRecentPostsByProfileId(profile.id, 2, viewer.profileId, {
+                    hideWhenViewerBlockedTarget: false,
+                })
             ),
             measureProfileStep(username, "invite state", () =>
                 getProfileInviteState({
@@ -114,6 +117,9 @@ export default async function ProfilePage({
                     currentProfileId: viewer.profileId,
                     targetProfileId: profile.id,
                 })
+            ),
+            measureProfileStep(username, "viewer block state", () =>
+                isBlocked(viewer.profileId, profile.id)
             ),
         ]);
 
@@ -205,6 +211,7 @@ export default async function ProfilePage({
                             displayName={profile.display_name}
                             hideOfflinePresence={profile.hide_offline_presence}
                             id={profile.id}
+                            initiallyBlockedByViewer={initiallyBlockedByViewer}
                             isOwner={isOwner}
                             isLookingToPlay={profile.is_looking_to_play}
                             lastSeenAt={profile.last_seen_at}

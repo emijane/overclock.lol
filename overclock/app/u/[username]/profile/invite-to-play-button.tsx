@@ -12,16 +12,22 @@ import type {
 
 type InviteToPlayButtonProps = {
   activeConnectionId: string | null;
+  blockedByViewer?: boolean;
+  externalPending?: boolean;
   initialInviteId: string | null;
   initialState: ProfileInviteState;
+  onUnblock?: () => void;
   recipientProfileId: string;
   viewerState: InviteViewerState;
 };
 
 export function InviteToPlayButton({
   activeConnectionId,
+  blockedByViewer = false,
+  externalPending = false,
   initialInviteId,
   initialState,
+  onUnblock,
   recipientProfileId,
   viewerState,
 }: InviteToPlayButtonProps) {
@@ -29,9 +35,10 @@ export function InviteToPlayButton({
   const [inviteId, setInviteId] = useState<string | null>(initialInviteId);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const resolvedPending = isPending || externalPending;
   const presentation = getInviteActionPresentation({
     inviteState,
-    isPending,
+    isPending: resolvedPending,
     labels: { idle: "Connect" },
     viewerState,
   });
@@ -136,12 +143,12 @@ export function InviteToPlayButton({
       <div className="flex flex-col items-start gap-2">
         <button
           type="button"
-          disabled={isPending || !activeConnectionId}
-          aria-disabled={isPending || !activeConnectionId}
+          disabled={resolvedPending || !activeConnectionId}
+          aria-disabled={resolvedPending || !activeConnectionId}
           onClick={handleRemoveConnection}
           className="inline-flex h-8 items-center rounded-full border border-rose-400/20 bg-rose-500/10 px-3 text-xs font-medium text-rose-200 transition-all duration-200 hover:bg-rose-500/15 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending ? "Removing..." : "Remove connection"}
+          {resolvedPending ? "Removing..." : "Remove connection"}
         </button>
         {feedback ? <p className="max-w-[220px] text-xs text-rose-300">{feedback}</p> : null}
       </div>
@@ -153,14 +160,30 @@ export function InviteToPlayButton({
       <div className="flex flex-col items-start gap-2">
         <button
           type="button"
-          disabled={isPending || !inviteId}
-          aria-disabled={isPending || !inviteId}
+          disabled={resolvedPending || !inviteId}
+          aria-disabled={resolvedPending || !inviteId}
           onClick={handleCancelInvite}
           className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-400 backdrop-blur-md transition-all duration-200 hover:border-rose-400/20 hover:bg-rose-500/10 hover:text-rose-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending ? "Removing..." : "Invite Sent"}
+          {resolvedPending ? "Removing..." : "Invite Sent"}
         </button>
         {feedback ? <p className="max-w-[220px] text-xs text-zinc-400">{feedback}</p> : null}
+      </div>
+    );
+  }
+
+  if (blockedByViewer) {
+    return (
+      <div className="flex flex-col items-start gap-2">
+        <button
+          type="button"
+          disabled={resolvedPending}
+          aria-disabled={resolvedPending}
+          onClick={onUnblock}
+          className="inline-flex h-8 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.04] disabled:text-zinc-400"
+        >
+          {resolvedPending ? "Unblocking..." : "Unblock"}
+        </button>
       </div>
     );
   }
@@ -169,12 +192,12 @@ export function InviteToPlayButton({
     <div className="flex flex-col items-start gap-2">
       <button
         type="button"
-        disabled={!presentation.canSendInvite}
-        aria-disabled={!presentation.canSendInvite}
+        disabled={resolvedPending || !presentation.canSendInvite}
+        aria-disabled={resolvedPending || !presentation.canSendInvite}
         onClick={handleSendInvite}
         className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 cursor-pointer disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.04] disabled:text-zinc-400"
       >
-        {presentation.label}
+        {resolvedPending ? "..." : presentation.label}
       </button>
       {feedback ? <p className="max-w-[220px] text-xs text-zinc-400">{feedback}</p> : null}
     </div>

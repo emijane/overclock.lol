@@ -1,7 +1,7 @@
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getProfileBadges } from "@/lib/badges/badges";
-import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
+import { getBlockedProfileIdsForViewer, isBlocked } from "@/lib/blocks/user-blocks";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
@@ -714,15 +714,23 @@ export async function getActiveLFGPosts(
 export async function getRecentPostsByProfileId(
   profileId: string,
   limit = 2,
-  viewerProfileId?: string | null
+  viewerProfileId?: string | null,
+  options?: {
+    hideWhenViewerBlockedTarget?: boolean;
+  }
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
   const blockedProfileIds = viewerProfileId
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
     : [];
+  const hideWhenViewerBlockedTarget =
+    options?.hideWhenViewerBlockedTarget ?? true;
 
-  if (blockedProfileIds.includes(profileId)) {
+  if (
+    blockedProfileIds.includes(profileId) &&
+    (hideWhenViewerBlockedTarget || !(await isBlocked(viewerProfileId ?? null, profileId)))
+  ) {
     return [];
   }
 
@@ -768,14 +776,22 @@ export async function getRecentPostsByProfileId(
 export async function getPostsByProfileId(
   profileId: string,
   limit = 30,
-  viewerProfileId?: string | null
+  viewerProfileId?: string | null,
+  options?: {
+    hideWhenViewerBlockedTarget?: boolean;
+  }
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
   const blockedProfileIds = viewerProfileId
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
     : [];
+  const hideWhenViewerBlockedTarget =
+    options?.hideWhenViewerBlockedTarget ?? true;
 
-  if (blockedProfileIds.includes(profileId)) {
+  if (
+    blockedProfileIds.includes(profileId) &&
+    (hideWhenViewerBlockedTarget || !(await isBlocked(viewerProfileId ?? null, profileId)))
+  ) {
     return [];
   }
 

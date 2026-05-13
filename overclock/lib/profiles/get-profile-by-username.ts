@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { hasEitherUserBlocked } from "@/lib/blocks/user-blocks";
+import { isBlocked } from "@/lib/blocks/user-blocks";
 import { PUBLIC_PROFILE_SELECT } from "@/lib/profiles/profile-selects";
 
 // Loads a public profile by its unique app-owned username/handle.
@@ -19,11 +19,7 @@ export async function getProfileByUsername(
     throw error;
   }
 
-  if (
-    profile &&
-    viewerProfileId &&
-    (await hasEitherUserBlocked(viewerProfileId, profile.id))
-  ) {
+  if (profile && viewerProfileId && (await isBlocked(profile.id, viewerProfileId))) {
     return null;
   }
 

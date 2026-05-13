@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { blockUser, unblockUser } from "@/lib/blocks/user-blocks";
 import { UserBlockMenu } from "@/features/blocks/components/user-block-controls";
 import { ProfileHeader } from "./profile-header";
 import { InviteToPlayButton } from "./invite-to-play-button";
@@ -13,6 +15,7 @@ import type {
 type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
   activeConnectionId?: string | null;
   currentViewerProfileId?: string | null;
+  initiallyBlockedByViewer?: boolean;
   pendingOutgoingInviteId?: string | null;
   profileActionState?: ProfileInviteState;
   viewerState?: InviteViewerState;
@@ -21,10 +24,27 @@ type EditableProfileHeaderProps = React.ComponentProps<typeof ProfileHeader> & {
 export function EditableProfileHeader({
   activeConnectionId,
   currentViewerProfileId,
+  initiallyBlockedByViewer = false,
   pendingOutgoingInviteId,
   ...props
 }: EditableProfileHeaderProps) {
   const router = useRouter();
+  const [blockedByViewer, setBlockedByViewer] = useState(initiallyBlockedByViewer);
+  const [isBlockPending, startBlockTransition] = useTransition();
+
+  function handleBlockedChange(nextBlocked: boolean) {
+    startBlockTransition(async () => {
+      const result = nextBlocked
+        ? await blockUser(props.id)
+        : await unblockUser(props.id);
+
+      if (result.ok) {
+        setBlockedByViewer(nextBlocked);
+      }
+
+      router.refresh();
+    });
+  }
 
   return (
     <ProfileHeader
@@ -35,13 +55,19 @@ export function EditableProfileHeader({
           <div className="flex items-center gap-1.5">
             <InviteToPlayButton
               activeConnectionId={activeConnectionId ?? null}
+              blockedByViewer={blockedByViewer}
+              externalPending={isBlockPending}
               initialInviteId={pendingOutgoingInviteId ?? null}
               initialState={props.profileActionState}
+              onUnblock={() => handleBlockedChange(false)}
               recipientProfileId={props.id}
               viewerState={props.viewerState}
             />
             {currentViewerProfileId ? (
               <UserBlockMenu
+                blocked={blockedByViewer}
+                isPending={isBlockPending}
+                onBlockedChange={handleBlockedChange}
                 targetDisplayName={props.displayName}
                 targetProfileId={props.id}
                 targetUsername={props.username}
