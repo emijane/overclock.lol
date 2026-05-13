@@ -20,6 +20,7 @@ import {
 } from "@/lib/heroes/profile-hero-pools";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
+import { resolveMainRole } from "@/lib/competitive/competitive-profile-types";
 
 type PreferredHeroPoolsProps = {
   competitiveProfile: CompetitiveProfile;
@@ -75,7 +76,8 @@ export function PreferredHeroPools({
   roles,
 }: PreferredHeroPoolsProps) {
   const selectedHeroes = roles.flatMap((role) => getHeroesForRole(role, heroPicks));
-  const mainRoleProfile = competitiveProfile.roles.find((r) => r.role === competitiveProfile.mainRole);
+  const mainRole = resolveMainRole(competitiveProfile);
+  const mainRoleProfile = competitiveProfile.roles.find((r) => r.role === mainRole);
   const rankColors = getRankPillColors(mainRoleProfile?.rankTier);
 
   if (selectedHeroes.length === 0 && !isOwner) {
@@ -124,14 +126,14 @@ export function PreferredHeroPools({
         </div>
       ) : (
         <div className="mt-3 grid gap-2.5 lg:grid-cols-3">
-          {getOrderedHeroPoolGroups(competitiveProfile.mainRole).map((group) => {
+          {getOrderedHeroPoolGroups(mainRole).map((group) => {
             const groupRole = GROUP_ROLE_BY_LABEL[group.label];
             const roleProfile = competitiveProfile.roles.find(
               (roleProfile) => roleProfile.role === groupRole
             );
             const rankIconSrc = getRankIconSrc(roleProfile?.rankTier);
             const roleStatus =
-              competitiveProfile.mainRole === groupRole
+              mainRole === groupRole
                 ? "Main role"
                 : null;
             const visibleHeroes = group.pools.flatMap((pool) => derivedPools[pool]);

@@ -89,6 +89,7 @@ type RankPillColors = {
 };
 
 const rankPillColorsByTier: Record<string, RankPillColors> = {
+  Unranked:    { bg: "rgba(113,113,122,0.10)", bgSolid: "rgba(24,24,27,0.90)",   border: "rgba(113,113,122,0.28)", text: "#a1a1aa", dot: "#71717a" },
   Bronze:      { bg: "rgba(160,80,48,0.12)",  bgSolid: "rgba(90,45,25,0.90)",   border: "rgba(200,100,60,0.35)",  text: "#D09070", dot: "#C07050" },
   Silver:      { bg: "rgba(160,176,192,0.10)", bgSolid: "rgba(48,60,72,0.90)",   border: "rgba(192,208,224,0.35)", text: "#C0D4E0", dot: "#A0B8C8" },
   Gold:        { bg: "rgba(200,152,40,0.12)",  bgSolid: "rgba(100,76,16,0.90)",  border: "rgba(234,192,60,0.35)",  text: "#E8C850", dot: "#D0A030" },
@@ -101,11 +102,11 @@ const rankPillColorsByTier: Record<string, RankPillColors> = {
 };
 
 const defaultRankPillColors: RankPillColors = {
-  bg:      "rgba(56,189,248,0.10)",
-  bgSolid: "rgba(8,48,72,0.90)",
-  border:  "rgba(56,189,248,0.35)",
-  text:    "#7DD3FC",
-  dot:     "#38BDF8",
+  bg:      "rgba(113,113,122,0.10)",
+  bgSolid: "rgba(24,24,27,0.90)",
+  border:  "rgba(113,113,122,0.28)",
+  text:    "#a1a1aa",
+  dot:     "#71717a",
 };
 
 export function getRankPillColors(rankTier: string | null | undefined): RankPillColors {

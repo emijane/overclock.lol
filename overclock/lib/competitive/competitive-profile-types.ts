@@ -38,3 +38,16 @@ export function isCompetitiveRankTier(value: string): value is CompetitiveRankTi
 export function isCompetitivePlatform(value: string): value is CompetitivePlatform {
   return PLATFORM_OPTIONS.includes(value as CompetitivePlatform);
 }
+
+export function resolveMainRole(profile: CompetitiveProfile): CompetitiveRole | null {
+  if (profile.mainRole !== null) return profile.mainRole;
+
+  const enabled = profile.roles.filter((r) => r.enabled);
+  if (enabled.length === 0) return null;
+
+  return enabled.reduce((best, current) => {
+    const bestIndex = RANK_TIERS.indexOf(best.rankTier);
+    const currentIndex = RANK_TIERS.indexOf(current.rankTier);
+    return currentIndex > bestIndex ? current : best;
+  }).role;
+}

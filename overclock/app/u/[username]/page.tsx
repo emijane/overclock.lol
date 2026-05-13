@@ -16,6 +16,7 @@ import {
   getProfileInviteState,
 } from "@/lib/matches/play-invites";
 import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
+import { resolveMainRole } from "@/lib/competitive/competitive-profile-types";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
 import {
   FeaturedClipsSection,
@@ -122,7 +123,7 @@ export default async function ProfilePage({
         getCompetitiveRankDisplay(profile, competitiveProfile);
     const isOwner = viewer.currentUserId === profile.id;
     const mainRoleProfile = competitiveProfile.roles.find(
-        (roleProfile) => roleProfile.role === competitiveProfile.mainRole
+        (roleProfile) => roleProfile.role === resolveMainRole(competitiveProfile)
     );
     const profileRankTier =
         mainRoleProfile?.rankTier ?? profile.current_rank_tier;
