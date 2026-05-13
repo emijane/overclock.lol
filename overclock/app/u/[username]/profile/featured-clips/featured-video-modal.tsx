@@ -155,17 +155,17 @@ export function FeaturedVideoModal({
                     return (
                       <div
                         key={existingClip.id}
-                        className={`flex items-center justify-between gap-3 rounded-[12px] border px-3.5 py-3 ${
+                        className={`flex items-center justify-between gap-3 overflow-hidden rounded-[12px] border px-3.5 py-3 ${
                           isActive
                             ? "border-sky-400/40 bg-sky-400/8"
                             : "border-white/[0.06] bg-[#090909]"
                         }`}
                       >
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1 overflow-hidden">
                           <p className="oc-profile-display truncate text-sm font-medium text-zinc-100">
                             {existingClip.title || "Featured video"}
                           </p>
-                          <p className="oc-profile-meta truncate text-xs">
+                          <p className="oc-profile-meta truncate text-xs text-zinc-500">
                             {existingClip.url}
                           </p>
                         </div>
