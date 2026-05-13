@@ -24,7 +24,6 @@ access, invites, requests, notifications, and connection-adjacent systems.
 - Supporting table: `public.user_block_events`
 - Records `block` and `unblock` actions
 - Used by RPCs to rate-limit block mutations server-side
-- Retention is handled by the daily cleanup cron job
 
 ## RLS
 
