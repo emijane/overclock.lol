@@ -13,6 +13,7 @@ Root `docs/` is the canonical documentation home for this repository.
 - `docs/legal/*`: canonical legal content
   - Required by app code in `overclock/app/legal/legal-document.tsx`
 - `docs/security/*`: security and identity flow references
+- `docs/CLEANUP_CRON_JOBS.md`: scheduled maintenance and retention jobs
 - `docs/ui/*`: canonical UI and styling guidance
 - `docs/agents/*`: canonical AI workflow, cleanup, and QA guidance
 - `README.md`: canonical repo overview
