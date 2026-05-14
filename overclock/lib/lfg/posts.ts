@@ -10,7 +10,6 @@ import {
   STACK_MAX_GROUP_SIZE,
 } from "./lfg-post-policy";
 import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
-import { expireStackPostsRecord } from "./stack-requests";
 import { isMissingStackMembersSupportError } from "./stack-requests";
 import {
   isLFGGameMode,
@@ -492,10 +491,6 @@ export async function getActiveLFGPosts(
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
     : [];
 
-  if (isStacks) {
-    await expireStackPostsRecord();
-  }
-
   let query = supabase
     .from("lfg_posts")
     .select(
@@ -523,7 +518,7 @@ export async function getActiveLFGPosts(
     .order("created_at", { ascending: false });
 
   query = isStacks
-    ? query.in("status", ["active", "filled"])
+    ? query.in("status", ["active", "filled"]).gte("created_at", activePostCutoffIso)
     : query.eq("status", "active").gte("created_at", activePostCutoffIso);
 
   if (filters?.role) {
@@ -734,7 +729,6 @@ export async function getRecentPostsByProfileId(
     return [];
   }
 
-  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -795,7 +789,6 @@ export async function getPostsByProfileId(
     return [];
   }
 
-  await expireStackPostsRecord();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select(
@@ -839,9 +832,6 @@ export async function getActiveLFGPostCountsByRole(input: {
 }): Promise<ActiveLFGPostCountsByRole> {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
-  if (input.lfgType === "stacks") {
-    await expireStackPostsRecord();
-  }
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("posting_role")
@@ -1009,9 +999,6 @@ export async function hasMatchingActiveLFGPost(input: {
 }) {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
-  if (input.lfgType === "stacks") {
-    await expireStackPostsRecord();
-  }
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("id,title")
@@ -1044,9 +1031,6 @@ export async function hasReachedActiveLFGPostLimit(input: {
 }) {
   const supabase = await createClient();
   const activePostCutoffIso = getActivePostCutoffIso();
-  if (input.lfgType === "stacks") {
-    await expireStackPostsRecord();
-  }
   const { count, error } = await supabase
     .from("lfg_posts")
     .select("id", { count: "exact", head: true })
@@ -1090,24 +1074,6 @@ export async function closeOwnedActiveLFGPost(input: {
   profileId: string;
 }) {
   const supabase = await createClient();
-
-  await expireStackPostsRecord();
-
-  const { data: ownerCheck, error: ownerError } = await supabase
-    .from("lfg_posts")
-    .select("id")
-    .eq("id", input.postId)
-    .eq("profile_id", input.profileId)
-    .in("status", ["active", "filled"])
-    .maybeSingle();
-
-  if (ownerError) {
-    throw ownerError;
-  }
-
-  if (!ownerCheck) {
-    return normalizeLFGCloseResult({ updated: false, error_code: "forbidden" });
-  }
 
   const { data, error } = await supabase.rpc("close_owned_lfg_post", {
     p_post_id: input.postId,

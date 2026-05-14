@@ -24,9 +24,6 @@ import {
 import {
   closeOwnedActiveLFGPost,
   createLFGPostAtomically,
-  hasMatchingActiveLFGPost,
-  hasReachedActiveLFGPostLimit,
-  hasReachedLFGPostCreationLimit,
 } from "@/lib/lfg/posts";
 
 function getActionErrorText(error: unknown) {
@@ -185,39 +182,6 @@ export async function createLFGPost(formData: FormData) {
     lfgRedirect(lfgTypeValue, requiredProfileError);
   }
 
-  let reachedCreationLimit = false;
-  let reachedActiveLimit = false;
-
-  try {
-    [reachedCreationLimit, reachedActiveLimit] = await Promise.all([
-      hasReachedLFGPostCreationLimit({ lfgType: lfgTypeValue, profileId: profile.id }),
-      hasReachedActiveLFGPostLimit({ lfgType: lfgTypeValue, postingRole: postingRoleValue as CompetitiveRole, profileId: profile.id }),
-    ]);
-  } catch (error) {
-    if (lfgTypeValue === "stacks") {
-      const debugMessage = getPublicStackDebugMessage(error);
-
-      if (debugMessage) {
-        lfgRedirect(lfgTypeValue, debugMessage);
-      }
-    }
-
-    lfgRedirect(
-      lfgTypeValue,
-      lfgTypeValue === "stacks"
-        ? "Stacks are syncing right now. Try again in a moment."
-        : "Unable to create your post right now."
-    );
-  }
-
-  if (reachedCreationLimit) {
-    lfgRedirect(lfgTypeValue, "You've created too many posts recently. Try again later.");
-  }
-
-  if (reachedActiveLimit) {
-    lfgRedirect(lfgTypeValue, "You already have the maximum number of active posts for this role.");
-  }
-
   const postingRole = postingRoleValue as CompetitiveRole;
   const gameMode = gameModeValue as LFGGameMode;
   const roleProfile =
@@ -267,6 +231,20 @@ export async function createLFGPost(formData: FormData) {
         );
       }
 
+      if (result.errorCode === "active_slot_limit") {
+        lfgRedirect(
+          lfgTypeValue,
+          "You already have the maximum number of active posts for this role."
+        );
+      }
+
+      if (result.errorCode === "create_rate_limit") {
+        lfgRedirect(
+          lfgTypeValue,
+          "You've created too many posts recently. Try again later."
+        );
+      }
+
       if (result.errorCode === "already_in_active_stack") {
         lfgRedirect(
           lfgTypeValue,
@@ -290,33 +268,6 @@ export async function createLFGPost(formData: FormData) {
       postingRole,
       profileId: profile.id,
     });
-
-    let hasDuplicateActivePost = false;
-    try {
-      [hasDuplicateActivePost] = await Promise.all([
-        hasMatchingActiveLFGPost({
-          gameMode,
-          lfgType: lfgTypeValue,
-          postingRole,
-          profileId: profile.id,
-          title,
-        }),
-      ]);
-    } catch (diagnosticError) {
-      console.error("LFG post creation diagnostics failed", {
-        diagnosticError,
-        lfgType: lfgTypeValue,
-        postingRole,
-        profileId: profile.id,
-      });
-    }
-
-    if (hasDuplicateActivePost) {
-      lfgRedirect(
-        lfgTypeValue,
-        "You already have an active post in this section with this title."
-      );
-    }
 
     const errorText = getActionErrorText(error);
 

@@ -17,12 +17,7 @@ import {
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
-import {
-  getActiveLFGPostCountsByRole,
-  getActiveLFGPosts,
-} from "@/lib/lfg/posts";
-import { getLFGPostInviteStates } from "@/lib/matches/play-invites";
-import { getStackRequestStatesForPosts } from "@/lib/lfg/stack-requests";
+import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -53,11 +48,13 @@ type LFGPageShellProps = {
 };
 
 type LFGPageData = {
-  activePostCounts: Awaited<ReturnType<typeof getActiveLFGPostCountsByRole>>;
+  activePostCounts: Record<"tank" | "dps" | "support", number>;
   competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>> | null;
-  posts: Awaited<ReturnType<typeof getActiveLFGPosts>>;
+  inviteStates: Record<string, "invite_to_play" | "invite_sent" | "connected">;
+  posts: import("@/lib/lfg/lfg-post-types").LFGPost[];
   postsErrorMessage: string | null;
   roleOptions: LFGRoleOption[];
+  stackRequestStates: Record<string, "none" | "pending" | "accepted" | "declined">;
 };
 
 function getMissingProfileRequirements(profile: {
@@ -222,10 +219,14 @@ async function getLFGPageData(
   profileId: string | null,
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
-  const postsResult = await getActiveLFGPosts(type, feedFilters, profileId)
-    .then((posts) => ({ posts, postsErrorMessage: null }))
+  const dtoResult = await getLFGFeedPageDto({
+    filters: feedFilters,
+    lfgType: type,
+    viewerProfileId: profileId,
+  })
+    .then((dto) => ({ dto, postsErrorMessage: null }))
     .catch(() => ({
-      posts: [],
+      dto: null,
       postsErrorMessage: "Try refreshing in a moment.",
     }));
 
@@ -233,24 +234,35 @@ async function getLFGPageData(
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
-      posts: postsResult.posts,
-      postsErrorMessage: postsResult.postsErrorMessage,
+      inviteStates: dtoResult.dto?.inviteStates ?? {},
+      posts: dtoResult.dto?.posts ?? [],
+      postsErrorMessage: dtoResult.postsErrorMessage,
       roleOptions: [],
+      stackRequestStates: dtoResult.dto?.stackRequestStates ?? {},
     };
   }
 
-  const [activePostCounts, competitiveProfile, heroPools] = await Promise.all([
-    getActiveLFGPostCountsByRole({ lfgType: type, profileId }).catch(() => ({ tank: 0, dps: 0, support: 0 })),
-    getCompetitiveProfile(profileId).catch(() => null),
-    getProfileHeroPools(profileId).catch(() => ({ heroPicks: { tank: [], dps: [], support: [] }, roles: [] })),
-  ]);
+  const viewerBundle = dtoResult.dto?.viewerBundle ?? null;
+  const activePostCounts = viewerBundle?.activePostCounts ?? {
+    tank: 0,
+    dps: 0,
+    support: 0,
+  };
+  const competitiveProfile = viewerBundle?.competitiveProfile ?? null;
+  const heroPools =
+    viewerBundle?.heroPools ?? {
+      heroPicks: { tank: [], dps: [], support: [] },
+      roles: [],
+    };
 
   return {
     activePostCounts,
     competitiveProfile,
-    posts: postsResult.posts,
-    postsErrorMessage: postsResult.postsErrorMessage,
+    inviteStates: dtoResult.dto?.inviteStates ?? {},
+    posts: dtoResult.dto?.posts ?? [],
+    postsErrorMessage: dtoResult.postsErrorMessage,
     roleOptions: competitiveProfile ? buildRoleOptions(competitiveProfile, heroPools) : [],
+    stackRequestStates: dtoResult.dto?.stackRequestStates ?? {},
   };
 }
 
@@ -278,9 +290,11 @@ export async function LFGPageShell({
   const emptyPageData: LFGPageData = {
     activePostCounts: { tank: 0, dps: 0, support: 0 },
     competitiveProfile: null,
+    inviteStates: {},
     posts: [],
     postsErrorMessage: null,
     roleOptions: [],
+    stackRequestStates: {},
   };
   const pageData =
     type && shouldShowFeed
@@ -331,23 +345,9 @@ export async function LFGPageShell({
   const isStacksPage = type === "stacks";
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const isStacksFeed = shouldShowFeed && type === "stacks";
-  const [inviteStates, stackRequestStates] = await Promise.all([
-    shouldShowFeed
-      ? getLFGPostInviteStates({
-          currentProfileId: profile?.id ?? null,
-          posts: pageData.posts.map((post) => ({
-            id: post.id,
-            profileId: post.profileId,
-          })),
-        }).catch(() => ({}))
-      : Promise.resolve({}),
-    isStacksFeed && profile?.id
-      ? getStackRequestStatesForPosts({
-          currentProfileId: profile.id,
-          postIds: pageData.posts.map((p) => p.id),
-        }).catch(() => ({}))
-      : Promise.resolve({}),
-  ]);
+  const inviteStates = shouldShowFeed ? pageData.inviteStates : {};
+  const stackRequestStates =
+    isStacksFeed && profile?.id ? pageData.stackRequestStates : {};
 
   return (
     <main

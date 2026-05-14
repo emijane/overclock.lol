@@ -7,12 +7,7 @@ import { MatchCard } from "@/app/matches/match-card";
 import { MatchesRealtimeRefresh } from "@/app/matches/matches-realtime-refresh";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import {
-  expirePlayInvitesRecord,
-  getActiveProfileConnections,
-  getIncomingPendingPlayInvites,
-  getPendingSentPlayInvites,
-} from "@/lib/matches/play-invites";
+import { getMatchesPageDto } from "@/lib/pages/matches-page-dto";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 export default async function MatchesPage() {
@@ -25,16 +20,10 @@ export default async function MatchesPage() {
   if (!profile) {
     redirect("/onboarding");
   }
-
-  await expirePlayInvitesRecord();
-
-  const [connections, pendingSentInvites, incomingPendingInvites] = await Promise.all([
-    getActiveProfileConnections({ currentProfileId: profile.id }),
-    getPendingSentPlayInvites({ currentProfileId: profile.id }),
-    getIncomingPendingPlayInvites({ currentProfileId: profile.id, limit: 20 }).then(
-      (result) => result.invites
-    ),
-  ]);
+  const dto = await getMatchesPageDto(profile.id);
+  const connections = dto.connections;
+  const pendingSentInvites = dto.outgoingInvites;
+  const incomingPendingInvites = dto.incomingInvites;
 
   return (
     <main className="relative flex-1 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.045),transparent_24%),radial-gradient(circle_at_22%_0%,rgba(120,140,180,0.06),transparent_26%),radial-gradient(circle_at_80%_8%,rgba(255,255,255,0.03),transparent_20%),linear-gradient(180deg,#0b0b0d_0%,#09090b_44%,#070709_100%)] px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">

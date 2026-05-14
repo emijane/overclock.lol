@@ -12,10 +12,8 @@ import {
   isLFGPostDisplayStatus,
   type LFGPostDisplayStatus,
 } from "@/lib/lfg/lfg-post-display-status";
-import { getPostsByProfileId } from "@/lib/lfg/posts";
+import { getAccountPostsPageDto } from "@/lib/pages/account-posts-page-dto";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-
-const PAGE_SIZE = 10;
 
 type AccountPostsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -69,25 +67,15 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
   if (!user) redirect("/login");
   if (!profile) redirect("/onboarding");
 
-  const posts = await getPostsByProfileId(profile.id);
-
-  const counts: Record<TabValue, number> = {
-    all: posts.length,
-    active: posts.filter((p) => getLFGPostDisplayStatus(p) === "active").length,
-    closed: posts.filter((p) => getLFGPostDisplayStatus(p) === "closed").length,
-    expired: posts.filter((p) => getLFGPostDisplayStatus(p) === "expired").length,
-  };
-
-  const filteredPosts = selectedStatus === "all"
-    ? posts
-    : posts.filter((p) => getLFGPostDisplayStatus(p) === selectedStatus);
-
-  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+  const dto = await getAccountPostsPageDto({
+    currentPage,
+    profileId: profile.id,
+    selectedStatus,
+  });
+  const counts: Record<TabValue, number> = dto.counts;
+  const totalPages = dto.pagination.totalPages;
   const safePage = Math.min(currentPage, totalPages);
-  const paginatedPosts = filteredPosts.slice(
-    (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE
-  );
+  const paginatedPosts = dto.posts;
 
   const emptyState = getEmptyStateCopy(selectedStatus);
 
@@ -123,7 +111,7 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
           <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
 
           <div className="flex min-h-0 flex-1 flex-col px-5 py-4 sm:px-6">
-            {filteredPosts.length === 0 ? (
+            {paginatedPosts.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="text-center">
                   <p className="text-sm font-medium text-zinc-300">
@@ -138,7 +126,8 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
               <>
                 <div className="grid gap-2">
                   {paginatedPosts.map((post) => {
-                    const displayStatus = getLFGPostDisplayStatus(post);
+                    const displayStatus =
+                      post.displayStatus ?? getLFGPostDisplayStatus(post);
                     return (
                       <AccountPostCard
                         key={post.id}

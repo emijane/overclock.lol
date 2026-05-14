@@ -8,6 +8,19 @@ import type { LFGPostDisplayStatus } from "@/lib/lfg/lfg-post-display-status";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
+type AccountPostCardPost = Pick<
+  LFGPost,
+  | "createdAt"
+  | "gameMode"
+  | "heroPool"
+  | "id"
+  | "lfgType"
+  | "postingRole"
+  | "rankDivision"
+  | "rankTier"
+  | "title"
+>;
+
 function getRoleLabel(role: LFGPost["postingRole"]) {
   if (role === "tank") return "Tank";
   if (role === "dps") return "DPS";
@@ -24,7 +37,7 @@ function Dot() {
 
 type AccountPostCardProps = {
   displayStatus: LFGPostDisplayStatus;
-  post: LFGPost;
+  post: AccountPostCardPost;
   showActions?: boolean;
 };
 

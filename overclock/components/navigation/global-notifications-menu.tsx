@@ -1,8 +1,4 @@
-import {
-  expirePlayInvitesRecord,
-  getIncomingPendingPlayInvites,
-} from "@/lib/matches/play-invites";
-import { getIncomingPendingStackRequests } from "@/lib/lfg/stack-requests";
+import { getNotificationsMenuDto } from "@/lib/pages/matches-page-dto";
 import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
 
 type GlobalNotificationsMenuProps = {
@@ -12,20 +8,14 @@ type GlobalNotificationsMenuProps = {
 export async function GlobalNotificationsMenu({
   currentProfileId,
 }: GlobalNotificationsMenuProps) {
-  await expirePlayInvitesRecord();
-
-  const [{ invites, totalCount }, { requests: stackRequests, totalCount: stackCount }] =
-    await Promise.all([
-      getIncomingPendingPlayInvites({ currentProfileId }),
-      getIncomingPendingStackRequests({ currentProfileId }),
-    ]);
+  const dto = await getNotificationsMenuDto(currentProfileId);
 
   return (
     <GlobalNotificationsMenuClient
       currentProfileId={currentProfileId}
-      initialInvites={invites}
-      initialStackRequests={stackRequests}
-      initialTotalCount={totalCount + stackCount}
+      initialInvites={dto.incomingInvites}
+      initialStackRequests={dto.stackRequests}
+      initialTotalCount={dto.totalCount}
     />
   );
 }

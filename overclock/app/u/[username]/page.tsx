@@ -1,21 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
-import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { AuthMessage } from "@/app/login/components";
-import { getProfileFeaturedClips } from "@/lib/profiles/profile-featured-clips";
-import { getOptionalCurrentInviteViewer } from "@/lib/profiles/get-optional-current-invite-viewer";
-import { getProfileByUsername } from "@/lib/profiles/get-profile-by-username";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
-import { getProfileBadges } from "@/lib/badges/badges";
-import { isBlocked } from "@/lib/blocks/user-blocks";
-import { getRecentPostsByProfileId } from "@/lib/lfg/posts";
-import {
-  getActiveConnectionIdForPair,
-  getPendingOutgoingInviteIdForPair,
-  getProfileConnectionCount,
-  getProfileInviteState,
-} from "@/lib/matches/play-invites";
+import { getProfilePageDto } from "@/lib/pages/profile-page-dto";
 import { getRankAccentStyle } from "@/lib/competitive/rank-border-styles";
 import { resolveMainRole } from "@/lib/competitive/competitive-profile-types";
 import { EditableProfileHeader } from "./profile/editable-profile-header";
@@ -65,99 +53,69 @@ export default async function ProfilePage({
     const query = searchParams ? await searchParams : {};
     const message = pickValue(query.message);
     const messageType = pickValue(query.type);
-    const viewer = await measureProfileStep(
-        username,
-        "optional invite viewer",
-        () => getOptionalCurrentInviteViewer()
+    const { profile: currentProfile } = await getCurrentProfile();
+    const dto = await measureProfileStep(username, "page dto", () =>
+        getProfilePageDto(username, currentProfile?.id ?? null)
     );
-    const profile = await measureProfileStep(username, "public profile", () =>
-        getProfileByUsername(username, viewer.profileId)
-    );
+    const profile = dto.profile;
 
     if (!profile) {
         notFound();
     }
-
-    const [heroPools, competitiveProfile, featuredClips, badges, recentPosts, inviteState, connectionCount, activeConnectionId, pendingOutgoingInviteId, initiallyBlockedByViewer] =
-        await Promise.all([
-            measureProfileStep(username, "hero pools", () =>
-                getProfileHeroPools(profile.id)
-            ),
-            measureProfileStep(username, "competitive profile", () =>
-                getCompetitiveProfile(profile.id)
-            ),
-            measureProfileStep(username, "featured clips", () =>
-                getProfileFeaturedClips(profile.id)
-            ),
-            measureProfileStep(username, "badges", () =>
-                getProfileBadges(profile.id)
-            ),
-            measureProfileStep(username, "recent posts", () =>
-                getRecentPostsByProfileId(profile.id, 2, viewer.profileId, {
-                    hideWhenViewerBlockedTarget: false,
-                })
-            ),
-            measureProfileStep(username, "invite state", () =>
-                getProfileInviteState({
-                    currentProfileId: viewer.profileId,
-                    targetProfileId: profile.id,
-                })
-            ),
-            measureProfileStep(username, "connection count", () =>
-                getProfileConnectionCount(profile.id)
-            ),
-            measureProfileStep(username, "active connection id", () =>
-                getActiveConnectionIdForPair({
-                    currentProfileId: viewer.profileId,
-                    targetProfileId: profile.id,
-                })
-            ),
-            measureProfileStep(username, "pending outgoing invite id", () =>
-                getPendingOutgoingInviteIdForPair({
-                    currentProfileId: viewer.profileId,
-                    targetProfileId: profile.id,
-                })
-            ),
-            measureProfileStep(username, "viewer block state", () =>
-                isBlocked(viewer.profileId, profile.id)
-            ),
-        ]);
+    const viewer = dto.viewer;
+    const heroPools = dto.heroPools;
+    const competitiveProfile = dto.competitiveProfile;
+    const featuredClips = dto.featuredClips;
+    const badges = dto.badges;
+    const recentPosts = dto.recentPosts;
+    const inviteState = dto.relationship.inviteState;
+    const connectionCount = dto.relationship.connectionCount;
+    const activeConnectionId = dto.relationship.activeConnectionId;
+    const pendingOutgoingInviteId = dto.relationship.pendingOutgoingInviteId;
+    const initiallyBlockedByViewer = dto.relationship.initiallyBlockedByViewer;
 
     // Keep route components focused on loading data while profile presentation
     // helpers stay colocated with the UI they support.
     const { currentRank, currentRankIconSrc } =
-        getCompetitiveRankDisplay(profile, competitiveProfile);
+        getCompetitiveRankDisplay(
+            {
+                current_rank_division: profile.currentRankDivision,
+                current_rank_tier: profile.currentRankTier,
+            },
+            competitiveProfile
+        );
     const isOwner = viewer.currentUserId === profile.id;
     const mainRoleProfile = competitiveProfile.roles.find(
         (roleProfile) => roleProfile.role === resolveMainRole(competitiveProfile)
     );
     const profileRankTier =
-        mainRoleProfile?.rankTier ?? profile.current_rank_tier;
+        mainRoleProfile?.rankTier ?? profile.currentRankTier;
+    const displayName = profile.displayName ?? profile.username;
     const profileAccentStyle = getRankAccentStyle(profileRankTier);
     const coverImageUrl = getProfileCoverUrl(
-        profile.cover_image_path,
-        profile.cover_image_updated_at
+        profile.coverImagePath,
+        profile.coverImageUpdatedAt
     );
     const socialLinks = [
-        profile.twitch_url
+        profile.twitchUrl
             ? {
                   label: "Twitch",
                   platform: "twitch" as const,
-                  value: profile.twitch_url,
+                  value: profile.twitchUrl,
               }
             : null,
-        profile.x_url
+        profile.xUrl
             ? {
                   label: "X",
                   platform: "x" as const,
-                  value: profile.x_url,
+                  value: profile.xUrl,
               }
             : null,
-        profile.youtube_url
+        profile.youtubeUrl
             ? {
                   label: "YouTube",
                   platform: "youtube" as const,
-                  value: profile.youtube_url,
+                  value: profile.youtubeUrl,
               }
             : null,
     ].filter((link): link is NonNullable<typeof link> => Boolean(link));
@@ -197,8 +155,8 @@ export default async function ProfilePage({
                     >
                         <EditableProfileHeader
                             avatarUrl={getProfileAvatarUrl(
-                                profile.avatar_url ?? null,
-                                profile.avatar_updated_at ?? null
+                                profile.avatarUrl ?? null,
+                                profile.avatarUpdatedAt ?? null
                             )}
                             bio={profile.bio}
                             badges={badges}
@@ -208,14 +166,14 @@ export default async function ProfilePage({
                             currentRankTier={profileRankTier}
                             currentRankIconSrc={currentRankIconSrc}
                             currentViewerProfileId={viewer.profileId}
-                            displayName={profile.display_name}
-                            hideOfflinePresence={profile.hide_offline_presence}
+                            displayName={displayName}
+                            hideOfflinePresence={profile.hideOfflinePresence}
                             id={profile.id}
                             initiallyBlockedByViewer={initiallyBlockedByViewer}
                             isOwner={isOwner}
-                            isLookingToPlay={profile.is_looking_to_play}
-                            lastSeenAt={profile.last_seen_at}
-                            lookingFor={profile.looking_for}
+                            isLookingToPlay={profile.isLookingToPlay}
+                            lastSeenAt={profile.lastSeenAt}
+                            lookingFor={profile.lookingFor}
                             platform={competitiveProfile.platform}
                             region={profile.region}
                             socialLinks={socialLinks}

@@ -3,14 +3,15 @@ import { ShieldIcon, SwordsIcon } from "lucide-react";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import {
   getLFGLookingForRoleLabel,
-  type LFGPost,
+  isLFGLookingForRole,
 } from "@/lib/lfg/lfg-post-types";
+import type { RecentProfilePostDto } from "@/lib/pages/profile-page-dto";
 import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
 import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type RecentProfilePostsProps = {
   isOwner: boolean;
-  posts: LFGPost[];
+  posts: RecentProfilePostDto[];
   profileUsername: string;
   rankTier?: string | null;
 };
@@ -71,7 +72,7 @@ function formatPostDate(value: string) {
   }).format(date);
 }
 
-function getRoleIcon(role: LFGPost["postingRole"]) {
+function getRoleIcon(role: RecentProfilePostDto["postingRole"]) {
   if (role === "tank") {
     return <ShieldIcon className="h-3.5 w-3.5 text-sky-300" />;
   }
@@ -155,12 +156,14 @@ export function RecentProfilePosts({
 
                 <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
                   {post.lookingForRoles.map((role) => (
-                    <span
-                      key={`${post.id}-recent-looking-for-${role}`}
-                      className="oc-profile-meta oc-profile-pill px-2 py-0.5 font-medium uppercase tracking-[0.08em] text-zinc-100"
-                    >
-                      LF {getLFGLookingForRoleLabel(role)}
-                    </span>
+                    isLFGLookingForRole(role) ? (
+                      <span
+                        key={`${post.id}-recent-looking-for-${role}`}
+                        className="oc-profile-meta oc-profile-pill px-2 py-0.5 font-medium uppercase tracking-[0.08em] text-zinc-100"
+                      >
+                        LF {getLFGLookingForRoleLabel(role)}
+                      </span>
+                    ) : null
                   ))}
                 </div>
               </article>

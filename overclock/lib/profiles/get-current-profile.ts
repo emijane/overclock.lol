@@ -1,11 +1,9 @@
-import { syncDiscordProfileFields } from "@/lib/profiles/sync-discord-profile-fields";
+import { cache } from "react";
+
 import { createClient } from "@/lib/supabase/server";
 import { OWNER_PROFILE_SELECT } from "@/lib/profiles/profile-selects";
 
-// Looks up the authenticated Supabase user and their matching app profile.
-// This gives route-level code one place to answer "who is signed in?" and
-// "have they finished onboarding yet?"
-export async function getCurrentProfile() {
+const loadCurrentProfile = cache(async () => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -26,10 +24,12 @@ export async function getCurrentProfile() {
     throw profileError;
   }
 
-  if (profile) {
-    const syncedProfile = await syncDiscordProfileFields(user, profile);
-    return { user, profile: syncedProfile };
-  }
-
   return { user, profile };
+});
+
+// Looks up the authenticated Supabase user and their matching app profile.
+// This stays read-only so layouts, pages, and server actions can share one
+// request-scoped identity lookup without hidden writes.
+export async function getCurrentProfile() {
+  return loadCurrentProfile();
 }
