@@ -7,9 +7,11 @@ import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 
 type UserBlockRpcResult = {
+  actor_username?: string | null;
   created?: boolean;
   error_code?: string | null;
   removed?: boolean;
+  target_username?: string | null;
 };
 
 type BlockedUserRow = {
@@ -73,13 +75,41 @@ function normalizeUserBlockRpcResult(value: unknown): UserBlockRpcResult {
         : candidate;
 
   return {
+    actor_username:
+      typeof nestedCandidate.actor_username === "string"
+        ? nestedCandidate.actor_username
+        : null,
     created: nestedCandidate.created === true,
     error_code:
       typeof nestedCandidate.error_code === "string"
         ? nestedCandidate.error_code
         : null,
     removed: nestedCandidate.removed === true,
+    target_username:
+      typeof nestedCandidate.target_username === "string"
+        ? nestedCandidate.target_username
+        : null,
   };
+}
+
+function revalidateBlockPaths(input: {
+  currentUsername?: string | null;
+  targetUsername?: string | null;
+}) {
+  revalidatePath("/account");
+  revalidatePath("/duos");
+  revalidatePath("/lfg");
+  revalidatePath("/matches");
+  revalidatePath("/search/users");
+  revalidatePath("/stacks");
+
+  if (input.currentUsername) {
+    revalidatePath(`/u/${input.currentUsername}`);
+  }
+
+  if (input.targetUsername) {
+    revalidatePath(`/u/${input.targetUsername}`);
+  }
 }
 
 async function getCurrentUsernames(input: {
@@ -107,30 +137,6 @@ async function getCurrentUsernames(input: {
   }
 
   return usernames;
-}
-
-async function revalidateBlockPaths(input: {
-  currentProfileId: string;
-  targetProfileId: string;
-}) {
-  const usernames = await getCurrentUsernames(input);
-  const currentUsername = usernames.get(input.currentProfileId);
-  const targetUsername = usernames.get(input.targetProfileId);
-
-  revalidatePath("/account");
-  revalidatePath("/duos");
-  revalidatePath("/lfg");
-  revalidatePath("/matches");
-  revalidatePath("/search/users");
-  revalidatePath("/stacks");
-
-  if (currentUsername) {
-    revalidatePath(`/u/${currentUsername}`);
-  }
-
-  if (targetUsername) {
-    revalidatePath(`/u/${targetUsername}`);
-  }
 }
 
 export async function blockUser(profileId: string) {
@@ -171,9 +177,9 @@ export async function blockUser(profileId: string) {
     } as const;
   }
 
-  await revalidateBlockPaths({
-    currentProfileId: profile.id,
-    targetProfileId,
+  revalidateBlockPaths({
+    currentUsername: result.actor_username ?? profile.username,
+    targetUsername: result.target_username,
   });
 
   return {
@@ -220,9 +226,14 @@ export async function unblockUser(profileId: string) {
     } as const;
   }
 
-  await revalidateBlockPaths({
+  const usernames = await getCurrentUsernames({
     currentProfileId: profile.id,
     targetProfileId,
+  });
+
+  revalidateBlockPaths({
+    currentUsername: usernames.get(profile.id) ?? profile.username,
+    targetUsername: usernames.get(targetProfileId),
   });
 
   return {
