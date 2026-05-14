@@ -112,33 +112,6 @@ function revalidateBlockPaths(input: {
   }
 }
 
-async function getCurrentUsernames(input: {
-  currentProfileId: string;
-  targetProfileId: string;
-}) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .in("id", [input.currentProfileId, input.targetProfileId]);
-
-  if (error) {
-    throw error;
-  }
-
-  const usernames = new Map<string, string | null>();
-
-  for (const row of (data ?? []) as Array<Record<string, unknown>>) {
-    if (typeof row.id !== "string") {
-      continue;
-    }
-
-    usernames.set(row.id, typeof row.username === "string" ? row.username : null);
-  }
-
-  return usernames;
-}
-
 export async function blockUser(profileId: string) {
   const targetProfileId = profileId.trim();
   const { user, profile } = await getCurrentProfile();
@@ -226,14 +199,9 @@ export async function unblockUser(profileId: string) {
     } as const;
   }
 
-  const usernames = await getCurrentUsernames({
-    currentProfileId: profile.id,
-    targetProfileId,
-  });
-
   revalidateBlockPaths({
-    currentUsername: usernames.get(profile.id) ?? profile.username,
-    targetUsername: usernames.get(targetProfileId),
+    currentUsername: result.actor_username ?? profile.username,
+    targetUsername: result.target_username,
   });
 
   return {
