@@ -1,11 +1,6 @@
-import { cookies } from "next/headers";
-
 import { createClient } from "@/lib/supabase/server";
+import { getOptionalAuthSubject } from "@/lib/supabase/auth-identity";
 import type { InviteViewerState } from "@/lib/matches/play-invite-types";
-
-function isSupabaseAuthCookie(cookieName: string) {
-  return cookieName.startsWith("sb-") && cookieName.includes("auth-token");
-}
 
 type OptionalCurrentInviteViewer = {
   currentUserId: string | null;
@@ -14,12 +9,9 @@ type OptionalCurrentInviteViewer = {
 };
 
 export async function getOptionalCurrentInviteViewer(): Promise<OptionalCurrentInviteViewer> {
-  const cookieStore = await cookies();
-  const hasAuthCookie = cookieStore.getAll().some((cookie) =>
-    isSupabaseAuthCookie(cookie.name)
-  );
+  const subject = await getOptionalAuthSubject();
 
-  if (!hasAuthCookie) {
+  if (!subject) {
     return {
       currentUserId: null,
       profileId: null,
@@ -28,17 +20,6 @@ export async function getOptionalCurrentInviteViewer(): Promise<OptionalCurrentI
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-  const subject = data?.claims?.sub;
-
-  if (error || typeof subject !== "string") {
-    return {
-      currentUserId: null,
-      profileId: null,
-      viewerState: "guest",
-    };
-  }
-
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("id")

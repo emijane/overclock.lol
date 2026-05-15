@@ -1,6 +1,5 @@
-// lib/supabase/server.ts
-
-// This file is used in Server Components and must not import anything from client-only modules.
+// Server-only Supabase client helpers shared by Server Components, server
+// actions, and route handlers. Keep this module free of client-only imports.
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';

@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 import type { IncomingPendingStackRequest } from "@/lib/lfg/stack-request-types";
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
-import { acceptStackJoinRequest, declineStackJoinRequest } from "@/app/stacks/actions";
+import { acceptStackJoinRequest, declineStackJoinRequest } from "@/features/lfg/stack-actions";
 import {
   DropdownMenu,
   DropdownMenuContent,

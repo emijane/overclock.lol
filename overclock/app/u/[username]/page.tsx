@@ -26,25 +26,6 @@ function pickValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-async function measureProfileStep<T>(
-  username: string,
-  label: string,
-  load: () => Promise<T>
-) {
-  if (process.env.NODE_ENV === "production") {
-    return load();
-  }
-
-  const startTime = performance.now();
-
-  try {
-    return await load();
-  } finally {
-    const duration = Math.round(performance.now() - startTime);
-    console.log(`[profile:${username}] ${label}: ${duration}ms`);
-  }
-}
-
 export default async function ProfilePage({
     params,
     searchParams,
@@ -54,9 +35,7 @@ export default async function ProfilePage({
     const message = pickValue(query.message);
     const messageType = pickValue(query.type);
     const { profile: currentProfile } = await getCurrentProfile();
-    const dto = await measureProfileStep(username, "page dto", () =>
-        getProfilePageDto(username, currentProfile?.id ?? null)
-    );
+    const dto = await getProfilePageDto(username, currentProfile?.id ?? null);
     const profile = dto.profile;
 
     if (!profile) {

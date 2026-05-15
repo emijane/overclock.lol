@@ -12,7 +12,6 @@ type ProfileSearchRow = {
   avatar_updated_at: string | null;
   avatar_url: string | null;
   display_name: string | null;
-  id?: string | null;
   username: string | null;
 };
 

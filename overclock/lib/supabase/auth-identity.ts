@@ -2,13 +2,11 @@ import { cookies } from "next/headers";
 
 import { createClient } from "@/lib/supabase/server";
 
-function isSupabaseAuthCookie(cookieName: string) {
+export function isSupabaseAuthCookie(cookieName: string) {
   return cookieName.startsWith("sb-") && cookieName.includes("auth-token");
 }
 
-// Public routes only need the viewer id to decide whether owner controls show.
-// Anonymous profile views can skip Supabase auth work entirely.
-export async function getOptionalCurrentUserId() {
+export async function getOptionalAuthSubject() {
   const cookieStore = await cookies();
   const hasAuthCookie = cookieStore.getAll().some((cookie) =>
     isSupabaseAuthCookie(cookie.name)
