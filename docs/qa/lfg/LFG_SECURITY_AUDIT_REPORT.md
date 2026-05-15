@@ -4,7 +4,7 @@ Date: 2026-04-27
 
 ## 1. Files inspected
 
-- `docs/qa/LFG_SECURITY_AUDIT_INSTRUCTION.md`
+- `docs/qa/archive/LFG_SECURITY_AUDIT_INSTRUCTION.md`
 - `app/lfg/actions.ts`
 - `app/account/posts/page.tsx`
 - `app/u/[username]/page.tsx`

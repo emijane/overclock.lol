@@ -1,5 +1,5 @@
 > Archived on 2026-04-27.
-> Superseded by `overclock/docs/qa/LFG_SECTIONS_QA_REPORT.md`.
+> Superseded by `docs/qa/lfg/LFG_SECTIONS_QA_REPORT.md`.
 > This snapshot is retained only for historical context and contains outdated conclusions.
 > `/teams` and `/scrims` references in this file are historical and not current shipped routes.
 

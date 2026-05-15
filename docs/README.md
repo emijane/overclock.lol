@@ -4,27 +4,45 @@ Root `docs/` is the canonical documentation home for this repository.
 
 ## Purpose
 
-- keep high-signal project guidance in one place
-- reduce drift between repo docs and app-local notes
-- keep documentation concise and AI-readable
+- keep active project guidance in one place
+- avoid parallel sources of truth between repo-root and app-local notes
+- preserve useful historical context without letting it read like current policy
+
+## Canonical Structure
+
+- `docs/agents/`
+  - workflow guidance for cleanup, QA, and agent behavior
+- `docs/architecture/` and root architecture notes
+  - repo structure, DTO strategy, and codebase audits
+- `docs/legal/`
+  - canonical legal content read directly by app code
+- `docs/performance/`
+  - latency and route-performance audits
+- `docs/qa/`
+  - active QA references plus historical archives
+- `docs/roadmap/`
+  - shipped-behavior notes, future planning, and the product backlog
+- `docs/security/`
+  - auth, session, and platform-security references
+- `docs/ui/` and `docs/ux/`
+  - current UI system guidance and UX patterns
+- `docs/features/`
+  - feature-specific docs that do not fit better in roadmap or QA
 
 ## Source Of Truth
 
-- `docs/legal/*`: canonical legal content
-  - Required by app code in `overclock/app/legal/legal-document.tsx`
-- `docs/security/*`: security and identity flow references
-- `docs/API_PAGE_DTOS.md`: page-bundle read model guidance
-- `docs/ui/*`: canonical UI and styling guidance
-- `docs/agents/*`: canonical AI workflow, cleanup, and QA guidance
-- `README.md`: canonical repo overview
-- `overclock/README.md`: app setup and app-specific operational details
-
-## Current Exceptions
-
-- `overclock/docs/roadmap/*` and `overclock/docs/qa/*` still contain active
-  working notes and historical audits that have not been fully migrated yet.
-- Treat those app-local docs as legacy or in-transition unless a root doc points
-  to them directly.
+- `docs/legal/*`
+  - required by `overclock/app/legal/legal-document.tsx`
+- `docs/agents/*`
+  - workflow and maintenance guidance
+- `docs/roadmap/*`
+  - current product-shape notes and backlog
+- `docs/qa/*`
+  - current QA references and archived historical audits
+- `README.md`
+  - canonical repo overview
+- `overclock/README.md`
+  - app setup and app-specific operational details
 
 ## Route Truth
 
@@ -43,6 +61,7 @@ Roadmap-only, not currently shipped routes:
 
 ## Maintenance Rules
 
-- update existing docs before creating new parallel docs
-- preserve legal doc paths unless app code is intentionally updated
-- add clear legacy notes to stale docs before archiving or deleting them
+- update an existing root doc before creating a new parallel note
+- preserve `docs/legal/*` paths unless app code is intentionally updated
+- move working notes into root `docs/` once they become stable references
+- archive outdated QA snapshots instead of leaving them mixed with active docs

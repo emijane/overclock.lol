@@ -37,9 +37,8 @@ Read AGENTS.md first.
 - Root `docs/` is the canonical documentation home.
 - Root `docs/legal/*` must remain the source of truth for legal page content
   because app code reads those files directly.
-- `overclock/docs/` is currently a mix of working notes, roadmap material, and
-  historical QA. Prefer updating root docs first and only keep app-local docs
-  when no root equivalent exists yet.
+- Route, roadmap, QA, and security docs should be updated in root `docs/`
+  rather than recreated under `overclock/`.
 
 ## Repo Structure
 

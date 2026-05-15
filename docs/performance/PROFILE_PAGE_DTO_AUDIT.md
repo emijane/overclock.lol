@@ -68,7 +68,7 @@ Implementation note:
 - `overclock/supabase/migrations/20260506130000_add_profile_connections.sql`
 - `overclock/supabase/migrations/20260513000000_add_user_blocks.sql`
 - `overclock/supabase/migrations/20260513020000_add_page_bundle_rpcs.sql`
-- `overclock/docs/roadmap/profile/PUBLIC_PROFILE_PERFORMANCE.md`
+- `docs/roadmap/profiles/PUBLIC_PROFILE_PERFORMANCE.md`
 
 ## Route Request Path
 

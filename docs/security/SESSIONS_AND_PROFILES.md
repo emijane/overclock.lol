@@ -75,8 +75,8 @@ current as the user moves through the app.
 Relevant files:
 
 - `overclock/lib/profiles/get-current-profile.ts`
-- `overclock/lib/profiles/get-optional-current-user-id.ts`
 - `overclock/lib/profiles/get-optional-current-invite-viewer.ts`
+- `overclock/lib/supabase/auth-identity.ts`
 
 ### `getCurrentProfile()`
 

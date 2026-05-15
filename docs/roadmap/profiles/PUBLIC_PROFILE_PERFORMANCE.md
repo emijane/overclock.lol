@@ -1,5 +1,10 @@
 # Public Profile Performance
 
+## Purpose
+
+This note documents a historical public-profile performance pass around
+`/u/[username]` and the guest-first behavior goals that still matter today.
+
 This note documents the public profile performance work around `/u/[username]`.
 The goal is to keep logged-out profile views fast while preserving owner-only
 editing behavior for signed-in users.
@@ -24,14 +29,11 @@ independent reads once the public profile row exists.
 
 ## Changes Made
 
-Added `lib/profiles/get-optional-current-user-id.ts`.
-
-This helper checks for a Supabase auth cookie before calling
-Supabase auth. If no auth cookie exists, it returns `null` immediately. When a
-cookie exists, it reads the auth claim subject id instead of loading the full
-current profile row. That lets anonymous public profile views skip auth work and
-lets signed-in public profile views avoid owner-profile syncing when the route
-only needs `isOwner`.
+An earlier pass added a lightweight optional viewer-identity path for public
+profile views. That helper has since evolved, but the underlying optimization
+goal remains the same: guests should avoid unnecessary authenticated profile
+work, while signed-in viewers should only load the identity data required to
+derive owner-specific UI.
 
 Updated `app/u/[username]/page.tsx`.
 

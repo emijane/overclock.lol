@@ -1,13 +1,27 @@
 # Project Context and Roadmap
 
-> Working-note status:
-> Root `docs/` is the canonical documentation home.
-> This file is still useful as an app-local roadmap note, but route truth should stay aligned
-> with `README.md`, `overclock/README.md`, and root governance docs.
+## Purpose
 
-This note is a lightweight orientation doc for people working inside the repo.
-It captures what the app currently does, how it is structured, and what the
-next sensible product steps look like based on the current codebase and `TODO`.
+This is the main orientation doc for current product shape, architecture
+direction, and roadmap context.
+
+## Scope
+
+- current shipped behavior
+- current architecture notes
+- high-level roadmap direction
+- related roadmap references
+
+## Related Docs
+
+- `README.md`
+- `PRODUCT_BACKLOG.md`
+- `lfg/LFG_POST_LIFECYCLE_POLICY.md`
+- `matches/INVITE_TO_PLAY_ROADMAP.md`
+
+This note captures what the app currently does, how it is structured, and what
+the next sensible product steps look like based on the current codebase and the
+canonical backlog in `docs/roadmap/PRODUCT_BACKLOG.md`.
 
 ## Project Snapshot
 

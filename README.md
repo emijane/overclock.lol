@@ -21,6 +21,13 @@ roadmap topics and are not current shipped routes.
 - `docs/` - canonical repository documentation
 - `README.md` - repository overview
 
+Key doc entrypoints:
+
+- `docs/README.md` - docs structure and maintenance rules
+- `docs/roadmap/PROJECT_CONTEXT_ROADMAP.md` - current product snapshot
+- `docs/roadmap/PRODUCT_BACKLOG.md` - canonical backlog
+- `docs/qa/README.md` - QA references and archives
+
 ## App setup
 
 From the `overclock/` directory:

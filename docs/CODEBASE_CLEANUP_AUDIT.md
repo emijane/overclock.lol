@@ -187,7 +187,7 @@ Current state summary:
 ### 15. Outdated roadmap/TODO notes likely drifted from shipped behavior
 
 - Priority: `P4`
-- File path: `overclock/TODO`
+- File path: `docs/roadmap/PRODUCT_BACKLOG.md` (previously `overclock/TODO`)
 - Issue: several entries appear already shipped or partially shipped, including featured clips, social links, and validation helpers. The file is useful, but parts of it look stale.
 - Recommended action: prune completed items and mark roadmap vs shipped more clearly so future audits do not treat old notes as missing work.
 - Risk level: `Low`
@@ -257,7 +257,7 @@ Current state summary:
 1. Remove the profile timing log/wrapper in `overclock/app/u/[username]/page.tsx`.
 2. Remove `overclock/lib/profiles/get-optional-current-user-id.ts` after one final reference check.
 3. Deduplicate `isSupabaseAuthCookie()` between the two optional viewer helpers.
-4. Update stale comments and trim `overclock/TODO`.
+4. Update stale comments and trim the canonical backlog doc at `docs/roadmap/PRODUCT_BACKLOG.md`.
 5. Plan, but do not yet execute, the architecture cleanup for shared components importing route-local actions.
 6. After that, do a separate risk review for public-read auth handling and `auth.uid()`-dependent SQL functions.
 

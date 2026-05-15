@@ -9,7 +9,7 @@
 Date: 2026-04-27
 
 This report supersedes the older archived snapshot at
-`overclock/docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`.
+`docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`.
 
 Scope audited:
 - `/duos`
@@ -79,7 +79,7 @@ Method:
 - Files:
   - `lib/lfg/posts.ts`
   - `supabase/migrations/20260427201500_secure_lfg_posts_rls_and_rpc.sql`
-  - `docs/qa/LFG_SECURITY_AUDIT_REPORT.md`
+  - `docs/qa/lfg/LFG_SECURITY_AUDIT_REPORT.md`
 - Summary:
   - `lfg_posts` now has a source-controlled security migration that enables RLS, adds public and owner read policies, blocks direct raw table writes for `anon` and `authenticated`, and moves close actions behind an RPC-backed write path.
   - `create_lfg_post_atomic(...)` is now redefined as `security definer` so the app can preserve RPC-only creation without opening direct insert policies.

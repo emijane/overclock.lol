@@ -4,6 +4,35 @@
 - Source of truth: this doc plus current implementation in `overclock/app` and `overclock/components`
 - Intent: standardize the existing Overclock look, not introduce a new system
 
+## Related Docs
+
+- `COMPONENT_PATTERNS.md`
+- `PROFILE_UI_UPDATE_TEST.md`
+- `../branding/BRAND_GUIDELINES.md`
+
+## Core Tokens
+
+| Token | Current value |
+| --- | --- |
+| Page bg | `#09090b` |
+| Card bg | `#05070b` |
+| Primary text | `text-zinc-50` / `text-zinc-100` |
+| Body text | `text-zinc-300` |
+| Secondary text | `text-zinc-500` |
+| Accent | `sky-400` / `#38BDF8` |
+| Dividers | `border-white/6` |
+| Card borders | `border-white/8` |
+
+## Social Brand Colors
+
+| Platform | Value |
+| --- | --- |
+| Discord | `#5865F2` |
+| Battle.net | `#00AEF0` |
+| Twitch | `#9146FF` |
+| YouTube | `#FF0033` |
+| X / Twitter | `text-zinc-100` |
+
 ## Visual Identity
 - Dark-first, near-black foundation: `#010103`, `#05070b`, `#09090b`
 - Atmosphere is competitive, restrained, and immersive rather than loud

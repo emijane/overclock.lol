@@ -26,8 +26,7 @@ featured videos, and create LFG posts.
 - `/teams` and `/scrims` are not currently implemented routes, even though some roadmap
   notes still discuss them as future surfaces.
 
-Canonical repo docs live in `../docs/`. App-local docs in `overclock/docs/` should be
-treated as working notes or legacy material unless a root doc explicitly points to them.
+Canonical repo docs live in `../docs/`.
 
 ## Stack
 
@@ -85,5 +84,5 @@ npm run verify
 ## Next Steps
 
 - Run live regression QA against stack create/request/accept/leave/remove flows after DB changes.
-- Continue tightening shared LFG docs so route truth lives in root `docs/` first.
+- Keep root `../docs/` roadmap and QA notes aligned with shipped behavior.
 - Keep `/teams` and `/scrims` documented as roadmap-only until real routes ship.

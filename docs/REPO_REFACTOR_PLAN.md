@@ -23,7 +23,7 @@ executed.
   - `docs/README.md`
   - `docs/agents/CLEANUP.md`
   - `docs/agents/QA.md`
-  - `overclock/docs/README.md`
+  - app-local docs were later consolidated into root `docs/`
 - aligned root `README.md` and `overclock/README.md` on current shipped route truth
 - established root `docs/` as the canonical documentation home
 - preserved legal-doc behavior by leaving `docs/legal/*` as the source of truth
@@ -271,13 +271,13 @@ The safest refactor is a boundary cleanup:
   - `overclock/app/u/[username]/profile/rank-icons.ts`
   - `overclock/app/u/[username]/profile/rank-border-styles.ts`
   Either remove or relocate after imports are rewritten.
-- `overclock/docs/*`
-  Move into a single docs source of truth, likely root `docs/`, after classifying roadmap vs QA vs implementation docs.
+- app-local docs
+  Consolidate into root `docs/` after classifying roadmap vs QA vs implementation docs.
 
 ### Merge
 
-- root `docs/` and `overclock/docs/`
-  Into one doc tree with clear sections.
+- duplicate docs trees
+  Consolidate into one root `docs/` tree with clear sections.
 - root `README.md` and `overclock/README.md`
   Into one repo-level overview plus one app-level setup file, or rewrite both so they stop disagreeing.
 - root `supabase/` and `overclock/supabase/`
@@ -371,14 +371,14 @@ Only after implementation or migration is complete and imports are updated:
 Likely stale based on route reality mismatch:
 
 - root `README.md`
-- `overclock/docs/qa/LFG_SECTIONS_QA_REPORT.md`
-- `overclock/docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`
+- `docs/qa/lfg/LFG_SECTIONS_QA_REPORT.md`
+- `docs/qa/archive/LFG_SECTIONS_QA_REPORT_2026-04-24.md`
 - any docs describing `/teams` and `/scrims` as implemented or actively shippable
 
 ### Duplicate Docs
 
 - root `README.md` vs `overclock/README.md`
-- root `docs/*` vs `overclock/docs/*` as parallel documentation systems
+- pre-consolidation parallel doc trees that previously existed before root `docs/` became canonical
 - legal markdown is not duplicate right now; root `docs/legal/*` is the source of truth for the app pages
 
 ### Placeholder Routes / Folders
@@ -513,9 +513,9 @@ repo/
 
 ### Docs Consolidation
 
-- `overclock/docs/roadmap/*` -> root `docs/roadmap/*`
-- `overclock/docs/qa/*` -> root `docs/qa/*`
-- `overclock/docs/SITE_STYLES.md` -> root `docs/ui/SITE_STYLES.md` or merge into `docs/ui/OVERCLOCK_UI_SYSTEM.md`
+- roadmap docs -> root `docs/roadmap/*`
+- QA docs -> root `docs/qa/*`
+- legacy site-styles note -> merged into `docs/ui/OVERCLOCK_UI_SYSTEM.md`
 
 ### Supabase Consolidation
 
@@ -553,7 +553,7 @@ Only after migration or verification is complete:
   - or reduce to one canonical README plus smaller setup note
 - merge docs systems:
   - root `docs/` becomes source of truth
-  - `overclock/docs/` content is moved or archived there
+  - app-local docs are moved or archived there
 - merge shared component systems:
   - `overclock/app/components` and `overclock/components`
   - final shared home should be `overclock/components/*`
