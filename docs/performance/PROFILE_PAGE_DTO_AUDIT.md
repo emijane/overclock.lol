@@ -300,7 +300,7 @@ The recent-post query filters by:
 
 - `profile_id = v_target_profile.id`
 - `status in ('active', 'filled')`
-- `created_at >= now() - interval '12 hours'`
+- `expires_at > now()` (updated from `created_at >= now() - 12 hours` in Phase 2C)
 - `order by created_at desc`
 - `limit 2`
 

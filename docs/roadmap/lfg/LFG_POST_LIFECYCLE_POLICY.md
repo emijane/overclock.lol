@@ -25,13 +25,19 @@ The product goals are:
 
 ### Active slot limit
 
-The active slot limit has been permanently removed. There is no cap on how
-many active posts a user can have per role per section.
+Each user may have up to **2 active posts per role per section** at the same
+time. A slot is occupied as long as the post is visible in the feed (`expires_at
+> now()`). The slot frees when the post expires (24h) or the user closes it.
+
+Stacks bypass this limit — stack posts are governed by the one-active-stack rule
+instead.
 
 ### Posting rate limit
 
-The rolling per-hour creation rate limit has been permanently removed. There
-is no cap on how many posts a user can create within a time window.
+Each user may create up to **4 posts per section per rolling 60 minutes**
+regardless of status. Closing or expiring posts does not restore creation budget.
+
+This is a write-rate guard and is unrelated to feed visibility.
 
 ## Post Lifetime
 
@@ -44,25 +50,26 @@ status = "active"
 An active post automatically expires after:
 
 ```text
-12 hours
+24 hours
 ```
 
-Once that window passes, the post should no longer appear as active in:
+Once that window passes, the post no longer appears as active in:
 
 - section feeds
 - public profile active listing surfaces
 - any other active-post UI
 
-Current implementation detail:
+All post types write `expires_at = created_at + 24 hours` at creation. Feed
+and RLS visibility are driven directly by `expires_at > now()`.
 
-- duos still derive expiry through the shared active-window rules
-- stacks proactively move expired posts to:
+A scheduled job (`expire_lfg_posts`) updates the stored status:
 
 ```text
 status = "expired"
 ```
 
-- stack expiry also frees active members and cancels pending requests
+For stacks, expiry also frees active members and cancels pending requests.
+See `docs/features/lfg/LFG_EXPIRATION_POLICY.md` for full details.
 
 ## Stack Lifecycle
 
@@ -251,7 +258,7 @@ Current flow:
 - accept inserts the member, updates count/roles, and revalidates stack surfaces
 - decline follows the existing lightweight dismissal pattern
 
-### Read-time active filtering
+### Active filtering
 
 Section feeds and profile active-listing queries only return posts that are
 still active.
@@ -259,23 +266,20 @@ still active.
 That means they exclude:
 
 - posts with `status != "active"`
-- posts older than the `12` hour active window, unless they are proactively
-  closed before read
+- posts where `expires_at <= now()` (feed and RLS both filter on this directly)
 
-### Optional cleanup model
+### Expiration and cleanup
 
-There are two valid implementation directions:
+Background expiration and cleanup are implemented:
 
-1. Read-time expiry
-2. Background cleanup plus explicit status updates
+- `expire_lfg_posts()` — marks `status = 'expired'` for all post types past
+  their `expires_at`; cleans up stack state; callable by `service_role` only
+- `cleanup_expired_lfg_posts()` — hard-deletes posts past their `purge_after`
+  (30-day retention window); callable by `service_role` only
 
-Read-time expiry shipped first:
-
-- treat any post older than 12 hours as inactive in queries
-- optionally backfill `status = "closed"` later with a scheduled cleanup job
-
-Background cleanup becomes more useful if the app later needs analytics,
-notifications, or more explicit post history semantics.
+Both functions are safe to call on a schedule. See
+`docs/features/lfg/LFG_EXPIRATION_POLICY.md` for eligibility criteria,
+dependency skip rules, and cron examples.
 
 ## Data Model Implications
 
@@ -297,9 +301,9 @@ Stacks additionally rely on:
 
 Important implementation expectations:
 
-- consistent use of `created_at` for rolling-window checks
+- `expires_at > now()` drives feed and RLS visibility, dedup, and slot limits
+- `created_at` windows drive only the creation rate-limit (60-minute write budget)
 - consistent use of `status` for manual close behavior
-- shared query helpers that define what counts as "active"
 - stack helpers that treat both `active` and `filled` as occupying membership
 
 No major route redesign is needed for this policy.
@@ -339,10 +343,11 @@ The current implementation already includes:
 
 Current enforcement note:
 
-- active slot limits have been permanently removed
-- rolling creation rate limits have been permanently removed
-- duplicate active posts with the same normalized title + section + mode +
-  posting role are still blocked
+- active slot limit: 2 active posts per role per section (slot occupied while
+  `expires_at > now()`; freed by expiry or manual close)
+- creation rate limit: 4 posts per section per rolling 60 minutes (status-agnostic)
+- dedup: identical normalized title + section + mode + posting role is blocked
+  while either post is still live (`expires_at > now()`)
 - the shipped public sections are `/duos` and `/stacks`
 
 Follow-up work that still makes sense:

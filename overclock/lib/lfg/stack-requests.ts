@@ -9,14 +9,6 @@ import type {
   UpdateStackMembershipResult,
   UpdateStackRequestResult,
 } from "./stack-request-types";
-import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
-
-function getActiveStackPostCutoffIso(now = new Date()) {
-  return new Date(
-    now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
-  ).toISOString();
-}
-
 function getErrorText(error: unknown) {
   if (!error || typeof error !== "object") {
     return "";
@@ -271,7 +263,7 @@ export async function getIncomingPendingStackRequests(input: {
 }): Promise<{ requests: IncomingPendingStackRequest[]; totalCount: number }> {
   const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
   const supabase = await createClient();
-  const activeStackPostCutoffIso = getActiveStackPostCutoffIso();
+  const nowIso = new Date().toISOString();
   const { data, error } = await supabase
     .from("stack_requests")
     .select(
@@ -281,7 +273,7 @@ export async function getIncomingPendingStackRequests(input: {
         "requested_role",
         "requester_profile_id",
         "created_at",
-        "lfg_posts:post_id(title,status,created_at)",
+        "lfg_posts:post_id(title,status,expires_at)",
         "requester:requester_profile_id(id,username,display_name,avatar_url,avatar_updated_at,current_rank_tier,current_rank_division)",
       ].join(",")
     )
@@ -317,8 +309,8 @@ export async function getIncomingPendingStackRequests(input: {
     }
 
     if (
-      typeof postRow?.created_at !== "string" ||
-      postRow.created_at < activeStackPostCutoffIso
+      typeof postRow?.expires_at !== "string" ||
+      postRow.expires_at <= nowIso
     ) {
       continue;
     }
@@ -404,7 +396,6 @@ export async function getStackRequestStatesForPosts(input: {
   }
 
   const supabase = await createClient();
-  const activeStackPostCutoffIso = getActiveStackPostCutoffIso();
   const result: Record<string, "none" | "pending" | "accepted" | "declined"> = {};
 
   for (const id of input.postIds) {
@@ -419,14 +410,14 @@ export async function getStackRequestStatesForPosts(input: {
       .eq("profile_id", input.currentProfileId)
       .is("removed_at", null)
       .in("lfg_posts.status", ["active", "filled"])
-      .gte("lfg_posts.created_at", activeStackPostCutoffIso),
+      .gt("lfg_posts.expires_at", new Date().toISOString()),
     supabase
       .from("stack_requests")
-      .select("post_id,status,lfg_posts!inner(created_at,status)")
+      .select("post_id,status,lfg_posts!inner(status)")
       .in("post_id", input.postIds)
       .eq("requester_profile_id", input.currentProfileId)
       .in("lfg_posts.status", ["active", "filled"])
-      .gte("lfg_posts.created_at", activeStackPostCutoffIso)
+      .gt("lfg_posts.expires_at", new Date().toISOString())
       .order("created_at", { ascending: false }),
   ]);
 

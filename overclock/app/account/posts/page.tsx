@@ -45,7 +45,7 @@ function getEmptyStateCopy(status: TabValue) {
   }
   if (status === "expired") {
     return {
-      description: "Posts older than the 12-hour active window will show up here.",
+      description: "Posts that have expired or been closed will show up here.",
       title: "No expired posts",
     };
   }

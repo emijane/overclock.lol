@@ -106,7 +106,7 @@ The account page should distinguish between:
 
 ### Expired
 
-- Post aged out of the 12-hour active window
+- Post aged out of the 24-hour active window (`expires_at` passed)
 - Post is no longer live
 - Post is visible only on `/account/posts`
 
@@ -213,8 +213,7 @@ Needed data:
 The page will also need a derived display status based on:
 
 - stored `status`
-- `created_at`
-- the 12-hour active window
+- `expires_at` (the canonical feed-visibility cutoff)
 
 ## Query Model
 
@@ -278,7 +277,7 @@ This page should follow `docs/roadmap/lfg/LFG_POST_LIFECYCLE_POLICY.md`.
 Important aligned rules:
 
 - 4 posts per section per rolling 60 minutes
-- active posts expire after 12 hours
+- active posts expire after 24 hours
 - owner can close active posts
 - close is permanent
 - no edit or reopen for now

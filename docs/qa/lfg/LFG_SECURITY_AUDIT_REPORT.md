@@ -1,5 +1,12 @@
 # LFG Security Audit Report
 
+> **Partially superseded.** This audit reflects state at 2026-04-27.
+> As of 2026-05-15 (Phase 2C), RLS (`lfg_posts_public_active_read`) and all
+> feed queries switched from `created_at >= now() - 12 hours` to
+> `expires_at > now()`. Rate-limit checks in `create_lfg_post_atomic` still
+> use `created_at` windows — those sections of this report remain accurate.
+> See `docs/features/lfg/LFG_EXPIRATION_POLICY.md` for current behavior.
+
 Date: 2026-04-27
 
 ## 1. Files inspected

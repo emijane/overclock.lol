@@ -5,11 +5,7 @@ import { getBlockedProfileIdsForViewer, isBlocked } from "@/lib/blocks/user-bloc
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "./lfg-feed-filters";
-import {
-  ACTIVE_LFG_POST_WINDOW_HOURS,
-  STACK_MAX_GROUP_SIZE,
-} from "./lfg-post-policy";
-import { normalizeLFGPostTitleForComparison } from "./lfg-post-title";
+import { STACK_MAX_GROUP_SIZE } from "./lfg-post-policy";
 import { isMissingStackMembersSupportError } from "./stack-requests";
 import {
   isLFGGameMode,
@@ -28,12 +24,6 @@ import type {
 } from "./lfg-post-types";
 
 export type ActiveLFGPostCountsByRole = Record<CompetitiveRole, number>;
-
-function getActivePostCutoffIso(now = new Date()) {
-  return new Date(
-    now.getTime() - ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
-  ).toISOString();
-}
 
 function normalizeBadgeDefinition(value: unknown): ProfileBadge | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -485,7 +475,6 @@ export async function getActiveLFGPosts(
   viewerProfileId?: string | null
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
-  const activePostCutoffIso = getActivePostCutoffIso();
   const isStacks = lfgType === "stacks";
   const blockedProfileIds = viewerProfileId
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
@@ -518,8 +507,8 @@ export async function getActiveLFGPosts(
     .order("created_at", { ascending: false });
 
   query = isStacks
-    ? query.in("status", ["active", "filled"]).gte("created_at", activePostCutoffIso)
-    : query.eq("status", "active").gte("created_at", activePostCutoffIso);
+    ? query.in("status", ["active", "filled"]).gt("expires_at", new Date().toISOString())
+    : query.eq("status", "active").gt("expires_at", new Date().toISOString());
 
   if (filters?.role) {
     query = query.eq("posting_role", filters.role);
@@ -715,7 +704,6 @@ export async function getRecentPostsByProfileId(
   }
 ): Promise<LFGPost[]> {
   const supabase = await createClient();
-  const activePostCutoffIso = getActivePostCutoffIso();
   const blockedProfileIds = viewerProfileId
     ? await getBlockedProfileIdsForViewer(viewerProfileId)
     : [];
@@ -753,7 +741,7 @@ export async function getRecentPostsByProfileId(
     )
     .eq("profile_id", profileId)
     .in("status", ["active", "filled"])
-    .gte("created_at", activePostCutoffIso)
+    .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -831,14 +819,13 @@ export async function getActiveLFGPostCountsByRole(input: {
   profileId: string;
 }): Promise<ActiveLFGPostCountsByRole> {
   const supabase = await createClient();
-  const activePostCutoffIso = getActivePostCutoffIso();
   const { data, error } = await supabase
     .from("lfg_posts")
     .select("posting_role")
     .eq("profile_id", input.profileId)
     .eq("lfg_type", input.lfgType)
     .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
-    .gte("created_at", activePostCutoffIso);
+    .gt("expires_at", new Date().toISOString());
 
   if (error) {
     throw error;
@@ -990,55 +977,20 @@ export async function createLFGPostAtomically(input: {
   return tryCreateLFGPostAtomicVariants(supabase, input);
 }
 
-export async function hasMatchingActiveLFGPost(input: {
-  gameMode: LFGGameMode;
-  lfgType: LFGType;
-  postingRole: CompetitiveRole;
-  profileId: string;
-  title: string;
-}) {
-  const supabase = await createClient();
-  const activePostCutoffIso = getActivePostCutoffIso();
-  const { data, error } = await supabase
-    .from("lfg_posts")
-    .select("id,title")
-    .eq("profile_id", input.profileId)
-    .eq("game_mode", input.gameMode)
-    .eq("lfg_type", input.lfgType)
-    .eq("posting_role", input.postingRole)
-    .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
-    .gte("created_at", activePostCutoffIso)
-    .limit(20);
-
-  if (error) {
-    throw error;
-  }
-
-  const normalizedTitle = normalizeLFGPostTitleForComparison(input.title);
-
-  return ((data ?? []) as Array<Record<string, unknown>>).some((row) => {
-    return (
-      typeof row.title === "string" &&
-      normalizeLFGPostTitleForComparison(row.title) === normalizedTitle
-    );
-  });
-}
-
 export async function hasReachedActiveLFGPostLimit(input: {
   lfgType: LFGType;
   postingRole: CompetitiveRole;
   profileId: string;
 }) {
   const supabase = await createClient();
-  const activePostCutoffIso = getActivePostCutoffIso();
   const { count, error } = await supabase
     .from("lfg_posts")
     .select("id", { count: "exact", head: true })
     .eq("profile_id", input.profileId)
     .eq("lfg_type", input.lfgType)
     .eq("posting_role", input.postingRole)
-    .in("status", input.lfgType === "stacks" ? ["active", "filled"] : ["active"])
-    .gte("created_at", activePostCutoffIso);
+    .eq("status", "active")
+    .gt("expires_at", new Date().toISOString());
 
   if (error) {
     throw error;

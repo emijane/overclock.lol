@@ -5,7 +5,10 @@
       "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\" -Directory)",
       "Bash(Select-Object Name)",
-      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\search\\\\users\" -Force)"
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\search\\\\users\" -Force)",
+      "Bash(xargs grep -l \"create table.*lfg_posts\")",
+      "Bash(npm run *)",
+      "Bash(dir \"c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\docs\" /b)"
     ]
   }
 }

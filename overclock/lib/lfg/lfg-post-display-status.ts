@@ -1,5 +1,4 @@
 import type { LFGPostStatus } from "./lfg-post-types";
-import { ACTIVE_LFG_POST_WINDOW_HOURS } from "./lfg-post-policy";
 
 export const LFG_POST_DISPLAY_STATUS_OPTIONS = [
   "active",
@@ -14,25 +13,19 @@ export function isLFGPostDisplayStatus(
   return LFG_POST_DISPLAY_STATUS_OPTIONS.includes(value as LFGPostDisplayStatus);
 }
 
-export function isLFGPostExpired(createdAt: string, now = new Date()) {
-  if (!createdAt) {
+export function isLFGPostExpired(
+  expiresAt: string | null | undefined,
+  now = new Date()
+) {
+  if (!expiresAt) {
     return false;
   }
-
-  const createdAtDate = new Date(createdAt);
-
-  if (Number.isNaN(createdAtDate.getTime())) {
-    return false;
-  }
-
-  return (
-    now.getTime() - createdAtDate.getTime() >
-    ACTIVE_LFG_POST_WINDOW_HOURS * 60 * 60 * 1000
-  );
+  const expiresAtMs = new Date(expiresAt).getTime();
+  return !Number.isNaN(expiresAtMs) && expiresAtMs <= now.getTime();
 }
 
 export function getLFGPostDisplayStatus(input: {
-  createdAt: string;
+  expiresAt?: string | null;
   status: LFGPostStatus;
 }): LFGPostDisplayStatus {
   if (input.status === "closed" || input.status === "archived") {
@@ -43,7 +36,7 @@ export function getLFGPostDisplayStatus(input: {
     return "expired";
   }
 
-  if (isLFGPostExpired(input.createdAt)) {
+  if (isLFGPostExpired(input.expiresAt)) {
     return "expired";
   }
 

@@ -102,7 +102,7 @@ Two sequential Supabase calls:
 | 12 | profile_hero_pools SELECT | 213–219 | Hero pools |
 | 13 | profile_featured_clips SELECT + jsonb_agg | 224–243 | Limit 2 |
 | 14 | profile_badges JOIN badges jsonb_agg | 244–260 | All badges |
-| 15 | lfg_posts SELECT + jsonb_agg | 261–283 | Last 2 posts within 12h |
+| 15 | lfg_posts SELECT + jsonb_agg | 261–283 | Last 2 active posts (expires_at > now()) |
 
 **Notable:** competitive_profiles is queried twice with separate scalar subselects (lines 182–191). A single CTE or joined query could fetch both columns in one pass.
 
