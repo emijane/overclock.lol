@@ -63,7 +63,7 @@ function ActionToast({ message, onDismiss }: ActionToastProps) {
   }
 
   return (
-    <div className="fixed right-4 top-[4.75rem] z-[130] w-[min(300px,calc(100vw-2rem))] rounded-[12px] border border-white/[0.08] bg-[#111111]/95 px-3 py-2 text-xs text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.34)] backdrop-blur-sm sm:right-6 sm:top-[5.25rem]">
+    <div className="oc-surface-toast fixed right-4 top-[4.75rem] z-[130] w-[min(300px,calc(100vw-2rem))] rounded-[12px] px-3 py-2 text-xs text-zinc-100 backdrop-blur-sm sm:right-6 sm:top-[5.25rem]">
       <div className="flex items-center justify-between gap-3">
         <p className="min-w-0 flex-1 leading-5">{message}</p>
         <button
@@ -112,7 +112,7 @@ function BlockConfirmationModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="block-user-modal-title"
-          className="w-full max-w-[30rem] overflow-hidden rounded-t-[18px] border border-white/[0.07] bg-[#0f0f11] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_18px_44px_rgba(0,0,0,0.34)] sm:rounded-[12px]"
+          className="oc-surface-elevated w-full max-w-[30rem] overflow-hidden rounded-t-[18px] sm:rounded-[12px]"
           onClick={(event) => event.stopPropagation()}
         >
           <header className="flex items-start justify-between gap-4 border-b border-white/[0.06] px-4 py-3.5 sm:px-4.5">

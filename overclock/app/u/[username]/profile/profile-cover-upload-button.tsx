@@ -145,7 +145,7 @@ export function ProfileCoverUploadButton() {
       {imageSrc && typeof document !== "undefined"
         ? createPortal(
             <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6">
-          <div className="w-full max-w-3xl rounded-[28px] border border-white/8 bg-[#05070b] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
+          <div className="oc-surface-panel w-full max-w-3xl rounded-[28px] p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4 border-b border-white/6 pb-5">
               <div>
                 <h2 className="text-[17px] font-semibold tracking-[-0.04em] text-zinc-50">

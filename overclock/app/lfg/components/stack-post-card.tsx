@@ -88,11 +88,11 @@ export function StackPostCard({
   return (
     <article
       aria-label={post.title}
-      className={`group h-full rounded-[12px] border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] transition-[border-color,box-shadow] duration-200 hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]${
+      className={`oc-surface-solid-lift group h-full rounded-[12px]${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-[#06070a]">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-[var(--oc-bg-card)]">
         <div className="relative h-14 overflow-hidden bg-zinc-950/95">
           {post.author.coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -102,14 +102,14 @@ export function StackPostCard({
               className="h-full w-full object-cover brightness-[0.28] saturate-[0.56] opacity-80"
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 to-[#06070a]" />
-          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[#06070a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 to-[var(--oc-bg-card)]" />
+          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[var(--oc-bg-card)]" />
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
           <div className="absolute right-3 top-2 z-20 flex items-center gap-1">
             {post.platform ? (
-              <span className="inline-flex h-4.5 items-center rounded-[5px] border border-white/[0.07] bg-black/46 px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
+              <span className="oc-overlay-chip inline-flex h-4.5 items-center rounded-[5px] px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
                 {post.platform}
               </span>
             ) : null}
@@ -161,14 +161,14 @@ export function StackPostCard({
             <div className="flex min-w-0 flex-col items-start">
               <RankedAvatar
                 avatarUrl={post.author.avatarUrl}
-                className="-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 border-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+                className="-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 border-[var(--oc-bg-card)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
                 displayName={visibleName}
                 fallbackClassName="text-xs font-semibold text-zinc-100"
                 fallbackText={visibleName.slice(0, 2).toUpperCase()}
                 overlay={
                   post.profileId ? (
                     <PresenceIndicator
-                      className="absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#06070a] shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                      className="oc-overlay-avatar absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
                       hideOfflinePresence={post.author.hideOfflinePresence}
                       isLookingToPlay={post.author.isLookingToPlay}
                       lastSeenAt={post.author.lastSeenAt}

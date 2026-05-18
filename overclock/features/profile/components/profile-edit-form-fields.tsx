@@ -152,14 +152,14 @@ export function ProfileEditFormFields({
           <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2">
             <p className="text-[11px] font-medium text-zinc-500">Currently logged in as</p>
             <div className="mt-1.5 flex items-center gap-2">
-              <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
+              <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
               <span className="text-sm text-zinc-300">{profile.discordUsername}</span>
             </div>
           </div>
         ) : null}
         <div className="grid grid-cols-2 gap-2">
           <div className="relative">
-            <SiBattledotnet className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#00AEF0]" />
+            <SiBattledotnet className="oc-social-battlenet pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               name="battlenet_handle"
               type="text"
@@ -173,7 +173,7 @@ export function ProfileEditFormFields({
           </div>
 
           <div className="relative">
-            <FaTwitch className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9146FF]" />
+            <FaTwitch className="oc-social-twitch pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               type="text"
               value={form.twitchHandle}
@@ -199,7 +199,7 @@ export function ProfileEditFormFields({
           </div>
 
           <div className="relative">
-            <FaYoutube className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#FF0033]" />
+            <FaYoutube className="oc-social-youtube pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               type="text"
               value={form.youtubeHandle}

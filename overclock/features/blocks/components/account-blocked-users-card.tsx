@@ -25,7 +25,7 @@ export async function AccountBlockedUsersCard() {
   const blockedUsers = await getBlockedUsers();
 
   return (
-    <section className="overflow-hidden rounded-[12px] border border-white/[0.07] bg-white/[0.025] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)]">
+    <section className="oc-card-lift overflow-hidden rounded-[12px]">
       <div className="border-b border-white/[0.06] px-4 py-3 sm:px-4.5">
         <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-50">
           Blocked users

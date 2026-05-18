@@ -65,7 +65,7 @@ export function MatchCard({ connection }: MatchCardProps) {
           <div className="oc-profile-meta mt-0.5 flex flex-wrap gap-x-3 text-[11px]">
             {connection.participant.discordUsername ? (
               <span className="flex items-center gap-1">
-                <FaDiscord className="h-3.5 w-3.5 shrink-0 text-[#5865F2]" />
+                <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
                 {connection.participant.discordUsername}
               </span>
             ) : null}

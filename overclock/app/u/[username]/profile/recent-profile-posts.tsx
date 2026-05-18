@@ -107,7 +107,7 @@ export function RecentProfilePosts({
       </div>
 
       {posts.length === 0 ? (
-        <div className="mt-3 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-4 py-3 text-sm text-zinc-500">
+        <div className="oc-surface-subtle mt-3 rounded-[10px] px-4 py-3 text-sm text-zinc-500">
           Your active LFG listings will show up here.
         </div>
       ) : (
@@ -119,7 +119,7 @@ export function RecentProfilePosts({
             return (
               <article
                 key={post.id}
-                className="rounded-[10px] border border-white/[0.07] bg-white/[0.025] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)] transition-[border-color,background-color,transform] duration-150 hover:-translate-y-px hover:border-white/[0.11] hover:bg-white/[0.035]"
+                className="oc-card-lift rounded-[10px] p-3.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="oc-profile-display truncate pr-1.5 text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">

@@ -48,7 +48,7 @@ export default async function RootLayout({
         >
             <body
                 suppressHydrationWarning
-                className="min-h-screen flex flex-col bg-[#07080d] text-zinc-100"
+                className="min-h-screen flex flex-col bg-[var(--oc-bg-base)] text-zinc-100"
             >
                 <PresenceProvider
                     currentUserId={user?.id ?? null}

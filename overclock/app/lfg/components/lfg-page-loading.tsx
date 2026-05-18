@@ -93,7 +93,7 @@ export function LFGPageLoading({
 
               {composerOnly ? (
                 <section className="mt-4">
-                  <div className="rounded-[24px] border border-white/[0.08] bg-[#05070b] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5">
+                  <div className="oc-surface-panel rounded-[24px] px-4 py-4 sm:px-5">
                     <div className="flex items-center justify-between gap-3">
                       <SkeletonBlock className="h-4 w-20" />
                       <div className="flex items-center gap-2">

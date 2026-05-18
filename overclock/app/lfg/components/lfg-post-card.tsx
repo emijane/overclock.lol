@@ -82,16 +82,16 @@ export function LFGPostCard({
   const article = (
     <article
       aria-label={post.title}
-      className={`group h-full rounded-[12px] transition-[border-color,box-shadow,background-color] duration-200 ${
+      className={`group h-full rounded-[12px] ${
         tone === "duos"
-          ? "border border-white/[0.07] bg-white/[0.025] shadow-[inset_0_1px_0_rgba(255,255,255,0.035),0_10px_22px_rgba(0,0,0,0.18)] hover:-translate-y-px hover:border-white/[0.11] hover:bg-white/[0.035]"
-          : "border border-white/[0.07] bg-[#06070a] shadow-[0_7px_18px_rgba(0,0,0,0.18)] hover:border-white/[0.11] hover:shadow-[0_10px_22px_rgba(0,0,0,0.22)]"
+          ? "oc-card-lift"
+          : "oc-surface-solid-lift"
       }${
         cardClassName ? ` ${cardClassName}` : ""
       }`}
     >
       <div className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] ${
-        tone === "duos" ? "bg-transparent" : "bg-[#06070a]"
+        tone === "duos" ? "bg-transparent" : "bg-[var(--oc-bg-card)]"
       }`}>
         <div className={`relative h-14 overflow-hidden ${tone === "duos" ? "bg-[#111113]" : "bg-zinc-950/95"}`}>
           {post.author.coverImageUrl ? (
@@ -104,8 +104,8 @@ export function LFGPostCard({
               />
             </>
           ) : null}
-          <div className={`absolute inset-0 bg-gradient-to-b from-black/24 via-black/44 ${tone === "duos" ? "to-[#0f0f11]" : "to-[#06070a]"}`} />
-          <div className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent ${tone === "duos" ? "to-[#0f0f11]" : "to-[#06070a]"}`} />
+          <div className={`absolute inset-0 bg-gradient-to-b from-black/24 via-black/44 ${tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"}`} />
+          <div className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent ${tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"}`} />
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
@@ -113,7 +113,7 @@ export function LFGPostCard({
             <RankedAvatar
               avatarUrl={post.author.avatarUrl}
               className={`-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${
-                tone === "duos" ? "border-[#090909]" : "border-[#06070a]"
+                tone === "duos" ? "border-[#090909]" : "border-[var(--oc-bg-card)]"
               }`}
               displayName={visibleName}
               fallbackClassName="text-xs font-semibold text-zinc-100"
@@ -122,7 +122,7 @@ export function LFGPostCard({
                 post.profileId ? (
                   <PresenceIndicator
                     className={`absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)] ${
-                      tone === "duos" ? "bg-[#0f0f11]" : "bg-[#06070a]"
+                      tone === "duos" ? "oc-overlay-avatar-elevated" : "oc-overlay-avatar"
                     }`}
                     hideOfflinePresence={post.author.hideOfflinePresence}
                     isLookingToPlay={post.author.isLookingToPlay}

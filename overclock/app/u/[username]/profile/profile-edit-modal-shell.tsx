@@ -55,7 +55,7 @@ export function ProfileEditModalShell({
           role="dialog"
           aria-modal="true"
           aria-labelledby="edit-profile-modal-title"
-          className="flex h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] sm:h-auto sm:max-h-[88vh] sm:rounded-[32px]"
+          className="oc-surface-modal flex h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] sm:h-auto sm:max-h-[88vh] sm:rounded-[32px]"
           onClick={(event) => event.stopPropagation()}
         >
           <header className="flex items-center justify-between gap-4 border-b border-white/6 px-4 py-4 sm:px-6">

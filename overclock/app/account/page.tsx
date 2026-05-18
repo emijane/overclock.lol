@@ -73,7 +73,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
             <PageReveal delay={1}>
               <div className="grid gap-3">
-                <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="oc-surface-panel overflow-hidden rounded-[22px]">
                   <ProfileEditForm
             avatarUrl={getProfileAvatarUrl(
               profile.avatar_url ?? null,
@@ -87,7 +87,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           />
                 </div>
 
-                <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="oc-surface-panel overflow-hidden rounded-[22px]">
                   <AvailabilityToggleCard
                     initialIsLookingToPlay={profile.is_looking_to_play ?? false}
                   />

@@ -29,11 +29,11 @@ const ICONS = {
 } as const;
 
 const ICON_COLORS = {
-  discord: "text-[#5865F2]",
-  battlenet: "text-[#00AEF0]",
-  twitch: "text-[#9146FF]",
+  discord: "oc-social-discord",
+  battlenet: "oc-social-battlenet",
+  twitch: "oc-social-twitch",
   x: "text-zinc-100",
-  youtube: "text-[#FF0033]",
+  youtube: "oc-social-youtube",
 } as const;
 
 const BUTTON_ACCENTS = {

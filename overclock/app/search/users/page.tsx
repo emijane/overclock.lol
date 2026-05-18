@@ -53,7 +53,7 @@ export default async function SearchUsersPage({ searchParams }: Props) {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6">
       <form action="/search/users" method="GET">
-        <div className="flex h-11 items-center gap-2.5 rounded-full border border-white/8 bg-[#05070b] px-4 text-zinc-300 transition focus-within:border-white/18 hover:border-white/10">
+        <div className="flex h-11 items-center gap-2.5 rounded-full border border-white/8 bg-[var(--oc-bg-deep)] px-4 text-zinc-300 transition focus-within:border-white/18 hover:border-white/10">
           <SearchIcon className="h-4 w-4 shrink-0 text-zinc-500" />
           <input
             type="search"
@@ -85,7 +85,7 @@ export default async function SearchUsersPage({ searchParams }: Props) {
                 ? `${results.length}+ results`
                 : `${results.length} result${results.length === 1 ? "" : "s"}`}
             </p>
-            <ul className="rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <ul className="oc-surface-panel rounded-[22px]">
               {results.map((result, index) => (
                 <li
                   key={result.username}
@@ -93,7 +93,7 @@ export default async function SearchUsersPage({ searchParams }: Props) {
                 >
                   <Link
                     href={`/u/${result.username}`}
-                    className="flex items-center gap-3 px-4 py-3 transition hover:bg-white/[0.025]"
+                    className="oc-list-row-hover flex items-center gap-3 px-4 py-3"
                   >
                     <Avatar className="h-9 w-9 shrink-0 rounded-full">
                       {result.avatarUrl ? (

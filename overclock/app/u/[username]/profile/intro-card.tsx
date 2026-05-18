@@ -24,10 +24,10 @@ type IntroCardProps = {
 };
 
 const introIconByLabel = {
-  "Battle.net": { Icon: SiBattledotnet, className: "text-[#00aef0]" },
-  Discord: { Icon: FaDiscord, className: "text-[#5865F2]" },
+  "Battle.net": { Icon: SiBattledotnet, className: "oc-social-battlenet" },
+  Discord: { Icon: FaDiscord, className: "oc-social-discord" },
   Platform: { Icon: Gamepad2Icon, className: "text-[#f99e1a]" },
-  Region: { Icon: Globe2Icon, className: "text-[#00aef0]" },
+  Region: { Icon: Globe2Icon, className: "oc-social-battlenet" },
   Server: { Icon: Clock3Icon, className: "text-[#f99e1a]" },
 } as const satisfies Record<
   string,

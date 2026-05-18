@@ -59,7 +59,7 @@ export function FeaturedClipsSection({
           ))}
         </div>
       ) : (
-        <div className="mt-3 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-4 py-3 text-sm text-zinc-400">
+        <div className="oc-surface-subtle mt-3 rounded-[10px] px-4 py-3 text-sm text-zinc-400">
           Add up to two featured videos to show them here.
         </div>
       )}

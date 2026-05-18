@@ -557,7 +557,7 @@ export async function LFGPageShell({
                       className={`px-4 py-4 sm:px-5 sm:py-4.5 ${
                         isDuosPage
                           ? "rounded-[10px] border border-white/[0.04] bg-white/[0.015]"
-                          : "rounded-[24px] border border-white/[0.08] bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]"
+                          : "oc-surface-panel rounded-[24px]"
                       }`}
                     >
                       <input type="hidden" name="lfg_type" value={type} />

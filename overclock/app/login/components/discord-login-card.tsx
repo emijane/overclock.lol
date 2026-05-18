@@ -33,7 +33,7 @@ export function DiscordLoginCard() {
   }
 
   return (
-    <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-white/5">
+    <div className="oc-surface-panel overflow-hidden rounded-[22px] ring-1 ring-white/5">
       <div className="border-b border-white/6 px-6 py-5 sm:px-7 sm:py-5.5">
         <div className="min-w-0 text-center">
           <div className="mb-2 flex justify-center">
@@ -61,7 +61,7 @@ export function DiscordLoginCard() {
           onClick={handleDiscordLogin}
           disabled={isLoading}
           aria-disabled={isLoading}
-          className="inline-flex h-11 items-center justify-center gap-2.5 rounded-full border border-[#6c77f5]/30 bg-[#5865F2] px-5 text-sm font-semibold text-white transition hover:border-[#7d86f7]/40 hover:bg-[#6c77f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6c77f5]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070b] disabled:cursor-wait disabled:border-white/8 disabled:bg-white/4 disabled:text-zinc-400"
+          className="inline-flex h-11 items-center justify-center gap-2.5 rounded-full border border-[#6c77f5]/30 bg-[var(--oc-color-discord)] px-5 text-sm font-semibold text-white transition hover:border-[#7d86f7]/40 hover:bg-[#6c77f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6c77f5]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--oc-bg-deep)] disabled:cursor-wait disabled:border-white/8 disabled:bg-white/4 disabled:text-zinc-400"
         >
           <FaDiscord className="h-4.5 w-4.5 shrink-0" aria-hidden="true" />
           {isLoading ? "Redirecting..." : "Continue with Discord"}

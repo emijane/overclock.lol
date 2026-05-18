@@ -154,7 +154,7 @@ export async function LegalDocument({
               </div>
             </header>
 
-            <div className="overflow-hidden rounded-[22px] border border-white/8 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="oc-surface-panel overflow-hidden rounded-[22px]">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
                 <div className="space-y-4">
                   {nodes.map((node, index) => {
