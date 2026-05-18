@@ -56,7 +56,8 @@ security definer
 set search_path = public, pg_temp
 as $$
 declare
-  v_viewer_profile_id    uuid  := p_viewer_profile_id;
+  v_current_user_id      uuid := auth.uid();
+  v_viewer_profile_id    uuid := null;
   v_blocked_profile_ids  uuid[] := array[]::uuid[];
   v_posts                jsonb := '[]'::jsonb;
   v_viewer_bundle        jsonb := null;
@@ -71,19 +72,18 @@ begin
     );
   end if;
 
-  if auth.uid() is not null and v_viewer_profile_id is not null and auth.uid() <> v_viewer_profile_id then
-    return jsonb_build_object(
-      'errorCode', 'forbidden',
-      'posts', '[]'::jsonb,
-      'viewerBundle', null
-    );
-  end if;
+  if v_current_user_id is null then
+    v_viewer_profile_id := null;
+  else
+    if p_viewer_profile_id is not null and p_viewer_profile_id <> v_current_user_id then
+      return jsonb_build_object(
+        'errorCode', 'forbidden',
+        'posts', '[]'::jsonb,
+        'viewerBundle', null
+      );
+    end if;
 
-  if auth.uid() is not null and v_viewer_profile_id is null then
-    v_viewer_profile_id := auth.uid();
-  end if;
-
-  if v_viewer_profile_id is not null then
+    v_viewer_profile_id := coalesce(p_viewer_profile_id, v_current_user_id);
     v_blocked_profile_ids := public.get_blocked_profile_ids_for_viewer(v_viewer_profile_id);
   end if;
 
