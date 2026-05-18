@@ -119,6 +119,7 @@ We may preserve account data, reports, content, logs, device or network signals,
 
 ## 12. Reporting
 - Users may report content, conduct, or accounts they believe violate these Terms or create safety concerns.
+- Reports, safety concerns, impersonation complaints, copyright notices, and other enforcement-related messages can be sent to `safety@overclock.lol`.
 - We may investigate reports, but we are not required to act on every report in any particular way.
 - We may limit information we share about moderation decisions.
 
@@ -190,4 +191,4 @@ Any dispute arising out of or relating to these Terms or Overclock will be resol
 - Your continued use of Overclock after updated Terms take effect means you accept the revised Terms.
 
 ## 24. Contact
-Questions about these Terms can be sent through the contact method made available on Overclock.lol.
+Questions about these Terms can be sent to `safety@overclock.lol`.

@@ -153,4 +153,4 @@ Keep in mind:
 - Your continued use of Overclock after an update means you accept the revised Privacy Policy.
 
 ## 18. Contact
-Questions about this Privacy Policy can be sent through the contact method made available on Overclock.lol.
+Questions about this Privacy Policy, data requests, and safety-related privacy concerns can be sent to `safety@overclock.lol`.
