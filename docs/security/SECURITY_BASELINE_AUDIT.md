@@ -9,10 +9,17 @@ profile tables:
 
 - [20260518130000_backfill_profile_table_security_baseline.sql](/c:/Users/misa/Documents/GitHub/overclock.lol/overclock/supabase/migrations/20260518130000_backfill_profile_table_security_baseline.sql:1)
 - [PROFILE_TABLE_SECURITY_BASELINE.md](/c:/Users/misa/Documents/GitHub/overclock.lol/docs/security/PROFILE_TABLE_SECURITY_BASELINE.md:1)
+- [20260427170000_bootstrap_public_profile_and_lfg_core_schema.sql](/c:/Users/misa/Documents/GitHub/overclock.lol/overclock/supabase/migrations/20260427170000_bootstrap_public_profile_and_lfg_core_schema.sql:1)
+- [20260518132000_reconcile_bootstrap_schema_drift.sql](/c:/Users/misa/Documents/GitHub/overclock.lol/overclock/supabase/migrations/20260518132000_reconcile_bootstrap_schema_drift.sql:1)
+- [DB_RECONSTRUCTABILITY_AND_MIGRATION_POLICY.md](/c:/Users/misa/Documents/GitHub/overclock.lol/docs/security/DB_RECONSTRUCTABILITY_AND_MIGRATION_POLICY.md:1)
 
-That closes the earlier “final grant/RLS truth is not reconstructable from repo
-source” gap for the listed profile tables. The audit findings below remain a
-historical record of what was true before that baseline was added.
+That addresses the earlier “final grant/RLS truth is not reconstructable from
+repo source” gap for the listed profile tables by checking the missing schema
+and final security posture into source control. A Docker-backed `supabase db
+reset` and `supabase db diff --linked` are still required before launch to
+fully prove that an empty database rebuilds to the expected final state. The
+audit findings below remain a historical record of what was true before that
+baseline was added.
 
 ## Executive Summary
 
