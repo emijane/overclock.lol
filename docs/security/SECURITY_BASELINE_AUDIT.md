@@ -1,6 +1,18 @@
 # Security Baseline Audit
 
-Last updated: 2026-05-14
+Last updated: 2026-05-18
+
+## Status Update
+
+On 2026-05-18, the repo added a canonical baseline migration for older core
+profile tables:
+
+- [20260518130000_backfill_profile_table_security_baseline.sql](/c:/Users/misa/Documents/GitHub/overclock.lol/overclock/supabase/migrations/20260518130000_backfill_profile_table_security_baseline.sql:1)
+- [PROFILE_TABLE_SECURITY_BASELINE.md](/c:/Users/misa/Documents/GitHub/overclock.lol/docs/security/PROFILE_TABLE_SECURITY_BASELINE.md:1)
+
+That closes the earlier “final grant/RLS truth is not reconstructable from repo
+source” gap for the listed profile tables. The audit findings below remain a
+historical record of what was true before that baseline was added.
 
 ## Executive Summary
 
