@@ -15,3 +15,5 @@ the app today.
   - shipped remediation pass tied to the baseline audit
 - `LFG_FEED_SECURITY_NOTES.md`
   - current operational notes for LFG feed protections and limits
+- `LFG_EXPIRATION_ARCHITECTURE.md`
+  - safe execution model for LFG expiration and retention cleanup

@@ -44,10 +44,6 @@ function isMissingDatabaseObjectError(error: unknown, objectName: string) {
   );
 }
 
-export function isMissingExpireStackPostsSupportError(error: unknown) {
-  return isMissingDatabaseObjectError(error, "expire_stack_posts");
-}
-
 export function isMissingStackMembersSupportError(error: unknown) {
   return isMissingDatabaseObjectError(error, "stack_members");
 }
@@ -162,21 +158,6 @@ function normalizeUpdateStackMembershipResult(
       typeof nested.member_profile_id === "string" ? nested.member_profile_id : null,
     postId: typeof nested.post_id === "string" ? nested.post_id : null,
   };
-}
-
-export async function expireStackPostsRecord() {
-  const supabase = await createClient();
-  const { error } = await supabase.rpc("expire_stack_posts");
-
-  if (error) {
-    if (isMissingExpireStackPostsSupportError(error)) {
-      return false;
-    }
-
-    throw error;
-  }
-
-  return true;
 }
 
 export async function sendStackJoinRequestRecord(input: {
