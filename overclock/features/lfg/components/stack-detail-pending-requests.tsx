@@ -147,10 +147,11 @@ export function StackDetailPendingRequests({
                         </span>
                       ) : null}
                     </div>
-                    <p className="oc-profile-meta mt-0.5 text-[11px] leading-5 text-zinc-400">
-                      Wants to join as {roleLabel}
-                      {rankLabel ? ` - ${rankLabel}` : ""}
-                    </p>
+                    <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] text-zinc-400">
+                      {rankLabel ? <span>{rankLabel}</span> : null}
+                      {rankLabel ? <span aria-hidden="true" className="text-zinc-700">&bull;</span> : null}
+                      <span>{roleLabel}</span>
+                    </div>
                     {feedbackByRequestId[request.id] ? (
                       <p className="oc-profile-meta mt-1 text-[11px] text-rose-300">
                         {feedbackByRequestId[request.id]}
