@@ -6,7 +6,7 @@ import {
   isLFGLookingForRole,
 } from "@/lib/lfg/lfg-post-types";
 import type { RecentProfilePostDto } from "@/lib/pages/profile-page-dto";
-import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
+import { LFGPostActionsMenu } from "@/features/lfg/components/lfg-post-actions-menu";
 import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type RecentProfilePostsProps = {

@@ -1,8 +1,8 @@
 "use client";
 
-import { updateProfile } from "@/app/account/actions";
-import { AvatarUploadButton } from "@/app/account/avatar-upload-button";
-import { ProfileCoverUploadButton } from "@/app/u/[username]/profile/profile-cover-upload-button";
+import { updateProfile } from "@/features/profile/actions";
+import { AvatarUploadButton } from "@/features/profile/components/avatar-upload-button";
+import { ProfileCoverUploadButton } from "@/features/profile/components/profile-cover-upload-button";
 import { ProfileEditFormFields } from "@/features/profile/components/profile-edit-form-fields";
 import { useProfileEditForm } from "@/features/profile/hooks/use-profile-edit-form";
 import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";

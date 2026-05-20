@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { AuthMessage } from "@/app/login/components";
+import { AuthMessage } from "@/features/auth/components";
+import { RecentProfilePosts } from "@/features/profile/components/recent-profile-posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getProfilePageDto } from "@/lib/pages/profile-page-dto";
@@ -12,7 +13,6 @@ import {
   type FeaturedClip,
 } from "./profile/featured-clips";
 import { PreferredHeroPools } from "./profile/preferred-hero-pools";
-import { RecentProfilePosts } from "./profile/recent-profile-posts";
 import { getCompetitiveRankDisplay } from "./profile/profile-rank";
 
 type ProfilePageProps = {

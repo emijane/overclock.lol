@@ -4,7 +4,7 @@ import { CompetitiveProfileHeader } from "@/app/account/competitive/components/c
 import { CompetitiveProfileManager } from "@/app/account/competitive/components/competitive-profile-manager";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { AuthMessage } from "@/app/login/components";
+import { AuthMessage } from "@/features/auth/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { PageContainer } from "@/components/app-shell/page-container";
-import { AuthMessage } from "@/app/login/components";
+import { AuthMessage } from "@/features/auth/components";
 import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
 import { AccountPostPagination } from "@/app/account/posts/components/account-post-pagination";
 import { AccountPostTabs } from "@/app/account/posts/components/account-post-tabs";

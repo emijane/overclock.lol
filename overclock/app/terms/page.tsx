@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { LegalDocument } from "@/app/legal/legal-document";
+import { LegalDocument } from "@/components/legal/legal-document";
 
 export const metadata: Metadata = {
   title: "Terms of Service | overclock.lol",

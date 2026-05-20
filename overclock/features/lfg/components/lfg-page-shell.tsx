@@ -4,8 +4,8 @@ import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react"
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { createLFGPost } from "@/app/lfg/actions";
-import { AuthMessage } from "@/app/login/components";
+import { AuthMessage } from "@/features/auth/components";
+import { createLFGPost } from "@/features/lfg/actions";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";

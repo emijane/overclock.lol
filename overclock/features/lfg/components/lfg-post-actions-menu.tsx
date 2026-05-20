@@ -4,7 +4,7 @@ import Link from "next/link";
 import { MoreHorizontalIcon } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
-import { closeLFGPost } from "@/app/lfg/actions";
+import { closeLFGPost } from "@/features/lfg/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,

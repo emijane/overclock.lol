@@ -3,7 +3,7 @@ import {
   LFGSectionPage,
   type LFGSectionConfig,
   type LFGSectionPageProps,
-} from "@/app/lfg/section-page";
+} from "@/features/lfg/section-page";
 
 const STACKS_PAGE_CONFIG = {
   composerMode: "cta",

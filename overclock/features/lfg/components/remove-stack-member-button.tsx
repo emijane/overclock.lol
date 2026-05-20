@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { XIcon } from "lucide-react";
 
-import { removeStackMember } from "@/app/stacks/actions";
+import { removeStackMember } from "@/features/lfg/stack-actions";
 
 type RemoveStackMemberButtonProps = {
   memberProfileId: string;

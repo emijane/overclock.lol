@@ -10,8 +10,8 @@ import AvatarEditor, {
   type Position,
 } from "react-avatar-editor";
 
-import { uploadProfileAvatar } from "@/app/account/actions";
-import { createCroppedAvatarFile } from "@/app/account/avatar-crop";
+import { uploadProfileAvatar } from "@/features/profile/actions";
+import { createCroppedAvatarFile } from "@/features/profile/lib/avatar-crop";
 import {
   PROFILE_AVATAR_OUTPUT_SIZE,
   PROFILE_AVATAR_MAX_MB,

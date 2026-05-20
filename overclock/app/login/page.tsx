@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { AuthMessage, UnauthenticatedPanel } from "@/app/login/components";
+import { AuthMessage, UnauthenticatedPanel } from "@/features/auth/components";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 type LoginPageProps = {

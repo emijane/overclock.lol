@@ -2,14 +2,14 @@ import { redirect } from "next/navigation";
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { AuthMessage } from "@/app/login/components";
 import { AccountBlockedUsersCard } from "@/features/blocks/components/account-blocked-users-card";
+import { AuthMessage } from "@/features/auth/components";
+import { ProfileEditForm } from "@/features/profile/components/profile-edit-form";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 
 import { AvailabilityToggleCard } from "./availability-toggle-card";
 import { PresencePrivacyToggleCard } from "./presence-privacy-toggle-card";
-import { ProfileEditForm } from "./profile-edit-form";
 
 type AccountPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

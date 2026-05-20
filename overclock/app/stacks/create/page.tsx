@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { LFGPageShell } from "@/app/lfg/components/lfg-page-shell";
+import { LFGPageShell } from "@/features/lfg/components/lfg-page-shell";
 
 export const metadata: Metadata = {
   title: "Create Stack Post | overclock.lol",

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDownIcon, Users2Icon } from "lucide-react";
 
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
-import { leaveStack, sendStackJoinRequest } from "@/app/stacks/actions";
+import { leaveStack, sendStackJoinRequest } from "@/features/lfg/stack-actions";
 
 type RequestToJoinState =
   | "idle"

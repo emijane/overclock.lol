@@ -1,4 +1,4 @@
-import { RankedAvatar } from "@/app/components/ranked-avatar";
+import { RankedAvatar } from "@/components/profile/ranked-avatar";
 import { PresenceIndicator } from "@/components/presence/presence-indicator";
 
 type ProfileAvatarProps = {

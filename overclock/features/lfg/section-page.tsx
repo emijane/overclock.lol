@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { LFGPageShell } from "@/app/lfg/components/lfg-page-shell";
+import { LFGPageShell } from "@/features/lfg/components/lfg-page-shell";
 import {
   normalizeLFGSearchQuery,
   normalizeLFGRankFilterOption,

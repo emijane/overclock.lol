@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 
-import { uploadProfileCover } from "@/app/account/actions";
-import { createCroppedCoverFile } from "./profile-cover-crop";
+import { uploadProfileCover } from "@/features/profile/actions";
+import { createCroppedCoverFile } from "@/features/profile/lib/cover-crop";
 import {
   PROFILE_COVER_ASPECT_RATIO,
   PROFILE_COVER_IMAGE_MAX_MB,

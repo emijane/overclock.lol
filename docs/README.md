@@ -32,7 +32,7 @@ Root `docs/` is the canonical documentation home for this repository.
 ## Source Of Truth
 
 - `docs/legal/*`
-  - required by `overclock/app/legal/legal-document.tsx`
+  - required by `overclock/components/legal/legal-document.tsx`
 - `docs/agents/*`
   - workflow and maintenance guidance
 - `docs/roadmap/*`

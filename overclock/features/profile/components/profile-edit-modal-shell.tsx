@@ -4,7 +4,7 @@ import { XIcon } from "lucide-react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
-import { updateProfile } from "@/app/account/actions";
+import { updateProfile } from "@/features/profile/actions";
 import { ProfileEditFormFields } from "@/features/profile/components/profile-edit-form-fields";
 import { useProfileEditForm } from "@/features/profile/hooks/use-profile-edit-form";
 import type { ProfileEditProfile } from "@/features/profile/types/profile-edit-types";

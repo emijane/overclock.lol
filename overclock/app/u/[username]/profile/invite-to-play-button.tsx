@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
-import { cancelPlayInvite, removeProfileConnection, sendPlayInvite } from "@/app/matches/actions";
+import {
+  cancelPlayInvite,
+  removeProfileConnection,
+  sendPlayInvite,
+} from "@/features/matches/actions";
 import { getInviteActionPresentation } from "@/lib/matches/invite-action-presentation";
 import type {
   InviteViewerState,

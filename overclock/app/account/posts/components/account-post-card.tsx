@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-import { LFGPostActionsMenu } from "@/app/lfg/components/lfg-post-actions-menu";
-import { LFGPostStatusPill } from "@/app/lfg/components/lfg-post-status-pill";
-import { formatPostDate } from "@/app/lfg/components/format-post-date";
+import { formatPostDate } from "@/features/lfg/components/format-post-date";
+import { LFGPostActionsMenu } from "@/features/lfg/components/lfg-post-actions-menu";
+import { LFGPostStatusPill } from "@/features/lfg/components/lfg-post-status-pill";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { LFGPostDisplayStatus } from "@/lib/lfg/lfg-post-display-status";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
