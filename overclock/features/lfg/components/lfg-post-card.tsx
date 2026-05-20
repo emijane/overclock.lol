@@ -8,7 +8,7 @@ import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
-import { RankedAvatar } from "@/components/profile/ranked-avatar";
+import { RankedAvatar } from "@/features/profile/components/ranked-avatar";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
 import { LFGInviteButton } from "@/components/matches/lfg-invite-button";

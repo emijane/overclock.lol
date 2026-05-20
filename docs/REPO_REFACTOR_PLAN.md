@@ -497,7 +497,7 @@ repo/
 - `overclock/app/components/presence-indicator.tsx` -> `overclock/components/presence/presence-indicator.tsx`
 - `overclock/app/components/looking-to-play-badge.tsx` -> `overclock/components/presence/looking-to-play-badge.tsx`
 - `overclock/app/components/play-invite-realtime-refresh.tsx` -> `overclock/components/matches/play-invite-realtime-refresh.tsx`
-- `overclock/app/components/ranked-avatar.tsx` -> `overclock/components/profile/ranked-avatar.tsx`
+- `overclock/app/components/ranked-avatar.tsx` -> `overclock/features/profile/components/ranked-avatar.tsx`
 
 ### Profile Feature Extraction
 

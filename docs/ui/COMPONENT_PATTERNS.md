@@ -243,7 +243,7 @@
   - large avatars should anchor identity sections
 - References:
   - `components/ui/avatar.tsx`
-  - `app/components/ranked-avatar.tsx`
+  - `features/profile/components/ranked-avatar.tsx`
   - `profile-header.tsx`
 
 ## Cover Images

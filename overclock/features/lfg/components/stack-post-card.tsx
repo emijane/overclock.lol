@@ -9,7 +9,7 @@ import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
-import { RankedAvatar } from "@/components/profile/ranked-avatar";
+import { RankedAvatar } from "@/features/profile/components/ranked-avatar";
 import { formatPostDate } from "./format-post-date";
 import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
 import { RequestToJoinButton } from "./request-to-join-button";

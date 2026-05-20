@@ -17,6 +17,8 @@ snapshots that are still worth preserving for context.
   - active and recent QA docs for Duos, Stacks, and related LFG work
 - `archive/`
   - older or superseded QA snapshots kept only for historical context
+  - includes the only surviving copies of legacy LFG refactor timing snapshots
+    and the 2026-04-24 section audit
 
 ## Related Docs
 
