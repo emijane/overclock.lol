@@ -6,6 +6,19 @@
 
 ---
 
+## 2026-05-20 Follow-Up
+
+This audit remains useful for the measured Supabase latency, but one shell-level
+detail has changed since it was written:
+
+- `overclock/app/layout.tsx` no longer calls `getCurrentProfile()` directly
+- the shared auth bar now owns its own server-side identity lookup
+- authenticated routes still use `getCurrentProfile()` where they need
+  request-scoped identity
+
+Keep that split in mind when using this audit to reason about current shell
+coupling or cache boundaries.
+
 ## Summary Diagnosis
 
 The 764ms and 1254ms application-code times are driven entirely by **Supabase RPC execution**, not middleware, proxy overhead, or updateLastSeen(). The proxy contributes 8–11ms (JWT decode + cookie writes). updateLastSeen() is client-only and fires after page paint — it is not in the GET critical path.

@@ -3,10 +3,8 @@ import { Geist, IBM_Plex_Mono, Inter_Tight } from "next/font/google";
 
 import { GlobalBackgroundShell } from "@/components/app-shell/global-background-shell";
 import { GlobalFooter } from "@/components/app-shell/global-footer";
-import { GlobalAuthBar } from "@/components/navigation/global-auth-bar";
+import { GlobalAuthBarServer } from "@/components/navigation/global-auth-bar-server";
 import { PresenceProvider } from "@/components/presence/presence-provider";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 
 import "./globals.css";
 
@@ -33,48 +31,29 @@ export const metadata: Metadata = {
     "Profile-first Overwatch player pages with Discord sign-in, rank details, socials, and hero pools.",
 };
 
-export default async function RootLayout({
-    children,
+export default function RootLayout({
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    const { user, profile } = await getCurrentProfile();
-
-    return (
-        <html
-            lang="en"
-            suppressHydrationWarning
-            className={`${geistSans.variable} ${ibmPlexMono.variable} ${interTight.variable} h-full antialiased`}
-        >
-            <body
-                suppressHydrationWarning
-                className="min-h-screen flex flex-col bg-[var(--oc-bg-base)] text-zinc-100"
-            >
-                <PresenceProvider
-                    currentUserId={user?.id ?? null}
-                    currentUsername={profile?.username ?? null}
-                >
-                    <GlobalBackgroundShell>
-                        <GlobalAuthBar
-                            profile={
-                                profile
-                                    ? {
-                                          avatar_url: getProfileAvatarUrl(
-                                              profile.avatar_url ?? null,
-                                              profile.avatar_updated_at ?? null
-                                          ),
-                                          display_name: profile.display_name ?? null,
-                                          username: profile.username,
-                                      }
-                                    : null
-                            }
-                            userId={user?.id ?? null}
-                        />
-                        {children}
-                        <GlobalFooter />
-                    </GlobalBackgroundShell>
-                </PresenceProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${ibmPlexMono.variable} ${interTight.variable} h-full antialiased`}
+    >
+      <body
+        suppressHydrationWarning
+        className="min-h-screen flex flex-col bg-[var(--oc-bg-base)] text-zinc-100"
+      >
+        <PresenceProvider>
+          <GlobalBackgroundShell>
+            <GlobalAuthBarServer />
+            {children}
+            <GlobalFooter />
+          </GlobalBackgroundShell>
+        </PresenceProvider>
+      </body>
+    </html>
+  );
 }

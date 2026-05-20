@@ -35,13 +35,15 @@ Current ownership expectation:
 
 Presence currently uses:
 
-- one shared authenticated client provider
+- one shared client provider with browser-hydrated auth identity
 - Supabase Realtime Presence
 - a shared presence channel for profiles
 
 Current implementation direction:
 
 - the app subscribes once through a shared `PresenceProvider`
+- the provider resolves the current Supabase user in the browser instead of
+  requiring root-layout auth props
 - online user ids are tracked in memory client-side
 - owner presence updates are throttled instead of written on every interaction
 - `last_seen_at` acts as the SSR-safe fallback before live presence resolves

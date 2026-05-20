@@ -18,8 +18,6 @@ const LAST_SEEN_HEARTBEAT_MS = 60 * 1000;
 
 type PresenceProviderProps = {
   children: React.ReactNode;
-  currentUserId?: string | null;
-  currentUsername?: string | null;
 };
 
 type PresenceContextValue = {
@@ -55,19 +53,47 @@ function collectOnlineUserIds(state: Record<string, PresenceStateEntry[]>) {
 
 export function PresenceProvider({
   children,
-  currentUserId,
-  currentUsername,
 }: PresenceProviderProps) {
+  const [supabase] = useState(() => createClient());
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [isReady, setIsReady] = useState(false);
   const lastSeenWriteAtRef = useRef<number>(0);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function hydratePresenceSession() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!isActive) {
+        return;
+      }
+
+      setCurrentUserId(user?.id ?? null);
+    }
+
+    void hydratePresenceSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUserId(session?.user?.id ?? null);
+    });
+
+    return () => {
+      isActive = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   useEffect(() => {
     if (!currentUserId) {
       return;
     }
 
-    const supabase = createClient();
     const tabId =
       typeof crypto !== "undefined" && "randomUUID" in crypto
         ? crypto.randomUUID()
@@ -117,7 +143,6 @@ export function PresenceProvider({
           joinedAt: new Date().toISOString(),
           tabId,
           userId: currentUserId,
-          username: currentUsername ?? null,
         });
 
         syncOnlineUsers();
@@ -139,7 +164,7 @@ export function PresenceProvider({
       void channel.untrack();
       void supabase.removeChannel(channel);
     };
-  }, [currentUserId, currentUsername]);
+  }, [currentUserId, supabase]);
 
   const value = useMemo<PresenceContextValue>(
     () => ({
