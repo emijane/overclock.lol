@@ -93,7 +93,7 @@ function unwrapRpcRecord(
   return nested;
 }
 
-function normalizeSendStackRequestResult(value: unknown): SendStackRequestResult {
+export function normalizeSendStackRequestResult(value: unknown): SendStackRequestResult {
   const nested = unwrapRpcRecord(value, "send_stack_request");
 
   if (!nested) {
@@ -107,7 +107,7 @@ function normalizeSendStackRequestResult(value: unknown): SendStackRequestResult
   };
 }
 
-function normalizeUpdateStackRequestResult(value: unknown): UpdateStackRequestResult {
+export function normalizeUpdateStackRequestResult(value: unknown): UpdateStackRequestResult {
   const record = normalizeRecord(value);
 
   if (!record) {
@@ -136,7 +136,7 @@ function normalizeUpdateStackRequestResult(value: unknown): UpdateStackRequestRe
   };
 }
 
-function normalizeUpdateStackMembershipResult(
+export function normalizeUpdateStackMembershipResult(
   value: unknown,
   rpcKey: string
 ): UpdateStackMembershipResult {

@@ -3,11 +3,10 @@
 import { redirect } from "next/navigation";
 
 import { updateLastSeen as updateSharedLastSeen } from "@/lib/presence/update-last-seen";
-import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
+import { sanitizeProfileBio } from "@/lib/profiles/profile-bio";
 import {
   LOOKING_FOR_OPTIONS,
   REGION_OPTIONS,
-  REGION_TO_TIMEZONES,
   TIMEZONE_OPTIONS,
 } from "@/lib/profiles/profile-options";
 
@@ -19,18 +18,12 @@ import {
 } from "./shared";
 import {
   parseProfileSocials,
-  type ParsedProfileSocials,
   validateProfileSocials,
 } from "./profile-socials";
-
-type ParsedProfileUpdate = ParsedProfileSocials & {
-  bio: string | null;
-  displayName: string | null;
-  lookingFor: (typeof LOOKING_FOR_OPTIONS)[number][];
-  region: (typeof REGION_OPTIONS)[number] | null;
-  returnTo: string;
-  timezone: (typeof TIMEZONE_OPTIONS)[number] | null;
-};
+import {
+  getProfileUpdateValidationError,
+  type ParsedProfileUpdate,
+} from "./profile-validation";
 
 function optionalEnumValue<T extends readonly string[]>(
   value: FormDataEntryValue | null,
@@ -82,34 +75,14 @@ function parseProfileUpdate(formData: FormData): ParsedProfileUpdate {
 }
 
 function validateProfileUpdate(parsedUpdate: ParsedProfileUpdate) {
-  const { bio, displayName, region, returnTo, timezone } = parsedUpdate;
-  const bioValidationError = validateProfileBio(bio);
+  const validationError = getProfileUpdateValidationError(parsedUpdate);
+  const { returnTo } = parsedUpdate;
 
-  if (!displayName) {
-    accountRedirect("Display name is required.", returnTo);
-  }
-
-  if (displayName.length > 40) {
-    accountRedirect("Display name must be 40 characters or less.", returnTo);
-  }
-
-  if (bioValidationError) {
-    accountRedirect(bioValidationError, returnTo);
+  if (validationError) {
+    accountRedirect(validationError, returnTo);
   }
 
   validateProfileSocials(parsedUpdate, returnTo);
-
-  if (timezone && !region) {
-    accountRedirect("Choose a region before selecting a server.", returnTo);
-  }
-
-  if (region && timezone) {
-    const allowedTimezones = REGION_TO_TIMEZONES[region];
-
-    if (!allowedTimezones.some((value) => value === timezone)) {
-      accountRedirect("Selected server does not match the chosen region.", returnTo);
-    }
-  }
 }
 
 export async function updateLastSeen() {

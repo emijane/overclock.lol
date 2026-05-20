@@ -25,52 +25,21 @@ import {
   closeOwnedActiveLFGPost,
   createLFGPostAtomically,
 } from "@/lib/lfg/posts";
-
-function getActionErrorText(error: unknown) {
-  if (!error || typeof error !== "object") {
-    return "";
-  }
-
-  const candidate = error as Record<string, unknown>;
-
-  return [
-    typeof candidate.code === "string" ? candidate.code : "",
-    typeof candidate.message === "string" ? candidate.message : "",
-    typeof candidate.details === "string" ? candidate.details : "",
-    typeof candidate.hint === "string" ? candidate.hint : "",
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function getPublicStackDebugMessage(error: unknown) {
-  if (!error || typeof error !== "object") {
-    return null;
-  }
-
-  const candidate = error as Record<string, unknown>;
-  const code = typeof candidate.code === "string" ? candidate.code : null;
-  const message =
-    typeof candidate.message === "string" ? candidate.message.trim() : null;
-
-  if (!code && !message) {
-    return null;
-  }
-
-  const compactMessage = message
-    ? message.replace(/\s+/g, " ").slice(0, 120)
-    : "Unknown stack create error";
-
-  return `Stack debug: ${code ?? "no-code"} ${compactMessage}`;
-}
+import {
+  getCreateLFGPostErrorMessage,
+  getLFGRedirectPath,
+  getPublicStackDebugMessage,
+  resolveCloseLFGReturnPath,
+  shouldRedirectToLoginForCreateError,
+  shouldShowStackCreateDebugMessage,
+} from "./action-rules";
 
 function lfgRedirect(
   lfgType: string,
   message: string,
   type: "error" | "success" = "error"
 ): never {
-  const path = lfgType === "duos" ? "/duos" : `/${lfgType}`;
+  const path = getLFGRedirectPath(lfgType);
   const params = new URLSearchParams({ message, type });
   redirect(`${path}?${params.toString()}`);
 }
@@ -224,42 +193,11 @@ export async function createLFGPost(formData: FormData) {
     });
 
     if (!result.created) {
-      if (result.errorCode === "duplicate_active_post") {
-        lfgRedirect(
-          lfgTypeValue,
-          "You already have an active post in this section with this title."
-        );
-      }
-
-      if (result.errorCode === "active_slot_limit") {
-        lfgRedirect(
-          lfgTypeValue,
-          "You already have the maximum number of active posts for this role."
-        );
-      }
-
-      if (result.errorCode === "create_rate_limit") {
-        lfgRedirect(
-          lfgTypeValue,
-          "You've created too many posts recently. Try again later."
-        );
-      }
-
-      if (result.errorCode === "already_in_active_stack") {
-        lfgRedirect(
-          lfgTypeValue,
-          "You already belong to an active stack. Leave or close it before creating another."
-        );
-      }
-
-      if (
-        result.errorCode === "unauthenticated" ||
-        result.errorCode === "forbidden"
-      ) {
+      if (shouldRedirectToLoginForCreateError(result.errorCode)) {
         redirect("/login");
       }
 
-      lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
+      lfgRedirect(lfgTypeValue, getCreateLFGPostErrorMessage(result.errorCode));
     }
   } catch (error) {
     console.error("LFG post creation failed", {
@@ -269,14 +207,7 @@ export async function createLFGPost(formData: FormData) {
       profileId: profile.id,
     });
 
-    const errorText = getActionErrorText(error);
-
-    if (
-      lfgTypeValue === "stacks" &&
-      (errorText.includes("create_lfg_post_atomic") ||
-        errorText.includes("stack_members") ||
-        errorText.includes("expire_stack_posts"))
-    ) {
+    if (shouldShowStackCreateDebugMessage(lfgTypeValue, error)) {
       const debugMessage = getPublicStackDebugMessage(error);
 
       lfgRedirect(
@@ -329,11 +260,10 @@ export async function closeLFGPost(formData: FormData) {
     redirectWithMessage(fallbackPath, "Unable to close that post right now.");
   }
 
-  const redirectPath = result.lfgType ? `/${result.lfgType}` : fallbackPath;
-  const returnPath =
-    fallbackPath.startsWith("/u/") || fallbackPath === "/lfg"
-      ? fallbackPath
-      : redirectPath;
+  const { redirectPath, returnPath } = resolveCloseLFGReturnPath({
+    fallbackPath,
+    resultLfgType: result.lfgType,
+  });
 
   if (!result.updated) {
     redirectWithMessage(returnPath, "That post is no longer active.");

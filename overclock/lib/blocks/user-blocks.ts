@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
+import { getBlockRevalidationPaths } from "./block-effects";
 
 type UserBlockRpcResult = {
   actor_username?: string | null;
@@ -43,7 +44,7 @@ export type BlockedUserListItem = {
   username: string | null;
 };
 
-function normalizeUserBlockRpcResult(value: unknown): UserBlockRpcResult {
+export function normalizeUserBlockRpcResult(value: unknown): UserBlockRpcResult {
   if (typeof value === "string") {
     try {
       return normalizeUserBlockRpcResult(JSON.parse(value));
@@ -96,19 +97,8 @@ function revalidateBlockPaths(input: {
   currentUsername?: string | null;
   targetUsername?: string | null;
 }) {
-  revalidatePath("/account");
-  revalidatePath("/duos");
-  revalidatePath("/lfg");
-  revalidatePath("/matches");
-  revalidatePath("/search/users");
-  revalidatePath("/stacks");
-
-  if (input.currentUsername) {
-    revalidatePath(`/u/${input.currentUsername}`);
-  }
-
-  if (input.targetUsername) {
-    revalidatePath(`/u/${input.targetUsername}`);
+  for (const path of getBlockRevalidationPaths(input)) {
+    revalidatePath(path);
   }
 }
 

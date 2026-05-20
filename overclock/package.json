@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "verify": "npm run lint && npm run typecheck",
-    "test": "tsc -p tsconfig.test.json && node --test --test-isolation=none .test-dist/tests/**/*.test.js"
+    "test": "tsc -p tsconfig.test.json && node --require ./.test-dist/tests/test-alias-register.js --test --test-isolation=none .test-dist/tests/**/*.test.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
