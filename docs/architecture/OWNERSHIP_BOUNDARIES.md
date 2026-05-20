@@ -14,12 +14,30 @@ Canonical ownership split for the active app:
   - domain UI
   - server actions and mutations
   - feature-owned composition that is reusable across routes
+  - may import from the same feature subtree plus shared `components/*` and
+    `lib/*`
+  - must not import sibling feature folders or route-local `app/*` files
 - `overclock/lib/*`
   - pure infra
   - data access
   - DTO loaders and normalizers
   - policies
   - pure helpers with no route ownership
+
+## Enforced Lint Boundaries
+
+Architecture linting now enforces these import rules:
+
+- shared `components/*`, `features/*`, and `lib/*` code cannot import `app/*`
+- route folders in `app/*` cannot import sibling top-level route folders
+- each top-level feature in `features/*` may only import from:
+  - its own feature subtree
+  - shared `components/*`
+  - shared `lib/*`
+
+If shared code needs something from a route or sibling feature, move that code
+to a shared component, a lib helper, or the owning feature instead of adding a
+cross-boundary import.
 
 ## `lib/pages/*`
 

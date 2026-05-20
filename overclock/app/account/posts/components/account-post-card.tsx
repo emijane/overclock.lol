@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { formatPostDate } from "@/features/lfg/components/format-post-date";
-import { LFGPostActionsMenu } from "@/features/lfg/components/lfg-post-actions-menu";
+import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
 import { LFGPostStatusPill } from "@/features/lfg/components/lfg-post-status-pill";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { LFGPostDisplayStatus } from "@/lib/lfg/lfg-post-display-status";

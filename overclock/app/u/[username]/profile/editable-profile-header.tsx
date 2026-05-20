@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { blockUser, unblockUser } from "@/lib/blocks/user-blocks";
-import { UserBlockMenu } from "@/features/blocks/components/user-block-controls";
+import { UserBlockMenu } from "@/components/blocks/user-block-controls";
 import { ProfileHeader } from "./profile-header";
 import { InviteToPlayButton } from "./invite-to-play-button";
 import type {

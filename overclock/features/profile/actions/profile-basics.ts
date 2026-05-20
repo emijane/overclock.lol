@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { updateLastSeen as updateSharedLastSeen } from "@/features/presence/actions";
+import { updateLastSeen as updateSharedLastSeen } from "@/lib/presence/update-last-seen";
 import { sanitizeProfileBio, validateProfileBio } from "@/lib/profiles/profile-bio";
 import {
   LOOKING_FOR_OPTIONS,
