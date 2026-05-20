@@ -213,6 +213,9 @@ export async function removeStackMember(formData: FormData) {
   if (result.updated) {
     revalidatePath("/stacks");
     revalidatePath("/account/posts");
+    if (result.postId) {
+      revalidatePath(`/stacks/${result.postId}`);
+    }
   }
 
   return {

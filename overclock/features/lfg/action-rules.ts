@@ -95,7 +95,9 @@ export function resolveCloseLFGReturnPath(input: {
       : input.fallbackPath;
 
   const returnPath =
-    input.fallbackPath.startsWith("/u/") || input.fallbackPath === "/lfg"
+    input.fallbackPath.startsWith("/u/") ||
+    input.fallbackPath === "/lfg" ||
+    input.fallbackPath.startsWith("/stacks/")
       ? input.fallbackPath
       : redirectPath;
 

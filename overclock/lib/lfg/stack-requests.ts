@@ -430,10 +430,6 @@ export async function getStackRequestStatesForPosts(input: {
     }
 
     const status = row.status;
-    if (status === "accepted" && !canReadStackMembers && result[postId] === "none") {
-      result[postId] = "accepted";
-    }
-
     if ((status === "pending" || status === "declined") && result[postId] === "none") {
       result[postId] = status;
     }

@@ -177,6 +177,7 @@ export function RequestToJoinButton({
 
         if (result.success) {
           setUiState("sent");
+          router.refresh();
         } else if (result.errorCode === "stack_full") {
           setUiState("full");
         } else if (result.errorCode === "already_in_active_stack") {

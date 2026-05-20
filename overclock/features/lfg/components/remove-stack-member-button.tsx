@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { XIcon } from "lucide-react";
 
 import { removeStackMember } from "@/features/lfg/stack-actions";
@@ -21,6 +21,15 @@ export function RemoveStackMemberButton({
 }: RemoveStackMemberButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <span className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-rose-500/20 bg-rose-500/6 px-3 text-[11px] font-medium text-rose-300">
+        Failed
+      </span>
+    );
+  }
 
   return (
     <button
@@ -29,6 +38,7 @@ export function RemoveStackMemberButton({
       aria-label="Remove member"
       onClick={() =>
         startTransition(async () => {
+          setFailed(false);
           const formData = new FormData();
           formData.set("post_id", postId);
           formData.set("member_profile_id", memberProfileId);
@@ -36,6 +46,8 @@ export function RemoveStackMemberButton({
 
           if (result.success) {
             router.refresh();
+          } else {
+            setFailed(true);
           }
         })
       }
