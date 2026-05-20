@@ -2,6 +2,12 @@
 
 Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file is the quick lookup table.
 
+## Ownership Rule
+
+- Use `overclock/components/*` for shared app-shell, navigation, and primitive UI already reused across route groups.
+- Use route-owned components under `overclock/app/*` when the pattern is only reused inside one route group.
+- Do not promote a route-owned component into `overclock/components/*` or `overclock/features/*` until reuse clearly crosses route or domain boundaries.
+
 ## Page Types
 
 ### If building a feed page
@@ -11,17 +17,26 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - Use:
   - `overclock/features/lfg/components/lfg-post-card.tsx` for general LFG feed cards
   - `overclock/features/lfg/components/stack-post-card.tsx` for stack feed cards
+- Use when:
+  - the page needs title, filters, sidebar rhythm, and embedded empty/error states
+- Avoid when:
+  - the page is a small account/settings surface or does not behave like a feed
 
 ### If building a settings page
 
 - Use the account page pattern from `overclock/app/account/page.tsx`
 - Use:
+  - `overclock/components/app-shell/dark-page-shell.tsx`
   - `overclock/components/app-shell/page-container.tsx`
   - `overclock/components/app-shell/page-reveal.tsx`
   - `oc-surface-panel` from `overclock/app/globals.css`
-- For setting rows, copy the current pattern from:
-  - `overclock/app/account/availability-toggle-card.tsx`
-  - `overclock/app/account/presence-privacy-toggle-card.tsx`
+- For account toggle rows, use:
+  - `overclock/app/account/components/settings-toggle-card.tsx`
+- Use when:
+  - the page matches the account/login/legal/matches dark centered-panel family
+  - the toggle row is staying inside the account route group
+- Avoid when:
+  - the page needs a feed shell, profile rail, or a cross-domain shared control
 
 ### If building a profile section
 
@@ -30,6 +45,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - For stacked profile sections, copy from:
   - `overclock/app/u/[username]/profile/featured-clips/featured-clips-section.tsx`
   - `overclock/features/profile/components/recent-profile-posts.tsx`
+- Use when:
+  - the section is identity-heavy and follows the public profile rail
+- Avoid when:
+  - the section is really a settings panel or dashboard workflow
 
 ## Shells and Layout
 
@@ -40,13 +59,25 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - Global background shell: `overclock/components/app-shell/global-background-shell.tsx`
 - Global nav shell: `overclock/components/navigation/global-auth-bar.tsx`
 
+### Dark atmosphere shell
+
+- `overclock/components/app-shell/dark-page-shell.tsx`
+- Use when:
+  - a route duplicates the account/login/legal/matches dark radial-gradient wrapper
+  - the page still wants `PageContainer`-based sizing and optional width overrides
+- Avoid when:
+  - the page already uses a stronger feature-owned shell such as `overclock/features/lfg/components/lfg-page-shell.tsx`
+  - the route needs a materially different background direction
+
 ### Feed shell
 
 - `overclock/features/lfg/components/lfg-page-shell.tsx`
 
 ### Centered dark panel page
 
-- Copy from:
+- Start with:
+  - `overclock/components/app-shell/dark-page-shell.tsx`
+- Then match one of:
   - `overclock/app/account/page.tsx`
   - `overclock/app/account/competitive/page.tsx`
   - `overclock/app/login/page.tsx`
@@ -57,6 +88,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 ### General feed card
 
 - `overclock/features/lfg/components/lfg-post-card.tsx`
+- Use when:
+  - you need the strongest shipped card language for interactive feed content
+- Avoid when:
+  - the surface is a settings row, management row, or media tile
 
 ### Stack feed card
 
@@ -74,6 +109,15 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 
 - `overclock/features/profile/components/recent-profile-posts.tsx`
 
+### Account settings toggle card
+
+- `overclock/app/account/components/settings-toggle-card.tsx`
+- Use when:
+  - two or more account settings rows share the same title, description, and switch layout
+- Avoid when:
+  - the control is reused outside account-route-owned UI
+  - the row needs different actions than a simple trailing `Switch`
+
 ## Rows and Lists
 
 ### Avatar + title + meta + trailing action row
@@ -83,6 +127,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
   - `overclock/features/blocks/components/account-blocked-users-card.tsx`
   - `overclock/components/navigation/main-menu-user-search.tsx`
   - `overclock/app/search/users/page.tsx`
+- Use when:
+  - the row is identity-first and ends in one compact action area
+- Avoid when:
+  - the content is a full card or multi-action feed post
 
 ### Feed list wrapper
 
@@ -177,8 +225,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 
 - Need a feed page: `overclock/features/lfg/components/lfg-page-shell.tsx`
 - Need a settings page: `overclock/app/account/page.tsx`
+- Need the repeated dark route wrapper: `overclock/components/app-shell/dark-page-shell.tsx`
 - Need a profile section: `overclock/app/u/[username]/profile/profile-header.tsx`
 - Need a card: `overclock/features/lfg/components/lfg-post-card.tsx`
+- Need an account toggle row: `overclock/app/account/components/settings-toggle-card.tsx`
 - Need a row: `overclock/features/matches/components/match-card.tsx`
 - Need an empty state: `overclock/features/lfg/components/lfg-post-list.tsx`
 - Need a dropdown: `overclock/components/lfg/lfg-post-actions-menu.tsx`

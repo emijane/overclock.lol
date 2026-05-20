@@ -9,6 +9,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
 - Reuse an existing page pattern before creating a new one.
 - Reuse an existing shared component before creating a route-local version.
 - Reuse an existing `oc-*` class before inventing a new surface, pill, or typography treatment.
+- Reuse a recent extraction such as `overclock/components/app-shell/dark-page-shell.tsx` or `overclock/app/account/components/settings-toggle-card.tsx` before copying that pattern again.
 
 ### Preserve server/client boundaries
 
@@ -93,11 +94,30 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
 ## Extraction Rules
 
 - If a pattern already exists in 2 or more places, prefer reusing or documenting extraction instead of making a third copy.
+- Audit first. Confirm the duplicate structure, ownership boundary, and source-of-truth example before extracting.
+- Small duplication inside one route group can stay route-owned.
+- Do not promote components to `overclock/features/*` or `overclock/components/*` until reuse clearly crosses route or domain boundaries.
+- Prefer route-owned extraction when:
+  - the pattern only serves one route family
+  - the API is still tightly coupled to one page group
+- Prefer shared extraction when:
+  - multiple route groups need the same shell, primitive, or control
+  - the component belongs to app-shell, navigation, or low-level UI primitives
 - Good extraction candidates from the audit:
   - repeated route background shells
   - settings toggle rows
   - avatar/meta/action list rows
   - thin re-export wrappers
+
+## Source-Of-Truth Rules
+
+- Choose the nearest shipped example before writing JSX or extracting shared markup.
+- Prefer this order:
+  - same route family
+  - same page type
+  - same interaction pattern
+  - same visual treatment
+- Do not combine unrelated examples if one strong source-of-truth page already exists.
 
 ## Refusal Rules
 
