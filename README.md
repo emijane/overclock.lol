@@ -60,6 +60,7 @@ callback route: `/auth/callback`.
 - `/duos/create` - dedicated duo post composer
 - `/stacks` - stacks feed
 - `/stacks/create` - dedicated stack post composer with fixed `1/5` group start
+- `/stacks/[postId]` - dedicated stack detail and supported management view
 
 Roadmap-only, not currently shipped:
 
@@ -84,6 +85,9 @@ LFG quality, and general codebase cleanup.
 - Signed-in users who already belong to an active stack now see a compact
   "Your current stack" panel above the `/stacks` feed with owner, members,
   capacity, and view/leave actions when applicable.
+- Stack "View" actions now open a dedicated `/stacks/[postId]` page so the
+  current stack remains reachable even when feed filters or search would hide
+  its card.
 
 ## Next Steps
 

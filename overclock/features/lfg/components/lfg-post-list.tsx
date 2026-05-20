@@ -143,6 +143,8 @@ export function LFGPostList({
                   requestState={requestState}
                   returnPath="/stacks"
                   tone={tone}
+                  viewHref={`/stacks/${post.id}`}
+                  viewLabel="View Stack"
                 />
               </div>
             );

@@ -17,7 +17,8 @@ featured videos, and create LFG posts.
 - `/lfg` is the main LFG hub.
 - `/duos` is the browse-first duo feed with server-rendered filters, feed search, and
   a dedicated create route at `/duos/create`.
-- `/stacks` is the stack feed with a dedicated create route at `/stacks/create`.
+- `/stacks` is the stack feed with a dedicated create route at `/stacks/create` and a
+  dedicated detail route at `/stacks/[postId]`.
 - Stacks currently ship as fixed-size `1/5` groups:
   - the owner is inserted automatically on create
   - accepted members increase the count up to `5/5`
@@ -26,6 +27,8 @@ featured videos, and create LFG posts.
   - signed-in users already in an active stack see a current-stack panel on
     `/stacks` with owner, accepted members, capacity, and existing view/leave
     actions when safe
+  - stack detail pages keep the active stack reachable even when feed filters or
+    search hide the feed card
 - `/teams` and `/scrims` are not currently implemented routes, even though some roadmap
   notes still discuss them as future surfaces.
 

@@ -19,6 +19,7 @@ type RequestToJoinState =
   | "error";
 
 type RequestToJoinButtonProps = {
+  guestNextHref?: string;
   lookingForRoles: CompetitiveRole[];
   postId: string;
   initialState?: "none" | "pending" | "accepted" | "declined";
@@ -45,6 +46,7 @@ function getPillClassName(tone: "default" | "duos", emphasized = false) {
 }
 
 export function RequestToJoinButton({
+  guestNextHref = "/stacks",
   lookingForRoles,
   postId,
   initialState = "none",
@@ -66,7 +68,7 @@ export function RequestToJoinButton({
   if (viewerState === "guest") {
     return (
       <a
-        href="/login?next=/stacks"
+        href={`/login?next=${encodeURIComponent(guestNextHref)}`}
         className={`flex h-7 items-center gap-1.5 border px-2.5 text-[11px] font-semibold transition ${getPillClassName(
           tone,
           true

@@ -19,6 +19,13 @@ import {
   type ActiveLFGPostCountsByRole,
 } from "./posts-policy";
 
+export type StackPostDetail = {
+  expiresAt: string | null;
+  isActive: boolean;
+  isExpired: boolean;
+  post: LFGPost;
+};
+
 async function loadBadgesByProfileId(
   supabase: Awaited<ReturnType<typeof createClient>>,
   postRows: Array<Record<string, unknown>>
@@ -225,7 +232,8 @@ async function loadStackMembersByPostId(
 
 async function hydrateSingleStackPost(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  postRow: Record<string, unknown>
+  postRow: Record<string, unknown>,
+  blockedProfileIds: string[] = []
 ) {
   const badgesByProfileId = await loadBadgesByProfileId(supabase, [postRow]);
   const stackMembersByPostId = await loadStackMembersByPostId(supabase, [postRow]);
@@ -236,7 +244,11 @@ async function hydrateSingleStackPost(
     typeof postRow.profile_id === "string"
       ? badgesByProfileId.get(postRow.profile_id) ?? []
       : [],
-    normalizedPostId ? stackMembersByPostId.get(normalizedPostId) ?? [] : []
+    normalizedPostId
+      ? (stackMembersByPostId.get(normalizedPostId) ?? []).filter(
+          (member) => !blockedProfileIds.includes(member.profileId)
+        )
+      : []
   );
 }
 
@@ -448,10 +460,17 @@ export async function getCurrentActiveStackForProfile(
   return getActiveStackPostById(postId);
 }
 
-export async function getActiveStackPostById(postId: string): Promise<LFGPost | null> {
+async function getStackPostDetailByIdInternal(input: {
+  activeOnly?: boolean;
+  postId: string;
+  viewerProfileId?: string | null;
+}): Promise<StackPostDetail | null> {
   const supabase = await createClient();
+  const blockedProfileIds = input.viewerProfileId
+    ? await getBlockedProfileIdsForViewer(input.viewerProfileId)
+    : [];
   const nowIso = new Date().toISOString();
-  const { data: postData, error: postError } = await supabase
+  let query = supabase
     .from("lfg_posts")
     .select(
       [
@@ -470,17 +489,20 @@ export async function getActiveStackPostById(postId: string): Promise<LFGPost | 
         "snapshot_timezone",
         "hero_pool_snapshot",
         "created_at",
+        "expires_at",
         "max_group_size",
         "current_member_count",
         "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
       ].join(",")
     )
-    .eq("id", postId)
-    .eq("lfg_type", "stacks")
-    .in("status", ["active", "filled"])
-    .gt("expires_at", nowIso)
-    .limit(1)
-    .maybeSingle();
+    .eq("id", input.postId)
+    .eq("lfg_type", "stacks");
+
+  query = input.activeOnly
+    ? query.in("status", ["active", "filled"]).gt("expires_at", nowIso)
+    : query.neq("status", "archived");
+
+  const { data: postData, error: postError } = await query.limit(1).maybeSingle();
 
   if (postError) {
     throw postError;
@@ -495,7 +517,59 @@ export async function getActiveStackPostById(postId: string): Promise<LFGPost | 
     return null;
   }
 
-  return hydrateSingleStackPost(supabase, postRow);
+  const authorProfileId =
+    typeof postRow.profile_id === "string" ? postRow.profile_id : null;
+
+  if (authorProfileId && blockedProfileIds.includes(authorProfileId)) {
+    return null;
+  }
+
+  const post = await hydrateSingleStackPost(supabase, postRow, blockedProfileIds);
+  const expiresAt = typeof postRow.expires_at === "string" ? postRow.expires_at : null;
+  const isExpired = Boolean(expiresAt && expiresAt <= nowIso);
+  const isActive = (post.status === "active" || post.status === "filled") && !isExpired;
+
+  return {
+    expiresAt,
+    isActive,
+    isExpired,
+    post,
+  };
+}
+
+export async function getStackPostDetailById(
+  postId: string,
+  viewerProfileId?: string | null
+): Promise<StackPostDetail | null> {
+  return getStackPostDetailByIdInternal({
+    postId,
+    viewerProfileId,
+  });
+}
+
+export async function getStackPostById(
+  postId: string,
+  viewerProfileId?: string | null
+): Promise<LFGPost | null> {
+  const detail = await getStackPostDetailByIdInternal({
+    postId,
+    viewerProfileId,
+  });
+
+  return detail?.post ?? null;
+}
+
+export async function getActiveStackPostById(
+  postId: string,
+  viewerProfileId?: string | null
+): Promise<LFGPost | null> {
+  const detail = await getStackPostDetailByIdInternal({
+    activeOnly: true,
+    postId,
+    viewerProfileId,
+  });
+
+  return detail?.post ?? null;
 }
 
 export async function getRecentPostsByProfileId(

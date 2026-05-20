@@ -78,8 +78,8 @@ export function AccountPostCard({
               <LFGPostActionsMenu
                 postId={post.id}
                 returnPath="/account/posts"
-                viewHref={`/${post.lfgType}`}
-                viewLabel={`Open ${sectionLabel}`}
+                viewHref={post.lfgType === "stacks" ? `/stacks/${post.id}` : `/${post.lfgType}`}
+                viewLabel={post.lfgType === "stacks" ? "View Stack" : `Open ${sectionLabel}`}
               />
             ) : null}
           </div>

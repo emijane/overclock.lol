@@ -27,6 +27,7 @@ type StackPostCardProps = {
   returnPath?: string;
   sectionLabel?: string | null;
   showActions?: boolean;
+  showMembershipAction?: boolean;
   statusPill?: ReactNode;
   tone?: "default" | "duos";
   viewHref?: string;
@@ -65,6 +66,7 @@ export function StackPostCard({
   returnPath,
   sectionLabel,
   showActions = true,
+  showMembershipAction = true,
   statusPill,
   tone = "default",
   viewHref,
@@ -344,7 +346,7 @@ export function StackPostCard({
                 tone={tone}
               />
             </div>
-            {!isOwner && post.profileId && (!isFull || isMember) ? (
+            {showMembershipAction && !isOwner && post.profileId && (!isFull || isMember) ? (
               <RequestToJoinButton
                 lookingForRoles={post.lookingForRoles}
                 postId={post.id}
@@ -352,7 +354,7 @@ export function StackPostCard({
                 tone={tone}
                 viewerState={viewerState}
               />
-            ) : isFull && !isOwner && !isMember ? (
+            ) : showMembershipAction && isFull && !isOwner && !isMember ? (
               <span
                 className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${
                   tone === "duos"

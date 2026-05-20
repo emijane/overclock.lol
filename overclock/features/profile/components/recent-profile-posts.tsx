@@ -131,8 +131,8 @@ export function RecentProfilePosts({
                       manageLabel="Manage Posts"
                       postId={post.id}
                       returnPath={`/u/${profileUsername}`}
-                      viewHref={`/${post.lfgType}`}
-                      viewLabel="View Post"
+                      viewHref={post.lfgType === "stacks" ? `/stacks/${post.id}` : `/${post.lfgType}`}
+                      viewLabel={post.lfgType === "stacks" ? "View Stack" : "View Post"}
                     />
                   ) : null}
                 </div>

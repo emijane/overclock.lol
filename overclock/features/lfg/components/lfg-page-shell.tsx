@@ -388,7 +388,7 @@ export async function LFGPageShell({
     type === "stacks" ? pageData.currentStack ?? fallbackCurrentStack : null;
   const resolvedActiveStackPostId =
     activeStackPostId ?? currentStackForBlockedState?.id ?? currentStackMembershipPostId;
-  const currentStackHref = currentStack ? `/stacks#stack-post-${currentStack.id}` : null;
+  const currentStackHref = currentStack ? `/stacks/${currentStack.id}` : null;
   const shouldShowCurrentStackPanel = Boolean(currentStack && profile?.id);
   const showBlockedCurrentStackCopy = isBlockedByCurrentStackMessage(message);
   const isBlockedFromStackCreate =

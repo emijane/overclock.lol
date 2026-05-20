@@ -67,10 +67,10 @@ export function CurrentStackPanel({
   const openSpots = Math.max((post.maxGroupSize ?? post.currentMemberCount) - post.currentMemberCount, 0);
   const ownerLabel = owner?.displayName ?? owner?.username ?? "Player";
   const ownerHref = owner?.username ? `/u/${owner.username}` : null;
-  const viewHref = `/stacks#stack-post-${post.id}`;
+  const viewHref = `/stacks/${post.id}`;
   const description = showBlockedCreateCopy
     ? "You already belong to an active stack, so creating another stack post is blocked until you leave this one or close it if you own it."
-    : "You already have an active stack on the board. Jump to the feed card to manage it or keep tabs on who is in your group.";
+    : "You already have an active stack on the board. Open its detail page to manage it or keep tabs on who is in your group.";
 
   return (
     <section className="px-5 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-2">
