@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
+import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 
 import { getCreateLFGPostErrorMessage } from "../action-rules";
 
@@ -54,6 +56,7 @@ export function CurrentStackPanel({
 }: CurrentStackPanelProps) {
   const openSpots = Math.max((post.maxGroupSize ?? post.currentMemberCount) - post.currentMemberCount, 0);
   const viewHref = `/stacks/${post.id}`;
+  const roleNeeds = computeStackRoleNeeds(post.stackMembers);
 
   return (
     <section className="px-5 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-2">
@@ -77,6 +80,26 @@ export function CurrentStackPanel({
                 </span>
               )}
             </div>
+            {roleNeeds.size > 0 ? (
+              <div className="flex flex-wrap items-center gap-1">
+                {Array.from(roleNeeds.entries()).map(([role, count]) => {
+                  const chipCn =
+                    role === "tank"
+                      ? "border-sky-400/14 bg-sky-400/6 text-sky-100/80"
+                      : role === "dps"
+                        ? "border-rose-400/14 bg-rose-400/6 text-rose-100/80"
+                        : "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
+                  return (
+                    <span
+                      key={role}
+                      className={`oc-profile-pill border px-2 py-0.5 text-[10px] font-medium ${chipCn}`}
+                    >
+                      {count} {COMPETITIVE_ROLE_LABELS[role]}
+                    </span>
+                  );
+                })}
+              </div>
+            ) : null}
             <h2 className="oc-profile-display line-clamp-1 text-[16px] font-semibold tracking-[-0.03em] text-zinc-50">
               {post.title}
             </h2>

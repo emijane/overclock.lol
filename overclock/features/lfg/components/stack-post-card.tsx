@@ -11,6 +11,7 @@ import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-type
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
+import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import { formatPostDate } from "./format-post-date";
@@ -48,15 +49,6 @@ function getRoleClassName(role: CompetitiveRole) {
   return "border-emerald-400/14 bg-emerald-400/[0.045] text-emerald-100/72";
 }
 
-function getAvailableRoleCounts(roles: CompetitiveRole[]) {
-  const counts = new Map<CompetitiveRole, number>();
-
-  for (const role of roles) {
-    counts.set(role, (counts.get(role) ?? 0) + 1);
-  }
-
-  return counts;
-}
 
 export function StackPostCard({
   cardClassName,
@@ -87,7 +79,7 @@ export function StackPostCard({
   const isFull =
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
   const viewerState = isOwner ? "owner" : currentProfileId ? "authenticated" : "guest";
-  const availableRoleCounts = getAvailableRoleCounts(post.lookingForRoles);
+  const roleNeeds = computeStackRoleNeeds(post.stackMembers);
 
   return (
     <article
@@ -322,9 +314,9 @@ export function StackPostCard({
             </h2>
           </div>
 
-          {availableRoleCounts.size > 0 ? (
+          {roleNeeds.size > 0 ? (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {Array.from(availableRoleCounts.entries()).map(([role, count]) => (
+              {Array.from(roleNeeds.entries()).map(([role, count]) => (
                 <span
                   key={role}
                   className={`inline-flex h-4 items-center rounded-[5px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.05em] ${getRoleClassName(role)}`}

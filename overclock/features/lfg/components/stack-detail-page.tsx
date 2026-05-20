@@ -8,6 +8,7 @@ import { closeLFGPost } from "@/features/lfg/actions";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getLFGGameModeLabel } from "@/lib/lfg/lfg-post-types";
+import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import {
   getStackPostDetailById,
   type StackPostDetail,
@@ -34,13 +35,6 @@ function getRoleChipClassName(role: CompetitiveRole) {
   return "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
 }
 
-function getRoleCounts(roles: CompetitiveRole[]) {
-  const counts = new Map<CompetitiveRole, number>();
-  for (const role of roles) {
-    counts.set(role, (counts.get(role) ?? 0) + 1);
-  }
-  return counts;
-}
 
 function getInactiveStateCopy(detail: StackPostDetail) {
   if (detail.post.status === "closed") {
@@ -132,7 +126,7 @@ function StackSummaryHeader({
       : "Expired";
   const isFull =
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
-  const roleCounts = getRoleCounts(post.lookingForRoles);
+  const roleNeeds = computeStackRoleNeeds(post.stackMembers);
   const viewerState = currentProfileId ? "authenticated" : "guest";
 
   return (
@@ -170,15 +164,15 @@ function StackSummaryHeader({
             </div>
           </div>
 
-          {roleCounts.size > 0 ? (
+          {roleNeeds.size > 0 ? (
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="oc-profile-meta text-[10px] text-zinc-500">Needs</span>
-              {Array.from(roleCounts.entries()).map(([role, count]) => (
+              {Array.from(roleNeeds.entries()).map(([role, count]) => (
                 <span
                   key={role}
                   className={`oc-profile-pill border px-2 py-0.5 text-[10px] font-medium ${getRoleChipClassName(role)}`}
                 >
-                  {count > 1 ? `${count} ` : ""}{COMPETITIVE_ROLE_LABELS[role]}
+                  {count} {COMPETITIVE_ROLE_LABELS[role]}
                 </span>
               ))}
             </div>
