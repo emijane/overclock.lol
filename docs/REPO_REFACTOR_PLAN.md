@@ -9,6 +9,11 @@ Working plan. Update this document as refactor phases land.
 - Phase 2B: Shared profile edit UI relocation completed
 - Phase 2C: Shared matches/realtime UI relocation completed
 - Phase 3A: Competitive shared UI extraction completed
+- Boundary lint cleanup baseline: clean as of 2026-05-20
+- Test baseline: passing as of 2026-05-20
+- CI baseline: committed workflow present at `.github/workflows/ci.yml`
+- Next focus: app-shell auth boundary decision documented; implementation still
+  pending
 
 ## Historical Phase Log
 
@@ -132,6 +137,21 @@ Treat it as the current-state source of truth inside this document.
 - treat old path references below as historical unless a section explicitly says
   it reflects current state
 - keep `/teams` and `/scrims` documented as roadmap-only, not shipped routes
+
+### Current Next Sequence
+
+1. Keep the current lint and boundary baseline clean.
+2. Refactor the app shell so `app/layout.tsx` stops being the long-term home for
+   auth-aware header state.
+3. Split one remaining oversized hotspot at a time with tests:
+   - `overclock/lib/matches/play-invites.ts`
+   - `overclock/features/lfg/components/lfg-page-shell.tsx`
+   - `overclock/lib/lfg/stack-requests.ts`
+   - `overclock/app/account/competitive/actions.ts`
+4. Preserve the existing CI workflow and expand targeted coverage around
+   mutation-heavy paths.
+5. Run a focused shell/LFG/profile performance pass after the structural work is
+   stable.
 
 ## Scope
 

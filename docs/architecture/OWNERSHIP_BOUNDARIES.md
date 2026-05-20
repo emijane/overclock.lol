@@ -59,6 +59,39 @@ Do not use it for:
 If a loader stops being page-specific, fold it into a domain service under
 `overclock/lib/<domain>/*` instead of growing `lib/pages/*`.
 
+## App-Shell Auth Boundary
+
+The root shell should stay as viewer-agnostic as possible.
+
+- keep `overclock/app/layout.tsx` focused on global HTML, fonts, shared shell
+  visuals, and long-lived client providers that do not require a server-side
+  identity lookup
+- do not treat the root layout as the primary place to resolve the current
+  user, current profile, or authorization state
+- keep auth checks close to page DTO loaders, route entrypoints, server
+  actions, and route handlers
+- prefer isolating signed-in shell state into a smaller boundary than the root
+  layout when we refactor the global auth bar
+
+Current decision:
+
+- `PresenceProvider` can remain in the root layout because it resolves auth in
+  the browser and does not require server-rendered profile state
+- the authenticated header shell should eventually move behind a smaller
+  auth-aware boundary instead of forcing the entire root layout to stay
+  request-scoped
+- a nested layout or similarly narrow shared server component boundary is the
+  preferred target, not more auth work in `app/layout.tsx`
+
+Why this is the target:
+
+- it matches current Next.js guidance to avoid relying on layouts as the main
+  auth-check boundary
+- it keeps future caching and shell-performance work possible once cache policy
+  changes
+- it avoids coupling public or mostly-static shell UI to
+  `getCurrentProfile()` by default
+
 ## Matches Example
 
 Use `/matches` as the reference split:
@@ -81,6 +114,8 @@ focused on request-time page orchestration.
 These files still blur the target split and should be treated as cleanup
 follow-ups rather than new patterns:
 
+- `overclock/app/layout.tsx`
+  - still renders the shared auth-aware header directly from the root layout
 - `overclock/features/lfg/section-page.tsx`
   - currently performs route-style search param orchestration
 - `overclock/features/lfg/components/lfg-page-shell.tsx`

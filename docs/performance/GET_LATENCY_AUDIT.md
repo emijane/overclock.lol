@@ -19,6 +19,31 @@ detail has changed since it was written:
 Keep that split in mind when using this audit to reason about current shell
 coupling or cache boundaries.
 
+Current repo baseline on 2026-05-20:
+
+- `npm run lint` passes
+- `npm test` passes
+- committed CI already exists at `.github/workflows/ci.yml`
+- `overclock/next.config.ts` does not enable `cacheComponents`
+- proxy responses are still forced to `Cache-Control: private, no-store`
+
+Current shell decision:
+
+- do not keep growing auth work in `overclock/app/layout.tsx`
+- isolate signed-in shell state into a smaller auth-aware boundary when the
+  shell refactor lands
+- keep auth and authorization decisions closest to page loaders, route
+  entrypoints, actions, and route handlers
+
+Why this matters even before a runtime refactor:
+
+- today, `private, no-store` and disabled `cacheComponents` mean the caching win
+  is not immediately realized
+- the boundary decision still removes ambiguity for the next pass and keeps the
+  root shell compatible with future caching/performance work
+- `PresenceProvider` already follows the desired model because it resolves user
+  identity in the browser instead of forcing root-layout server personalization
+
 ## Summary Diagnosis
 
 The 764ms and 1254ms application-code times are driven entirely by **Supabase RPC execution**, not middleware, proxy overhead, or updateLastSeen(). The proxy contributes 8–11ms (JWT decode + cookie writes). updateLastSeen() is client-only and fires after page paint — it is not in the GET critical path.
@@ -52,12 +77,13 @@ The remaining latency is inside two stored procedures:
 | `overclock/proxy.ts` | Middleware entry — rate limit + updateSession |
 | `overclock/lib/supabase/proxy.ts` | updateSession: auth.getClaims() + Cache-Control header |
 | `overclock/lib/profiles/get-current-profile.ts` | getCurrentProfile() — React cache() wrapped |
-| `overclock/app/layout.tsx` | Root layout: calls getCurrentProfile() |
+| `overclock/app/layout.tsx` | Root layout: renders `GlobalAuthBarServer` and `PresenceProvider` |
+| `overclock/components/navigation/global-auth-bar-server.tsx` | Shared auth bar: calls `getCurrentProfile()` |
 | `overclock/app/u/[username]/page.tsx` | Profile page: calls getCurrentProfile() (cache hit) + getProfilePageDto() |
 | `overclock/lib/pages/profile-page-dto.ts` | Calls `get_profile_page_dto` RPC |
 | `overclock/app/duos/page.tsx` | Thin wrapper around LFGSectionPage |
 | `overclock/app/lfg/section-page.tsx` | Passes config + searchParams to LFGPageShell |
-| `overclock/app/lfg/components/lfg-page-shell.tsx` | Calls getCurrentProfile() (cache hit) + getLFGPageData() |
+| `overclock/features/lfg/components/lfg-page-shell.tsx` | Calls getCurrentProfile() (cache hit) + getLFGPageData() |
 | `overclock/lib/pages/lfg-feed-page-dto.ts` | Calls `get_lfg_feed_page_dto` RPC |
 | `overclock/supabase/migrations/20260513020000_add_page_bundle_rpcs.sql` | get_profile_page_dto and get_matches_page_dto SQL |
 | `overclock/supabase/migrations/20260513030000_add_feed_account_search_bundle_rpcs.sql` | get_lfg_feed_page_dto and get_account_posts_page_dto SQL |
@@ -125,7 +151,7 @@ Two sequential Supabase calls:
 
 | Step | File | Calls | Notes |
 |---|---|---|---|
-| getCurrentProfile | `lib/profiles/get-current-profile.ts` | 0 new | Root layout already populated the cache |
+| getCurrentProfile | `lib/profiles/get-current-profile.ts` | 0 new | Shared auth bar already populated the cache |
 | getLFGFeedPageDto RPC | `lib/pages/lfg-feed-page-dto.ts:348` | 1 RPC | Contains N+1 EXISTS per post (see below) |
 | **Total from app layer** | | **1 Supabase call** (+ 2 cached) | |
 
@@ -237,6 +263,12 @@ Two sequential calls: `auth.getUser()` then `UPDATE profiles`. The variance is l
 
 6. **Reduce updateLastSeen to one Supabase call.**  
    The server action could be rewritten to accept the `userId` as a verified parameter (e.g., from the session cookie claims via `supabase.auth.getClaims()`), skipping the `auth.getUser()` round-trip and going straight to the UPDATE.
+
+7. **Move auth-aware shell UI out of the root layout.**  
+   Keep `app/layout.tsx` focused on viewer-agnostic shell structure and move the
+   signed-in header state into a smaller shared boundary. This will not improve
+   caching by itself while proxy stays `private, no-store`, but it is the
+   correct structural prerequisite for future shell caching work.
 
 ---
 
