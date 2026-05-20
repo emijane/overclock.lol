@@ -297,6 +297,42 @@ async function getCurrentActiveStackPostIdFromMembershipQuery(
   return data && typeof data.post_id === "string" ? data.post_id : null;
 }
 
+export async function getCurrentActiveStackPostIdForProfile(profileId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_profile_active_stack_post_id", {
+    p_exclude_post_id: null,
+    p_profile_id: profileId,
+  });
+
+  if (error) {
+    const fallbackPostId = await getCurrentActiveStackPostIdFromMembershipQuery(
+      supabase,
+      profileId
+    );
+
+    if (fallbackPostId) {
+      return fallbackPostId;
+    }
+
+    if (
+      isMissingStackMembersSupportError(error) ||
+      isMissingActiveStackLookupRpcError(error)
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
+
+  const rpcPostId = typeof data === "string" ? data : null;
+
+  if (rpcPostId) {
+    return rpcPostId;
+  }
+
+  return getCurrentActiveStackPostIdFromMembershipQuery(supabase, profileId);
+}
+
 export async function getActiveLFGPosts(
   lfgType: LFGType,
   filters?: LFGFeedFilters,
@@ -403,42 +439,7 @@ export async function getActiveLFGPosts(
 export async function getCurrentActiveStackForProfile(
   profileId: string
 ): Promise<LFGPost | null> {
-  const supabase = await createClient();
-  let postId: string | null = null;
-  const { data, error } = await supabase.rpc("get_profile_active_stack_post_id", {
-    p_exclude_post_id: null,
-    p_profile_id: profileId,
-  });
-
-  if (error) {
-    postId = await getCurrentActiveStackPostIdFromMembershipQuery(supabase, profileId);
-
-    if (postId) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("[lfg] Current stack RPC failed; membership fallback found active stack", {
-          postId,
-          profileId,
-        });
-      }
-
-      return getActiveStackPostById(postId);
-    }
-
-    if (
-      isMissingStackMembersSupportError(error) ||
-      isMissingActiveStackLookupRpcError(error)
-    ) {
-      return null;
-    }
-
-    throw error;
-  }
-
-  postId = typeof data === "string" ? data : null;
-
-  if (!postId) {
-    postId = await getCurrentActiveStackPostIdFromMembershipQuery(supabase, profileId);
-  }
+  const postId = await getCurrentActiveStackPostIdForProfile(profileId);
 
   if (!postId) {
     return null;

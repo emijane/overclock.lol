@@ -19,6 +19,7 @@ import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveStackPostById,
+  getCurrentActiveStackPostIdForProfile,
   getCurrentActiveStackForProfile,
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
@@ -320,13 +321,18 @@ export async function LFGPageShell({
     type && shouldShowFeed
       ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
       : emptyPageData;
+  const currentStackMembershipPostId =
+    type === "stacks" && profile?.id
+      ? await getCurrentActiveStackPostIdForProfile(profile.id).catch(() => null)
+      : null;
   const fallbackCurrentStack =
     type === "stacks" &&
-    shouldShowFeed &&
     profile?.id &&
-    activeStackPostId &&
+    (activeStackPostId ?? currentStackMembershipPostId) &&
     !pageData.currentStack
-      ? await getActiveStackPostById(activeStackPostId).catch(() => null)
+      ? await getActiveStackPostById(
+          activeStackPostId ?? currentStackMembershipPostId ?? ""
+        ).catch(() => null)
       : null;
   const composerOnlyProfile =
     shouldShowComposer && !shouldShowFeed && profile?.id
@@ -378,19 +384,27 @@ export async function LFGPageShell({
   const stackRequestStates =
     isStacksFeed && profile?.id ? pageData.stackRequestStates : {};
   const currentStack = isStacksFeed ? pageData.currentStack ?? fallbackCurrentStack : null;
+  const currentStackForBlockedState =
+    type === "stacks" ? pageData.currentStack ?? fallbackCurrentStack : null;
+  const resolvedActiveStackPostId =
+    activeStackPostId ?? currentStackForBlockedState?.id ?? currentStackMembershipPostId;
   const currentStackHref = currentStack ? `/stacks#stack-post-${currentStack.id}` : null;
   const shouldShowCurrentStackPanel = Boolean(currentStack && profile?.id);
   const showBlockedCurrentStackCopy = isBlockedByCurrentStackMessage(message);
-  const shouldShowCurrentStackFallback =
-    isStacksFeed &&
+  const isBlockedFromStackCreate =
+    type === "stacks" &&
     Boolean(profile?.id) &&
-    showBlockedCurrentStackCopy &&
-    !currentStack;
+    (Boolean(resolvedActiveStackPostId) || showBlockedCurrentStackCopy);
+  const shouldShowCurrentStackFallback =
+    type === "stacks" &&
+    Boolean(profile?.id) &&
+    isBlockedFromStackCreate &&
+    !currentStackForBlockedState;
 
   if (shouldShowCurrentStackFallback && process.env.NODE_ENV !== "production") {
     console.warn("[lfg] Current stack block mismatch", {
-      activeStackPostId: activeStackPostId ?? null,
-      hasCurrentStack: Boolean(currentStack),
+      activeStackPostId: resolvedActiveStackPostId ?? null,
+      hasCurrentStack: Boolean(currentStackForBlockedState),
       message: message ?? null,
       profileId: profile?.id ?? null,
       type: type ?? null,
@@ -448,7 +462,7 @@ export async function LFGPageShell({
             <LFGSidebar
               createPostHref={resolvedCreatePostHref}
               currentStackHref={currentStackHref}
-              hasActiveStack={Boolean(currentStack)}
+              hasActiveStack={isBlockedFromStackCreate}
               isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
               tone={usesDuosFeedTone ? "duos" : "default"}
@@ -516,17 +530,42 @@ export async function LFGPageShell({
                     </h1>
                   </div>
                   {type && composerMode === "cta" && !useSidebarLayout ? (
-                    <Link
-                      href={user ? resolvedCreatePostHref : guestCreateHref}
-                      className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
-                        usesDuosFeedTone
-                          ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
-                          : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
-                      }`}
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      {user ? "Create Post" : "Log in to Post"}
-                    </Link>
+                    type === "stacks" && user && isBlockedFromStackCreate ? (
+                      currentStackHref ? (
+                        <Link
+                          href={currentStackHref}
+                          className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
+                            usesDuosFeedTone
+                              ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                              : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
+                          }`}
+                        >
+                          View current stack
+                        </Link>
+                      ) : (
+                        <span
+                          className={`oc-profile-display inline-flex h-9 shrink-0 items-center self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-500 ${
+                            usesDuosFeedTone
+                              ? "border-white/[0.06] bg-white/[0.03]"
+                              : "border-white/[0.08] bg-[#05070b]"
+                          }`}
+                        >
+                          You already have an active stack
+                        </span>
+                      )
+                    ) : (
+                      <Link
+                        href={user ? resolvedCreatePostHref : guestCreateHref}
+                        className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
+                          usesDuosFeedTone
+                            ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                            : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
+                        }`}
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                        {user ? "Create Post" : "Log in to Post"}
+                      </Link>
+                    )
                   ) : shouldShowComposer && user && profile && missingProfileRequirements.length === 0 && hasConfiguredRole ? (
                     <div className="flex items-center gap-2 self-start">
                       <Link
@@ -619,6 +658,16 @@ export async function LFGPageShell({
                       description="Set up at least one competitive role before creating a post in this section."
                       title="Competitive profile required"
                     />
+                  ) : type === "stacks" && isBlockedFromStackCreate ? (
+                    currentStackForBlockedState && profile?.id ? (
+                      <CurrentStackPanel
+                        currentProfileId={profile.id}
+                        post={currentStackForBlockedState}
+                        showBlockedCreateCopy
+                      />
+                    ) : (
+                      <CurrentStackFallbackPanel blockingPostId={resolvedActiveStackPostId} />
+                    )
                   ) : (
                     <form
                       action={createLFGPost}
@@ -666,7 +715,7 @@ export async function LFGPageShell({
                     showBlockedCreateCopy={showBlockedCurrentStackCopy}
                   />
                 ) : shouldShowCurrentStackFallback ? (
-                  <CurrentStackFallbackPanel blockingPostId={activeStackPostId} />
+                  <CurrentStackFallbackPanel blockingPostId={resolvedActiveStackPostId} />
                 ) : null}
                 {useSidebarLayout ? (
                   <div className="lg:hidden">
