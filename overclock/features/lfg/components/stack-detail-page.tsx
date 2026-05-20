@@ -134,9 +134,23 @@ function StackSummaryHeader({
       <div className="px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex flex-col gap-3">
           <div>
-            <h1 className="oc-profile-display text-[22px] font-semibold leading-[1.1] tracking-[-0.04em] text-zinc-50 sm:text-[26px]">
-              {post.title}
-            </h1>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="oc-profile-display min-w-0 text-[22px] font-semibold leading-[1.1] tracking-[-0.04em] text-zinc-50 sm:text-[26px]">
+                {post.title}
+              </h1>
+              {isOwner && detail.isActive ? (
+                <form action={closeLFGPost} className="shrink-0 pt-0.5">
+                  <input type="hidden" name="post_id" value={post.id} />
+                  <input type="hidden" name="return_path" value={`/stacks/${post.id}`} />
+                  <button
+                    type="submit"
+                    className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-rose-500/20 bg-rose-500/[0.06] px-3 text-[11px] font-medium text-rose-300/80 transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-200"
+                  >
+                    Close stack
+                  </button>
+                </form>
+              ) : null}
+            </div>
             <div className="oc-profile-meta mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
               <span>
                 Created by{" "}
@@ -432,25 +446,7 @@ export async function StackDetailPage({
             ) : null}
           </div>
 
-          {isOwner && detail.isActive ? (
-            <section className="rounded-[10px] border border-white/6 bg-white/2">
-              <div className="px-4 py-4 sm:px-5 sm:py-4.5">
-                <p className="oc-profile-meta mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Owner actions
-                </p>
-                <form action={closeLFGPost}>
-                  <input type="hidden" name="post_id" value={detail.post.id} />
-                  <input type="hidden" name="return_path" value={`/stacks/${detail.post.id}`} />
-                  <button
-                    type="submit"
-                    className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-400 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-200"
-                  >
-                    Close stack
-                  </button>
-                </form>
-              </div>
-            </section>
-          ) : isAcceptedMember && detail.isActive ? (
+          {isAcceptedMember && !isOwner && detail.isActive ? (
             <section className="rounded-[10px] border border-white/6 bg-white/2">
               <div className="px-4 py-4 sm:px-5 sm:py-4.5">
                 <p className="oc-profile-meta mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
