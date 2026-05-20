@@ -2,19 +2,20 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { RankedAvatar } from "@/components/profile/ranked-avatar";
-import { PresenceIndicator } from "@/components/presence/presence-indicator";
 import { UserBlockMenu } from "@/components/blocks/user-block-controls";
+import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
+import { PresenceIndicator } from "@/components/presence/presence-indicator";
+import { RankedAvatar } from "@/components/profile/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
-import { getRankIconSrc } from "@/lib/competitive/rank-icons";
+import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
+
 import { formatPostDate } from "./format-post-date";
-import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
 import { RequestToJoinButton } from "./request-to-join-button";
 import { StackMemberAvatarStrip } from "./stack-member-avatar-strip";
-import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 
 type StackRequestViewerState = "none" | "pending" | "accepted" | "declined";
 
@@ -27,6 +28,7 @@ type StackPostCardProps = {
   sectionLabel?: string | null;
   showActions?: boolean;
   statusPill?: ReactNode;
+  tone?: "default" | "duos";
   viewHref?: string;
   viewLabel?: string;
 };
@@ -35,6 +37,7 @@ function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   if (gameMode === "quick_play") {
     return "border-white/[0.07] bg-black/44 text-zinc-300";
   }
+
   return "border-white/[0.07] bg-black/44 text-zinc-300";
 }
 
@@ -63,6 +66,7 @@ export function StackPostCard({
   sectionLabel,
   showActions = true,
   statusPill,
+  tone = "default",
   viewHref,
   viewLabel,
 }: StackPostCardProps) {
@@ -80,20 +84,26 @@ export function StackPostCard({
   );
   const isFull =
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
-
   const viewerState = isOwner ? "owner" : currentProfileId ? "authenticated" : "guest";
-
   const availableRoleCounts = getAvailableRoleCounts(post.lookingForRoles);
 
   return (
     <article
       aria-label={post.title}
-      className={`oc-surface-solid-lift group h-full rounded-[12px]${
-        cardClassName ? ` ${cardClassName}` : ""
-      }`}
+      className={`group h-full rounded-[12px] ${
+        tone === "duos" ? "oc-card-lift" : "oc-surface-solid-lift"
+      }${cardClassName ? ` ${cardClassName}` : ""}`}
     >
-      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-[var(--oc-bg-card)]">
-        <div className="relative h-14 overflow-hidden bg-zinc-950/95">
+      <div
+        className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] ${
+          tone === "duos" ? "bg-transparent" : "bg-[var(--oc-bg-card)]"
+        }`}
+      >
+        <div
+          className={`relative h-14 overflow-hidden ${
+            tone === "duos" ? "bg-[#111113]" : "bg-zinc-950/95"
+          }`}
+        >
           {post.author.coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -102,27 +112,53 @@ export function StackPostCard({
               className="h-full w-full object-cover brightness-[0.28] saturate-[0.56] opacity-80"
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 to-[var(--oc-bg-card)]" />
-          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[var(--oc-bg-card)]" />
+          <div
+            className={`absolute inset-0 bg-gradient-to-b from-black/32 via-black/50 ${
+              tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"
+            }`}
+          />
+          <div
+            className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent ${
+              tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"
+            }`}
+          />
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
           <div className="absolute right-3 top-2 z-20 flex items-center gap-1">
             {post.platform ? (
-              <span className="oc-overlay-chip inline-flex h-4.5 items-center rounded-[5px] px-1.5 text-[9px] font-medium text-zinc-300 backdrop-blur-[2px]">
+              <span
+                className={`inline-flex h-4.5 items-center rounded-[5px] px-1.5 text-[9px] font-medium text-zinc-300 ${
+                  tone === "duos"
+                    ? "oc-profile-meta border border-white/[0.06] bg-black/40"
+                    : "oc-overlay-chip backdrop-blur-[2px]"
+                }`}
+              >
                 {post.platform}
               </span>
             ) : null}
-            <span className={`shrink-0 rounded-[5px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}>
+            <span
+              className={`${
+                tone === "duos" ? "oc-profile-meta" : ""
+              } shrink-0 rounded-[5px] border px-1.5 py-0.5 text-[9px] font-medium ${modeBadgeClassName}`}
+            >
               {gameModeLabel}
             </span>
             {createdAtLabel ? (
-              <span className="text-[9px] font-medium text-zinc-500">
-                • {createdAtLabel}
+              <span
+                className={`${
+                  tone === "duos" ? "oc-profile-meta" : ""
+                } text-[9px] font-medium text-zinc-500`}
+              >
+                {tone === "duos" ? createdAtLabel : `- ${createdAtLabel}`}
               </span>
             ) : null}
             {isFull ? (
-              <span className="shrink-0 rounded-[5px] border border-white/[0.08] bg-black/44 px-1.5 py-0.5 text-[9px] font-medium text-zinc-200">
+              <span
+                className={`${
+                  tone === "duos" ? "oc-profile-meta border-white/[0.06]" : "border-white/[0.08]"
+                } shrink-0 rounded-[5px] border bg-black/44 px-1.5 py-0.5 text-[9px] font-medium text-zinc-200`}
+              >
                 Filled
               </span>
             ) : null}
@@ -133,10 +169,7 @@ export function StackPostCard({
                 viewHref={viewHref}
                 viewLabel={viewLabel}
               />
-            ) : showActions &&
-              currentProfileId &&
-              post.profileId &&
-              !isOwner ? (
+            ) : showActions && currentProfileId && post.profileId && !isOwner ? (
               <UserBlockMenu
                 targetDisplayName={displayName}
                 targetProfileId={post.profileId}
@@ -149,7 +182,13 @@ export function StackPostCard({
           {sectionLabel || statusPill ? (
             <div className="flex flex-wrap items-center gap-1">
               {sectionLabel ? (
-                <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-600">
+                <p
+                  className={`${
+                    tone === "duos"
+                      ? "oc-profile-meta tracking-[0.14em] text-zinc-500"
+                      : "tracking-[0.12em] text-zinc-600"
+                  } text-[10px] font-medium uppercase`}
+                >
                   {sectionLabel}
                 </p>
               ) : null}
@@ -161,14 +200,18 @@ export function StackPostCard({
             <div className="flex min-w-0 flex-col items-start">
               <RankedAvatar
                 avatarUrl={post.author.avatarUrl}
-                className="-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 border-[var(--oc-bg-card)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+                className={`-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${
+                  tone === "duos" ? "border-[#090909]" : "border-[var(--oc-bg-card)]"
+                }`}
                 displayName={visibleName}
                 fallbackClassName="text-xs font-semibold text-zinc-100"
                 fallbackText={visibleName.slice(0, 2).toUpperCase()}
                 overlay={
                   post.profileId ? (
                     <PresenceIndicator
-                      className="oc-overlay-avatar absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                      className={`absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)] ${
+                        tone === "duos" ? "oc-overlay-avatar-elevated" : "oc-overlay-avatar"
+                      }`}
                       hideOfflinePresence={post.author.hideOfflinePresence}
                       isLookingToPlay={post.author.isLookingToPlay}
                       lastSeenAt={post.author.lastSeenAt}
@@ -185,12 +228,12 @@ export function StackPostCard({
                   {profileHref ? (
                     <Link
                       href={profileHref}
-                      className="truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-50 transition hover:text-white"
+                      className="oc-profile-display truncate text-[15px] font-semibold tracking-[-0.02em] text-zinc-50 transition hover:text-white"
                     >
                       {displayName}
                     </Link>
                   ) : (
-                    <p className="truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-50">
+                    <p className="oc-profile-display truncate text-[15px] font-semibold tracking-[-0.02em] text-zinc-50">
                       {displayName}
                     </p>
                   )}
@@ -198,12 +241,12 @@ export function StackPostCard({
                     profileHref ? (
                       <Link
                         href={profileHref}
-                        className="truncate text-[11px] font-medium text-zinc-500 transition hover:text-zinc-300"
+                        className="oc-profile-meta truncate text-[11px] font-medium transition hover:text-zinc-300"
                       >
                         @{post.author.username}
                       </Link>
                     ) : (
-                      <p className="truncate text-[11px] font-medium text-zinc-500">
+                      <p className="oc-profile-meta truncate text-[11px] font-medium">
                         @{post.author.username}
                       </p>
                     )
@@ -217,23 +260,37 @@ export function StackPostCard({
                         key={badge.id}
                         className={`inline-flex items-center gap-1 rounded-[6px] border px-1.5 py-0.5 text-[9px] ${badgePreset.lfgClassName}`}
                       >
-                        <badgePreset.Icon className={`h-3 w-3 shrink-0 ${badgePreset.iconClassName}`} />
+                        <badgePreset.Icon
+                          className={`h-3 w-3 shrink-0 ${badgePreset.iconClassName}`}
+                        />
                         {badge.label}
                       </span>
                     ) : badgeAssetSrc ? (
-                      <span key={badge.id} title={badge.label} aria-label={badge.label} className="inline-flex h-4 items-center">
+                      <span
+                        key={badge.id}
+                        title={badge.label}
+                        aria-label={badge.label}
+                        className="inline-flex h-4 items-center"
+                      >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={badgeAssetSrc} alt={badge.label} className="h-4 w-auto object-contain opacity-90" />
+                        <img
+                          src={badgeAssetSrc}
+                          alt={badge.label}
+                          className="h-4 w-auto object-contain opacity-90"
+                        />
                       </span>
                     ) : (
-                      <span key={badge.id} className="inline-flex h-4 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.03] px-1.5 text-[9px] font-medium uppercase tracking-[0.08em] text-zinc-400">
+                      <span
+                        key={badge.id}
+                        className="inline-flex h-4 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.03] px-1.5 text-[9px] font-medium uppercase tracking-[0.08em] text-zinc-400"
+                      >
                         {badge.label}
                       </span>
                     );
                   })}
                 </div>
 
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-medium text-zinc-500">
+                <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-medium">
                   {rankIconSrc ? (
                     <Image
                       src={rankIconSrc}
@@ -246,7 +303,9 @@ export function StackPostCard({
                   <span className="text-zinc-300">{rankLabel}</span>
                   {post.region ? (
                     <>
-                      <span aria-hidden="true" className="text-zinc-700">&bull;</span>
+                      <span aria-hidden="true" className="text-zinc-700">
+                        &bull;
+                      </span>
                       <span>{post.region}</span>
                     </>
                   ) : null}
@@ -255,14 +314,14 @@ export function StackPostCard({
             </div>
           </div>
 
-          <div className="mt-1.5 min-w-0">
-            <h2 className="line-clamp-2 text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
+          <div className="mt-1 min-w-0">
+            <h2 className="oc-profile-display line-clamp-2 text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
               {post.title}
             </h2>
           </div>
 
           {availableRoleCounts.size > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-1">
+            <div className="mt-2 flex flex-wrap gap-1.5">
               {Array.from(availableRoleCounts.entries()).map(([role, count]) => (
                 <span
                   key={role}
@@ -282,6 +341,7 @@ export function StackPostCard({
                 maxGroupSize={post.maxGroupSize}
                 members={post.stackMembers}
                 postId={post.id}
+                tone={tone}
               />
             </div>
             {!isOwner && post.profileId && (!isFull || isMember) ? (
@@ -289,10 +349,17 @@ export function StackPostCard({
                 lookingForRoles={post.lookingForRoles}
                 postId={post.id}
                 initialState={isMember ? "accepted" : requestState}
+                tone={tone}
                 viewerState={viewerState}
               />
             ) : isFull && !isOwner && !isMember ? (
-              <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+              <span
+                className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${
+                  tone === "duos"
+                    ? "oc-profile-meta rounded-full border-white/[0.06] bg-white/[0.03] text-zinc-500"
+                    : "rounded-[7px] border-white/[0.08] bg-white/[0.028] text-zinc-500"
+                }`}
+              >
                 Stack full
               </span>
             ) : null}

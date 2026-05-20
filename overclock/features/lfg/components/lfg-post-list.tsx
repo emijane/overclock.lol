@@ -142,6 +142,7 @@ export function LFGPostList({
                   post={post}
                   requestState={requestState}
                   returnPath="/stacks"
+                  tone={tone}
                 />
               </div>
             );

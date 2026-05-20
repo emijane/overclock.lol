@@ -9,7 +9,7 @@ const STACKS_PAGE_CONFIG = {
   composerMode: "cta",
   createPostHref: "/stacks/create",
   title: "Stacks",
-  description: "Build a group for flexible sessions or full team queue.",
+  description: "",
   filtersDescription:
     "Browse the latest stack listings for flexible sessions and group queue.",
   emptyStateTitle: "No stacks yet",

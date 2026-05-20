@@ -343,6 +343,7 @@ export async function LFGPageShell({
   const displayTitle = isComposerOnlyPage ? `/ ${title}` : title;
   const isDuosPage = type === "duos";
   const isStacksPage = type === "stacks";
+  const usesDuosFeedTone = isDuosPage || isStacksPage;
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const isStacksFeed = shouldShowFeed && type === "stacks";
   const inviteStates = shouldShowFeed ? pageData.inviteStates : {};
@@ -354,12 +355,12 @@ export async function LFGPageShell({
       className={`relative px-4 text-zinc-100 sm:px-6 ${
         isComposerOnlyPage
           ? "pb-0 pt-2 sm:pb-0 sm:pt-3"
-          : isDuosPage
+          : usesDuosFeedTone
             ? "oc-atmosphere-bg flex-1 py-6 sm:py-8"
             : "flex-1 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] py-6 sm:py-8"
       }`}
     >
-      {isDuosPage ? (
+      {usesDuosFeedTone ? (
         <>
           <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
           <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
@@ -384,13 +385,13 @@ export async function LFGPageShell({
           isComposerOnlyPage
             ? "flex flex-col gap-2"
             : useSidebarLayout
-              ? `flex items-start ${isDuosPage ? "gap-4 xl:gap-5" : "gap-6"}`
+              ? `flex items-start ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
               : "flex flex-col gap-3"
         }`}
         maxWidthClassName={
           isComposerOnlyPage
             ? "max-w-4xl"
-            : isDuosPage
+            : usesDuosFeedTone
               ? "max-w-[98rem]"
               : "max-w-[120rem]"
         }
@@ -401,29 +402,37 @@ export async function LFGPageShell({
               createPostHref={resolvedCreatePostHref}
               isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
-              tone={isDuosPage ? "duos" : "default"}
+              tone={usesDuosFeedTone ? "duos" : "default"}
               type={type}
             />
           </Suspense>
         ) : null}
         <section
           className={`${useSidebarLayout ? "min-w-0 flex-1" : ""} ${
-            isDuosPage ? "" : "rounded-[28px]"
+            usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
           <div
             className={
-              isDuosPage
+              usesDuosFeedTone
                 ? "overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
                 : "overflow-hidden rounded-[28px]"
             }
           >
             <header
               className={`px-5 sm:px-6 ${
-                isComposerOnlyPage ? "py-3 sm:py-4" : isDuosPage ? "relative py-4 sm:py-5" : "py-5 sm:py-7"
+                isComposerOnlyPage
+                  ? "py-3 sm:py-4"
+                  : usesDuosFeedTone
+                    ? "relative py-4 sm:py-5"
+                    : "py-5 sm:py-7"
               }`}
             >
-              <div className={isComposerOnlyPage ? "space-y-3" : isDuosPage ? "space-y-4" : "space-y-5"}>
+              <div
+                className={
+                  isComposerOnlyPage ? "space-y-3" : usesDuosFeedTone ? "space-y-4" : "space-y-5"
+                }
+              >
                 <PageReveal
                   className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                   delay={0}
@@ -434,7 +443,7 @@ export async function LFGPageShell({
                       <Link
                         href={breadcrumbHref}
                         className={
-                          isDuosPage
+                          usesDuosFeedTone
                             ? "oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
                             : "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
                         }
@@ -445,10 +454,10 @@ export async function LFGPageShell({
                     ) : null}
                     <h1
                       className={
-                        isDuosPage
+                        usesDuosFeedTone
                           ? "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
                           : `font-semibold tracking-[-0.075em] text-zinc-50 ${
-                              isComposerOnlyPage || type === "stacks"
+                              isComposerOnlyPage
                                 ? "text-4xl sm:text-5xl"
                                 : "text-5xl sm:text-6xl"
                             }`
@@ -461,7 +470,7 @@ export async function LFGPageShell({
                     <Link
                       href={user ? resolvedCreatePostHref : guestCreateHref}
                       className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
-                        isDuosPage
+                        usesDuosFeedTone
                           ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
                           : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
                       }`}
@@ -474,7 +483,7 @@ export async function LFGPageShell({
                       <Link
                         href={profileSetupHref}
                         className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
-                          isDuosPage
+                          usesDuosFeedTone
                             ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
                             : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"
                         }`}
@@ -484,7 +493,7 @@ export async function LFGPageShell({
                       <Link
                         href="/account/posts"
                         className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
-                          isDuosPage
+                          usesDuosFeedTone
                             ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
                             : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"
                         }`}
@@ -495,20 +504,30 @@ export async function LFGPageShell({
                     ) : null}
                   </PageReveal>
                 {description ? (
-                  <p className={`max-w-xl leading-5 ${isDuosPage ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-400"}`}>
+                  <p
+                    className={`max-w-xl leading-5 ${
+                      usesDuosFeedTone ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-400"
+                    }`}
+                  >
                     {description}
                   </p>
                 ) : null}
                 {helperText ? (
-                  <p className={isDuosPage ? "oc-profile-meta text-[11px] leading-5" : "text-sm leading-6 text-zinc-500"}>
+                  <p
+                    className={
+                      usesDuosFeedTone
+                        ? "oc-profile-meta text-[11px] leading-5"
+                        : "text-sm leading-6 text-zinc-500"
+                    }
+                  >
                     {helperText}
                   </p>
                 ) : null}
-                  {type === "duos" && shouldShowFeed ? (
-                    <LFGSearchBar feedFilters={feedFilters} type={type} />
-                  ) : null}
+                {usesDuosFeedTone && type && shouldShowFeed ? (
+                  <LFGSearchBar feedFilters={feedFilters} type={type} />
+                ) : null}
                 </div>
-                {isDuosPage ? (
+                {usesDuosFeedTone ? (
                   <p className="oc-profile-meta pointer-events-none absolute bottom-4 right-5 text-[10px] text-right sm:bottom-5 sm:right-6">
                     {duosResultsLabel}
                     {hasActiveLFGFeedFilters(feedFilters) ? " with current filters." : "."}
@@ -555,7 +574,7 @@ export async function LFGPageShell({
                     <form
                       action={createLFGPost}
                       className={`px-4 py-4 sm:px-5 sm:py-4.5 ${
-                        isDuosPage
+                        usesDuosFeedTone
                           ? "rounded-[10px] border border-white/[0.04] bg-white/[0.015]"
                           : "oc-surface-panel rounded-[24px]"
                       }`}
@@ -567,14 +586,14 @@ export async function LFGPageShell({
                             ? "Building a chill ranked stack for tonight..."
                             : undefined
                         }
-                        tone={isDuosPage ? "duos" : "default"}
+                        tone={usesDuosFeedTone ? "duos" : "default"}
                       />
-                      <LFGGameModePicker tone={isDuosPage ? "duos" : "default"} />
+                      <LFGGameModePicker tone={usesDuosFeedTone ? "duos" : "default"} />
                       <LFGRolePicker
                         profileSummary={profileSummary}
                         roleOptions={composerRoleOptions}
                         setupHref="/account/competitive"
-                        tone={isDuosPage ? "duos" : "default"}
+                        tone={usesDuosFeedTone ? "duos" : "default"}
                       />
                     </form>
                   )}
@@ -586,7 +605,7 @@ export async function LFGPageShell({
               <>
                 <div
                   className={
-                    isDuosPage
+                    usesDuosFeedTone
                       ? "border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
                       : ""
                   }
@@ -597,7 +616,7 @@ export async function LFGPageShell({
                       <LFGFeedFiltersPanel
                         activeCount={visiblePostCount}
                         selectedFilters={feedFilters}
-                        tone={isDuosPage ? "duos" : "default"}
+                        tone={usesDuosFeedTone ? "duos" : "default"}
                       />
                     </Suspense>
                   </div>
@@ -606,7 +625,7 @@ export async function LFGPageShell({
                     <LFGFeedFiltersPanel
                       activeCount={visiblePostCount}
                       selectedFilters={feedFilters}
-                      tone={isDuosPage ? "duos" : "default"}
+                      tone={usesDuosFeedTone ? "duos" : "default"}
                     />
                   </Suspense>
                 ) : (
@@ -626,7 +645,7 @@ export async function LFGPageShell({
                   posts={pageData.posts}
                   retryHref={sectionHref}
                   stackRequestStates={stackRequestStates}
-                  tone={isDuosPage ? "duos" : "default"}
+                  tone={usesDuosFeedTone ? "duos" : "default"}
                   viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                 />
                 </div>

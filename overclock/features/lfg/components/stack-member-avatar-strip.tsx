@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { StackMember } from "@/lib/lfg/lfg-post-types";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
+
 import { RemoveStackMemberButton } from "./remove-stack-member-button";
 
 type StackMemberAvatarStripProps = {
@@ -10,6 +11,7 @@ type StackMemberAvatarStripProps = {
   maxGroupSize: number | null;
   members: StackMember[];
   postId?: string;
+  tone?: "default" | "duos";
 };
 
 const MAX_VISIBLE_AVATARS = 4;
@@ -20,6 +22,7 @@ export function StackMemberAvatarStrip({
   maxGroupSize,
   members,
   postId,
+  tone = "default",
 }: StackMemberAvatarStripProps) {
   const visible = members.slice(0, MAX_VISIBLE_AVATARS);
   const overflow = members.length - MAX_VISIBLE_AVATARS;
@@ -85,10 +88,7 @@ export function StackMemberAvatarStrip({
               ) : null}
             </div>
             {canManageMembers && !member.isOwner && postId ? (
-              <RemoveStackMemberButton
-                memberProfileId={member.profileId}
-                postId={postId}
-              />
+              <RemoveStackMemberButton memberProfileId={member.profileId} postId={postId} />
             ) : null}
           </div>
         ))}
@@ -104,11 +104,19 @@ export function StackMemberAvatarStrip({
         ) : null}
       </div>
       {maxGroupSize ? (
-        <span className="text-[11px] font-medium tracking-[-0.01em] text-zinc-400">
+        <span
+          className={`text-[11px] font-medium tracking-[-0.01em] ${
+            tone === "duos" ? "oc-profile-meta text-zinc-400" : "text-zinc-400"
+          }`}
+        >
           {currentMemberCount}/{maxGroupSize}
         </span>
       ) : (
-        <span className="text-[11px] font-medium tracking-[-0.01em] text-zinc-400">
+        <span
+          className={`text-[11px] font-medium tracking-[-0.01em] ${
+            tone === "duos" ? "oc-profile-meta text-zinc-400" : "text-zinc-400"
+          }`}
+        >
           {currentMemberCount} member{currentMemberCount !== 1 ? "s" : ""}
         </span>
       )}

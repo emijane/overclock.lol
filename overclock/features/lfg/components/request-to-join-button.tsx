@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { ChevronDownIcon, Users2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { leaveStack, sendStackJoinRequest } from "@/features/lfg/stack-actions";
@@ -22,6 +22,7 @@ type RequestToJoinButtonProps = {
   lookingForRoles: CompetitiveRole[];
   postId: string;
   initialState?: "none" | "pending" | "accepted" | "declined";
+  tone?: "default" | "duos";
   viewerState?: "guest" | "owner" | "authenticated";
 };
 
@@ -31,10 +32,23 @@ const ROLE_LABELS: Record<CompetitiveRole, string> = {
   support: "Support",
 };
 
+function getPillClassName(tone: "default" | "duos", emphasized = false) {
+  if (tone === "duos") {
+    return emphasized
+      ? "oc-profile-display rounded-full border-white/[0.06] bg-white/[0.03] text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+      : "oc-profile-meta rounded-full border-white/[0.06] bg-white/[0.03] text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300";
+  }
+
+  return emphasized
+    ? "rounded-[7px] border-white/[0.08] bg-white/[0.035] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+    : "rounded-[7px] border-white/[0.08] bg-white/[0.028] text-zinc-500";
+}
+
 export function RequestToJoinButton({
   lookingForRoles,
   postId,
   initialState = "none",
+  tone = "default",
   viewerState = "guest",
 }: RequestToJoinButtonProps) {
   const router = useRouter();
@@ -53,7 +67,10 @@ export function RequestToJoinButton({
     return (
       <a
         href="/login?next=/stacks"
-        className="flex h-7 items-center gap-1.5 rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+        className={`flex h-7 items-center gap-1.5 border px-2.5 text-[11px] font-semibold transition ${getPillClassName(
+          tone,
+          true
+        )}`}
       >
         <Users2Icon className="h-3.5 w-3.5 shrink-0" />
         Request to Join
@@ -85,7 +102,10 @@ export function RequestToJoinButton({
             setUiState("error");
           })
         }
-        className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] disabled:opacity-60"
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-semibold transition disabled:opacity-60 ${getPillClassName(
+          tone,
+          true
+        )}`}
       >
         {isPending ? "Leaving..." : "Leave Stack"}
       </button>
@@ -94,7 +114,11 @@ export function RequestToJoinButton({
 
   if (uiState === "pending" || uiState === "sent") {
     return (
-      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${getPillClassName(
+          tone
+        )}`}
+      >
         Request sent
       </span>
     );
@@ -102,7 +126,11 @@ export function RequestToJoinButton({
 
   if (uiState === "declined") {
     return (
-      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${getPillClassName(
+          tone
+        )}`}
+      >
         Request declined
       </span>
     );
@@ -110,7 +138,11 @@ export function RequestToJoinButton({
 
   if (uiState === "full") {
     return (
-      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${getPillClassName(
+          tone
+        )}`}
+      >
         Stack full
       </span>
     );
@@ -118,7 +150,11 @@ export function RequestToJoinButton({
 
   if (uiState === "already_in_stack") {
     return (
-      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${getPillClassName(
+          tone
+        )}`}
+      >
         Already in stack
       </span>
     );
@@ -126,7 +162,9 @@ export function RequestToJoinButton({
 
   if (uiState === "selecting_role") {
     const rolesToShow =
-      lookingForRoles.length > 0 ? lookingForRoles : (["tank", "dps", "support"] as CompetitiveRole[]);
+      lookingForRoles.length > 0
+        ? lookingForRoles
+        : (["tank", "dps", "support"] as CompetitiveRole[]);
 
     function handleRoleSelect(role: CompetitiveRole) {
       startTransition(async () => {
@@ -161,7 +199,10 @@ export function RequestToJoinButton({
             type="button"
             disabled={isPending}
             onClick={() => handleRoleSelect(role)}
-            className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100 disabled:opacity-50"
+            className={`flex h-7 items-center border px-2.5 text-[11px] font-semibold transition disabled:opacity-50 ${getPillClassName(
+              tone,
+              true
+            )}`}
           >
             {ROLE_LABELS[role]}
           </button>
@@ -169,7 +210,11 @@ export function RequestToJoinButton({
         <button
           type="button"
           onClick={() => setUiState("idle")}
-          className="flex h-7 items-center rounded-[7px] border border-white/[0.06] px-2.5 text-[11px] font-medium text-zinc-600 transition hover:border-white/[0.1] hover:text-zinc-400"
+          className={`flex h-7 items-center border px-2.5 text-[11px] transition ${
+            tone === "duos"
+              ? "oc-profile-meta rounded-full border-white/[0.06] bg-white/[0.03] font-semibold text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300"
+              : "rounded-[7px] border-white/[0.06] font-medium text-zinc-600 hover:border-white/[0.1] hover:text-zinc-400"
+          }`}
         >
           Cancel
         </button>
@@ -179,7 +224,11 @@ export function RequestToJoinButton({
 
   if (uiState === "error") {
     return (
-      <span className="flex h-7 items-center rounded-[7px] border border-white/[0.08] bg-white/[0.028] px-2.5 text-[11px] font-medium text-zinc-500">
+      <span
+        className={`flex h-7 items-center border px-2.5 text-[11px] font-medium ${getPillClassName(
+          tone
+        )}`}
+      >
         Action unavailable
       </span>
     );
@@ -189,7 +238,10 @@ export function RequestToJoinButton({
     <button
       type="button"
       onClick={() => setUiState("selecting_role")}
-      className="flex h-7 items-center gap-1.5 rounded-[7px] border border-white/[0.08] bg-white/[0.035] px-2.5 text-[11px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+      className={`flex h-7 items-center gap-1.5 border px-2.5 text-[11px] font-semibold transition ${getPillClassName(
+        tone,
+        true
+      )}`}
     >
       <Users2Icon className="h-3.5 w-3.5 shrink-0" />
       Request to Join
