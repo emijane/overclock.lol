@@ -25,7 +25,7 @@ export function RemoveStackMemberButton({
 
   if (failed) {
     return (
-      <span className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-rose-500/20 bg-rose-500/6 px-3 text-[11px] font-medium text-rose-300">
+      <span className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-rose-500/20 bg-rose-500/6 px-3 text-[11px] font-medium text-rose-300">
         Failed
       </span>
     );
@@ -53,7 +53,7 @@ export function RemoveStackMemberButton({
       }
       className={
         className ??
-        "absolute -right-1 -top-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-white/10 bg-black/80 text-zinc-300 transition hover:text-white disabled:opacity-50"
+        "absolute -right-1 -top-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-[10px] border border-white/10 bg-black/80 text-zinc-300 transition hover:text-white disabled:opacity-50"
       }
     >
       <XIcon className="h-2.5 w-2.5" />

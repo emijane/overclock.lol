@@ -116,7 +116,7 @@ export default async function OnboardingPage({
 
             <button
               type="submit"
-              className="rounded-full bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300"
+              className="rounded-[10px] bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300"
             >
               Save profile
             </button>

@@ -105,18 +105,18 @@ function FilterDropdown({
       : "border-white/[0.08] hover:border-white/[0.12]";
   const triggerClassName =
     variant === "primary"
-      ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
+      ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-[10px] border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
           tone === "duos"
             ? "bg-white/[0.03] text-zinc-50 hover:bg-white/[0.06] hover:text-white"
             : "bg-[#05070b] text-zinc-50 hover:text-white"
         }`
       : variant === "secondary"
-        ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-medium transition ${
+        ? `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-[10px] border ${borderClassName} px-2.5 text-[12px] font-medium transition ${
             tone === "duos"
               ? "bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06] hover:text-zinc-50"
               : "bg-[#05070b] text-zinc-200 hover:text-zinc-50"
           }`
-        : `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-full border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
+        : `oc-profile-display inline-flex h-7.5 items-center gap-1 rounded-[10px] border ${borderClassName} px-2.5 text-[12px] font-semibold transition ${
             tone === "duos"
               ? "bg-white/[0.03] text-zinc-100 hover:bg-white/[0.06] hover:text-zinc-50"
               : "bg-[#05070b] text-zinc-100 hover:text-zinc-50"
@@ -369,7 +369,7 @@ export function LFGFeedFiltersPanel({
             <Link
               key={chip.key}
               href={chip.href}
-              className={`inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 transition ${
+              className={`inline-flex h-7 items-center gap-1.5 rounded-[10px] border px-2.5 transition ${
                 tone === "duos"
                   ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
                   : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12]"
@@ -383,7 +383,7 @@ export function LFGFeedFiltersPanel({
           {hasActiveFilters ? (
             <Link
               href={buildClearFiltersHref(pathname, params)}
-              className={`oc-profile-meta inline-flex h-7 items-center gap-1 rounded-full border border-dashed px-2.5 text-[11px] font-medium transition hover:text-zinc-100 ${
+              className={`oc-profile-meta inline-flex h-7 items-center gap-1 rounded-[10px] border border-dashed px-2.5 text-[11px] font-medium transition hover:text-zinc-100 ${
                 tone === "duos"
                   ? "border-white/[0.1] bg-white/[0.02] hover:border-white/[0.16] hover:bg-white/[0.04]"
                   : "border-white/[0.12] bg-[#05070b] hover:border-white/[0.18]"

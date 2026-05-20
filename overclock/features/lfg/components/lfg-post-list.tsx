@@ -59,7 +59,7 @@ function LFGFeedPlaceholder({
         {ctaHref && ctaLabel ? (
           <Link
             href={ctaHref}
-            className="oc-profile-display mt-5 inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-4 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+            className="oc-profile-display mt-5 inline-flex h-9 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-4 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
           >
             {ctaLabel}
           </Link>

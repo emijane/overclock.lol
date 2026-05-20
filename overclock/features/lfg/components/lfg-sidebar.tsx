@@ -259,7 +259,7 @@ export function LFGSidebar({
             {currentStackHref ? (
               <Link
                 href={currentStackHref}
-                className={`oc-profile-display mt-2 inline-flex h-7 items-center rounded-full border px-3 text-[11px] font-semibold transition ${
+                className={`oc-profile-display mt-2 inline-flex h-7 items-center rounded-[10px] border px-3 text-[11px] font-semibold transition ${
                   tone === "duos"
                     ? "border-white/[0.06] bg-white/[0.03] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
                     : "border-white/8 bg-white/2 text-zinc-300 hover:border-white/11 hover:text-zinc-100"

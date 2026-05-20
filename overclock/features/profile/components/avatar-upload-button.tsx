@@ -146,7 +146,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     type="button"
                     onClick={closeModal}
                     disabled={isSubmitting}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-[10px] border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                     aria-label="Close"
                   >
                     <XIcon className="h-4 w-4" />
@@ -209,7 +209,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     type="button"
                     onClick={closeModal}
                     disabled={isSubmitting}
-                    className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     Cancel
                   </button>
@@ -217,7 +217,7 @@ export function AvatarUploadButton({ avatarUrl, initial }: AvatarUploadButtonPro
                     type="button"
                     onClick={() => void handleUpload()}
                     disabled={isSubmitting}
-                    className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSubmitting ? "Uploading..." : "Save photo"}
                   </button>

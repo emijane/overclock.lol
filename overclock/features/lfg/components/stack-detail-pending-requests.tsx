@@ -166,7 +166,7 @@ export function StackDetailPendingRequests({
                   type="button"
                   disabled={isPending}
                   onClick={() => handleRequestAction(request.id, "accept")}
-                  className="oc-profile-display inline-flex h-8 items-center rounded-full bg-zinc-100 px-3 text-[12px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                  className="oc-profile-display inline-flex h-8 items-center rounded-[10px] bg-zinc-100 px-3 text-[12px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {rowPending ? "Working..." : "Accept"}
                 </button>
@@ -174,7 +174,7 @@ export function StackDetailPendingRequests({
                   type="button"
                   disabled={isPending}
                   onClick={() => handleRequestAction(request.id, "decline")}
-                  className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {rowPending ? "Working..." : "Decline"}
                 </button>

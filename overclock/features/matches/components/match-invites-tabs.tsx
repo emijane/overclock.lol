@@ -31,7 +31,7 @@ export function MatchInvitesTabs({
         <button
           type="button"
           onClick={() => setActiveTab("incoming")}
-          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
+          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-[10px] px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
             activeTab === "incoming"
               ? "bg-white/[0.08] text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"
@@ -45,7 +45,7 @@ export function MatchInvitesTabs({
         <button
           type="button"
           onClick={() => setActiveTab("outgoing")}
-          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-full px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
+          className={`oc-profile-display inline-flex h-8 cursor-pointer items-center rounded-[10px] px-3 text-[13px] font-semibold tracking-[-0.02em] transition ${
             activeTab === "outgoing"
               ? "bg-white/[0.08] text-zinc-100"
               : "text-zinc-500 hover:text-zinc-300"

@@ -57,7 +57,7 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
         <div className="mt-3 flex justify-end">
           <button
             type="submit"
-            className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white"
+            className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white"
           >
             Save
           </button>

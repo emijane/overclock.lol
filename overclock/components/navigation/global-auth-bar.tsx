@@ -65,7 +65,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="oc-profile-display rounded-full border border-transparent px-3 py-2 text-[13px] font-semibold tracking-[-0.02em] text-zinc-400 transition hover:border-white/[0.08] hover:bg-[#171717] hover:text-zinc-100"
+                className="oc-profile-display rounded-[10px] border border-transparent px-3 py-2 text-[13px] font-semibold tracking-[-0.02em] text-zinc-400 transition hover:border-white/[0.08] hover:bg-[#171717] hover:text-zinc-100"
               >
                 {link.label}
               </Link>

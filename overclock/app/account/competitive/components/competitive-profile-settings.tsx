@@ -26,7 +26,7 @@ function SaveButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-8 cursor-pointer items-center justify-center rounded-full border border-white/[0.14] bg-[#262626] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
+      className="inline-flex h-8 cursor-pointer items-center justify-center rounded-[10px] border border-white/[0.14] bg-[#262626] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
     >
       {pending ? "Saving..." : "Save"}
     </button>

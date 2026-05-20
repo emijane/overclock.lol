@@ -49,7 +49,7 @@ export default async function SearchUsersPage({ searchParams }: Props) {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6">
       <form action="/search/users" method="GET">
-        <div className="flex h-11 items-center gap-2.5 rounded-full border border-white/8 bg-[var(--oc-bg-deep)] px-4 text-zinc-300 transition focus-within:border-white/18 hover:border-white/10">
+        <div className="flex h-11 items-center gap-2.5 rounded-[10px] border border-white/8 bg-[var(--oc-bg-deep)] px-4 text-zinc-300 transition focus-within:border-white/18 hover:border-white/10">
           <SearchIcon className="h-4 w-4 shrink-0 text-zinc-500" />
           <input
             type="search"

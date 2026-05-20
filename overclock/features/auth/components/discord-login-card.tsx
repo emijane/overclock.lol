@@ -61,7 +61,7 @@ export function DiscordLoginCard() {
           onClick={handleDiscordLogin}
           disabled={isLoading}
           aria-disabled={isLoading}
-          className="inline-flex h-11 items-center justify-center gap-2.5 rounded-full border border-[#6c77f5]/30 bg-[var(--oc-color-discord)] px-5 text-sm font-semibold text-white transition hover:border-[#7d86f7]/40 hover:bg-[#6c77f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6c77f5]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--oc-bg-deep)] disabled:cursor-wait disabled:border-white/8 disabled:bg-white/4 disabled:text-zinc-400"
+          className="inline-flex h-11 items-center justify-center gap-2.5 rounded-[10px] border border-[#6c77f5]/30 bg-[var(--oc-color-discord)] px-5 text-sm font-semibold text-white transition hover:border-[#7d86f7]/40 hover:bg-[#6c77f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6c77f5]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--oc-bg-deep)] disabled:cursor-wait disabled:border-white/8 disabled:bg-white/4 disabled:text-zinc-400"
         >
           <FaDiscord className="h-4.5 w-4.5 shrink-0" aria-hidden="true" />
           {isLoading ? "Redirecting..." : "Continue with Discord"}

@@ -51,7 +51,7 @@ export function InviteToPlayButton({
     return (
       <Link
         href={presentation.href}
-        className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+        className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
       >
         {presentation.label}
       </Link>
@@ -150,7 +150,7 @@ export function InviteToPlayButton({
           disabled={resolvedPending || !activeConnectionId}
           aria-disabled={resolvedPending || !activeConnectionId}
           onClick={handleRemoveConnection}
-          className="inline-flex h-8 items-center rounded-full border border-rose-400/20 bg-rose-500/10 px-3 text-xs font-medium text-rose-200 transition-all duration-200 hover:bg-rose-500/15 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-[10px] border border-rose-400/20 bg-rose-500/10 px-3 text-xs font-medium text-rose-200 transition-all duration-200 hover:bg-rose-500/15 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
         >
           {resolvedPending ? "Removing..." : "Remove connection"}
         </button>
@@ -167,7 +167,7 @@ export function InviteToPlayButton({
           disabled={resolvedPending || !inviteId}
           aria-disabled={resolvedPending || !inviteId}
           onClick={handleCancelInvite}
-          className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-400 backdrop-blur-md transition-all duration-200 hover:border-rose-400/20 hover:bg-rose-500/10 hover:text-rose-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-400 backdrop-blur-md transition-all duration-200 hover:border-rose-400/20 hover:bg-rose-500/10 hover:text-rose-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
         >
           {resolvedPending ? "Removing..." : "Invite Sent"}
         </button>
@@ -199,7 +199,7 @@ export function InviteToPlayButton({
         disabled={resolvedPending || !presentation.canSendInvite}
         aria-disabled={resolvedPending || !presentation.canSendInvite}
         onClick={handleSendInvite}
-        className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 cursor-pointer disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.04] disabled:text-zinc-400"
+        className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/5 px-3 text-xs font-medium text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 cursor-pointer disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.04] disabled:text-zinc-400"
       >
         {resolvedPending ? "..." : presentation.label}
       </button>

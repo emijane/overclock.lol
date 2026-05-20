@@ -69,7 +69,7 @@ export function ProfileEditModalShell({
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-200 transition hover:bg-white/10"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] border border-white/10 bg-white/5 text-zinc-200 transition hover:bg-white/10"
               aria-label="Close edit profile modal"
             >
               <XIcon className="h-4.5 w-4.5" />
@@ -93,13 +93,13 @@ export function ProfileEditModalShell({
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex h-9 items-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-zinc-100"
+                className="inline-flex h-9 items-center rounded-[10px] border border-white/10 bg-white/5 px-4 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-zinc-100"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="inline-flex h-9 items-center rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+                className="inline-flex h-9 items-center rounded-[10px] bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
               >
                 Save
               </button>

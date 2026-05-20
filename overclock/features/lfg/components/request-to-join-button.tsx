@@ -36,8 +36,8 @@ const ROLE_LABELS: Record<CompetitiveRole, string> = {
 function getPillClassName(tone: "default" | "duos", emphasized = false) {
   if (tone === "duos") {
     return emphasized
-      ? "oc-profile-display rounded-full border-white/[0.06] bg-white/[0.03] text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
-      : "oc-profile-meta rounded-full border-white/[0.06] bg-white/[0.03] text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300";
+      ? "oc-profile-display rounded-[10px] border-white/[0.06] bg-white/[0.03] text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+      : "oc-profile-meta rounded-[10px] border-white/[0.06] bg-white/[0.03] text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300";
   }
 
   return emphasized
@@ -215,7 +215,7 @@ export function RequestToJoinButton({
           onClick={() => setUiState("idle")}
           className={`flex h-7 items-center border px-2.5 text-[11px] transition ${
             tone === "duos"
-              ? "oc-profile-meta rounded-full border-white/[0.06] bg-white/[0.03] font-semibold text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300"
+              ? "oc-profile-meta rounded-[10px] border-white/[0.06] bg-white/[0.03] font-semibold text-zinc-500 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-300"
               : "rounded-[7px] border-white/[0.06] font-medium text-zinc-600 hover:border-white/[0.1] hover:text-zinc-400"
           }`}
         >

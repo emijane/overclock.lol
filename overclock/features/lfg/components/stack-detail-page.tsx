@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ChevronLeftIcon } from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
+import { SiBattledotnet } from "react-icons/si";
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
@@ -79,7 +81,7 @@ function EmptyDetailState({
       <div className="mt-5">
         <Link
           href="/stacks"
-          className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
+          className="oc-profile-display inline-flex h-9 items-center rounded-[10px] border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
         >
           Back to Stacks
         </Link>
@@ -146,7 +148,7 @@ function StackSummaryHeader({
                   <input type="hidden" name="return_path" value={`/stacks/${post.id}`} />
                   <button
                     type="submit"
-                    className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-rose-500/20 bg-rose-500/[0.06] px-3 text-[11px] font-medium text-rose-300/80 transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-200"
+                    className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-rose-500/20 bg-rose-500/[0.06] px-3 text-[11px] font-medium text-rose-300/80 transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-200"
                   >
                     Close stack
                   </button>
@@ -307,12 +309,18 @@ function MemberList({
                       {member.isOwner ? " · owner" : ""}
                     </p>
                     {contact && (contact.discordUsername || contact.battlenetHandle) ? (
-                      <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-zinc-500">
+                      <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px]">
                         {contact.discordUsername ? (
-                          <span>Discord: <span className="text-zinc-400">{contact.discordUsername}</span></span>
+                          <span className="flex items-center gap-1">
+                            <FaDiscord className="oc-social-discord h-3 w-3 shrink-0" />
+                            <span className="text-zinc-400">{contact.discordUsername}</span>
+                          </span>
                         ) : null}
                         {contact.battlenetHandle ? (
-                          <span>Battle.net: <span className="text-zinc-400">{contact.battlenetHandle}</span></span>
+                          <span className="flex items-center gap-1">
+                            <SiBattledotnet className="oc-social-battlenet h-3 w-3 shrink-0" />
+                            <span className="text-zinc-400">{contact.battlenetHandle}</span>
+                          </span>
                         ) : null}
                       </div>
                     ) : null}
@@ -321,7 +329,7 @@ function MemberList({
 
                 {canManageMembers && !member.isOwner ? (
                   <RemoveStackMemberButton
-                    className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-white/6 bg-white/3 px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/6 bg-white/3 px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
                     label="Remove"
                     memberProfileId={member.profileId}
                     postId={detail.post.id}
@@ -430,7 +438,7 @@ export async function StackDetailPage({
                 <div className="mt-4">
                   <Link
                     href="/stacks"
-                    className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
+                    className="oc-profile-display inline-flex h-9 items-center rounded-[10px] border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
                   >
                     Back to Stacks
                   </Link>
@@ -447,31 +455,40 @@ export async function StackDetailPage({
             requestState={requestState}
           />
 
-          <div className={isOwner && detail.isActive ? "grid gap-4 xl:grid-cols-2" : ""}>
+          <div className={isOwner && detail.isActive && pendingRequests.length > 0 ? "grid gap-4 xl:grid-cols-2" : ""}>
             <MemberList
               contactInfoByProfileId={memberContactInfo}
               currentProfileId={profile?.id ?? null}
               detail={detail}
             />
 
-            {isOwner && detail.isActive ? (
+            {isOwner && detail.isActive && pendingRequests.length > 0 ? (
               <section className="rounded-[10px] border border-white/6 bg-white/2">
                 <div className="px-4 py-4 sm:px-5 sm:py-4.5">
                   <div className="mb-3 flex items-center gap-2">
                     <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
                       Pending requests
                     </p>
-                    {pendingRequests.length > 0 ? (
-                      <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
-                        {pendingRequests.length}
-                      </span>
-                    ) : null}
+                    <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
+                      {pendingRequests.length}
+                    </span>
                   </div>
                   <StackDetailPendingRequests requests={pendingRequests} />
                 </div>
               </section>
             ) : null}
           </div>
+
+          {isOwner && detail.isActive && pendingRequests.length === 0 ? (
+            <section className="rounded-[10px] border border-white/6 bg-white/2">
+              <div className="flex items-center gap-3 px-4 py-3 sm:px-5">
+                <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Pending requests
+                </p>
+                <span className="oc-profile-meta text-[11px] text-zinc-500">None</span>
+              </div>
+            </section>
+          ) : null}
 
           {isAcceptedMember && !isOwner && detail.isActive ? (
             <section className="rounded-[10px] border border-white/6 bg-white/2">

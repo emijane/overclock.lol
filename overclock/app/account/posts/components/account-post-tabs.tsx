@@ -28,7 +28,7 @@ export function AccountPostTabs({ counts, selectedStatus }: AccountPostTabsProps
           <Link
             key={value}
             href={href}
-            className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-sm font-semibold transition ${
+            className={`inline-flex h-8 items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold transition ${
               isActive
                 ? "bg-white/8 text-zinc-100"
                 : "text-zinc-500 hover:text-zinc-300"

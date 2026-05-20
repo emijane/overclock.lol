@@ -275,7 +275,7 @@ export function FeaturedVideoModal({
                   <button
                     type="submit"
                     disabled={!url.trim() || !detectedPlatform}
-                    className="oc-profile-display rounded-full bg-sky-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                    className="oc-profile-display rounded-[10px] bg-sky-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
                   >
                     Save
                   </button>

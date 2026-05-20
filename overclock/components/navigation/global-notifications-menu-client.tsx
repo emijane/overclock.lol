@@ -304,7 +304,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleInviteAction(invite.id, "accept")}
-                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-[10px] bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Accept"}
                           </button>
@@ -385,7 +385,7 @@ export function GlobalNotificationsMenuClient({
                             disabled={isPending}
                             aria-disabled={isPending}
                             onClick={() => handleStackRequestAction(req.id, "accept")}
-                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                            className="oc-profile-display inline-flex h-6 cursor-pointer items-center rounded-[10px] bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {rowPending ? "..." : "Accept"}
                           </button>

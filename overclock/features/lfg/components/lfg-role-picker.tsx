@@ -68,7 +68,7 @@ function getRoleIcon(role: CompetitiveRole, className: string) {
 }
 
 function getRoleButtonClassName(isSelected: boolean, tone: "default" | "duos") {
-  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
       ? tone === "duos"
         ? "border-white/[0.12] bg-white/[0.06] text-white"
@@ -83,7 +83,7 @@ function getLookingForButtonClassName(
   isSelected: boolean,
   tone: "default" | "duos"
 ) {
-  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
       ? tone === "duos"
         ? "border-white/[0.12] bg-white/[0.06] text-white"
@@ -98,7 +98,7 @@ function getLookingForAllButtonClassName(
   isSelected: boolean,
   tone: "default" | "duos"
 ) {
-  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
+  return `oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border border-dashed px-2.5 text-[13px] font-semibold transition-all duration-200 ${
     isSelected
       ? tone === "duos"
         ? "border-white/[0.12] bg-white/[0.06] text-white"
@@ -117,7 +117,7 @@ function CreatePostButton({ tone = "default" }: { tone?: "default" | "duos" }) {
       type="submit"
       disabled={pending}
       aria-disabled={pending}
-      className={`inline-flex h-10 w-full items-center justify-center gap-2 rounded-full px-4 transition sm:w-auto disabled:cursor-not-allowed disabled:text-zinc-500 ${
+      className={`inline-flex h-10 w-full items-center justify-center gap-2 rounded-[10px] px-4 transition sm:w-auto disabled:cursor-not-allowed disabled:text-zinc-500 ${
         tone === "duos"
           ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[13px] font-semibold text-zinc-50 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white disabled:border-white/[0.05] disabled:bg-white/[0.03]"
           : "border border-white/[0.08] bg-white/[0.06] text-sm font-semibold text-zinc-50 hover:border-white/[0.12] hover:bg-white/[0.09] hover:text-white disabled:border-white/[0.05] disabled:bg-white/[0.04]"
@@ -293,7 +293,7 @@ export function LFGRolePicker({
             </p>
             <Link
               href={setupHref}
-              className="mt-3 inline-flex h-9 items-center gap-2 rounded-full border border-amber-200/20 bg-black/10 px-3.5 text-sm font-semibold text-amber-100 transition hover:bg-black/15"
+              className="mt-3 inline-flex h-9 items-center gap-2 rounded-[10px] border border-amber-200/20 bg-black/10 px-3.5 text-sm font-semibold text-amber-100 transition hover:bg-black/15"
             >
               Open Competitive Profile
               <ArrowRightIcon className="h-4 w-4" />

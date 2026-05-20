@@ -43,7 +43,7 @@ export function LFGInviteButton({
     return (
       <Link
         href={presentation.href}
-        className={`inline-flex h-7 shrink-0 items-center rounded-full px-3 transition ${
+        className={`inline-flex h-7 shrink-0 items-center rounded-[10px] px-3 transition ${
           tone === "duos"
             ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[11px] font-semibold text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06]"
             : "border border-sky-400/30 bg-sky-400/10 text-[11px] font-semibold text-sky-200 hover:bg-sky-400/15"
@@ -106,7 +106,7 @@ export function LFGInviteButton({
         disabled={isPending || !presentation.canSendInvite}
         aria-disabled={isPending || !presentation.canSendInvite}
         onClick={handleSendInvite}
-        className={`inline-flex h-7 shrink-0 cursor-pointer items-center rounded-full px-3 transition disabled:cursor-not-allowed disabled:text-zinc-500 ${
+        className={`inline-flex h-7 shrink-0 cursor-pointer items-center rounded-[10px] px-3 transition disabled:cursor-not-allowed disabled:text-zinc-500 ${
           tone === "duos"
             ? "oc-profile-display border border-white/[0.06] bg-white/[0.03] text-[11px] font-semibold text-zinc-200 hover:border-white/[0.12] hover:bg-white/[0.06] disabled:border-white/[0.06] disabled:bg-white/[0.03]"
             : "border border-sky-400/30 bg-sky-400/10 text-[11px] font-semibold text-sky-200 hover:bg-sky-400/15 disabled:border-white/8 disabled:bg-white/4"

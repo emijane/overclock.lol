@@ -40,7 +40,7 @@ export function AuthMessage({
         <button
           type="button"
           onClick={() => setIsVisible(false)}
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-current/75 transition hover:bg-black/10 hover:text-current"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[10px] text-current/75 transition hover:bg-black/10 hover:text-current"
           aria-label="Dismiss message"
         >
           <XIcon className="h-3.5 w-3.5" />

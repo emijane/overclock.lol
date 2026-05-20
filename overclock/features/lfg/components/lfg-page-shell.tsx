@@ -195,7 +195,7 @@ function LFGActionNotice({
       <p className="oc-profile-meta mt-2 text-[11px] leading-5 text-zinc-400">{description}</p>
       <Link
         href={ctaHref}
-        className="oc-profile-display mt-4 inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+        className="oc-profile-display mt-4 inline-flex h-9 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
       >
         {ctaLabel}
       </Link>
@@ -534,7 +534,7 @@ export async function LFGPageShell({
                       currentStackHref ? (
                         <Link
                           href={currentStackHref}
-                          className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
+                          className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-[10px] border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
                             usesDuosFeedTone
                               ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
                               : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
@@ -556,7 +556,7 @@ export async function LFGPageShell({
                     ) : (
                       <Link
                         href={user ? resolvedCreatePostHref : guestCreateHref}
-                        className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
+                        className={`oc-profile-display inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-[10px] border px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 ${
                           usesDuosFeedTone
                             ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
                             : "border-white/[0.08] bg-[#05070b] hover:border-white/[0.12] hover:bg-[#080b10] hover:text-white"
@@ -570,7 +570,7 @@ export async function LFGPageShell({
                     <div className="flex items-center gap-2 self-start">
                       <Link
                         href={profileSetupHref}
-                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
+                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-[10px] border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
                           usesDuosFeedTone
                             ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
                             : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"
@@ -580,7 +580,7 @@ export async function LFGPageShell({
                       </Link>
                       <Link
                         href="/account/posts"
-                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
+                        className={`oc-profile-display inline-flex h-8 shrink-0 items-center rounded-[10px] border px-3 text-[12px] font-semibold text-zinc-400 transition hover:text-zinc-200 ${
                           usesDuosFeedTone
                             ? "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]"
                             : "border-white/[0.07] bg-white/2.5 hover:border-white/10 hover:bg-white/4"

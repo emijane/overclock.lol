@@ -74,7 +74,7 @@ export default async function AdminBadgesPage({
             </label>
             <button
               type="submit"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
+              className="inline-flex h-12 items-center justify-center rounded-[10px] bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300"
             >
               Load Profile
             </button>
@@ -121,7 +121,7 @@ export default async function AdminBadgesPage({
               <button
                 type="submit"
                 disabled={!targetProfile}
-                className="inline-flex h-11 items-center justify-center rounded-full bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-500"
+                className="inline-flex h-11 items-center justify-center rounded-[10px] bg-sky-400 px-5 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-500"
               >
                 Assign Badge
               </button>
@@ -159,7 +159,7 @@ export default async function AdminBadgesPage({
                       </div>
                       <button
                         type="submit"
-                        className="inline-flex h-9 items-center justify-center rounded-full border border-rose-400/25 bg-rose-400/10 px-4 text-xs font-semibold text-rose-200 transition hover:bg-rose-400/15"
+                        className="inline-flex h-9 items-center justify-center rounded-[10px] border border-rose-400/25 bg-rose-400/10 px-4 text-xs font-semibold text-rose-200 transition hover:bg-rose-400/15"
                       >
                         Remove
                       </button>

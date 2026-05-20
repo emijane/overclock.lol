@@ -69,7 +69,7 @@ function ActionToast({ message, onDismiss }: ActionToastProps) {
         <button
           type="button"
           onClick={onDismiss}
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 transition hover:bg-white/8 hover:text-zinc-100"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[10px] text-zinc-400 transition hover:bg-white/8 hover:text-zinc-100"
           aria-label="Dismiss message"
         >
           <XIcon className="h-3.5 w-3.5" />
@@ -228,7 +228,7 @@ export function UserBlockMenu({
 
   const resolvedTriggerClassName =
     triggerClassName ??
-    "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-zinc-500 transition hover:text-zinc-100";
+    "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] text-zinc-500 transition hover:text-zinc-100";
 
   return (
     <>

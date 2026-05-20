@@ -20,7 +20,7 @@ export function Button({
 
   return (
     <button
-      className={`inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium text-zinc-200 outline-none transition focus-visible:ring-2 focus-visible:ring-zinc-500 disabled:pointer-events-none disabled:opacity-50 ${variantClass} ${sizeClass} ${className}`}
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium text-zinc-200 outline-none transition focus-visible:ring-2 focus-visible:ring-zinc-500 disabled:pointer-events-none disabled:opacity-50 ${variantClass} ${sizeClass} ${className}`}
       {...props}
     />
   );

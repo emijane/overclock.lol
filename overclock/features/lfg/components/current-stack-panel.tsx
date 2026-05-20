@@ -104,7 +104,7 @@ export function CurrentStackPanel({
             </div>
             <Link
               href={viewHref}
-              className="oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[12px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
+              className="oc-profile-display inline-flex h-8 shrink-0 items-center rounded-[10px] border border-white/6 bg-white/3 px-3.5 text-[12px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
             >
               View stack
             </Link>

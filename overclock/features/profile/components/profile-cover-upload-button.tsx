@@ -136,7 +136,7 @@ export function ProfileCoverUploadButton() {
         type="button"
         onClick={handleOpenPicker}
         disabled={isSubmitting}
-        className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/8 bg-zinc-950/90 px-2.5 text-[11px] font-medium tracking-[-0.01em] text-zinc-100 shadow-sm shadow-black/30 transition-all duration-200 hover:border-white/12 hover:bg-zinc-950 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/8 bg-zinc-950/90 px-2.5 text-[11px] font-medium tracking-[-0.01em] text-zinc-100 shadow-sm shadow-black/30 transition-all duration-200 hover:border-white/12 hover:bg-zinc-950 disabled:cursor-wait disabled:opacity-70"
       >
         <CameraIcon className="h-3 w-3 shrink-0" />
         {isSubmitting ? "Uploading..." : "Update cover"}
@@ -160,7 +160,7 @@ export function ProfileCoverUploadButton() {
                 type="button"
                 onClick={closeModal}
                 disabled={isSubmitting}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-[10px] border border-white/10 bg-white/8 text-zinc-400 transition hover:bg-white/12 hover:text-zinc-100 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label="Close"
               >
                 <XIcon className="h-4 w-4" />
@@ -213,7 +213,7 @@ export function ProfileCoverUploadButton() {
                 type="button"
                 onClick={closeModal}
                 disabled={isSubmitting}
-                className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -221,7 +221,7 @@ export function ProfileCoverUploadButton() {
                 type="button"
                 onClick={() => void handleUpload()}
                 disabled={isSubmitting}
-                className="inline-flex h-8 items-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Uploading..." : "Save cover"}
               </button>

@@ -144,7 +144,7 @@ export function CompetitiveRoleEditorShell({
                 />
                 <button
                   type="submit"
-                  className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
+                  className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
                 >
                   Remove
                 </button>
@@ -205,7 +205,7 @@ export function CompetitiveRoleEditorShell({
 
             <button
               type="submit"
-              className="inline-flex h-7 cursor-pointer items-center rounded-full border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
+              className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
             >
               Save
             </button>

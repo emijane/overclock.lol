@@ -101,7 +101,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
           disabled={isPending}
           aria-disabled={isPending}
           onClick={() => handleInviteAction("accept")}
-          className="oc-profile-display inline-flex h-7 cursor-pointer items-center rounded-full bg-zinc-100 px-3 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="oc-profile-display inline-flex h-7 cursor-pointer items-center rounded-[10px] bg-zinc-100 px-3 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isPending ? "..." : "Accept"}
         </button>
