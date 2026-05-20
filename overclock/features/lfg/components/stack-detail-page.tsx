@@ -6,7 +6,6 @@ import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
 import { closeLFGPost } from "@/features/lfg/actions";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
-import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
 import {
   getStackPostDetailById,
   type StackPostDetail,
@@ -17,10 +16,8 @@ import {
 } from "@/lib/lfg/stack-requests";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
-import { RequestToJoinButton } from "./request-to-join-button";
 import { RemoveStackMemberButton } from "./remove-stack-member-button";
 import { StackDetailPendingRequests } from "./stack-detail-pending-requests";
-import { StackMemberAvatarStrip } from "./stack-member-avatar-strip";
 import { StackPostCard } from "./stack-post-card";
 
 type StackDetailPageProps = {
@@ -28,36 +25,6 @@ type StackDetailPageProps = {
   messageType?: string;
   postId: string;
 };
-
-type ViewerRelationship = "accepted_member" | "guest" | "non_member" | "owner" | "pending_requester";
-
-function getRelationshipLabel(relationship: ViewerRelationship) {
-  if (relationship === "owner") {
-    return "Owner";
-  }
-
-  if (relationship === "accepted_member") {
-    return "Accepted member";
-  }
-
-  if (relationship === "pending_requester") {
-    return "Pending request";
-  }
-
-  if (relationship === "guest") {
-    return "Signed out";
-  }
-
-  return "Non-member";
-}
-
-function getOwner(post: LFGPost) {
-  return post.stackMembers.find((member) => member.isOwner) ?? null;
-}
-
-function getFallbackOwnerLabel(post: LFGPost) {
-  return post.author.displayName ?? post.author.username ?? "Player";
-}
 
 function getInactiveStateCopy(detail: StackPostDetail) {
   if (detail.post.status === "closed") {
@@ -90,7 +57,7 @@ function EmptyDetailState({
   title: string;
 }) {
   return (
-    <section className="rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-5 py-8 text-center sm:px-6">
+    <section className="rounded-[10px] border border-white/6 bg-white/2 px-5 py-8 text-center sm:px-6">
       <h2 className="oc-profile-display text-[20px] font-semibold tracking-[-0.03em] text-zinc-50">
         {title}
       </h2>
@@ -100,180 +67,10 @@ function EmptyDetailState({
       <div className="mt-5">
         <Link
           href="/stacks"
-          className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+          className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
         >
           Back to Stacks
         </Link>
-      </div>
-    </section>
-  );
-}
-
-function ActionSummary({
-  detail,
-  relationship,
-  currentProfileId,
-}: {
-  currentProfileId: string | null;
-  detail: StackPostDetail;
-  relationship: ViewerRelationship;
-}) {
-  const owner = getOwner(detail.post);
-  const ownerLabel = owner?.displayName ?? owner?.username ?? getFallbackOwnerLabel(detail.post);
-  const ownerHref = owner?.username
-    ? `/u/${owner.username}`
-    : detail.post.author.username
-      ? `/u/${detail.post.author.username}`
-      : null;
-  const openSpots = Math.max(
-    (detail.post.maxGroupSize ?? detail.post.currentMemberCount) - detail.post.currentMemberCount,
-    0
-  );
-  const isFull =
-    detail.post.currentMemberCount >= (detail.post.maxGroupSize ?? 5) ||
-    detail.post.status === "filled";
-
-  return (
-    <section className="rounded-[10px] border border-white/[0.06] bg-white/[0.02]">
-      <div className="px-4 py-4 sm:px-5 sm:py-4.5">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                Stack relationship
-              </span>
-              <span className="oc-profile-pill border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-300">
-                {getRelationshipLabel(relationship)}
-              </span>
-            </div>
-            <h2 className="oc-profile-display text-[18px] font-semibold tracking-[-0.03em] text-zinc-50">
-              {detail.post.title}
-            </h2>
-            <p className="oc-profile-meta text-[11px] leading-5 text-zinc-400">
-              {detail.isActive
-                ? "This page keeps the stack visible even if feed filters or search would hide its card."
-                : getInactiveStateCopy(detail).description}
-            </p>
-          </div>
-
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-[10px] border border-white/[0.05] bg-black/12 px-3.5 py-3">
-              <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
-                Owner
-              </p>
-              <div className="mt-2">
-                {ownerHref ? (
-                  <Link
-                    href={ownerHref}
-                    className="oc-profile-display text-[14px] font-semibold text-zinc-100 transition hover:text-white"
-                  >
-                    {ownerLabel}
-                  </Link>
-                ) : (
-                  <p className="oc-profile-display text-[14px] font-semibold text-zinc-100">
-                    {ownerLabel}
-                  </p>
-                )}
-              </div>
-              <div className="mt-3">
-                <StackMemberAvatarStrip
-                  currentMemberCount={detail.post.currentMemberCount}
-                  currentProfileId={currentProfileId}
-                  maxGroupSize={detail.post.maxGroupSize}
-                  members={detail.post.stackMembers}
-                  postId={detail.isActive ? detail.post.id : undefined}
-                  tone="duos"
-                />
-              </div>
-            </div>
-            <div className="rounded-[10px] border border-white/[0.05] bg-black/12 px-3.5 py-3">
-              <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
-                Status
-              </p>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <span className="oc-profile-pill border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-300">
-                  {getLFGGameModeLabel(detail.post.gameMode)}
-                </span>
-                <span className="oc-profile-pill border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-300">
-                  {detail.post.currentMemberCount}/{detail.post.maxGroupSize ?? detail.post.currentMemberCount}
-                </span>
-                <span className="oc-profile-pill border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-300">
-                  {detail.isActive
-                    ? detail.post.status === "filled"
-                      ? "Filled"
-                      : "Active"
-                    : detail.post.status === "closed"
-                      ? "Closed"
-                      : "Expired"}
-                </span>
-              </div>
-              <p className="oc-profile-meta mt-2 text-[11px] text-zinc-400">
-                {openSpots > 0
-                  ? `${openSpots} open spot${openSpots === 1 ? "" : "s"} available`
-                  : isFull
-                    ? "No open spots available"
-                    : "No open spots available"}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {relationship === "owner" && detail.isActive ? (
-              <form action={closeLFGPost}>
-                <input type="hidden" name="post_id" value={detail.post.id} />
-                <input type="hidden" name="return_path" value={`/stacks/${detail.post.id}`} />
-                <button
-                  type="submit"
-                  className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
-                >
-                  Close stack
-                </button>
-              </form>
-            ) : null}
-
-            {relationship === "accepted_member" && detail.isActive ? (
-              <RequestToJoinButton
-                guestNextHref={`/stacks/${detail.post.id}`}
-                initialState="accepted"
-                lookingForRoles={detail.post.lookingForRoles}
-                postId={detail.post.id}
-                tone="duos"
-                viewerState="authenticated"
-              />
-            ) : null}
-
-            {(relationship === "guest" || relationship === "non_member" || relationship === "pending_requester") &&
-            detail.isActive &&
-            (!isFull || relationship === "pending_requester") ? (
-              <RequestToJoinButton
-                guestNextHref={`/stacks/${detail.post.id}`}
-                initialState={relationship === "pending_requester" ? "pending" : "none"}
-                lookingForRoles={detail.post.lookingForRoles}
-                postId={detail.post.id}
-                tone="duos"
-                viewerState={currentProfileId ? "authenticated" : "guest"}
-              />
-            ) : null}
-
-            {(relationship === "guest" || relationship === "non_member") &&
-            detail.isActive &&
-            isFull ? (
-              <span className="oc-profile-meta inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[11px] font-medium text-zinc-500">
-                Stack full
-              </span>
-            ) : null}
-          </div>
-
-          {relationship === "guest" ? (
-            <p className="oc-profile-meta text-[11px] leading-5 text-zinc-400">
-              Sign in to request a spot or manage stack membership.
-            </p>
-          ) : relationship !== "owner" ? (
-            <p className="oc-profile-meta text-[11px] leading-5 text-zinc-400">
-              Only the stack owner can manage members and incoming requests.
-            </p>
-          ) : null}
-        </div>
       </div>
     </section>
   );
@@ -297,7 +94,7 @@ function MemberList({
   );
 
   return (
-    <section className="rounded-[10px] border border-white/[0.06] bg-white/[0.02]">
+    <section className="rounded-[10px] border border-white/6 bg-white/2">
       <div className="px-4 py-4 sm:px-5 sm:py-4.5">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -363,14 +160,14 @@ function MemberList({
                     </div>
                     <p className="oc-profile-meta mt-0.5 text-[11px] leading-5 text-zinc-400">
                       {roleLabel}
-                      {member.isOwner ? " - owner" : ""}
+                      {member.isOwner ? " · owner" : ""}
                     </p>
                   </div>
                 </div>
 
                 {canManageMembers && !member.isOwner ? (
                   <RemoveStackMemberButton
-                    className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-white/6 bg-white/3 px-3 text-[11px] font-medium text-zinc-400 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
                     label="Remove"
                     memberProfileId={member.profileId}
                     postId={detail.post.id}
@@ -401,8 +198,8 @@ export async function StackDetailPage({
         <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
         <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
         <AuthMessage message={message} type={messageType} variant="toast" />
-        <PageContainer className="relative z-10 flex flex-col gap-4" maxWidthClassName="max-w-[98rem]">
-          <PageReveal className="space-y-4">
+        <PageContainer className="relative z-10 flex flex-col gap-4" maxWidthClassName="max-w-[59rem]">
+          <PageReveal className="flex flex-col gap-4">
             <Link
               href="/stacks"
               className="oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
@@ -432,15 +229,6 @@ export async function StackDetailPage({
           postId: detail.post.id,
         }).catch(() => "none" as const)
       : "none";
-  const relationship: ViewerRelationship = !profile?.id
-    ? "guest"
-    : isOwner
-      ? "owner"
-      : isAcceptedMember
-        ? "accepted_member"
-        : requestState === "pending"
-          ? "pending_requester"
-          : "non_member";
   const pendingRequests =
     isOwner && detail.isActive && profile?.id
       ? await getIncomingPendingStackRequests({
@@ -458,36 +246,17 @@ export async function StackDetailPage({
       <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
       <AuthMessage message={message} type={messageType} variant="toast" />
 
-      <PageContainer className="relative z-10 flex flex-col gap-4" maxWidthClassName="max-w-[98rem]">
-        <PageReveal className="space-y-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="space-y-3">
-              <Link
-                href="/stacks"
-                className="oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
-              >
-                <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
-                Stacks
-              </Link>
-              <div>
-                <h1 className="oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]">
-                  Stack Detail
-                </h1>
-                <p className="oc-profile-meta mt-2 max-w-xl text-[11px] leading-5 text-zinc-400">
-                  A dedicated stack page for viewing members, request state, and the actions this stack currently supports.
-                </p>
-              </div>
-            </div>
-            {!detail.isActive ? (
-              <span className="oc-profile-pill inline-flex self-start rounded-full border border-amber-500/20 bg-amber-500/[0.06] px-3 py-1 text-[11px] font-medium text-amber-100/80">
-                {getInactiveStateCopy(detail).title}
-              </span>
-            ) : null}
-          </div>
-        </PageReveal>
+      <PageContainer className="relative z-10 flex flex-col gap-4" maxWidthClassName="max-w-[59rem]">
+        <PageReveal className="flex flex-col gap-4">
+          <Link
+            href="/stacks"
+            className="oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
+          >
+            <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
+            Stacks
+          </Link>
 
-        {!detail.isActive ? (
-          <PageReveal>
+          {!detail.isActive ? (
             <section className="rounded-[10px] border border-amber-500/20 bg-amber-500/[0.05]">
               <div className="px-5 py-4 sm:px-6 sm:py-4.5">
                 <h2 className="oc-profile-display text-[18px] font-semibold tracking-[-0.03em] text-zinc-50">
@@ -499,67 +268,61 @@ export async function StackDetailPage({
                 <div className="mt-4">
                   <Link
                     href="/stacks"
-                    className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-50"
+                    className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
                   >
                     Back to Stacks
                   </Link>
                 </div>
               </div>
             </section>
-          </PageReveal>
-        ) : null}
+          ) : null}
 
-        <PageReveal className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(21rem,0.85fr)]">
-          <div className="min-w-0">
-            <StackPostCard
-              currentProfileId={profile?.id ?? null}
-              post={detail.post}
-              requestState={requestState}
-              returnPath={`/stacks/${detail.post.id}`}
-              showActions={false}
-              showMembershipAction={false}
-              tone="duos"
-            />
-          </div>
-          <ActionSummary
+          <StackPostCard
             currentProfileId={profile?.id ?? null}
-            detail={detail}
-            relationship={relationship}
+            post={detail.post}
+            requestState={requestState}
+            returnPath={`/stacks/${detail.post.id}`}
+            showActions={false}
+            showMembershipAction={detail.isActive}
+            tone="duos"
           />
-        </PageReveal>
 
-        <PageReveal className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <MemberList currentProfileId={profile?.id ?? null} detail={detail} />
+          <div className={isOwner && detail.isActive ? "grid gap-4 xl:grid-cols-2" : ""}>
+            <MemberList currentProfileId={profile?.id ?? null} detail={detail} />
 
-          {isOwner ? (
-            <section className="rounded-[10px] border border-white/[0.06] bg-white/[0.02]">
-              <div className="px-4 py-4 sm:px-5 sm:py-4.5">
-                <div className="mb-4">
-                  <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                    Pending requests
-                  </p>
-                  <h2 className="oc-profile-display mt-1 text-[18px] font-semibold tracking-[-0.03em] text-zinc-50">
-                    {pendingRequests.length} pending
-                  </h2>
+            {isOwner && detail.isActive ? (
+              <section className="rounded-[10px] border border-white/6 bg-white/2">
+                <div className="px-4 py-4 sm:px-5 sm:py-4.5">
+                  <div className="mb-4 flex items-center gap-2">
+                    <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                      Pending requests
+                    </p>
+                    {pendingRequests.length > 0 ? (
+                      <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
+                        {pendingRequests.length}
+                      </span>
+                    ) : null}
+                  </div>
+                  <StackDetailPendingRequests requests={pendingRequests} />
                 </div>
-                <StackDetailPendingRequests requests={pendingRequests} />
-              </div>
-            </section>
-          ) : (
-            <section className="rounded-[10px] border border-white/[0.06] bg-white/[0.02]">
-              <div className="px-4 py-4 sm:px-5 sm:py-4.5">
-                <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Stack access
-                </p>
-                <h2 className="oc-profile-display mt-1 text-[18px] font-semibold tracking-[-0.03em] text-zinc-50">
-                  Viewer permissions
-                </h2>
-                <p className="oc-profile-meta mt-2 text-[11px] leading-5 text-zinc-400">
-                  Request management, member removal, and closing the stack are owner-only actions.
-                </p>
-              </div>
-            </section>
-          )}
+              </section>
+            ) : null}
+          </div>
+
+          {isOwner && detail.isActive ? (
+            <div>
+              <form action={closeLFGPost}>
+                <input type="hidden" name="post_id" value={detail.post.id} />
+                <input type="hidden" name="return_path" value={`/stacks/${detail.post.id}`} />
+                <button
+                  type="submit"
+                  className="oc-profile-display inline-flex h-9 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[13px] font-semibold text-zinc-400 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-200"
+                >
+                  Close stack
+                </button>
+              </form>
+            </div>
+          ) : null}
         </PageReveal>
       </PageContainer>
     </main>
