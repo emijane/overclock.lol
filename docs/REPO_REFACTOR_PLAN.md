@@ -88,7 +88,8 @@ Treat it as the current-state source of truth inside this document.
 
 ### Current Structure
 
-- `overclock/app/` is route-focused
+- `overclock/app/` is route-focused and should only own route entrypoints plus
+  orchestration
 - shared shell, navigation, presence, and matches UI now live under:
   - `overclock/components/app-shell/*`
   - `overclock/components/navigation/*`
@@ -102,6 +103,9 @@ Treat it as the current-state source of truth inside this document.
   - `overclock/features/competitive/components/role-hero-picker.tsx`
 - shared matches-domain action entrypoints now live under:
   - `overclock/features/matches/actions.ts`
+- `overclock/features/*` should own domain UI plus domain actions and mutations
+- `overclock/lib/*` should own infra, data access, normalizers, policies, and
+  the documented `lib/pages/*` page DTO boundary
 - route-local competitive forms, public-profile rendering, profile media upload,
   and featured clips remain in `overclock/app/*`
 

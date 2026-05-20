@@ -1,26 +1,22 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { getMatchesPageDto } from "@/lib/pages/matches-page-dto";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { MatchCard } from "@/features/matches/components/match-card";
 import { MatchInvitesTabs } from "@/features/matches/components/match-invites-tabs";
 import { MatchesRealtimeRefresh } from "@/features/matches/components/matches-realtime-refresh";
+import type { MatchesPageDto } from "@/lib/pages/matches-page-dto";
 
-export async function MatchesPage() {
-  const { user, profile } = await getCurrentProfile();
+type MatchesPageViewProps = {
+  currentProfileId: string;
+  dto: MatchesPageDto;
+};
 
-  if (!user) {
-    redirect("/login");
-  }
-
-  if (!profile) {
-    redirect("/onboarding");
-  }
-  const dto = await getMatchesPageDto(profile.id);
+export function MatchesPageView({
+  currentProfileId,
+  dto,
+}: MatchesPageViewProps) {
   const connections = dto.connections;
   const pendingSentInvites = dto.outgoingInvites;
   const incomingPendingInvites = dto.incomingInvites;
@@ -47,7 +43,7 @@ export async function MatchesPage() {
         className="relative z-10 flex flex-col gap-3"
         maxWidthClassName="max-w-4xl"
       >
-        <MatchesRealtimeRefresh currentProfileId={profile.id} />
+        <MatchesRealtimeRefresh currentProfileId={currentProfileId} />
         <section className="oc-profile-shell rounded-[12px] bg-[#111111] p-px">
           <div className="overflow-hidden rounded-[11px] bg-[#090909]">
             <PageReveal>

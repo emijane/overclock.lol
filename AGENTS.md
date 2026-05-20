@@ -63,12 +63,15 @@ Read AGENTS.md first.
 ## Architecture Rules
 
 - Keep `overclock/app/` route-focused.
+- Treat `overclock/app/*` as route entrypoints and orchestration only.
 - Route folders may import from:
   - `components/*`
   - `features/*`
   - `lib/*`
 - Shared components must not import route-local files.
 - Cross-route logic should not live inside `app/*`.
+- Treat `overclock/features/*` as the home for domain UI plus domain actions and
+  mutations.
 - Prefer domain ownership over generic helper sprawl.
 - Do not create empty convention folders unless they are immediately useful.
 
@@ -80,6 +83,9 @@ Read AGENTS.md first.
 - Cross-route profile, competitive, LFG, and matches logic should eventually
   live in domain-owned shared locations rather than route-local folders.
 - `lib/*` is for infra, data access, normalization, policies, and pure helpers.
+- `overclock/lib/pages/*` is an allowed page DTO boundary for bundled read-only
+  route payloads. Keep it limited to page-shaped DTO loaders and normalizers,
+  not route orchestration or shared UI.
 
 ## Cleanup Expectations
 

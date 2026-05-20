@@ -3,6 +3,9 @@
 This repo is moving page-load data access toward bundled read models instead of
 many small route-time queries.
 
+`overclock/lib/pages/*` is the current page DTO boundary. It is intentionally a
+specialized part of `lib/*`, not a fourth architecture layer.
+
 ## Goals
 
 - keep GET paths read-only
@@ -27,10 +30,21 @@ many small route-time queries.
 
 ## Loader Pattern
 
-1. Route reads auth once through `getCurrentProfile()`.
-2. Route calls one page DTO loader from `overclock/lib/pages/*` when available.
+1. The route entrypoint in `overclock/app/*` reads auth and request params.
+2. The route calls one page DTO loader from `overclock/lib/pages/*` when
+   available.
 3. The loader calls a single Supabase RPC.
 4. The loader normalizes JSON into a typed DTO for the route UI.
+5. Feature-owned UI in `overclock/features/*` renders the prepared DTO.
+
+## Ownership Rules
+
+- keep route orchestration in `overclock/app/*`
+- keep domain UI plus actions and mutations in `overclock/features/*`
+- keep DTO loading, RPC access, normalization, and policies in `overclock/lib/*`
+- keep `overclock/lib/pages/*` limited to page-shaped read bundles
+- if a read stops being page-specific, move it into `overclock/lib/<domain>/*`
+  instead of expanding `lib/pages/*`
 
 ## Write Pattern
 

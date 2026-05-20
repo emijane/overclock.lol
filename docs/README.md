@@ -14,6 +14,8 @@ Root `docs/` is the canonical documentation home for this repository.
   - workflow guidance for cleanup, QA, and agent behavior
 - `docs/architecture/` and root architecture notes
   - repo structure, DTO strategy, and codebase audits
+  - see `docs/architecture/OWNERSHIP_BOUNDARIES.md` for the current app /
+    features / lib split
 - `docs/legal/`
   - canonical legal content read directly by app code
 - `docs/performance/`
