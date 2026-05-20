@@ -239,7 +239,7 @@ Primary storage:
 Important supporting helpers and surfaces:
 
 - `lib/matches/play-invites.ts`
-- `app/matches/actions.ts`
+- `features/matches/actions.ts`
 - `app/matches/page.tsx`
 - `app/connections/page.tsx`
 - `components/navigation/global-notifications-menu-client.tsx`

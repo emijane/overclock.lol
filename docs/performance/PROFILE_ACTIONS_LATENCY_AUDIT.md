@@ -41,7 +41,7 @@ High-level diagnosis:
 ## Exact Files Inspected
 
 - `overclock/features/presence/actions.ts`
-- `overclock/app/matches/actions.ts`
+- `overclock/features/matches/actions.ts`
 - `overclock/lib/blocks/user-blocks.ts`
 - `overclock/lib/matches/play-invites.ts`
 - `overclock/lib/profiles/get-current-profile.ts`
@@ -59,8 +59,8 @@ High-level diagnosis:
 | Action | App entrypoint | App-layer Supabase calls | Server-side follow-up work | Main latency drivers |
 |---|---|---|---|---|
 | `updateLastSeen` | `features/presence/actions.ts` | 2 | none | `auth.getUser()` + `profiles.update()` in sequence |
-| `sendPlayInvite` | `app/matches/actions.ts` | 3 | `revalidatePath("/matches")`, `revalidatePath("/connections")` | `getCurrentProfile()` + `send_play_invite` RPC procedural checks |
-| `removeProfileConnection` | `app/matches/actions.ts` | 3 | `revalidatePath("/matches")`, `revalidatePath("/connections")` | `getCurrentProfile()` + `remove_profile_connection` lock/read/check/update RPC |
+| `sendPlayInvite` | `features/matches/actions.ts` | 3 | `revalidatePath("/matches")`, `revalidatePath("/connections")` | `getCurrentProfile()` + `send_play_invite` RPC procedural checks |
+| `removeProfileConnection` | `features/matches/actions.ts` | 3 | `revalidatePath("/matches")`, `revalidatePath("/connections")` | `getCurrentProfile()` + `remove_profile_connection` lock/read/check/update RPC |
 | `blockUser` | `lib/blocks/user-blocks.ts` | 4 | 6 base revalidations + up to 2 profile route revalidations | `getCurrentProfile()` + `create_user_block` RPC + username lookup query + broad invalidation fan-out |
 
 App-layer call counts above assume an authenticated, onboarded user:
@@ -90,7 +90,7 @@ Notes:
 
 Locations:
 
-- `overclock/app/matches/actions.ts`
+- `overclock/features/matches/actions.ts`
 - `overclock/lib/matches/play-invites.ts`
 
 | Order | Call | Purpose |
@@ -108,7 +108,7 @@ Follow-up work:
 
 Locations:
 
-- `overclock/app/matches/actions.ts`
+- `overclock/features/matches/actions.ts`
 - `overclock/lib/matches/play-invites.ts`
 
 | Order | Call | Purpose |

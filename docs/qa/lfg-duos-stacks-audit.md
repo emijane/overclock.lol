@@ -195,7 +195,7 @@ Added `revalidatePath("/lfg")` alongside the section-specific revalidation in `c
 
 ### #21 — sendPlayInvite No Rate Limiting (Medium)
 
-- File: `overclock/app/matches/actions.ts`
+- File: `overclock/features/matches/actions.ts`
 - Root cause: No application-layer rate limit on invite sends.
 
 ### #22 — Post Title Unicode (Low)

@@ -7,6 +7,8 @@ Canonical ownership split for the active app:
   - reads `params` and `searchParams`
   - loads auth/viewer context
   - coordinates page-specific redirects and not-found handling
+  - may share route-only helpers with alias routes when the helper stays inside
+    `app/*`
   - passes prepared data into shared UI
 - `overclock/features/*`
   - domain UI
@@ -38,6 +40,23 @@ Do not use it for:
 
 If a loader stops being page-specific, fold it into a domain service under
 `overclock/lib/<domain>/*` instead of growing `lib/pages/*`.
+
+## Matches Example
+
+Use `/matches` as the reference split:
+
+- `overclock/app/matches/*`
+  - owns request-time orchestration for `/matches` and the `/connections` alias
+  - handles auth gating, onboarding redirects, and page DTO loading
+- `overclock/features/matches/*`
+  - owns matches UI plus invite/connection server actions
+- `overclock/lib/pages/matches-page-dto.ts`
+  - owns DTO RPC loading and normalization for the page-shaped read model
+- `overclock/lib/matches/*`
+  - owns invite/connection record access and pure invite helpers
+
+Do not add matches mutations back under `app/matches/*`. Keep that route folder
+focused on request-time page orchestration.
 
 ## Current Follow-Up Targets
 

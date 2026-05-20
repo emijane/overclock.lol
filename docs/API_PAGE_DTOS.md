@@ -37,6 +37,10 @@ specialized part of `lib/*`, not a fourth architecture layer.
 4. The loader normalizes JSON into a typed DTO for the route UI.
 5. Feature-owned UI in `overclock/features/*` renders the prepared DTO.
 
+For `/matches`, that means `overclock/app/matches/*` owns auth redirects and
+DTO loading, while `overclock/features/matches/*` stays focused on page UI and
+mutations.
+
 ## Ownership Rules
 
 - keep route orchestration in `overclock/app/*`
