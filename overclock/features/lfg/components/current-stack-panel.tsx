@@ -54,76 +54,61 @@ export function CurrentStackFallbackPanel({
 export function CurrentStackPanel({
   post,
 }: CurrentStackPanelProps) {
-  const openSpots = Math.max((post.maxGroupSize ?? post.currentMemberCount) - post.currentMemberCount, 0);
   const viewHref = `/stacks/${post.id}`;
   const roleNeeds = computeStackRoleNeeds(post.stackMembers);
 
   return (
     <section className="px-5 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-2">
       <div className="overflow-hidden rounded-[12px] border border-white/[0.06] bg-white/[0.02]">
-        <div className="flex items-start justify-between gap-3 px-4 py-3.5 sm:px-5 sm:py-4">
-          <div className="min-w-0 space-y-1.5">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+        <div className="px-4 py-3.5 sm:px-5 sm:py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1">
+              <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
                 Your current stack
-              </span>
-              <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
-                {post.currentMemberCount}/{post.maxGroupSize ?? post.currentMemberCount}
-              </span>
-              {openSpots > 0 ? (
-                <span className="oc-profile-pill border border-emerald-400/14 bg-emerald-400/6 px-2 py-0.5 text-[10px] text-emerald-100/80">
-                  {openSpots} open spot{openSpots === 1 ? "" : "s"}
-                </span>
-              ) : (
-                <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-400">
-                  Full stack
-                </span>
-              )}
-            </div>
-            {roleNeeds.size > 0 ? (
-              <div className="flex flex-wrap items-center gap-1">
-                {Array.from(roleNeeds.entries()).map(([role, count]) => {
-                  const chipCn =
-                    role === "tank"
-                      ? "border-sky-400/14 bg-sky-400/6 text-sky-100/80"
-                      : role === "dps"
-                        ? "border-rose-400/14 bg-rose-400/6 text-rose-100/80"
-                        : "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
-                  return (
-                    <span
-                      key={role}
-                      className={`oc-profile-pill border px-2 py-0.5 text-[10px] font-medium ${chipCn}`}
-                    >
-                      {count} {COMPETITIVE_ROLE_LABELS[role]}
-                    </span>
-                  );
-                })}
+              </p>
+              <h2 className="oc-profile-display line-clamp-1 text-[15px] font-semibold tracking-[-0.03em] text-zinc-50">
+                {post.title}
+              </h2>
+              <div className="oc-profile-meta flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
+                <span>{getLFGGameModeLabel(post.gameMode)}</span>
+                {post.region ? (
+                  <>
+                    <span aria-hidden="true" className="text-zinc-700">&bull;</span>
+                    <span>{post.region}</span>
+                  </>
+                ) : null}
+                <span aria-hidden="true" className="text-zinc-700">&bull;</span>
+                <span>{post.status === "filled" ? "Filled" : "Active"}</span>
               </div>
-            ) : null}
-            <h2 className="oc-profile-display line-clamp-1 text-[16px] font-semibold tracking-[-0.03em] text-zinc-50">
-              {post.title}
-            </h2>
-            <div className="oc-profile-meta flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
-              <span>{getLFGGameModeLabel(post.gameMode)}</span>
-              {post.region ? (
-                <>
-                  <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-                  <span>{post.region}</span>
-                </>
+              {roleNeeds.size > 0 ? (
+                <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                  <span className="oc-profile-meta text-[10px] text-zinc-500">Needs</span>
+                  {Array.from(roleNeeds.entries()).map(([role, count]) => {
+                    const chipCn =
+                      role === "tank"
+                        ? "border-sky-400/14 bg-sky-400/6 text-sky-100/80"
+                        : role === "dps"
+                          ? "border-rose-400/14 bg-rose-400/6 text-rose-100/80"
+                          : "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
+                    return (
+                      <span
+                        key={role}
+                        className={`oc-profile-pill border px-2 py-0.5 text-[10px] font-medium ${chipCn}`}
+                      >
+                        {count} {COMPETITIVE_ROLE_LABELS[role]}
+                      </span>
+                    );
+                  })}
+                </div>
               ) : null}
-              <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-              <span>{post.status === "filled" ? "Filled" : "Active"}</span>
             </div>
-            <p className="oc-profile-meta text-[10px] text-zinc-500">
-              Manage members and requests from the stack detail page.
-            </p>
+            <Link
+              href={viewHref}
+              className="oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[12px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
+            >
+              View stack
+            </Link>
           </div>
-          <Link
-            href={viewHref}
-            className="oc-profile-display inline-flex h-8 shrink-0 items-center rounded-full border border-white/6 bg-white/3 px-3.5 text-[12px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
-          >
-            View stack
-          </Link>
         </div>
       </div>
     </section>
