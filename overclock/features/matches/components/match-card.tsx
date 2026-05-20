@@ -3,8 +3,8 @@ import { FaDiscord } from "react-icons/fa";
 import { SiBattledotnet } from "react-icons/si";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RemoveConnectionButton } from "@/app/matches/remove-connection-button";
 import type { ActiveProfileConnection } from "@/lib/matches/play-invites";
+import { RemoveConnectionButton } from "@/features/matches/components/remove-connection-button";
 
 type MatchCardProps = {
   connection: ActiveProfileConnection;

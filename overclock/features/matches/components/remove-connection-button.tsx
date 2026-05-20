@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { removeProfileConnection } from "@/app/matches/actions";
+import { removeProfileConnection } from "@/features/matches/actions";
 
 type RemoveConnectionButtonProps = {
   connectionId: string;

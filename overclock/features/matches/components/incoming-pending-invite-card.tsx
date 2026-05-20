@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { acceptPlayInvite, declinePlayInvite } from "@/app/matches/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 
 type IncomingPendingInviteCardProps = {

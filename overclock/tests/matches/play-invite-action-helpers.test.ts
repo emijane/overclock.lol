@@ -8,7 +8,7 @@ import {
   mapSendPlayInviteActionResult,
   mapUpdatePlayInviteActionResult,
   optionalTrimmedString,
-} from "../../app/matches/play-invite-action-helpers";
+} from "../../features/matches/play-invite-action-helpers";
 
 test("optionalTrimmedString trims meaningful values", () => {
   assert.equal(optionalTrimmedString("  hello  "), "hello");

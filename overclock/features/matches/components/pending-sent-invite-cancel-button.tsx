@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { cancelPlayInvite } from "@/app/matches/actions";
+import { cancelPlayInvite } from "@/features/matches/actions";
 
 type PendingSentInviteCancelButtonProps = {
   inviteId: string;
