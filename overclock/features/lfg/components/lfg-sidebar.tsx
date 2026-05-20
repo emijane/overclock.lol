@@ -146,6 +146,8 @@ function FilterItem({
 
 type LFGSidebarProps = {
   createPostHref: string;
+  currentStackHref?: string | null;
+  hasActiveStack?: boolean;
   isLoggedIn: boolean;
   selectedFilters?: LFGFeedFilters;
   tone?: "default" | "duos";
@@ -154,6 +156,8 @@ type LFGSidebarProps = {
 
 export function LFGSidebar({
   createPostHref,
+  currentStackHref,
+  hasActiveStack = false,
   isLoggedIn,
   selectedFilters,
   tone = "default",
@@ -176,6 +180,7 @@ export function LFGSidebar({
   const resolvedCreateHref = isLoggedIn
     ? createPostHref
     : `/login?next=/${type}/create`;
+  const shouldBlockStackCreate = type === "stacks" && isLoggedIn && hasActiveStack;
 
   // Single rank selection — both min and max set to the same tier
   const selectedRank =
@@ -232,17 +237,52 @@ export function LFGSidebar({
       <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
       {/* Create post */}
-      <Link
-        href={resolvedCreateHref}
-        className={`flex items-center gap-1.5 px-2.5 text-[12px] transition ${
-          tone === "duos"
-            ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.04] bg-white/[0.02] font-semibold text-zinc-400 hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-zinc-200"
-            : "h-7 rounded-md border border-white/8 bg-white/2 font-medium text-zinc-400 hover:border-white/11 hover:text-zinc-200"
-        }`}
-      >
-        <PlusIcon className="h-3 w-3 shrink-0" />
-        Create Post
-      </Link>
+      {shouldBlockStackCreate ? (
+        <div className="space-y-2">
+          <div
+            aria-disabled="true"
+            className={`px-2.5 ${
+              tone === "duos"
+                ? "rounded-[8px] border border-white/[0.04] bg-white/[0.015]"
+                : "rounded-md border border-white/8 bg-white/2"
+            }`}
+          >
+            <div className="oc-profile-display flex h-8 items-center gap-1.5 text-[12px] font-semibold text-zinc-500">
+              <PlusIcon className="h-3 w-3 shrink-0" />
+              Create Post
+            </div>
+          </div>
+          <div className="px-0.5">
+            <p className="oc-profile-meta text-[10px] leading-4 text-zinc-500">
+              You already have an active stack.
+            </p>
+            {currentStackHref ? (
+              <Link
+                href={currentStackHref}
+                className={`oc-profile-display mt-2 inline-flex h-7 items-center rounded-full border px-3 text-[11px] font-semibold transition ${
+                  tone === "duos"
+                    ? "border-white/[0.06] bg-white/[0.03] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+                    : "border-white/8 bg-white/2 text-zinc-300 hover:border-white/11 hover:text-zinc-100"
+                }`}
+              >
+                View current stack
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <Link
+          href={resolvedCreateHref}
+          className={`flex items-center gap-1.5 px-2.5 text-[12px] transition ${
+            tone === "duos"
+              ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.04] bg-white/[0.02] font-semibold text-zinc-400 hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-zinc-200"
+              : "h-7 rounded-md border border-white/8 bg-white/2 font-medium text-zinc-400 hover:border-white/11 hover:text-zinc-200"
+          }`}
+        >
+          <PlusIcon className="h-3 w-3 shrink-0" />
+          Create Post
+        </Link>
+      )}
 
       <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 

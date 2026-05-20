@@ -378,6 +378,7 @@ export async function LFGPageShell({
   const stackRequestStates =
     isStacksFeed && profile?.id ? pageData.stackRequestStates : {};
   const currentStack = isStacksFeed ? pageData.currentStack ?? fallbackCurrentStack : null;
+  const currentStackHref = currentStack ? `/stacks#stack-post-${currentStack.id}` : null;
   const shouldShowCurrentStackPanel = Boolean(currentStack && profile?.id);
   const showBlockedCurrentStackCopy = isBlockedByCurrentStackMessage(message);
   const shouldShowCurrentStackFallback =
@@ -446,6 +447,8 @@ export async function LFGPageShell({
           <Suspense fallback={<div className="hidden w-56 shrink-0 lg:block" />}>
             <LFGSidebar
               createPostHref={resolvedCreatePostHref}
+              currentStackHref={currentStackHref}
+              hasActiveStack={Boolean(currentStack)}
               isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
               tone={usesDuosFeedTone ? "duos" : "default"}
