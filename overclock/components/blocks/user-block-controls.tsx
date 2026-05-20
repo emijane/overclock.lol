@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { MoreHorizontalIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { blockUser, unblockUser } from "@/lib/blocks/user-blocks";
+import { blockUser, unblockUser } from "@/features/blocks/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,

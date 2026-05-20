@@ -1,5 +1,3 @@
-"use server";
-
 import { revalidatePath } from "next/cache";
 
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";

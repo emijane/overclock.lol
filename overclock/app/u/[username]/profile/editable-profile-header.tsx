@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { blockUser, unblockUser } from "@/lib/blocks/user-blocks";
+import { blockUser, unblockUser } from "@/features/blocks/actions";
 import { UserBlockMenu } from "@/components/blocks/user-block-controls";
 import { ProfileHeader } from "./profile-header";
 import { InviteToPlayButton } from "./invite-to-play-button";
