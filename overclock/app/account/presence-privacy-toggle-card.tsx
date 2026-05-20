@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { setHideOfflinePresence } from "@/app/account/actions";
-import { Switch } from "@/components/ui/switch";
+import { SettingsToggleCard } from "@/app/account/components/settings-toggle-card";
 
 type PresencePrivacyToggleCardProps = {
   initialHideOfflinePresence: boolean;
@@ -33,19 +33,13 @@ export function PresencePrivacyToggleCard({
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-5">
-      <div className="min-w-0">
-        <p className="text-[15px] font-semibold text-zinc-100">Appear offline</p>
-        <p className="mt-0.5 text-sm text-zinc-500">
-          Hide your presence dot from other users.
-        </p>
-      </div>
-      <Switch
-        checked={hideOfflinePresence}
-        disabled={isPending}
-        aria-label="Toggle appear offline"
-        onCheckedChange={handleCheckedChange}
-      />
-    </div>
+    <SettingsToggleCard
+      ariaLabel="Toggle appear offline"
+      checked={hideOfflinePresence}
+      description="Hide your presence dot from other users."
+      disabled={isPending}
+      onCheckedChange={handleCheckedChange}
+      title="Appear offline"
+    />
   );
 }
