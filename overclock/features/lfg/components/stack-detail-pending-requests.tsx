@@ -84,14 +84,7 @@ export function StackDetailPendingRequests({
 
   if (visibleRequests.length === 0) {
     return (
-      <div className="rounded-[10px] border border-white/[0.05] bg-black/12 px-4 py-4">
-        <p className="oc-profile-display text-[14px] font-semibold text-zinc-100">
-          No pending requests right now
-        </p>
-        <p className="oc-profile-meta mt-1.5 text-[11px] leading-5 text-zinc-400">
-          New join requests will show up here as players ask to join this stack.
-        </p>
-      </div>
+      <p className="oc-profile-meta text-[11px] text-zinc-500">No pending requests</p>
     );
   }
 
