@@ -4,7 +4,7 @@ import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react"
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
-import { AuthMessage } from "@/components/auth/auth-message";
+import { AuthMessage } from "@/features/auth/components";
 import { createLFGPost } from "@/features/lfg/actions";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
