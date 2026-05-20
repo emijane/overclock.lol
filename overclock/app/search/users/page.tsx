@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileResultRow } from "@/components/profile/profile-result-row";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { searchPublicProfiles } from "@/lib/profiles/public-profile-search";
 import {
@@ -23,10 +23,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       ? `Results for "${query}" | overclock.lol`
       : "Search players | overclock.lol",
   };
-}
-
-function getAvatarFallback(displayName: string | null, username: string) {
-  return (displayName ?? username).slice(0, 1).toUpperCase();
 }
 
 export default async function SearchUsersPage({ searchParams }: Props) {
@@ -95,25 +91,14 @@ export default async function SearchUsersPage({ searchParams }: Props) {
                     href={`/u/${result.username}`}
                     className="oc-list-row-hover flex items-center gap-3 px-4 py-3"
                   >
-                    <Avatar className="h-9 w-9 shrink-0 rounded-full">
-                      {result.avatarUrl ? (
-                        <AvatarImage
-                          src={result.avatarUrl}
-                          alt={`${result.displayName ?? result.username} avatar`}
-                        />
-                      ) : null}
-                      <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
-                        {getAvatarFallback(result.displayName, result.username)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-zinc-100">
-                        {result.displayName ?? result.username}
-                      </p>
-                      <p className="truncate text-[11px] text-zinc-500">
-                        @{result.username}
-                      </p>
-                    </div>
+                    <ProfileResultRow
+                      avatarClassName="h-9 w-9"
+                      avatarUrl={result.avatarUrl}
+                      displayName={result.displayName}
+                      titleClassName="truncate text-sm font-semibold text-zinc-100"
+                      username={result.username}
+                      usernameClassName="truncate text-[11px] text-zinc-500"
+                    />
                   </Link>
                 </li>
               ))}

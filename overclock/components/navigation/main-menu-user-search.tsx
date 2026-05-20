@@ -5,7 +5,7 @@ import { SearchIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileResultRow } from "@/components/profile/profile-result-row";
 import {
   normalizeProfileSearchQuery,
   PROFILE_SEARCH_QUERY_MAX_LENGTH,
@@ -14,14 +14,6 @@ import {
 } from "@/lib/profiles/profile-search-shared";
 
 const SEARCH_DEBOUNCE_MS = 220;
-
-function getAvatarFallback(
-  displayName: string | null,
-  username: string | null | undefined
-) {
-  const source = displayName ?? username ?? "P";
-  return source.slice(0, 1).toUpperCase();
-}
 
 export function MainMenuUserSearch() {
   const pathname = usePathname();
@@ -211,26 +203,11 @@ export function MainMenuUserSearch() {
                         isActive ? "bg-[#171717]" : "hover:bg-white/[0.02]"
                       }`}
                     >
-                      <Avatar className="h-8 w-8 shrink-0 rounded-full">
-                        {result.avatarUrl ? (
-                          <AvatarImage
-                            src={result.avatarUrl}
-                            alt={`${result.displayName ?? result.username} avatar`}
-                          />
-                        ) : null}
-                        <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
-                          {getAvatarFallback(result.displayName, result.username)}
-                        </AvatarFallback>
-                      </Avatar>
-
-                      <div className="min-w-0">
-                        <p className="oc-profile-display truncate text-[13px] font-semibold text-zinc-100">
-                          {result.displayName ?? result.username}
-                        </p>
-                        <p className="oc-profile-meta truncate text-[11px]">
-                          @{result.username}
-                        </p>
-                      </div>
+                      <ProfileResultRow
+                        avatarUrl={result.avatarUrl}
+                        displayName={result.displayName}
+                        username={result.username}
+                      />
                     </Link>
                   </li>
                 );
