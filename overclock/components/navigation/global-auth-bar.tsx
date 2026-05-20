@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageContainer } from "@/components/app-shell/page-container";
-import { GlobalNotificationsMenu } from "@/components/navigation/global-notifications-menu";
+import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
 import { MainMenuUserSearch } from "@/components/navigation/main-menu-user-search";
 import { UserMenu } from "@/components/navigation/user-menu";
 
@@ -74,7 +74,7 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
 
           {userId ? (
             <>
-              <GlobalNotificationsMenu currentProfileId={userId} />
+              <GlobalNotificationsMenuClient currentProfileId={userId} />
 
               <UserMenu
                 avatarFallback={avatarFallback}

@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BellIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 import type { IncomingPendingStackRequest } from "@/lib/lfg/stack-request-types";
+import type { NotificationsMenuDto } from "@/lib/pages/matches-page-dto";
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
 import { acceptStackJoinRequest, declineStackJoinRequest } from "@/features/lfg/stack-actions";
 import {
@@ -25,9 +26,6 @@ const ROLE_LABELS: Record<string, string> = {
 
 type GlobalNotificationsMenuClientProps = {
   currentProfileId: string;
-  initialInvites: IncomingPendingPlayInvite[];
-  initialStackRequests: IncomingPendingStackRequest[];
-  initialTotalCount: number;
 };
 
 function getAvatarFallback(name: string | null, username: string | null) {
@@ -37,19 +35,56 @@ function getAvatarFallback(name: string | null, username: string | null) {
 
 export function GlobalNotificationsMenuClient({
   currentProfileId,
-  initialInvites,
-  initialStackRequests,
-  initialTotalCount,
 }: GlobalNotificationsMenuClientProps) {
   const router = useRouter();
-  const [invites, setInvites] = useState(initialInvites);
-  const [stackRequests, setStackRequests] = useState(initialStackRequests);
-  const [totalCount, setTotalCount] = useState(initialTotalCount);
+  const [invites, setInvites] = useState<IncomingPendingPlayInvite[]>([]);
+  const [stackRequests, setStackRequests] = useState<IncomingPendingStackRequest[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeInviteId, setActiveInviteId] = useState<string | null>(null);
   const [feedbackByInviteId, setFeedbackByInviteId] = useState<
     Record<string, string | null>
   >({});
   const [isPending, startTransition] = useTransition();
+
+  async function refreshNotifications(signal?: AbortSignal) {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/notifications/menu", {
+        credentials: "same-origin",
+        signal,
+      });
+
+      if (!response.ok) {
+        setInvites([]);
+        setStackRequests([]);
+        setTotalCount(0);
+        return;
+      }
+
+      const dto = (await response.json()) as NotificationsMenuDto;
+      setInvites(dto.incomingInvites);
+      setStackRequests(dto.stackRequests);
+      setTotalCount(dto.totalCount);
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        console.error("Failed to refresh global notifications", error);
+      }
+    } finally {
+      if (!signal?.aborted) {
+        setIsLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    void refreshNotifications(controller.signal);
+
+    return () => controller.abort();
+  }, [currentProfileId]);
 
   function setInviteFeedback(inviteId: string, message: string | null) {
     setFeedbackByInviteId((current) => ({
@@ -83,6 +118,7 @@ export function GlobalNotificationsMenuClient({
       if (result.success) {
         removeStackRequest(requestId);
         setActiveInviteId(null);
+        void refreshNotifications();
         router.refresh();
         return;
       }
@@ -117,6 +153,7 @@ export function GlobalNotificationsMenuClient({
       if (result.status === "success") {
         removeInvite(inviteId);
         setActiveInviteId(null);
+        void refreshNotifications();
         router.refresh();
         return;
       }
@@ -164,7 +201,16 @@ export function GlobalNotificationsMenuClient({
           align="end"
           className="w-[22rem] overflow-hidden rounded-[14px] border border-white/[0.06] bg-[#111111] p-0 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]"
         >
-          {!hasNotifications ? (
+          {isLoading ? (
+            <div className="px-5 py-8 text-center">
+              <p className="oc-profile-display text-sm font-medium text-zinc-200">
+                Loading notifications
+              </p>
+              <p className="mt-1.5 text-sm leading-6 text-zinc-500">
+                Checking for invite and stack join requests.
+              </p>
+            </div>
+          ) : !hasNotifications ? (
             <div className="px-5 py-8 text-center">
               <p className="oc-profile-display text-sm font-medium text-zinc-200">No pending notifications</p>
               <p className="mt-1.5 text-sm leading-6 text-zinc-500">
