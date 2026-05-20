@@ -223,6 +223,80 @@ async function loadStackMembersByPostId(
   return stackMembersByPostId;
 }
 
+async function hydrateSingleStackPost(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  postRow: Record<string, unknown>
+) {
+  const badgesByProfileId = await loadBadgesByProfileId(supabase, [postRow]);
+  const stackMembersByPostId = await loadStackMembersByPostId(supabase, [postRow]);
+  const normalizedPostId = typeof postRow.id === "string" ? postRow.id : null;
+
+  return normalizeLFGPostRow(
+    postRow,
+    typeof postRow.profile_id === "string"
+      ? badgesByProfileId.get(postRow.profile_id) ?? []
+      : [],
+    normalizedPostId ? stackMembersByPostId.get(normalizedPostId) ?? [] : []
+  );
+}
+
+function getStackLookupErrorText(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return "";
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  return [
+    typeof candidate.code === "string" ? candidate.code : "",
+    typeof candidate.message === "string" ? candidate.message : "",
+    typeof candidate.details === "string" ? candidate.details : "",
+    typeof candidate.hint === "string" ? candidate.hint : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function isMissingActiveStackLookupRpcError(error: unknown) {
+  const text = getStackLookupErrorText(error);
+
+  return (
+    text.includes("get_profile_active_stack_post_id") &&
+    (text.includes("pgrst") ||
+      text.includes("could not find") ||
+      text.includes("does not exist") ||
+      text.includes("not found"))
+  );
+}
+
+async function getCurrentActiveStackPostIdFromMembershipQuery(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  profileId: string
+) {
+  const { data, error } = await supabase
+    .from("stack_members")
+    .select("post_id,is_owner,joined_at,lfg_posts!inner(status)")
+    .eq("profile_id", profileId)
+    .is("removed_at", null)
+    .in("lfg_posts.status", ["active", "filled"])
+    .gt("lfg_posts.expires_at", new Date().toISOString())
+    .order("is_owner", { ascending: false })
+    .order("joined_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingStackMembersSupportError(error)) {
+      return null;
+    }
+
+    throw error;
+  }
+
+  return data && typeof data.post_id === "string" ? data.post_id : null;
+}
+
 export async function getActiveLFGPosts(
   lfgType: LFGType,
   filters?: LFGFeedFilters,
@@ -324,6 +398,103 @@ export async function getActiveLFGPosts(
         : []
     )
   );
+}
+
+export async function getCurrentActiveStackForProfile(
+  profileId: string
+): Promise<LFGPost | null> {
+  const supabase = await createClient();
+  let postId: string | null = null;
+  const { data, error } = await supabase.rpc("get_profile_active_stack_post_id", {
+    p_exclude_post_id: null,
+    p_profile_id: profileId,
+  });
+
+  if (error) {
+    postId = await getCurrentActiveStackPostIdFromMembershipQuery(supabase, profileId);
+
+    if (postId) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[lfg] Current stack RPC failed; membership fallback found active stack", {
+          postId,
+          profileId,
+        });
+      }
+
+      return getActiveStackPostById(postId);
+    }
+
+    if (
+      isMissingStackMembersSupportError(error) ||
+      isMissingActiveStackLookupRpcError(error)
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
+
+  postId = typeof data === "string" ? data : null;
+
+  if (!postId) {
+    postId = await getCurrentActiveStackPostIdFromMembershipQuery(supabase, profileId);
+  }
+
+  if (!postId) {
+    return null;
+  }
+
+  return getActiveStackPostById(postId);
+}
+
+export async function getActiveStackPostById(postId: string): Promise<LFGPost | null> {
+  const supabase = await createClient();
+  const nowIso = new Date().toISOString();
+  const { data: postData, error: postError } = await supabase
+    .from("lfg_posts")
+    .select(
+      [
+        "id",
+        "profile_id",
+        "lfg_type",
+        "game_mode",
+        "title",
+        "status",
+        "looking_for_roles",
+        "posting_role",
+        "snapshot_platform",
+        "snapshot_rank_tier",
+        "snapshot_rank_division",
+        "snapshot_region",
+        "snapshot_timezone",
+        "hero_pool_snapshot",
+        "created_at",
+        "max_group_size",
+        "current_member_count",
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+      ].join(",")
+    )
+    .eq("id", postId)
+    .eq("lfg_type", "stacks")
+    .in("status", ["active", "filled"])
+    .gt("expires_at", nowIso)
+    .limit(1)
+    .maybeSingle();
+
+  if (postError) {
+    throw postError;
+  }
+
+  const postRow =
+    postData && typeof postData === "object" && !Array.isArray(postData)
+      ? (postData as Record<string, unknown>)
+      : null;
+
+  if (!postRow) {
+    return null;
+  }
+
+  return hydrateSingleStackPost(supabase, postRow);
 }
 
 export async function getRecentPostsByProfileId(

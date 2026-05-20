@@ -37,10 +37,20 @@ import {
 function lfgRedirect(
   lfgType: string,
   message: string,
-  type: "error" | "success" = "error"
+  type: "error" | "success" = "error",
+  extraParams?: Record<string, string | null | undefined>
 ): never {
   const path = getLFGRedirectPath(lfgType);
   const params = new URLSearchParams({ message, type });
+
+  if (extraParams) {
+    for (const [key, value] of Object.entries(extraParams)) {
+      if (value) {
+        params.set(key, value);
+      }
+    }
+  }
+
   redirect(`${path}?${params.toString()}`);
 }
 
@@ -175,8 +185,10 @@ export async function createLFGPost(formData: FormData) {
     timezone: profile.timezone ?? null,
   };
 
+  let result: Awaited<ReturnType<typeof createLFGPostAtomically>>;
+
   try {
-    const result = await createLFGPostAtomically({
+    result = await createLFGPostAtomically({
       competitiveProfileSnapshot,
       gameMode,
       heroPoolSnapshot,
@@ -191,14 +203,6 @@ export async function createLFGPost(formData: FormData) {
       timezone: profile.timezone ?? null,
       title,
     });
-
-    if (!result.created) {
-      if (shouldRedirectToLoginForCreateError(result.errorCode)) {
-        redirect("/login");
-      }
-
-      lfgRedirect(lfgTypeValue, getCreateLFGPostErrorMessage(result.errorCode));
-    }
   } catch (error) {
     console.error("LFG post creation failed", {
       error,
@@ -217,6 +221,21 @@ export async function createLFGPost(formData: FormData) {
     }
 
     lfgRedirect(lfgTypeValue, "Unable to create your post right now.");
+  }
+
+  if (!result.created) {
+    if (shouldRedirectToLoginForCreateError(result.errorCode)) {
+      redirect("/login");
+    }
+
+    lfgRedirect(
+      lfgTypeValue,
+      getCreateLFGPostErrorMessage(result.errorCode),
+      "error",
+      result.errorCode === "already_in_active_stack"
+        ? { active_stack_post_id: result.postId }
+        : undefined
+    );
   }
 
   revalidatePath(`/${lfgTypeValue}`);

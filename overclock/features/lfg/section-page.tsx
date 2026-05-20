@@ -72,6 +72,7 @@ export async function LFGSectionPage({
   config: LFGSectionConfig;
 }) {
   const params = searchParams ? await searchParams : {};
+  const activeStackPostId = pickValue(params.active_stack_post_id);
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
   const rawMinRank = pickValue(params.min_rank);
@@ -133,6 +134,7 @@ export async function LFGSectionPage({
       feedFilters={feedFilters}
       filtersDescription={config.filtersDescription}
       helperText={config.helperText}
+      activeStackPostId={activeStackPostId}
       message={message}
       messageType={messageType}
       showFeed={config.showFeed}

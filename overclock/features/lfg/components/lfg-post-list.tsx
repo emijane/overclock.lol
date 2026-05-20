@@ -135,7 +135,7 @@ export function LFGPostList({
           if (post.lfgType === "stacks") {
             const requestState = stackRequestStates?.[post.id] ?? "none";
             return (
-              <div key={post.id}>
+              <div key={post.id} id={`stack-post-${post.id}`} className="scroll-mt-24">
                 <StackPostCard
                   cardClassName={cardClassName}
                   currentProfileId={currentProfileId}

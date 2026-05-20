@@ -23,6 +23,9 @@ featured videos, and create LFG posts.
   - accepted members increase the count up to `5/5`
   - `active` and `filled` stacks occupy the user for one-stack-at-a-time rules
   - public cards expose accepted members only through overlapping clickable avatars
+  - signed-in users already in an active stack see a current-stack panel on
+    `/stacks` with owner, accepted members, capacity, and existing view/leave
+    actions when safe
 - `/teams` and `/scrims` are not currently implemented routes, even though some roadmap
   notes still discuss them as future surfaces.
 

@@ -81,6 +81,9 @@ LFG quality, and general codebase cleanup.
   accept and decline actions.
 - Public stack cards show only accepted members through overlapping clickable
   avatars, plus the remaining needed role pills.
+- Signed-in users who already belong to an active stack now see a compact
+  "Your current stack" panel above the `/stacks` feed with owner, members,
+  capacity, and view/leave actions when applicable.
 
 ## Next Steps
 

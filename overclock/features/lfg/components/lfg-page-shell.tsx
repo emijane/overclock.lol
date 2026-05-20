@@ -17,10 +17,19 @@ import {
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
+import {
+  getActiveStackPostById,
+  getCurrentActiveStackForProfile,
+} from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
+import {
+  CurrentStackFallbackPanel,
+  CurrentStackPanel,
+  isBlockedByCurrentStackMessage,
+} from "./current-stack-panel";
 import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
 import { LFGGameModePicker } from "./lfg-game-mode-picker";
 import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
@@ -30,6 +39,7 @@ import { PostTitleField } from "./post-title-field";
 
 type LFGPageShellProps = {
   animateOnLoad?: boolean;
+  activeStackPostId?: string | null;
   composerMode?: "cta" | "inline" | "none";
   createPostHref?: string;
   breadcrumbHref?: string;
@@ -50,6 +60,7 @@ type LFGPageShellProps = {
 type LFGPageData = {
   activePostCounts: Record<"tank" | "dps" | "support", number>;
   competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>> | null;
+  currentStack: import("@/lib/lfg/lfg-post-types").LFGPost | null;
   inviteStates: Record<string, "invite_to_play" | "invite_sent" | "connected">;
   posts: import("@/lib/lfg/lfg-post-types").LFGPost[];
   postsErrorMessage: string | null;
@@ -219,21 +230,27 @@ async function getLFGPageData(
   profileId: string | null,
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
-  const dtoResult = await getLFGFeedPageDto({
-    filters: feedFilters,
-    lfgType: type,
-    viewerProfileId: profileId,
-  })
-    .then((dto) => ({ dto, postsErrorMessage: null }))
-    .catch(() => ({
-      dto: null,
-      postsErrorMessage: "Try refreshing in a moment.",
-    }));
+  const [dtoResult, currentStack] = await Promise.all([
+    getLFGFeedPageDto({
+      filters: feedFilters,
+      lfgType: type,
+      viewerProfileId: profileId,
+    })
+      .then((dto) => ({ dto, postsErrorMessage: null }))
+      .catch(() => ({
+        dto: null,
+        postsErrorMessage: "Try refreshing in a moment.",
+      })),
+    type === "stacks" && profileId
+      ? getCurrentActiveStackForProfile(profileId).catch(() => null)
+      : Promise.resolve(null),
+  ]);
 
   if (!profileId) {
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
+      currentStack: null,
       inviteStates: dtoResult.dto?.inviteStates ?? {},
       posts: dtoResult.dto?.posts ?? [],
       postsErrorMessage: dtoResult.postsErrorMessage,
@@ -258,6 +275,7 @@ async function getLFGPageData(
   return {
     activePostCounts,
     competitiveProfile,
+    currentStack,
     inviteStates: dtoResult.dto?.inviteStates ?? {},
     posts: dtoResult.dto?.posts ?? [],
     postsErrorMessage: dtoResult.postsErrorMessage,
@@ -268,6 +286,7 @@ async function getLFGPageData(
 
 export async function LFGPageShell({
   animateOnLoad = false,
+  activeStackPostId,
   composerMode = "inline",
   createPostHref,
   breadcrumbHref,
@@ -290,6 +309,7 @@ export async function LFGPageShell({
   const emptyPageData: LFGPageData = {
     activePostCounts: { tank: 0, dps: 0, support: 0 },
     competitiveProfile: null,
+    currentStack: null,
     inviteStates: {},
     posts: [],
     postsErrorMessage: null,
@@ -300,6 +320,14 @@ export async function LFGPageShell({
     type && shouldShowFeed
       ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
       : emptyPageData;
+  const fallbackCurrentStack =
+    type === "stacks" &&
+    shouldShowFeed &&
+    profile?.id &&
+    activeStackPostId &&
+    !pageData.currentStack
+      ? await getActiveStackPostById(activeStackPostId).catch(() => null)
+      : null;
   const composerOnlyProfile =
     shouldShowComposer && !shouldShowFeed && profile?.id
       ? await Promise.all([
@@ -349,6 +377,24 @@ export async function LFGPageShell({
   const inviteStates = shouldShowFeed ? pageData.inviteStates : {};
   const stackRequestStates =
     isStacksFeed && profile?.id ? pageData.stackRequestStates : {};
+  const currentStack = isStacksFeed ? pageData.currentStack ?? fallbackCurrentStack : null;
+  const shouldShowCurrentStackPanel = Boolean(currentStack && profile?.id);
+  const showBlockedCurrentStackCopy = isBlockedByCurrentStackMessage(message);
+  const shouldShowCurrentStackFallback =
+    isStacksFeed &&
+    Boolean(profile?.id) &&
+    showBlockedCurrentStackCopy &&
+    !currentStack;
+
+  if (shouldShowCurrentStackFallback && process.env.NODE_ENV !== "production") {
+    console.warn("[lfg] Current stack block mismatch", {
+      activeStackPostId: activeStackPostId ?? null,
+      hasCurrentStack: Boolean(currentStack),
+      message: message ?? null,
+      profileId: profile?.id ?? null,
+      type: type ?? null,
+    });
+  }
 
   return (
     <main
@@ -610,6 +656,15 @@ export async function LFGPageShell({
                       : ""
                   }
                 >
+                {shouldShowCurrentStackPanel && profile?.id && currentStack ? (
+                  <CurrentStackPanel
+                    currentProfileId={profile.id}
+                    post={currentStack}
+                    showBlockedCreateCopy={showBlockedCurrentStackCopy}
+                  />
+                ) : shouldShowCurrentStackFallback ? (
+                  <CurrentStackFallbackPanel blockingPostId={activeStackPostId} />
+                ) : null}
                 {useSidebarLayout ? (
                   <div className="lg:hidden">
                     <Suspense fallback={<div className="h-14" />}>
