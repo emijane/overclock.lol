@@ -724,3 +724,70 @@ export async function getActiveLFGPostCountsByRole(input: {
 
   return counts;
 }
+
+export type StackMemberContactInfo = {
+  battlenetHandle: string | null;
+  discordUsername: string | null;
+  profileId: string;
+};
+
+/**
+ * Fetches Discord and Battle.net contact info for all active members of a stack.
+ * Returns null if the viewer is not an active (non-removed) member of the stack.
+ * Enforces visibility server-side: contact columns are never selected for non-members.
+ */
+export async function getStackMemberContactInfoForViewer(input: {
+  postId: string;
+  viewerProfileId: string;
+}): Promise<Map<string, StackMemberContactInfo> | null> {
+  const supabase = await createClient();
+
+  const { data: memberCheck, error: memberCheckError } = await supabase
+    .from("stack_members")
+    .select("profile_id")
+    .eq("post_id", input.postId)
+    .eq("profile_id", input.viewerProfileId)
+    .is("removed_at", null)
+    .limit(1)
+    .maybeSingle();
+
+  if (memberCheckError || !memberCheck) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("stack_members")
+    .select("profile_id, profiles:profile_id(discord_username, battlenet_handle)")
+    .eq("post_id", input.postId)
+    .is("removed_at", null);
+
+  if (error) {
+    return null;
+  }
+
+  const result = new Map<string, StackMemberContactInfo>();
+
+  for (const row of ((data ?? []) as unknown) as Array<Record<string, unknown>>) {
+    const profileId = typeof row.profile_id === "string" ? row.profile_id : null;
+    if (!profileId) continue;
+
+    const profileRow =
+      row.profiles && typeof row.profiles === "object" && !Array.isArray(row.profiles)
+        ? (row.profiles as Record<string, unknown>)
+        : null;
+
+    result.set(profileId, {
+      battlenetHandle:
+        profileRow && typeof profileRow.battlenet_handle === "string"
+          ? profileRow.battlenet_handle
+          : null,
+      discordUsername:
+        profileRow && typeof profileRow.discord_username === "string"
+          ? profileRow.discord_username
+          : null,
+      profileId,
+    });
+  }
+
+  return result;
+}

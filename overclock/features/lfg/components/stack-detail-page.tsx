@@ -10,7 +10,9 @@ import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labe
 import { getLFGGameModeLabel } from "@/lib/lfg/lfg-post-types";
 import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import {
+  getStackMemberContactInfoForViewer,
   getStackPostDetailById,
+  type StackMemberContactInfo,
   type StackPostDetail,
 } from "@/lib/lfg/posts/posts-queries";
 import {
@@ -232,9 +234,11 @@ function StackSummaryHeader({
 }
 
 function MemberList({
+  contactInfoByProfileId,
   currentProfileId,
   detail,
 }: {
+  contactInfoByProfileId: Map<string, StackMemberContactInfo> | null;
   currentProfileId: string | null;
   detail: StackPostDetail;
 }) {
@@ -256,6 +260,7 @@ function MemberList({
             const memberLabel = member.displayName ?? member.username ?? "Player";
             const memberHref = member.username ? `/u/${member.username}` : null;
             const roleLabel = COMPETITIVE_ROLE_LABELS[member.role];
+            const contact = contactInfoByProfileId?.get(member.profileId) ?? null;
 
             return (
               <div
@@ -301,6 +306,16 @@ function MemberList({
                       {roleLabel}
                       {member.isOwner ? " · owner" : ""}
                     </p>
+                    {contact && (contact.discordUsername || contact.battlenetHandle) ? (
+                      <div className="oc-profile-meta mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-zinc-500">
+                        {contact.discordUsername ? (
+                          <span>Discord: <span className="text-zinc-400">{contact.discordUsername}</span></span>
+                        ) : null}
+                        {contact.battlenetHandle ? (
+                          <span>Battle.net: <span className="text-zinc-400">{contact.battlenetHandle}</span></span>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
@@ -377,6 +392,14 @@ export async function StackDetailPage({
         )
       : [];
 
+  const memberContactInfo =
+    (isOwner || isAcceptedMember) && profile?.id
+      ? await getStackMemberContactInfoForViewer({
+          postId: detail.post.id,
+          viewerProfileId: profile.id,
+        })
+      : null;
+
   return (
     <main className="oc-atmosphere-bg relative flex-1 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
       <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
@@ -425,7 +448,11 @@ export async function StackDetailPage({
           />
 
           <div className={isOwner && detail.isActive ? "grid gap-4 xl:grid-cols-2" : ""}>
-            <MemberList currentProfileId={profile?.id ?? null} detail={detail} />
+            <MemberList
+              contactInfoByProfileId={memberContactInfo}
+              currentProfileId={profile?.id ?? null}
+              detail={detail}
+            />
 
             {isOwner && detail.isActive ? (
               <section className="rounded-[10px] border border-white/6 bg-white/2">
