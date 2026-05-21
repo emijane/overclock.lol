@@ -384,29 +384,32 @@ export async function StackDetailPage({
     profile?.id &&
       detail.post.stackMembers.some((member) => member.profileId === profile.id)
   );
-  const requestState =
-    profile?.id && !isOwner && !isAcceptedMember && detail.isActive
-      ? await getStackRequestStateForPost({
-          currentProfileId: profile.id,
+
+  const profileId = profile?.id ?? null;
+  const shouldFetchRequestState = Boolean(profileId && !isOwner && !isAcceptedMember && detail.isActive);
+  const shouldFetchIncomingRequests = Boolean(isOwner && detail.isActive && profileId);
+  const shouldFetchContactInfo = Boolean((isOwner || isAcceptedMember) && profileId);
+
+  const [requestState, pendingRequests, memberContactInfo] = await Promise.all([
+    profileId && shouldFetchRequestState
+      ? getStackRequestStateForPost({
+          currentProfileId: profileId,
           postId: detail.post.id,
         }).catch(() => "none" as const)
-      : "none";
-  const pendingRequests =
-    isOwner && detail.isActive && profile?.id
-      ? await getIncomingPendingStackRequests({
-          currentProfileId: profile.id,
-        }).then((result) =>
-          result.requests.filter((request) => request.postId === detail.post.id)
-        )
-      : [];
-
-  const memberContactInfo =
-    (isOwner || isAcceptedMember) && profile?.id
-      ? await getStackMemberContactInfoForViewer({
+      : Promise.resolve("none" as const),
+    profileId && shouldFetchIncomingRequests
+      ? getIncomingPendingStackRequests({
+          currentProfileId: profileId,
           postId: detail.post.id,
-          viewerProfileId: profile.id,
+        }).then((r) => r.requests)
+      : Promise.resolve([]),
+    profileId && shouldFetchContactInfo
+      ? getStackMemberContactInfoForViewer({
+          postId: detail.post.id,
+          viewerProfileId: profileId,
         })
-      : null;
+      : Promise.resolve(null),
+  ]);
 
   return (
     <main className="oc-atmosphere-bg relative flex-1 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">

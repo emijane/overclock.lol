@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
+import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import type {
@@ -241,10 +242,14 @@ export async function removeStackMemberRecord(input: {
 
 export async function getIncomingPendingStackRequests(input: {
   currentProfileId: string;
+  postId: string;
 }): Promise<{ requests: IncomingPendingStackRequest[]; totalCount: number }> {
+  const tBlocked = Date.now();
   const blockedProfileIds = await getBlockedProfileIdsForViewer(input.currentProfileId);
+  stacksPerfLog('getIncomingPendingStackRequests blocks', tBlocked, blockedProfileIds.length);
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
+  const tQuery = Date.now();
   const { data, error } = await supabase
     .from("stack_requests")
     .select(
@@ -259,6 +264,7 @@ export async function getIncomingPendingStackRequests(input: {
       ].join(",")
     )
     .eq("owner_profile_id", input.currentProfileId)
+    .eq("post_id", input.postId)
     .eq("status", "pending")
     .order("created_at", { ascending: false })
     .limit(20);
@@ -268,6 +274,7 @@ export async function getIncomingPendingStackRequests(input: {
   }
 
   const rows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+  stacksPerfLog('getIncomingPendingStackRequests query', tQuery, rows.length);
   const requests: IncomingPendingStackRequest[] = [];
 
   for (const row of rows) {

@@ -1,0 +1,46 @@
+-- Add a covering index for the viewer_stack_requests CTE in get_lfg_feed_page_dto.
+--
+-- Problem:
+--   The viewer_stack_requests CTE filters by requester_profile_id and orders
+--   to resolve DISTINCT ON (post_id):
+--
+--     select distinct on (sr.post_id) sr.post_id, sr.status
+--     from public.stack_requests sr
+--     where sr.requester_profile_id = v_viewer_profile_id
+--       and sr.post_id in (select fp.id from feed_posts fp where fp.lfg_type = 'stacks')
+--     order by sr.post_id, sr.created_at desc
+--
+--   The existing stack_requests_requester_idx covers
+--   (requester_profile_id, status, created_at desc). It does not include
+--   post_id, so the planner cannot use it to satisfy
+--   ORDER BY post_id, created_at desc without a sort step.
+--
+-- Fix:
+--   Add an index on (requester_profile_id, post_id, created_at desc).
+--   After the equality seek on requester_profile_id, entries are ordered by
+--   (post_id, created_at desc) — exactly the ORDER BY used by the CTE. This
+--   lets the planner resolve DISTINCT ON (post_id) via an index scan with no
+--   separate Sort node.
+--
+-- EXPLAIN query to confirm usage after migration:
+--
+--   explain (analyze, buffers, format text)
+--   select distinct on (sr.post_id) sr.post_id, sr.status
+--   from public.stack_requests sr
+--   where sr.requester_profile_id = '<viewer-uuid>'
+--     and sr.post_id in (
+--       select id from public.lfg_posts
+--       where lfg_type = 'stacks'
+--         and status in ('active', 'filled')
+--         and expires_at > now()
+--     )
+--   order by sr.post_id, sr.created_at desc;
+--
+--   Look for: Index Scan using stack_requests_requester_post_created_idx
+--   (not a Sort node above the index scan).
+--
+-- This migration is additive only. No existing indexes are dropped.
+-- No RPC, RLS, or application behavior changes.
+
+create index if not exists stack_requests_requester_post_created_idx
+  on public.stack_requests (requester_profile_id, post_id, created_at desc);

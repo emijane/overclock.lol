@@ -25,6 +25,7 @@ import {
 } from "@/lib/lfg/lfg-post-types";
 import type { LFGInviteStateMap, ProfileInviteState } from "@/lib/matches/play-invite-types";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { createClient } from "@/lib/supabase/server";
 
 type StackRequestState = "none" | "pending" | "accepted" | "declined";
@@ -345,6 +346,7 @@ export async function getLFGFeedPageDto(input: {
   viewerProfileId?: string | null;
 }): Promise<LFGFeedPageDto> {
   const supabase = await createClient();
+  const tRpc = Date.now();
   const { data, error } = await supabase.rpc("get_lfg_feed_page_dto", {
     p_lfg_type: input.lfgType,
     p_viewer_profile_id: input.viewerProfileId ?? null,
@@ -377,6 +379,7 @@ export async function getLFGFeedPageDto(input: {
       ? (record.viewerBundle as Record<string, unknown>)
       : null;
   const { posts, inviteStates, stackRequestStates } = normalizePosts(record.posts);
+  stacksPerfLog('getLFGFeedPageDto rpc', tRpc, posts.length);
 
   return {
     posts,

@@ -1,6 +1,7 @@
 import { getProfileBadges } from "@/lib/badges/badges";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getBlockedProfileIdsForViewer, isBlocked } from "@/lib/blocks/user-blocks";
+import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 
@@ -235,8 +236,12 @@ async function hydrateSingleStackPost(
   postRow: Record<string, unknown>,
   blockedProfileIds: string[] = []
 ) {
-  const badgesByProfileId = await loadBadgesByProfileId(supabase, [postRow]);
-  const stackMembersByPostId = await loadStackMembersByPostId(supabase, [postRow]);
+  const t = Date.now();
+  const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
+    loadBadgesByProfileId(supabase, [postRow]),
+    loadStackMembersByPostId(supabase, [postRow]),
+  ]);
+  stacksPerfLog('hydrateSingleStackPost badges+members parallel', t);
   const normalizedPostId = typeof postRow.id === "string" ? postRow.id : null;
 
   return normalizeLFGPostRow(
@@ -466,10 +471,13 @@ async function getStackPostDetailByIdInternal(input: {
   viewerProfileId?: string | null;
 }): Promise<StackPostDetail | null> {
   const supabase = await createClient();
+  const tBlocked = Date.now();
   const blockedProfileIds = input.viewerProfileId
     ? await getBlockedProfileIdsForViewer(input.viewerProfileId)
     : [];
+  stacksPerfLog('getStackPostDetailById blocks', tBlocked, blockedProfileIds.length);
   const nowIso = new Date().toISOString();
+  const tPostQuery = Date.now();
   let query = supabase
     .from("lfg_posts")
     .select(
@@ -503,6 +511,7 @@ async function getStackPostDetailByIdInternal(input: {
     : query.neq("status", "archived");
 
   const { data: postData, error: postError } = await query.limit(1).maybeSingle();
+  stacksPerfLog('getStackPostDetailById post query', tPostQuery);
 
   if (postError) {
     throw postError;
@@ -524,7 +533,9 @@ async function getStackPostDetailByIdInternal(input: {
     return null;
   }
 
+  const tHydrate = Date.now();
   const post = await hydrateSingleStackPost(supabase, postRow, blockedProfileIds);
+  stacksPerfLog('getStackPostDetailById hydrate', tHydrate);
   const expiresAt = typeof postRow.expires_at === "string" ? postRow.expires_at : null;
   const isExpired = Boolean(expiresAt && expiresAt <= nowIso);
   const isActive = (post.status === "active" || post.status === "filled") && !isExpired;
@@ -735,25 +746,17 @@ export type StackMemberContactInfo = {
  * Fetches Discord and Battle.net contact info for all active members of a stack.
  * Returns null if the viewer is not an active (non-removed) member of the stack.
  * Enforces visibility server-side: contact columns are never selected for non-members.
+ *
+ * Membership is verified by checking that the viewer's profile_id appears in the
+ * returned rows. Since the query filters removed_at IS NULL, a removed viewer will
+ * not appear and null is returned — equivalent to the previous two-query approach
+ * but in a single round-trip.
  */
 export async function getStackMemberContactInfoForViewer(input: {
   postId: string;
   viewerProfileId: string;
 }): Promise<Map<string, StackMemberContactInfo> | null> {
   const supabase = await createClient();
-
-  const { data: memberCheck, error: memberCheckError } = await supabase
-    .from("stack_members")
-    .select("profile_id")
-    .eq("post_id", input.postId)
-    .eq("profile_id", input.viewerProfileId)
-    .is("removed_at", null)
-    .limit(1)
-    .maybeSingle();
-
-  if (memberCheckError || !memberCheck) {
-    return null;
-  }
 
   const { data, error } = await supabase
     .from("stack_members")
@@ -765,9 +768,22 @@ export async function getStackMemberContactInfoForViewer(input: {
     return null;
   }
 
+  const rows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+
+  // Viewer must appear among active (non-removed) members. If they were removed
+  // between the call-site guard and this fetch, removed_at IS NULL excludes them
+  // and this check correctly returns null.
+  const viewerIsActiveMember = rows.some(
+    (row) => typeof row.profile_id === "string" && row.profile_id === input.viewerProfileId
+  );
+
+  if (!viewerIsActiveMember) {
+    return null;
+  }
+
   const result = new Map<string, StackMemberContactInfo>();
 
-  for (const row of ((data ?? []) as unknown) as Array<Record<string, unknown>>) {
+  for (const row of rows) {
     const profileId = typeof row.profile_id === "string" ? row.profile_id : null;
     if (!profileId) continue;
 

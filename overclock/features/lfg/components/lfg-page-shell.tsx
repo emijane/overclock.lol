@@ -19,10 +19,10 @@ import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveStackPostById,
-  getCurrentActiveStackPostIdForProfile,
   getCurrentActiveStackForProfile,
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
+import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -231,6 +231,7 @@ async function getLFGPageData(
   profileId: string | null,
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
+  const tDto = Date.now();
   const [dtoResult, currentStack] = await Promise.all([
     getLFGFeedPageDto({
       filters: feedFilters,
@@ -246,6 +247,7 @@ async function getLFGPageData(
       ? getCurrentActiveStackForProfile(profileId).catch(() => null)
       : Promise.resolve(null),
   ]);
+  stacksPerfLog('getLFGPageData Promise.all dto+currentStack', tDto, dtoResult.dto?.posts.length);
 
   if (!profileId) {
     return {
@@ -322,9 +324,7 @@ export async function LFGPageShell({
       ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
       : emptyPageData;
   const currentStackMembershipPostId =
-    type === "stacks" && profile?.id
-      ? await getCurrentActiveStackPostIdForProfile(profile.id).catch(() => null)
-      : null;
+    type === "stacks" ? pageData.currentStack?.id ?? null : null;
   const fallbackCurrentStack =
     type === "stacks" &&
     profile?.id &&
