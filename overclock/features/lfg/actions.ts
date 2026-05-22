@@ -111,9 +111,6 @@ function getRequiredProfileError({
 export async function createLFGPost(formData: FormData) {
   const gameModeValue = formData.get("game_mode")?.toString().trim() ?? "";
   const lfgTypeValue = formData.get("lfg_type")?.toString().trim() ?? "";
-  const lookingForRoles = normalizeLFGLookingForRoles(
-    formData.getAll("looking_for_roles").map((value) => value.toString().trim())
-  );
   const title = normalizeLFGPostTitle(formData.get("title")?.toString() ?? "");
   const postingRoleValue = formData.get("posting_role")?.toString().trim() ?? "";
 
@@ -136,6 +133,13 @@ export async function createLFGPost(formData: FormData) {
   if (title.length > LFG_POST_TITLE_MAX_CHARACTERS) {
     lfgRedirect(lfgTypeValue, `Title must be ${LFG_POST_TITLE_MAX_CHARACTERS} characters or fewer.`);
   }
+
+  const lookingForRoles =
+    lfgTypeValue === "stacks"
+      ? null
+      : normalizeLFGLookingForRoles(
+          formData.getAll("looking_for_roles").map((value) => value.toString().trim())
+        );
 
   const { user, profile } = await getCurrentProfile();
 

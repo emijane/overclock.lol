@@ -164,10 +164,12 @@ function FilterDropdown({
 export function LFGFeedFiltersPanel({
   activeCount,
   selectedFilters,
+  showLookingForFilter = true,
   tone = "default",
 }: {
   activeCount: number;
   selectedFilters?: LFGFeedFilters;
+  showLookingForFilter?: boolean;
   tone?: "default" | "duos";
 }) {
   const pathname = usePathname();
@@ -252,7 +254,7 @@ export function LFGFeedFiltersPanel({
           value: COMPETITIVE_ROLE_LABELS[selectedFilters.role],
         }
       : null,
-    selectedFilters?.lookingFor
+    showLookingForFilter && selectedFilters?.lookingFor
       ? {
           href: buildClearFilterHref(pathname, params, "looking_for"),
           key: "looking_for",
@@ -319,16 +321,18 @@ export function LFGFeedFiltersPanel({
             tone={tone}
             variant="primary"
           />
-          <FilterDropdown
-            anyLabel="Any role"
-            items={lookingForItems}
-            pathname={pathname}
-            paramKey="looking_for"
-            searchParams={params}
-            selectedLabel={selectedLookingForLabel}
-            tone={tone}
-            variant="secondary"
-          />
+          {showLookingForFilter ? (
+            <FilterDropdown
+              anyLabel="Any role"
+              items={lookingForItems}
+              pathname={pathname}
+              paramKey="looking_for"
+              searchParams={params}
+              selectedLabel={selectedLookingForLabel}
+              tone={tone}
+              variant="secondary"
+            />
+          ) : null}
           <FilterDropdown
             anyLabel="Any rank"
             items={minRankItems}

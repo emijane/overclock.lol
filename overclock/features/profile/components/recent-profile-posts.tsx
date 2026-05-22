@@ -154,18 +154,20 @@ export function RecentProfilePosts({
                   ) : null}
                 </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
-                  {post.lookingForRoles.map((role) => (
-                    isLFGLookingForRole(role) ? (
-                      <span
-                        key={`${post.id}-recent-looking-for-${role}`}
-                        className="oc-profile-meta oc-profile-pill px-2 py-0.5 font-medium uppercase tracking-[0.08em] text-zinc-100"
-                      >
-                        LF {getLFGLookingForRoleLabel(role)}
-                      </span>
-                    ) : null
-                  ))}
-                </div>
+                {post.lfgType !== "stacks" ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
+                    {post.lookingForRoles.map((role) => (
+                      isLFGLookingForRole(role) ? (
+                        <span
+                          key={`${post.id}-recent-looking-for-${role}`}
+                          className="oc-profile-meta oc-profile-pill px-2 py-0.5 font-medium uppercase tracking-[0.08em] text-zinc-100"
+                        >
+                          LF {getLFGLookingForRoleLabel(role)}
+                        </span>
+                      ) : null
+                    ))}
+                  </div>
+                ) : null}
               </article>
             );
           })}

@@ -20,9 +20,9 @@ type RequestToJoinState =
 
 type RequestToJoinButtonProps = {
   guestNextHref?: string;
-  lookingForRoles: CompetitiveRole[];
   postId: string;
   initialState?: "none" | "pending" | "accepted" | "declined";
+  roleOptions?: CompetitiveRole[];
   tone?: "default" | "duos";
   viewerState?: "guest" | "owner" | "authenticated";
 };
@@ -47,9 +47,9 @@ function getPillClassName(tone: "default" | "duos", emphasized = false) {
 
 export function RequestToJoinButton({
   guestNextHref = "/stacks",
-  lookingForRoles,
   postId,
   initialState = "none",
+  roleOptions = ["tank", "dps", "support"],
   tone = "default",
   viewerState = "guest",
 }: RequestToJoinButtonProps) {
@@ -163,11 +163,6 @@ export function RequestToJoinButton({
   }
 
   if (uiState === "selecting_role") {
-    const rolesToShow =
-      lookingForRoles.length > 0
-        ? lookingForRoles
-        : (["tank", "dps", "support"] as CompetitiveRole[]);
-
     function handleRoleSelect(role: CompetitiveRole) {
       startTransition(async () => {
         const formData = new FormData();
@@ -196,7 +191,7 @@ export function RequestToJoinButton({
 
     return (
       <div className="flex flex-wrap gap-1">
-        {rolesToShow.map((role) => (
+        {roleOptions.map((role) => (
           <button
             key={role}
             type="button"

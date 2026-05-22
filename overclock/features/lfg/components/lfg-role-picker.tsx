@@ -36,6 +36,7 @@ type LFGRolePickerProps = {
   };
   roleOptions: LFGRoleOption[];
   setupHref: string;
+  showLookingFor?: boolean;
   tone?: "default" | "duos";
 };
 
@@ -133,6 +134,7 @@ export function LFGRolePicker({
   profileSummary,
   roleOptions,
   setupHref,
+  showLookingFor = true,
   tone = "default",
 }: LFGRolePickerProps) {
   const [selectedRole, setSelectedRole] = useState<CompetitiveRole | null>(null);
@@ -197,44 +199,47 @@ export function LFGRolePicker({
           })}
         </div>
       </div>
-      <div className="mt-2.5">
-        <h2 className={`${tone === "duos" ? "oc-profile-display" : ""} text-sm font-medium text-zinc-400`}>
-          Looking for
-        </h2>
-        <p className={`mt-1 text-xs ${tone === "duos" ? "oc-profile-meta text-white/35" : "text-white/35"}`}>
-          Pick up to two roles, or choose All.
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {roleOptions.map((roleOption) => {
-            const isSelected = lookingForRoles.includes(roleOption.role);
+      {showLookingFor ? (
+        <div className="mt-2.5">
+          <h2 className={`${tone === "duos" ? "oc-profile-display" : ""} text-sm font-medium text-zinc-400`}>
+            Looking for
+          </h2>
+          <p className={`mt-1 text-xs ${tone === "duos" ? "oc-profile-meta text-white/35" : "text-white/35"}`}>
+            Pick up to two roles, or choose All.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {roleOptions.map((roleOption) => {
+              const isSelected = lookingForRoles.includes(roleOption.role);
 
-            return (
-              <button
-                key={`looking-for-${roleOption.role}`}
-                type="button"
-                aria-pressed={isSelected}
-                disabled={pending}
-                onClick={() => toggleLookingForRole(roleOption.role)}
-                className={`${getLookingForButtonClassName(isSelected, tone)} disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
-                {COMPETITIVE_ROLE_LABELS[roleOption.role]}
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            aria-pressed={lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)}
-            disabled={pending}
-            onClick={() => toggleLookingForRole(LOOKING_FOR_ALL_VALUE)}
-            className={`${getLookingForAllButtonClassName(
-              lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)
-            , tone)} disabled:cursor-not-allowed disabled:opacity-60`}
-          >
-            All
-          </button>
+              return (
+                <button
+                  key={`looking-for-${roleOption.role}`}
+                  type="button"
+                  aria-pressed={isSelected}
+                  disabled={pending}
+                  onClick={() => toggleLookingForRole(roleOption.role)}
+                  className={`${getLookingForButtonClassName(isSelected, tone)} disabled:cursor-not-allowed disabled:opacity-60`}
+                >
+                  {getRoleIcon(roleOption.role, "h-3.5 w-3.5 text-white")}
+                  {COMPETITIVE_ROLE_LABELS[roleOption.role]}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              aria-pressed={lookingForRoles.includes(LOOKING_FOR_ALL_VALUE)}
+              disabled={pending}
+              onClick={() => toggleLookingForRole(LOOKING_FOR_ALL_VALUE)}
+              className={`${getLookingForAllButtonClassName(
+                lookingForRoles.includes(LOOKING_FOR_ALL_VALUE),
+                tone
+              )} disabled:cursor-not-allowed disabled:opacity-60`}
+            >
+              All
+            </button>
+          </div>
         </div>
-      </div>
+      ) : null}
       {selectedRoleOption ? (
         selectedRoleOption.isConfigured ? (
           <>
@@ -301,9 +306,11 @@ export function LFGRolePicker({
           </div>
         )
       ) : null}
-      {submittedLookingForRoles.map((role) => (
-        <input key={`looking-for-input-${role}`} type="hidden" name="looking_for_roles" value={role} />
-      ))}
+      {showLookingFor
+        ? submittedLookingForRoles.map((role) => (
+            <input key={`looking-for-input-${role}`} type="hidden" name="looking_for_roles" value={role} />
+          ))
+        : null}
     </div>
   );
 }

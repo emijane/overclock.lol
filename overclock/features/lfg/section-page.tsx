@@ -90,6 +90,7 @@ export async function LFGSectionPage({
       normalizedRankBounds.maxRank &&
       (normalizedRankBounds.minRank !== rawMinRank ||
         normalizedRankBounds.maxRank !== rawMaxRank)) ||
+      (config.type === "stacks" && Boolean(pickValue(params.looking_for))) ||
       rawSearch !== normalizedSearch)
   ) {
     const canonicalSearchParams = buildCanonicalSearchParams(params);
@@ -105,6 +106,10 @@ export async function LFGSectionPage({
       canonicalSearchParams.delete("search");
     }
 
+    if (config.type === "stacks") {
+      canonicalSearchParams.delete("looking_for");
+    }
+
     const query = canonicalSearchParams.toString();
     redirect(query ? `/${config.type}?${query}` : `/${config.type}`);
   }
@@ -112,7 +117,8 @@ export async function LFGSectionPage({
   const feedFilters =
     config.type === "duos" || config.type === "stacks"
       ? parseLFGFeedFilters({
-          lookingFor: pickValue(params.looking_for),
+          lookingFor:
+            config.type === "stacks" ? undefined : pickValue(params.looking_for),
           maxRank: rawMaxRank,
           minRank: rawMinRank,
           mode: pickValue(params.mode),

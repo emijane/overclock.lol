@@ -15,7 +15,7 @@ export type CreateLFGPostInput = {
   gameMode: LFGGameMode;
   heroPoolSnapshot: LFGHeroSnapshot[];
   lfgType: LFGType;
-  lookingForRoles: CompetitiveRole[];
+  lookingForRoles: CompetitiveRole[] | null;
   platform: string | null;
   postingRole: CompetitiveRole;
   profileId: string;
