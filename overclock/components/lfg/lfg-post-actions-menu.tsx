@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   LFG_CARD_MENU_BUTTON_CLASS,
+  LFG_CARD_MENU_CHILD_CLASS,
   LFG_CARD_MENU_CONTENT_CLASS,
   LFG_CARD_MENU_ITEM_CLASS,
 } from "@/components/lfg/lfg-card-menu-styles";
@@ -124,7 +125,9 @@ export function LFGPostActionsMenu({
               asChild
               className={LFG_CARD_MENU_ITEM_CLASS}
             >
-              <Link href={viewHref}>{viewLabel}</Link>
+              <Link href={viewHref} className={LFG_CARD_MENU_CHILD_CLASS}>
+                {viewLabel}
+              </Link>
             </DropdownMenuItem>
           ) : null}
           {copyLinkPath ? (
@@ -132,7 +135,11 @@ export function LFGPostActionsMenu({
               asChild
               className={LFG_CARD_MENU_ITEM_CLASS}
             >
-              <button type="button" onClick={() => void handleCopyLink()}>
+              <button
+                type="button"
+                onClick={() => void handleCopyLink()}
+                className={LFG_CARD_MENU_CHILD_CLASS}
+              >
                 {copyLinkLabel}
               </button>
             </DropdownMenuItem>
@@ -141,7 +148,9 @@ export function LFGPostActionsMenu({
             asChild
             className={LFG_CARD_MENU_ITEM_CLASS}
           >
-            <Link href={manageHref}>{manageLabel}</Link>
+            <Link href={manageHref} className={LFG_CARD_MENU_CHILD_CLASS}>
+              {manageLabel}
+            </Link>
           </DropdownMenuItem>
           {allowClose ? (
             <form action={closeLFGPost} className="w-full">

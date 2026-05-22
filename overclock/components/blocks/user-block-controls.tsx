@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  LFG_CARD_MENU_CHILD_CLASS,
   LFG_CARD_MENU_CONTENT_CLASS,
   LFG_CARD_MENU_ITEM_CLASS,
   LFG_CARD_MENU_SEPARATOR_CLASS,
@@ -300,7 +301,9 @@ export function UserBlockMenu({
           {viewProfileHref ? (
             <>
               <DropdownMenuItem asChild className={itemClassName}>
-                <Link href={viewProfileHref}>View profile</Link>
+                <Link href={viewProfileHref} className={compactCardMenu ? LFG_CARD_MENU_CHILD_CLASS : ""}>
+                  View profile
+                </Link>
               </DropdownMenuItem>
               {copyLinkPath ? (
                 <DropdownMenuItem

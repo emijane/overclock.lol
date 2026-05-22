@@ -4,6 +4,8 @@ export const LFG_CARD_MENU_CONTENT_CLASS =
 export const LFG_CARD_MENU_ITEM_CLASS =
   "min-h-8 rounded-[8px] px-2 py-1 text-[12px] font-medium leading-5 text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50";
 
+export const LFG_CARD_MENU_CHILD_CLASS = "flex w-full items-center";
+
 export const LFG_CARD_MENU_BUTTON_CLASS =
   "flex min-h-8 w-full cursor-pointer items-center rounded-[8px] px-2 py-1 text-left text-[12px] font-medium leading-5 text-zinc-300 outline-none transition hover:text-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-500";
 
