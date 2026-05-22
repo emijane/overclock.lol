@@ -7,8 +7,10 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
 import { closeLFGPost } from "@/features/lfg/actions";
+import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getLFGGameModeLabel } from "@/lib/lfg/lfg-post-types";
+import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import {
   getStackMemberContactInfoForViewer,
   getStackPostDetailById,
@@ -31,6 +33,12 @@ type StackDetailPageProps = {
   messageType?: string;
   postId: string;
 };
+
+function getRoleChipClassName(role: CompetitiveRole) {
+  if (role === "tank") return "border-sky-400/14 bg-sky-400/6 text-sky-100/80";
+  if (role === "dps") return "border-rose-400/14 bg-rose-400/6 text-rose-100/80";
+  return "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
+}
 
 function getInactiveStateCopy(detail: StackPostDetail) {
   if (detail.post.status === "closed") {
@@ -122,6 +130,7 @@ function StackSummaryHeader({
       : "Expired";
   const isFull =
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
+  const roleNeeds = computeStackRoleNeeds(post.stackMembers);
   const viewerState = currentProfileId ? "authenticated" : "guest";
 
   return (
@@ -176,6 +185,20 @@ function StackSummaryHeader({
             </div>
           </div>
 
+          {roleNeeds.size > 0 ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="oc-profile-meta text-[10px] text-zinc-500">Needs</span>
+              {Array.from(roleNeeds.entries()).map(([role, count]) => (
+                <span
+                  key={role}
+                  className={`oc-profile-pill border px-2 py-0.5 text-[10px] font-medium ${getRoleChipClassName(role)}`}
+                >
+                  {count} {COMPETITIVE_ROLE_LABELS[role]}
+                </span>
+              ))}
+            </div>
+          ) : null}
+
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="oc-profile-meta text-[12px] font-medium text-zinc-300">
@@ -197,6 +220,7 @@ function StackSummaryHeader({
                 <RequestToJoinButton
                   guestNextHref={`/stacks/${post.id}`}
                   initialState={requestState === "pending" ? "pending" : requestState === "declined" ? "declined" : "none"}
+                  roleOptions={post.lookingForRoles}
                   postId={post.id}
                   tone="duos"
                   viewerState={viewerState}
@@ -480,6 +504,7 @@ export async function StackDetailPage({
                 </p>
                 <RequestToJoinButton
                   initialState="accepted"
+                  roleOptions={detail.post.lookingForRoles}
                   postId={detail.post.id}
                   tone="duos"
                   viewerState="authenticated"

@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { MoreHorizontalIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 
+import { AuthMessage } from "@/components/auth/auth-message";
 import { closeLFGPost } from "@/features/lfg/actions";
 import {
   DropdownMenu,
@@ -11,6 +13,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+async function copyText(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = value;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "absolute";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textArea);
+}
 
 function ClosePostMenuItem() {
   const { pending } = useFormStatus();
@@ -28,6 +47,7 @@ function ClosePostMenuItem() {
 
 type LFGPostActionsMenuProps = {
   allowClose?: boolean;
+  copyLinkPath?: string;
   manageHref?: string;
   manageLabel?: string;
   postId: string;
@@ -38,6 +58,7 @@ type LFGPostActionsMenuProps = {
 
 export function LFGPostActionsMenu({
   allowClose = true,
+  copyLinkPath,
   manageHref = "/account/posts",
   manageLabel = "Manage My Posts",
   postId,
@@ -45,43 +66,84 @@ export function LFGPostActionsMenu({
   viewHref,
   viewLabel = "View Section",
 }: LFGPostActionsMenuProps) {
+  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [messageType, setMessageType] = useState<"error" | "success">("success");
+
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setMessage(undefined), 1800);
+    return () => window.clearTimeout(timeout);
+  }, [message]);
+
+  async function handleCopyLink() {
+    if (!copyLinkPath) {
+      return;
+    }
+
+    try {
+      const value = new URL(copyLinkPath, window.location.origin).toString();
+      await copyText(value);
+      setMessageType("success");
+      setMessage("Stack link copied");
+    } catch {
+      setMessageType("error");
+      setMessage("Unable to copy stack link");
+    }
+  }
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          aria-label="Post actions"
-          className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] text-zinc-500 transition hover:text-zinc-100"
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label="Post actions"
+            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] text-zinc-500 transition hover:text-zinc-100"
+          >
+            <MoreHorizontalIcon className="h-3.5 w-3.5" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-40 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
         >
-          <MoreHorizontalIcon className="h-3.5 w-3.5" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="w-36 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
-      >
-        {viewHref ? (
+          {viewHref ? (
+            <DropdownMenuItem
+              asChild
+              className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+            >
+              <Link href={viewHref}>{viewLabel}</Link>
+            </DropdownMenuItem>
+          ) : null}
+          {copyLinkPath ? (
+            <DropdownMenuItem
+              asChild
+              className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+            >
+              <button type="button" onClick={() => void handleCopyLink()}>
+                Copy stack link
+              </button>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem
             asChild
             className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
           >
-            <Link href={viewHref}>{viewLabel}</Link>
+            <Link href={manageHref}>{manageLabel}</Link>
           </DropdownMenuItem>
-        ) : null}
-        <DropdownMenuItem
-          asChild
-          className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
-        >
-          <Link href={manageHref}>{manageLabel}</Link>
-        </DropdownMenuItem>
-        {allowClose ? (
-          <form action={closeLFGPost} className="w-full">
-            <input type="hidden" name="post_id" value={postId} />
-            <input type="hidden" name="return_path" value={returnPath} />
-            <ClosePostMenuItem />
-          </form>
-        ) : null}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {allowClose ? (
+            <form action={closeLFGPost} className="w-full">
+              <input type="hidden" name="post_id" value={postId} />
+              <input type="hidden" name="return_path" value={returnPath} />
+              <ClosePostMenuItem />
+            </form>
+          ) : null}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AuthMessage message={message} type={messageType} variant="toast" />
+    </>
   );
 }

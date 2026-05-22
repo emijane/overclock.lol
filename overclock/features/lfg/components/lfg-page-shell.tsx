@@ -377,7 +377,6 @@ export async function LFGPageShell({
   const displayTitle = isComposerOnlyPage ? `/ ${title}` : title;
   const isDuosPage = type === "duos";
   const isStacksPage = type === "stacks";
-  const showLookingForFilter = type !== "stacks";
   const usesDuosFeedTone = isDuosPage || isStacksPage;
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const isStacksFeed = shouldShowFeed && type === "stacks";
@@ -466,7 +465,6 @@ export async function LFGPageShell({
               hasActiveStack={isBlockedFromStackCreate}
               isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
-              showLookingForFilter={showLookingForFilter}
               tone={usesDuosFeedTone ? "duos" : "default"}
               type={type}
             />
@@ -726,7 +724,6 @@ export async function LFGPageShell({
                       <LFGFeedFiltersPanel
                         activeCount={visiblePostCount}
                         selectedFilters={feedFilters}
-                        showLookingForFilter={showLookingForFilter}
                         tone={usesDuosFeedTone ? "duos" : "default"}
                       />
                     </Suspense>
@@ -736,7 +733,6 @@ export async function LFGPageShell({
                     <LFGFeedFiltersPanel
                       activeCount={visiblePostCount}
                       selectedFilters={feedFilters}
-                      showLookingForFilter={showLookingForFilter}
                       tone={usesDuosFeedTone ? "duos" : "default"}
                     />
                   </Suspense>

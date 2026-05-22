@@ -7,8 +7,11 @@ import { LFGPostActionsMenu } from "@/components/lfg/lfg-post-actions-menu";
 import { PresenceIndicator } from "@/components/presence/presence-indicator";
 import { RankedAvatar } from "@/components/profile/ranked-avatar";
 import { getBadgeAssetSrc, getBadgePreset } from "@/lib/badges/badge-assets";
+import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import { getLFGGameModeLabel, type LFGPost } from "@/lib/lfg/lfg-post-types";
+import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import { formatPostDate } from "./format-post-date";
@@ -40,6 +43,12 @@ function getModeBadgeClassName(gameMode: LFGPost["gameMode"]) {
   return "border-white/[0.07] bg-black/44 text-zinc-300";
 }
 
+function getRoleClassName(role: CompetitiveRole) {
+  if (role === "tank") return "border-sky-400/14 bg-sky-400/[0.045] text-sky-100/72";
+  if (role === "dps") return "border-rose-400/14 bg-rose-400/[0.045] text-rose-100/72";
+  return "border-emerald-400/14 bg-emerald-400/[0.045] text-emerald-100/72";
+}
+
 export function StackPostCard({
   cardClassName,
   currentProfileId,
@@ -69,6 +78,7 @@ export function StackPostCard({
   const isFull =
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
   const viewerState = isOwner ? "owner" : currentProfileId ? "authenticated" : "guest";
+  const roleNeeds = computeStackRoleNeeds(post.stackMembers);
 
   return (
     <article
@@ -147,6 +157,7 @@ export function StackPostCard({
             ) : null}
             {showActions && isOwner && returnPath ? (
               <LFGPostActionsMenu
+                copyLinkPath={`/stacks/${post.id}`}
                 postId={post.id}
                 returnPath={returnPath}
                 viewHref={viewHref}
@@ -154,6 +165,7 @@ export function StackPostCard({
               />
             ) : showActions && currentProfileId && post.profileId && !isOwner ? (
               <UserBlockMenu
+                copyLinkPath={`/stacks/${post.id}`}
                 targetDisplayName={displayName}
                 targetProfileId={post.profileId}
                 targetUsername={post.author.username}
@@ -302,6 +314,19 @@ export function StackPostCard({
               {post.title}
             </h2>
           </div>
+
+          {roleNeeds.size > 0 ? (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {Array.from(roleNeeds.entries()).map(([role, count]) => (
+                <span
+                  key={role}
+                  className={`inline-flex h-4 items-center rounded-[5px] border px-1.5 text-[9px] font-medium uppercase tracking-[0.05em] ${getRoleClassName(role)}`}
+                >
+                  {count} {COMPETITIVE_ROLE_LABELS[role]}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
             <div className="min-w-0">

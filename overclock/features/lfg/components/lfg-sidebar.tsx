@@ -150,7 +150,6 @@ type LFGSidebarProps = {
   hasActiveStack?: boolean;
   isLoggedIn: boolean;
   selectedFilters?: LFGFeedFilters;
-  showLookingForFilter?: boolean;
   tone?: "default" | "duos";
   type: LFGType;
 };
@@ -161,7 +160,6 @@ export function LFGSidebar({
   hasActiveStack = false,
   isLoggedIn,
   selectedFilters,
-  showLookingForFilter = true,
   tone = "default",
   type,
 }: LFGSidebarProps) {
@@ -320,22 +318,20 @@ export function LFGSidebar({
           ))}
         </FilterSection>
 
-        {showLookingForFilter ? (
-          <FilterSection title="/ needs" tone={tone}>
-            {COMPETITIVE_ROLE_OPTIONS.map((role) => (
-              <FilterItem
-                key={role}
-                href={
-                  selectedFilters?.lookingFor === role
-                    ? buildFilterHref(pathname, params, "looking_for")
-                    : buildFilterHref(pathname, params, "looking_for", role)
-                }
-                isSelected={selectedFilters?.lookingFor === role}
-                label={COMPETITIVE_ROLE_LABELS[role]}
-              />
-            ))}
-          </FilterSection>
-        ) : null}
+        <FilterSection title="/ needs" tone={tone}>
+          {COMPETITIVE_ROLE_OPTIONS.map((role) => (
+            <FilterItem
+              key={role}
+              href={
+                selectedFilters?.lookingFor === role
+                  ? buildFilterHref(pathname, params, "looking_for")
+                  : buildFilterHref(pathname, params, "looking_for", role)
+              }
+              isSelected={selectedFilters?.lookingFor === role}
+              label={COMPETITIVE_ROLE_LABELS[role]}
+            />
+          ))}
+        </FilterSection>
 
         <FilterSection title="/ region" tone={tone}>
           {LFG_REGION_OPTIONS.map((region) => (

@@ -15,6 +15,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+async function copyText(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = value;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "absolute";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textArea);
+}
+
 type ActionToastProps = {
   message: string | null;
   onDismiss: () => void;
@@ -31,6 +48,7 @@ type BlockConfirmationModalProps = {
 type UserBlockMenuProps = {
   align?: "center" | "end" | "start";
   blocked?: boolean;
+  copyLinkPath?: string;
   initiallyBlocked?: boolean;
   isPending?: boolean;
   onBlockedChange?: (nextBlocked: boolean) => void;
@@ -207,6 +225,7 @@ function useUserBlockAction(initiallyBlocked: boolean) {
 export function UserBlockMenu({
   align = "end",
   blocked,
+  copyLinkPath,
   initiallyBlocked = false,
   isPending: controlledPending,
   onBlockedChange,
@@ -218,6 +237,7 @@ export function UserBlockMenu({
   viewProfileHref,
 }: UserBlockMenuProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
   const { isBlocked, isPending, runAction, setToastMessage, toastMessage } =
     useUserBlockAction(initiallyBlocked);
   const resolvedBlocked = blocked ?? isBlocked;
@@ -225,10 +245,25 @@ export function UserBlockMenu({
   const targetName = targetUsername
     ? `@${targetUsername}`
     : targetDisplayName ?? "This user";
+  const activeToastMessage = copyToastMessage ?? toastMessage;
 
   const resolvedTriggerClassName =
     triggerClassName ??
     "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] text-zinc-500 transition hover:text-zinc-100";
+
+  async function handleCopyLink() {
+    if (!copyLinkPath) {
+      return;
+    }
+
+    try {
+      const value = new URL(copyLinkPath, window.location.origin).toString();
+      await copyText(value);
+      setCopyToastMessage("Stack link copied");
+    } catch {
+      setCopyToastMessage("Unable to copy stack link");
+    }
+  }
 
   return (
     <>
@@ -250,6 +285,30 @@ export function UserBlockMenu({
             <>
               <DropdownMenuItem asChild className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50">
                 <Link href={viewProfileHref}>View profile</Link>
+              </DropdownMenuItem>
+              {copyLinkPath ? (
+                <DropdownMenuItem
+                  className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    void handleCopyLink();
+                  }}
+                >
+                  Copy stack link
+                </DropdownMenuItem>
+              ) : null}
+              <DropdownMenuSeparator className="my-1 bg-white/[0.06]" />
+            </>
+          ) : copyLinkPath ? (
+            <>
+              <DropdownMenuItem
+                className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  void handleCopyLink();
+                }}
+              >
+                Copy stack link
               </DropdownMenuItem>
               <DropdownMenuSeparator className="my-1 bg-white/[0.06]" />
             </>
@@ -293,7 +352,13 @@ export function UserBlockMenu({
         targetName={targetName}
       />
 
-      <ActionToast message={toastMessage} onDismiss={() => setToastMessage(null)} />
+      <ActionToast
+        message={activeToastMessage}
+        onDismiss={() => {
+          setCopyToastMessage(null);
+          setToastMessage(null);
+        }}
+      />
     </>
   );
 }
