@@ -13,6 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  LFG_CARD_MENU_BUTTON_CLASS,
+  LFG_CARD_MENU_CONTENT_CLASS,
+  LFG_CARD_MENU_ITEM_CLASS,
+} from "@/components/lfg/lfg-card-menu-styles";
 
 async function copyText(value: string) {
   if (navigator.clipboard?.writeText) {
@@ -38,7 +43,7 @@ function ClosePostMenuItem() {
     <button
       type="submit"
       disabled={pending}
-      className="flex w-full cursor-pointer items-center rounded-md px-2 py-1.5 text-left text-sm font-medium text-zinc-200 outline-none transition hover:text-zinc-50 disabled:cursor-not-allowed disabled:text-zinc-500"
+      className={LFG_CARD_MENU_BUTTON_CLASS}
     >
       {pending ? "Closing..." : "Close Post"}
     </button>
@@ -108,12 +113,12 @@ export function LFGPostActionsMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-40 rounded-xl border border-white/10 bg-black p-1 text-zinc-100 shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
+          className={LFG_CARD_MENU_CONTENT_CLASS}
         >
           {viewHref ? (
             <DropdownMenuItem
               asChild
-              className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+              className={LFG_CARD_MENU_ITEM_CLASS}
             >
               <Link href={viewHref}>{viewLabel}</Link>
             </DropdownMenuItem>
@@ -121,7 +126,7 @@ export function LFGPostActionsMenu({
           {copyLinkPath ? (
             <DropdownMenuItem
               asChild
-              className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+              className={LFG_CARD_MENU_ITEM_CLASS}
             >
               <button type="button" onClick={() => void handleCopyLink()}>
                 Copy stack link
@@ -130,7 +135,7 @@ export function LFGPostActionsMenu({
           ) : null}
           <DropdownMenuItem
             asChild
-            className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+            className={LFG_CARD_MENU_ITEM_CLASS}
           >
             <Link href={manageHref}>{manageLabel}</Link>
           </DropdownMenuItem>

@@ -164,6 +164,7 @@ export function LFGPostCard({
                 post.profileId &&
                 !isOwner ? (
                 <UserBlockMenu
+                  compactCardMenu
                   targetDisplayName={displayName}
                   targetProfileId={post.profileId}
                   targetUsername={post.author.username}

@@ -165,6 +165,7 @@ export function StackPostCard({
               />
             ) : showActions && currentProfileId && post.profileId && !isOwner ? (
               <UserBlockMenu
+                compactCardMenu
                 copyLinkPath={`/stacks/${post.id}`}
                 targetDisplayName={displayName}
                 targetProfileId={post.profileId}

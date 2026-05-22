@@ -14,6 +14,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  LFG_CARD_MENU_CONTENT_CLASS,
+  LFG_CARD_MENU_ITEM_CLASS,
+  LFG_CARD_MENU_SEPARATOR_CLASS,
+} from "@/components/lfg/lfg-card-menu-styles";
 
 async function copyText(value: string) {
   if (navigator.clipboard?.writeText) {
@@ -48,6 +53,7 @@ type BlockConfirmationModalProps = {
 type UserBlockMenuProps = {
   align?: "center" | "end" | "start";
   blocked?: boolean;
+  compactCardMenu?: boolean;
   copyLinkPath?: string;
   initiallyBlocked?: boolean;
   isPending?: boolean;
@@ -225,6 +231,7 @@ function useUserBlockAction(initiallyBlocked: boolean) {
 export function UserBlockMenu({
   align = "end",
   blocked,
+  compactCardMenu = false,
   copyLinkPath,
   initiallyBlocked = false,
   isPending: controlledPending,
@@ -250,6 +257,15 @@ export function UserBlockMenu({
   const resolvedTriggerClassName =
     triggerClassName ??
     "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] text-zinc-500 transition hover:text-zinc-100";
+  const contentClassName = compactCardMenu
+    ? LFG_CARD_MENU_CONTENT_CLASS
+    : "w-40 rounded-[14px] border border-white/[0.08] bg-[#111111] p-1 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]";
+  const itemClassName = compactCardMenu
+    ? LFG_CARD_MENU_ITEM_CLASS
+    : "text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50";
+  const separatorClassName = compactCardMenu
+    ? LFG_CARD_MENU_SEPARATOR_CLASS
+    : "my-1 bg-white/[0.06]";
 
   async function handleCopyLink() {
     if (!copyLinkPath) {
@@ -279,16 +295,16 @@ export function UserBlockMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align={align}
-          className="w-40 rounded-[14px] border border-white/[0.08] bg-[#111111] p-1 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]"
+          className={contentClassName}
         >
           {viewProfileHref ? (
             <>
-              <DropdownMenuItem asChild className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50">
+              <DropdownMenuItem asChild className={itemClassName}>
                 <Link href={viewProfileHref}>View profile</Link>
               </DropdownMenuItem>
               {copyLinkPath ? (
                 <DropdownMenuItem
-                  className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+                  className={itemClassName}
                   onSelect={(event) => {
                     event.preventDefault();
                     void handleCopyLink();
@@ -297,12 +313,12 @@ export function UserBlockMenu({
                   Copy stack link
                 </DropdownMenuItem>
               ) : null}
-              <DropdownMenuSeparator className="my-1 bg-white/[0.06]" />
+              <DropdownMenuSeparator className={separatorClassName} />
             </>
           ) : copyLinkPath ? (
             <>
               <DropdownMenuItem
-                className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+                className={itemClassName}
                 onSelect={(event) => {
                   event.preventDefault();
                   void handleCopyLink();
@@ -310,12 +326,12 @@ export function UserBlockMenu({
               >
                 Copy stack link
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1 bg-white/[0.06]" />
+              <DropdownMenuSeparator className={separatorClassName} />
             </>
           ) : null}
           <DropdownMenuItem
             disabled={resolvedPending}
-            className="text-zinc-300 focus:bg-white/[0.04] focus:text-zinc-50"
+            className={itemClassName}
             onSelect={(event) => {
               event.preventDefault();
 
