@@ -132,7 +132,7 @@ export function RecentProfilePosts({
                       postId={post.id}
                       returnPath={`/u/${profileUsername}`}
                       viewHref={post.lfgType === "stacks" ? `/stacks/${post.id}` : `/${post.lfgType}`}
-                      viewLabel={post.lfgType === "stacks" ? "View Stack" : "View Post"}
+                      viewLabel={post.lfgType === "stacks" ? "View post" : "View Post"}
                     />
                   ) : null}
                 </div>

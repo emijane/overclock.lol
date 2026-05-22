@@ -144,7 +144,7 @@ export function LFGPostList({
                   returnPath="/stacks"
                   tone={tone}
                   viewHref={`/stacks/${post.id}`}
-                  viewLabel="View Stack"
+                  viewLabel="View post"
                 />
               </div>
             );

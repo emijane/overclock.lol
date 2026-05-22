@@ -36,7 +36,7 @@ async function copyText(value: string) {
   document.body.removeChild(textArea);
 }
 
-function ClosePostMenuItem() {
+function ClosePostMenuItem({ label }: { label: string }) {
   const { pending } = useFormStatus();
 
   return (
@@ -45,14 +45,16 @@ function ClosePostMenuItem() {
       disabled={pending}
       className={LFG_CARD_MENU_BUTTON_CLASS}
     >
-      {pending ? "Closing..." : "Close Post"}
+      {pending ? "Closing..." : label}
     </button>
   );
 }
 
 type LFGPostActionsMenuProps = {
   allowClose?: boolean;
+  closeLabel?: string;
   copyLinkPath?: string;
+  copyLinkLabel?: string;
   manageHref?: string;
   manageLabel?: string;
   postId: string;
@@ -63,7 +65,9 @@ type LFGPostActionsMenuProps = {
 
 export function LFGPostActionsMenu({
   allowClose = true,
+  closeLabel = "Close Post",
   copyLinkPath,
+  copyLinkLabel = "Copy stack link",
   manageHref = "/account/posts",
   manageLabel = "Manage My Posts",
   postId,
@@ -124,12 +128,12 @@ export function LFGPostActionsMenu({
             </DropdownMenuItem>
           ) : null}
           {copyLinkPath ? (
-            <DropdownMenuItem
+              <DropdownMenuItem
               asChild
               className={LFG_CARD_MENU_ITEM_CLASS}
             >
               <button type="button" onClick={() => void handleCopyLink()}>
-                Copy stack link
+                {copyLinkLabel}
               </button>
             </DropdownMenuItem>
           ) : null}
@@ -143,7 +147,7 @@ export function LFGPostActionsMenu({
             <form action={closeLFGPost} className="w-full">
               <input type="hidden" name="post_id" value={postId} />
               <input type="hidden" name="return_path" value={returnPath} />
-              <ClosePostMenuItem />
+              <ClosePostMenuItem label={closeLabel} />
             </form>
           ) : null}
         </DropdownMenuContent>

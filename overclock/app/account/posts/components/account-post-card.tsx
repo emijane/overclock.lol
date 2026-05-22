@@ -79,7 +79,7 @@ export function AccountPostCard({
                 postId={post.id}
                 returnPath="/account/posts"
                 viewHref={post.lfgType === "stacks" ? `/stacks/${post.id}` : `/${post.lfgType}`}
-                viewLabel={post.lfgType === "stacks" ? "View Stack" : `Open ${sectionLabel}`}
+                viewLabel={post.lfgType === "stacks" ? "View post" : `Open ${sectionLabel}`}
               />
             ) : null}
           </div>

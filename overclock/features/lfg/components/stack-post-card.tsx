@@ -157,11 +157,14 @@ export function StackPostCard({
             ) : null}
             {showActions && isOwner && returnPath ? (
               <LFGPostActionsMenu
+                closeLabel="Close stack"
                 copyLinkPath={`/stacks/${post.id}`}
+                copyLinkLabel="Copy link"
+                manageLabel="Manage posts"
                 postId={post.id}
                 returnPath={returnPath}
                 viewHref={viewHref}
-                viewLabel={viewLabel}
+                viewLabel={viewLabel ?? "View post"}
               />
             ) : showActions && currentProfileId && post.profileId && !isOwner ? (
               <UserBlockMenu
