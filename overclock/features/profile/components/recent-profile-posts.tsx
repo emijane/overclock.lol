@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShieldIcon, SwordsIcon } from "lucide-react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
@@ -115,12 +116,10 @@ export function RecentProfilePosts({
           {posts.map((post) => {
             const rankLabel = post.rankTier;
             const createdAtLabel = formatPostDate(post.createdAt);
+            const articleClassName = "oc-card-lift rounded-[10px] p-3.5";
 
-            return (
-              <article
-                key={post.id}
-                className="oc-card-lift rounded-[10px] p-3.5"
-              >
+            const articleContent = (
+              <>
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="oc-profile-display truncate pr-1.5 text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
                     {post.title}
@@ -168,6 +167,29 @@ export function RecentProfilePosts({
                     ))}
                   </div>
                 ) : null}
+              </>
+            );
+
+            return post.lfgType === "stacks" ? (
+              <article
+                key={post.id}
+                className={`${articleClassName} relative transition hover:bg-white/[0.02]`}
+              >
+                <Link
+                  href={`/stacks/${post.id}`}
+                  aria-label={`Open stack post ${post.title}`}
+                  className="absolute inset-0 rounded-[10px]"
+                />
+                <div className="relative z-10">
+                  {articleContent}
+                </div>
+              </article>
+            ) : (
+              <article
+                key={post.id}
+                className={articleClassName}
+              >
+                {articleContent}
               </article>
             );
           })}

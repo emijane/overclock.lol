@@ -432,11 +432,12 @@ export async function getActiveLFGPosts(
   }
 
   const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
-  const badgesByProfileId = await loadBadgesByProfileId(supabase, postRows);
-  const stackMembersByPostId =
+  const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
+    loadBadgesByProfileId(supabase, postRows),
     isStacks && postRows.length > 0
-      ? await loadStackMembersByPostId(supabase, postRows)
-      : new Map<string, StackMember[]>();
+      ? loadStackMembersByPostId(supabase, postRows)
+      : Promise.resolve(new Map<string, StackMember[]>()),
+  ]);
 
   return postRows.map((row) =>
     normalizeLFGPostRow(
@@ -471,46 +472,53 @@ async function getStackPostDetailByIdInternal(input: {
   viewerProfileId?: string | null;
 }): Promise<StackPostDetail | null> {
   const supabase = await createClient();
-  const tBlocked = Date.now();
-  const blockedProfileIds = input.viewerProfileId
-    ? await getBlockedProfileIdsForViewer(input.viewerProfileId)
-    : [];
-  stacksPerfLog('getStackPostDetailById blocks', tBlocked, blockedProfileIds.length);
   const nowIso = new Date().toISOString();
+  const tBlocked = Date.now();
   const tPostQuery = Date.now();
-  let query = supabase
-    .from("lfg_posts")
-    .select(
-      [
-        "id",
-        "profile_id",
-        "lfg_type",
-        "game_mode",
-        "title",
-        "status",
-        "looking_for_roles",
-        "posting_role",
-        "snapshot_platform",
-        "snapshot_rank_tier",
-        "snapshot_rank_division",
-        "snapshot_region",
-        "snapshot_timezone",
-        "hero_pool_snapshot",
-        "created_at",
-        "expires_at",
-        "max_group_size",
-        "current_member_count",
-        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
-      ].join(",")
-    )
-    .eq("id", input.postId)
-    .eq("lfg_type", "stacks");
+  const blockedProfileIdsPromise = input.viewerProfileId
+    ? getBlockedProfileIdsForViewer(input.viewerProfileId)
+    : Promise.resolve<string[]>([]);
+  const postQueryPromise = (() => {
+    let query = supabase
+      .from("lfg_posts")
+      .select(
+        [
+          "id",
+          "profile_id",
+          "lfg_type",
+          "game_mode",
+          "title",
+          "status",
+          "looking_for_roles",
+          "posting_role",
+          "snapshot_platform",
+          "snapshot_rank_tier",
+          "snapshot_rank_division",
+          "snapshot_region",
+          "snapshot_timezone",
+          "hero_pool_snapshot",
+          "created_at",
+          "expires_at",
+          "max_group_size",
+          "current_member_count",
+          "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        ].join(",")
+      )
+      .eq("id", input.postId)
+      .eq("lfg_type", "stacks");
 
-  query = input.activeOnly
-    ? query.in("status", ["active", "filled"]).gt("expires_at", nowIso)
-    : query.neq("status", "archived");
+    query = input.activeOnly
+      ? query.in("status", ["active", "filled"]).gt("expires_at", nowIso)
+      : query.neq("status", "archived");
 
-  const { data: postData, error: postError } = await query.limit(1).maybeSingle();
+    return query.limit(1).maybeSingle();
+  })();
+
+  const [blockedProfileIds, { data: postData, error: postError }] = await Promise.all([
+    blockedProfileIdsPromise,
+    postQueryPromise,
+  ]);
+  stacksPerfLog('getStackPostDetailById blocks', tBlocked, blockedProfileIds.length);
   stacksPerfLog('getStackPostDetailById post query', tPostQuery);
 
   if (postError) {
@@ -605,39 +613,41 @@ export async function getRecentPostsByProfileId(
     return [];
   }
 
-  const { data, error } = await supabase
-    .from("lfg_posts")
-    .select(
-      [
-        "id",
-        "profile_id",
-        "lfg_type",
-        "game_mode",
-        "title",
-        "status",
-        "looking_for_roles",
-        "posting_role",
-        "snapshot_platform",
-        "snapshot_rank_tier",
-        "snapshot_rank_division",
-        "snapshot_region",
-        "snapshot_timezone",
-        "hero_pool_snapshot",
-        "created_at",
-        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
-      ].join(",")
-    )
-    .eq("profile_id", profileId)
-    .in("status", ["active", "filled"])
-    .gt("expires_at", new Date().toISOString())
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const [profileBadges, { data, error }] = await Promise.all([
+    getProfileBadges(profileId),
+    supabase
+      .from("lfg_posts")
+      .select(
+        [
+          "id",
+          "profile_id",
+          "lfg_type",
+          "game_mode",
+          "title",
+          "status",
+          "looking_for_roles",
+          "posting_role",
+          "snapshot_platform",
+          "snapshot_rank_tier",
+          "snapshot_rank_division",
+          "snapshot_region",
+          "snapshot_timezone",
+          "hero_pool_snapshot",
+          "created_at",
+          "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        ].join(",")
+      )
+      .eq("profile_id", profileId)
+      .in("status", ["active", "filled"])
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(limit),
+  ]);
 
   if (error) {
     throw error;
   }
 
-  const profileBadges = await getProfileBadges(profileId);
   const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
 
   return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
@@ -665,38 +675,40 @@ export async function getPostsByProfileId(
     return [];
   }
 
-  const { data, error } = await supabase
-    .from("lfg_posts")
-    .select(
-      [
-        "id",
-        "profile_id",
-        "lfg_type",
-        "game_mode",
-        "title",
-        "status",
-        "looking_for_roles",
-        "posting_role",
-        "snapshot_platform",
-        "snapshot_rank_tier",
-        "snapshot_rank_division",
-        "snapshot_region",
-        "snapshot_timezone",
-        "hero_pool_snapshot",
-        "created_at",
-        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
-      ].join(",")
-    )
-    .eq("profile_id", profileId)
-    .neq("status", "archived")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const [profileBadges, { data, error }] = await Promise.all([
+    getProfileBadges(profileId),
+    supabase
+      .from("lfg_posts")
+      .select(
+        [
+          "id",
+          "profile_id",
+          "lfg_type",
+          "game_mode",
+          "title",
+          "status",
+          "looking_for_roles",
+          "posting_role",
+          "snapshot_platform",
+          "snapshot_rank_tier",
+          "snapshot_rank_division",
+          "snapshot_region",
+          "snapshot_timezone",
+          "hero_pool_snapshot",
+          "created_at",
+          "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+        ].join(",")
+      )
+      .eq("profile_id", profileId)
+      .neq("status", "archived")
+      .order("created_at", { ascending: false })
+      .limit(limit),
+  ]);
 
   if (error) {
     throw error;
   }
 
-  const profileBadges = await getProfileBadges(profileId);
   const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
 
   return postRows.map((row) => normalizeLFGPostRow(row, profileBadges));
