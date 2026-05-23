@@ -24,6 +24,14 @@ test("send stack request normalizer unwraps nested payloads", () => {
   });
 });
 
+test("send stack request normalizer guards malformed payloads", () => {
+  assert.deepEqual(normalizeSendStackRequestResult(null), {
+    created: false,
+    errorCode: "invalid_response",
+    requestId: null,
+  });
+});
+
 test("update stack request normalizer accepts wrapped string responses", () => {
   const result = normalizeUpdateStackRequestResult(
     JSON.stringify({

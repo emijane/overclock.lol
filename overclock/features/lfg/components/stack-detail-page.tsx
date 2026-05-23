@@ -12,6 +12,10 @@ import { closeLFGPost } from "@/features/lfg/actions";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { getLFGGameModeLabel } from "@/lib/lfg/lfg-post-types";
+import {
+  deriveStackDetailViewerState,
+  getStackInactiveStateCopy,
+} from "@/lib/lfg/stack-detail-state";
 import { computeStackRoleNeeds } from "@/lib/lfg/stack-role-needs";
 import {
   getStackMemberContactInfoForViewer,
@@ -41,29 +45,6 @@ function getRoleChipClassName(role: CompetitiveRole) {
   if (role === "tank") return "border-sky-400/14 bg-sky-400/6 text-sky-100/80";
   if (role === "dps") return "border-rose-400/14 bg-rose-400/6 text-rose-100/80";
   return "border-emerald-400/14 bg-emerald-400/6 text-emerald-100/80";
-}
-
-function getInactiveStateCopy(detail: StackPostDetail) {
-  if (detail.post.status === "closed") {
-    return {
-      description:
-        "This stack has been closed, so join and management actions are no longer available.",
-      title: "This stack is closed",
-    };
-  }
-
-  if (detail.post.status === "expired" || detail.isExpired) {
-    return {
-      description:
-        "This stack has expired and is no longer visible as an active listing in the feed.",
-      title: "This stack has expired",
-    };
-  }
-
-  return {
-    description: "This stack is no longer available for active membership actions.",
-    title: "This stack is not active",
-  };
 }
 
 function EmptyDetailState({
@@ -432,16 +413,17 @@ export async function StackDetailPage({
     );
   }
 
-  const isOwner = Boolean(currentProfileId && detail.post.profileId === currentProfileId);
-  const isAcceptedMember = Boolean(
-    currentProfileId &&
-      detail.post.stackMembers.some((member) => member.profileId === currentProfileId)
-  );
-
+  const {
+    isAcceptedMember,
+    isOwner,
+    shouldFetchContactInfo,
+    shouldFetchIncomingRequests,
+    shouldFetchRequestState,
+  } = deriveStackDetailViewerState({
+    currentProfileId,
+    detail,
+  });
   const profileId = currentProfileId;
-  const shouldFetchRequestState = Boolean(profileId && !isOwner && !isAcceptedMember && detail.isActive);
-  const shouldFetchIncomingRequests = Boolean(isOwner && detail.isActive && profileId);
-  const shouldFetchContactInfo = Boolean((isOwner || isAcceptedMember) && profileId);
 
   const tViewerQueries = stacksPerfStart();
   const [requestState, pendingRequests, memberContactInfo] = await Promise.all([
@@ -493,10 +475,10 @@ export async function StackDetailPage({
             <section className="rounded-[10px] border border-amber-500/20 bg-amber-500/5">
               <div className="px-5 py-4 sm:px-6 sm:py-4.5">
                 <h2 className="oc-profile-display text-[18px] font-semibold tracking-[-0.03em] text-zinc-50">
-                  {getInactiveStateCopy(detail).title}
+                  {getStackInactiveStateCopy(detail).title}
                 </h2>
                 <p className="oc-profile-meta mt-2 max-w-2xl text-[11px] leading-5 text-zinc-300">
-                  {getInactiveStateCopy(detail).description}
+                  {getStackInactiveStateCopy(detail).description}
                 </p>
                 <div className="mt-4">
                   <Link

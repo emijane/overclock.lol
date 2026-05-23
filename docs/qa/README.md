@@ -13,6 +13,8 @@ snapshots that are still worth preserving for context.
 
 - `BLOCK_SYSTEM_QA.md`
   - current QA reference for block-system behavior
+- `STACKS_QA_CHECKLIST.md`
+  - current QA checklist for `/stacks`, `/stacks/create`, and `/stacks/[postId]`
 - `lfg/`
   - active and recent QA docs for Duos, Stacks, and related LFG work
 - `archive/`

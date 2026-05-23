@@ -36,6 +36,7 @@ test("create LFG auth redirect rules only treat auth failures as login-worthy", 
   assert.equal(shouldRedirectToLoginForCreateError("unauthenticated"), true);
   assert.equal(shouldRedirectToLoginForCreateError("forbidden"), true);
   assert.equal(shouldRedirectToLoginForCreateError("duplicate_active_post"), false);
+  assert.equal(shouldRedirectToLoginForCreateError("already_in_active_stack"), false);
 });
 
 test("stack create debug detection is limited to stack sync failures", () => {
@@ -83,6 +84,17 @@ test("close return path rules preserve profile and hub views", () => {
     {
       redirectPath: "/stacks",
       returnPath: "/u/misa",
+    }
+  );
+
+  assert.deepEqual(
+    resolveCloseLFGReturnPath({
+      fallbackPath: "/stacks/post-123",
+      resultLfgType: "stacks",
+    }),
+    {
+      redirectPath: "/stacks",
+      returnPath: "/stacks/post-123",
     }
   );
 
