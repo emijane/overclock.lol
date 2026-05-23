@@ -244,11 +244,21 @@ async function loadStackMembersByPostId(
 async function hydrateSingleStackPost(
   supabase: Awaited<ReturnType<typeof createClient>>,
   postRow: Record<string, unknown>,
-  blockedProfileIds: string[] = []
+  blockedProfileIds: string[] = [],
+  options?: {
+    includeAuthorBadges?: boolean;
+  }
 ) {
+  const includeAuthorBadges = options?.includeAuthorBadges ?? true;
   const t = Date.now();
   const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
-    loadBadgesByProfileId(supabase, [postRow], "hydrateSingleStackPost"),
+    includeAuthorBadges
+      ? loadBadgesByProfileId(supabase, [postRow], "hydrateSingleStackPost")
+      : (() => {
+          const skippedBadges = new Map<string, ProfileBadge[]>();
+          stacksPerfLog("hydrateSingleStackPost badges", t, 0);
+          return Promise.resolve(skippedBadges);
+        })(),
     loadStackMembersByPostId(supabase, [postRow], "hydrateSingleStackPost"),
   ]);
   stacksPerfLog('hydrateSingleStackPost badges+members parallel', t);
@@ -558,7 +568,9 @@ async function getStackPostDetailByIdInternal(input: {
   }
 
   const tHydrate = Date.now();
-  const post = await hydrateSingleStackPost(supabase, postRow, blockedProfileIds);
+  const post = await hydrateSingleStackPost(supabase, postRow, blockedProfileIds, {
+    includeAuthorBadges: false,
+  });
   stacksPerfLog('getStackPostDetailById hydrate', tHydrate);
   const expiresAt = typeof postRow.expires_at === "string" ? postRow.expires_at : null;
   const isExpired = Boolean(expiresAt && expiresAt <= nowIso);

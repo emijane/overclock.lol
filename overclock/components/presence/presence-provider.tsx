@@ -15,6 +15,7 @@ import { createClient } from "@/lib/supabase/client";
 const PRESENCE_CHANNEL = "presence:profiles";
 const LAST_SEEN_WRITE_INTERVAL_MS = 2 * 60 * 1000;
 const LAST_SEEN_HEARTBEAT_MS = 60 * 1000;
+const LAST_SEEN_STORAGE_KEY = "oc:last-seen-write-at";
 
 type PresenceProviderProps = {
   children: React.ReactNode;
@@ -51,6 +52,25 @@ function collectOnlineUserIds(state: Record<string, PresenceStateEntry[]>) {
   return nextOnlineIds;
 }
 
+function readLastSeenWriteAt() {
+  if (typeof window === "undefined") {
+    return 0;
+  }
+
+  const rawValue = window.sessionStorage.getItem(LAST_SEEN_STORAGE_KEY);
+  const parsedValue = rawValue ? Number(rawValue) : 0;
+
+  return Number.isFinite(parsedValue) ? parsedValue : 0;
+}
+
+function persistLastSeenWriteAt(value: number) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(LAST_SEEN_STORAGE_KEY, String(value));
+}
+
 export function PresenceProvider({
   children,
 }: PresenceProviderProps) {
@@ -58,7 +78,11 @@ export function PresenceProvider({
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [isReady, setIsReady] = useState(false);
-  const lastSeenWriteAtRef = useRef<number>(0);
+  const lastSeenWriteAtRef = useRef(0);
+
+  useEffect(() => {
+    lastSeenWriteAtRef.current = readLastSeenWriteAt();
+  }, []);
 
   useEffect(() => {
     let isActive = true;
@@ -112,12 +136,17 @@ export function PresenceProvider({
       }
 
       const now = Date.now();
+      const msSinceLastWrite = now - lastSeenWriteAtRef.current;
 
-      if (!force && now - lastSeenWriteAtRef.current < LAST_SEEN_WRITE_INTERVAL_MS) {
+      if (
+        msSinceLastWrite < LAST_SEEN_WRITE_INTERVAL_MS &&
+        (!force || lastSeenWriteAtRef.current > 0)
+      ) {
         return;
       }
 
       lastSeenWriteAtRef.current = now;
+      persistLastSeenWriteAt(now);
       await updateLastSeen();
     }
 

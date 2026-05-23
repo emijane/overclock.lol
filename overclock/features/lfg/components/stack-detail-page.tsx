@@ -24,7 +24,7 @@ import {
   getStackRequestStateForPost,
 } from "@/lib/lfg/stack-requests";
 import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getCurrentUserId } from "@/lib/profiles/get-current-profile";
 
 import { CopyStackLinkButton } from "./copy-stack-link-button";
 import { RemoveStackMemberButton } from "./remove-stack-member-button";
@@ -397,11 +397,11 @@ export async function StackDetailPage({
   postId,
 }: StackDetailPageProps) {
   const tPage = stacksPerfStart();
-  const tProfile = stacksPerfStart();
-  const { profile } = await getCurrentProfile();
-  stacksPerfLog("StackDetailPage getCurrentProfile", tProfile, profile ? 1 : 0);
+  const tViewer = stacksPerfStart();
+  const currentProfileId = await getCurrentUserId();
+  stacksPerfLog("StackDetailPage getCurrentUserId", tViewer, currentProfileId ? 1 : 0);
   const tDetail = stacksPerfStart();
-  const detail = await getStackPostDetailById(postId, profile?.id ?? null);
+  const detail = await getStackPostDetailById(postId, currentProfileId);
   stacksPerfLog("StackDetailPage getStackPostDetailById", tDetail, detail ? 1 : 0);
 
   if (!detail) {
@@ -432,13 +432,13 @@ export async function StackDetailPage({
     );
   }
 
-  const isOwner = Boolean(profile?.id && detail.post.profileId === profile.id);
+  const isOwner = Boolean(currentProfileId && detail.post.profileId === currentProfileId);
   const isAcceptedMember = Boolean(
-    profile?.id &&
-      detail.post.stackMembers.some((member) => member.profileId === profile.id)
+    currentProfileId &&
+      detail.post.stackMembers.some((member) => member.profileId === currentProfileId)
   );
 
-  const profileId = profile?.id ?? null;
+  const profileId = currentProfileId;
   const shouldFetchRequestState = Boolean(profileId && !isOwner && !isAcceptedMember && detail.isActive);
   const shouldFetchIncomingRequests = Boolean(isOwner && detail.isActive && profileId);
   const shouldFetchContactInfo = Boolean((isOwner || isAcceptedMember) && profileId);
@@ -511,7 +511,7 @@ export async function StackDetailPage({
           ) : null}
 
           <StackSummaryHeader
-            currentProfileId={profile?.id ?? null}
+            currentProfileId={currentProfileId}
             detail={detail}
             isAcceptedMember={isAcceptedMember}
             isOwner={isOwner}
@@ -521,7 +521,7 @@ export async function StackDetailPage({
           <div className={isOwner && detail.isActive && pendingRequests.length > 0 ? "grid gap-4 xl:grid-cols-2" : ""}>
             <MemberList
               contactInfoByProfileId={memberContactInfo}
-              currentProfileId={profile?.id ?? null}
+              currentProfileId={currentProfileId}
               detail={detail}
             />
 

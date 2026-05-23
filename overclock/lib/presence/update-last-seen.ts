@@ -1,5 +1,6 @@
 "use server";
 
+import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
 import { createClient } from "@/lib/supabase/server";
 
 export type UpdateLastSeenResult =
@@ -36,7 +37,9 @@ function normalizeUpdateLastSeenRpcResult(value: unknown): UpdateLastSeenRpcResu
 
 export async function updateLastSeen(): Promise<UpdateLastSeenResult> {
   const supabase = await createClient();
+  const tRpc = stacksPerfStart();
   const { data, error } = await supabase.rpc("update_last_seen");
+  stacksPerfLog("updateLastSeen rpc", tRpc);
 
   if (error) {
     console.error("Last seen update failed", {
