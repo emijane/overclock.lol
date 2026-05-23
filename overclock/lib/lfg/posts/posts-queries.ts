@@ -29,7 +29,8 @@ export type StackPostDetail = {
 
 async function loadBadgesByProfileId(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  postRows: Array<Record<string, unknown>>
+  postRows: Array<Record<string, unknown>>,
+  perfLabel?: string
 ) {
   const profileIds = Array.from(
     new Set(
@@ -44,11 +45,15 @@ async function loadBadgesByProfileId(
     return badgesByProfileId;
   }
 
+  const tBadges = Date.now();
   const { data: badgeRows, error: badgeError } = await supabase
     .from("profile_badges")
     .select("profile_id,granted_at,badge:badge_id(id,slug,label,description,icon,color)")
     .in("profile_id", profileIds)
     .order("granted_at", { ascending: true });
+  if (perfLabel) {
+    stacksPerfLog(`${perfLabel} badges`, tBadges, badgeRows?.length ?? 0);
+  }
 
   if (badgeError) {
     throw badgeError;
@@ -142,7 +147,8 @@ async function getFallbackStackMembersByPostId(
 
 async function loadStackMembersByPostId(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  postRows: Array<Record<string, unknown>>
+  postRows: Array<Record<string, unknown>>,
+  perfLabel?: string
 ) {
   const stackMembersByPostId = new Map<string, StackMember[]>();
   const postIds = postRows
@@ -153,6 +159,7 @@ async function loadStackMembersByPostId(
     return stackMembersByPostId;
   }
 
+  const tMembers = Date.now();
   const { data: memberRows, error: memberError } = await supabase
     .from("stack_members")
     .select(
@@ -162,6 +169,9 @@ async function loadStackMembersByPostId(
     .is("removed_at", null)
     .order("is_owner", { ascending: false })
     .order("joined_at", { ascending: true });
+  if (perfLabel) {
+    stacksPerfLog(`${perfLabel} stack members`, tMembers, memberRows?.length ?? 0);
+  }
 
   if (memberError) {
     if (!isMissingStackMembersSupportError(memberError)) {
@@ -238,8 +248,8 @@ async function hydrateSingleStackPost(
 ) {
   const t = Date.now();
   const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
-    loadBadgesByProfileId(supabase, [postRow]),
-    loadStackMembersByPostId(supabase, [postRow]),
+    loadBadgesByProfileId(supabase, [postRow], "hydrateSingleStackPost"),
+    loadStackMembersByPostId(supabase, [postRow], "hydrateSingleStackPost"),
   ]);
   stacksPerfLog('hydrateSingleStackPost badges+members parallel', t);
   const normalizedPostId = typeof postRow.id === "string" ? postRow.id : null;
@@ -433,9 +443,9 @@ export async function getActiveLFGPosts(
 
   const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
   const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
-    loadBadgesByProfileId(supabase, postRows),
+    loadBadgesByProfileId(supabase, postRows, "getActiveLFGPosts"),
     isStacks && postRows.length > 0
-      ? loadStackMembersByPostId(supabase, postRows)
+      ? loadStackMembersByPostId(supabase, postRows, "getActiveLFGPosts")
       : Promise.resolve(new Map<string, StackMember[]>()),
   ]);
 
@@ -473,10 +483,14 @@ async function getStackPostDetailByIdInternal(input: {
 }): Promise<StackPostDetail | null> {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
-  const tBlocked = Date.now();
-  const tPostQuery = Date.now();
   const blockedProfileIdsPromise = input.viewerProfileId
-    ? getBlockedProfileIdsForViewer(input.viewerProfileId)
+    ? (() => {
+        const tBlocked = Date.now();
+        return getBlockedProfileIdsForViewer(input.viewerProfileId).then((blockedProfileIds) => {
+          stacksPerfLog("getStackPostDetailById blocks", tBlocked, blockedProfileIds.length);
+          return blockedProfileIds;
+        });
+      })()
     : Promise.resolve<string[]>([]);
   const postQueryPromise = (() => {
     let query = supabase
@@ -511,15 +525,17 @@ async function getStackPostDetailByIdInternal(input: {
       ? query.in("status", ["active", "filled"]).gt("expires_at", nowIso)
       : query.neq("status", "archived");
 
-    return query.limit(1).maybeSingle();
+    const tPostQuery = Date.now();
+    return query.limit(1).maybeSingle().then((result) => {
+      stacksPerfLog("getStackPostDetailById post query", tPostQuery, result.data ? 1 : 0);
+      return result;
+    });
   })();
 
   const [blockedProfileIds, { data: postData, error: postError }] = await Promise.all([
     blockedProfileIdsPromise,
     postQueryPromise,
   ]);
-  stacksPerfLog('getStackPostDetailById blocks', tBlocked, blockedProfileIds.length);
-  stacksPerfLog('getStackPostDetailById post query', tPostQuery);
 
   if (postError) {
     throw postError;

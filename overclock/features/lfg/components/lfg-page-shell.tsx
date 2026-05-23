@@ -22,7 +22,7 @@ import {
   getCurrentActiveStackForProfile,
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
-import { stacksPerfLog } from "@/lib/dev/perf-log";
+import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
@@ -306,7 +306,12 @@ export async function LFGPageShell({
   title,
   type,
 }: LFGPageShellProps) {
+  const tPage = stacksPerfStart();
+  const tProfile = stacksPerfStart();
   const { profile, user } = await getCurrentProfile();
+  if (type === "stacks") {
+    stacksPerfLog("LFGPageShell stacks getCurrentProfile", tProfile, profile ? 1 : 0);
+  }
   const shouldShowComposer = Boolean(type && composerMode === "inline");
   const shouldShowFeed = Boolean(type && showFeed);
   const emptyPageData: LFGPageData = {
@@ -400,6 +405,9 @@ export async function LFGPageShell({
     Boolean(profile?.id) &&
     isBlockedFromStackCreate &&
     !currentStackForBlockedState;
+  if (type === "stacks") {
+    stacksPerfLog("LFGPageShell stacks total data load", tPage, pageData.posts.length);
+  }
 
   if (shouldShowCurrentStackFallback && process.env.NODE_ENV !== "production") {
     console.warn("[lfg] Current stack block mismatch", {

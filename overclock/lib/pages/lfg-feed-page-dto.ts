@@ -363,23 +363,26 @@ export async function getLFGFeedPageDto(input: {
           })
         : null,
   });
+  const record =
+    data && typeof data === "object" && !Array.isArray(data)
+      ? (data as Record<string, unknown>)
+      : {};
+  const rawPosts = Array.isArray(record.posts) ? record.posts : [];
+  stacksPerfLog("getLFGFeedPageDto rpc", tRpc, rawPosts.length);
 
   if (error) {
     throw error;
   }
 
-  const record =
-    data && typeof data === "object" && !Array.isArray(data)
-      ? (data as Record<string, unknown>)
-      : {};
   const viewerBundle =
     record.viewerBundle &&
     typeof record.viewerBundle === "object" &&
     !Array.isArray(record.viewerBundle)
       ? (record.viewerBundle as Record<string, unknown>)
       : null;
+  const tNormalize = Date.now();
   const { posts, inviteStates, stackRequestStates } = normalizePosts(record.posts);
-  stacksPerfLog('getLFGFeedPageDto rpc', tRpc, posts.length);
+  stacksPerfLog("getLFGFeedPageDto normalizePosts", tNormalize, posts.length);
 
   return {
     posts,

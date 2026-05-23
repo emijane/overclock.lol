@@ -244,39 +244,58 @@ export async function getIncomingPendingStackRequests(input: {
   currentProfileId: string;
   postId: string;
 }): Promise<{ requests: IncomingPendingStackRequest[]; totalCount: number }> {
-  const tBlocked = Date.now();
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
-  const tQuery = Date.now();
   const [blockedProfileIds, { data, error }] = await Promise.all([
-    getBlockedProfileIdsForViewer(input.currentProfileId),
-    supabase
-      .from("stack_requests")
-      .select(
-        [
-          "id",
-          "post_id",
-          "requested_role",
-          "requester_profile_id",
-          "created_at",
-          "lfg_posts:post_id(title,status,expires_at)",
-          "requester:requester_profile_id(id,username,display_name,avatar_url,avatar_updated_at,current_rank_tier,current_rank_division)",
-        ].join(",")
-      )
-      .eq("owner_profile_id", input.currentProfileId)
-      .eq("post_id", input.postId)
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(20),
+    (() => {
+      const tBlocked = Date.now();
+      return getBlockedProfileIdsForViewer(input.currentProfileId).then(
+        (blockedProfileIds) => {
+          stacksPerfLog(
+            "getIncomingPendingStackRequests blocks",
+            tBlocked,
+            blockedProfileIds.length
+          );
+          return blockedProfileIds;
+        }
+      );
+    })(),
+    (() => {
+      const tQuery = Date.now();
+      return supabase
+        .from("stack_requests")
+        .select(
+          [
+            "id",
+            "post_id",
+            "requested_role",
+            "requester_profile_id",
+            "created_at",
+            "lfg_posts:post_id(title,status,expires_at)",
+            "requester:requester_profile_id(id,username,display_name,avatar_url,avatar_updated_at,current_rank_tier,current_rank_division)",
+          ].join(",")
+        )
+        .eq("owner_profile_id", input.currentProfileId)
+        .eq("post_id", input.postId)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(20)
+        .then((result) => {
+          stacksPerfLog(
+            "getIncomingPendingStackRequests query",
+            tQuery,
+            result.data?.length ?? 0
+          );
+          return result;
+        });
+    })(),
   ]);
-  stacksPerfLog('getIncomingPendingStackRequests blocks', tBlocked, blockedProfileIds.length);
 
   if (error) {
     throw error;
   }
 
   const rows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
-  stacksPerfLog('getIncomingPendingStackRequests query', tQuery, rows.length);
   const requests: IncomingPendingStackRequest[] = [];
 
   for (const row of rows) {

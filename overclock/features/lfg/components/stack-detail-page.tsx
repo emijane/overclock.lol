@@ -23,6 +23,7 @@ import {
   getIncomingPendingStackRequests,
   getStackRequestStateForPost,
 } from "@/lib/lfg/stack-requests";
+import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 
 import { CopyStackLinkButton } from "./copy-stack-link-button";
@@ -395,10 +396,16 @@ export async function StackDetailPage({
   messageType,
   postId,
 }: StackDetailPageProps) {
+  const tPage = stacksPerfStart();
+  const tProfile = stacksPerfStart();
   const { profile } = await getCurrentProfile();
+  stacksPerfLog("StackDetailPage getCurrentProfile", tProfile, profile ? 1 : 0);
+  const tDetail = stacksPerfStart();
   const detail = await getStackPostDetailById(postId, profile?.id ?? null);
+  stacksPerfLog("StackDetailPage getStackPostDetailById", tDetail, detail ? 1 : 0);
 
   if (!detail) {
+    stacksPerfLog("StackDetailPage total data load", tPage, 0);
     return (
       <main className="oc-atmosphere-bg relative flex-1 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
         <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
@@ -436,6 +443,7 @@ export async function StackDetailPage({
   const shouldFetchIncomingRequests = Boolean(isOwner && detail.isActive && profileId);
   const shouldFetchContactInfo = Boolean((isOwner || isAcceptedMember) && profileId);
 
+  const tViewerQueries = stacksPerfStart();
   const [requestState, pendingRequests, memberContactInfo] = await Promise.all([
     profileId && shouldFetchRequestState
       ? getStackRequestStateForPost({
@@ -456,6 +464,12 @@ export async function StackDetailPage({
         })
       : Promise.resolve(null),
   ]);
+  stacksPerfLog(
+    "StackDetailPage viewer queries",
+    tViewerQueries,
+    pendingRequests.length
+  );
+  stacksPerfLog("StackDetailPage total data load", tPage, detail.post.stackMembers.length);
 
   return (
     <main className="oc-atmosphere-bg relative flex-1 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
