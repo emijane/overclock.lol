@@ -200,20 +200,16 @@ function StackSummaryHeader({
           ) : null}
 
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="oc-profile-meta text-[12px] font-medium text-zinc-300">
-                {post.currentMemberCount}/{post.maxGroupSize ?? post.currentMemberCount} members
-              </span>
-              {openSpots > 0 ? (
-                <span className="oc-profile-pill border border-emerald-400/14 bg-emerald-400/6 px-2 py-0.5 text-[10px] text-emerald-100/80">
-                  {openSpots} open spot{openSpots === 1 ? "" : "s"}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="oc-profile-meta text-[12px] font-medium text-zinc-300">
+                  {post.currentMemberCount}/{post.maxGroupSize ?? post.currentMemberCount} members
                 </span>
-              ) : (
-                <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-400">
-                  Full
-                </span>
-              )}
-            </div>
+                {openSpots === 0 ? (
+                  <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-400">
+                    Full
+                  </span>
+                ) : null}
+              </div>
 
             {detail.isActive && !isOwner && !isAcceptedMember ? (
               !isFull || requestState === "pending" ? (
