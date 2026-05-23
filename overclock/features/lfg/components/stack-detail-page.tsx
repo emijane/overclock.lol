@@ -6,6 +6,8 @@ import { SiBattledotnet } from "react-icons/si";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
+import { PresenceIndicator } from "@/components/presence/presence-indicator";
+import { RankedAvatar } from "@/components/profile/ranked-avatar";
 import { closeLFGPost } from "@/features/lfg/actions";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
@@ -124,7 +126,7 @@ function StackSummaryHeader({
   const statusLabel = detail.isActive
     ? post.status === "filled"
       ? "Filled"
-      : "Active"
+      : null
     : post.status === "closed"
       ? "Closed"
       : "Expired";
@@ -132,33 +134,71 @@ function StackSummaryHeader({
     post.currentMemberCount >= (post.maxGroupSize ?? 5) || post.status === "filled";
   const roleNeeds = computeStackRoleNeeds(post.stackMembers);
   const viewerState = currentProfileId ? "authenticated" : "guest";
+  const visibleName =
+    post.author.username ?? post.author.displayName ?? owner?.username ?? ownerLabel;
 
   return (
     <section className="rounded-[10px] border border-white/6 bg-white/2">
-      <div className="px-4 py-4 sm:px-5 sm:py-5">
+      <div className="pb-4 pt-0 sm:pb-5 sm:pt-0">
         <div className="flex flex-col gap-3">
           <div>
-            <div className="flex items-start justify-between gap-3">
-              <h1 className="oc-profile-display min-w-0 text-[22px] font-semibold leading-[1.1] tracking-[-0.04em] text-zinc-50 sm:text-[26px]">
-                {post.title}
-              </h1>
-              <div className="flex shrink-0 items-center gap-2 pt-0.5">
-                <CopyStackLinkButton path={`/stacks/${post.id}`} />
-                {isOwner && detail.isActive ? (
-                  <form action={closeLFGPost}>
-                    <input type="hidden" name="post_id" value={post.id} />
-                    <input type="hidden" name="return_path" value={`/stacks/${post.id}`} />
-                    <button
-                      type="submit"
-                      className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-rose-500/20 bg-rose-500/[0.06] px-3 text-[11px] font-medium text-rose-300/80 transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-200"
-                    >
-                      Close stack
-                    </button>
-                  </form>
+            <div className="relative h-24 overflow-hidden rounded-t-[9px] border-b border-white/6 bg-zinc-950/95 sm:h-25">
+                {post.author.coverImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={post.author.coverImageUrl}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
                 ) : null}
-              </div>
+                <div className="absolute right-4 top-3 z-10 flex items-center gap-2 sm:right-5">
+                  <CopyStackLinkButton path={`/stacks/${post.id}`} />
+                  {isOwner && detail.isActive ? (
+                    <form action={closeLFGPost}>
+                      <input type="hidden" name="post_id" value={post.id} />
+                      <input type="hidden" name="return_path" value={`/stacks/${post.id}`} />
+                      <button
+                        type="submit"
+                        className="oc-profile-display inline-flex h-7 items-center rounded-[10px] border border-rose-500/20 bg-black/55 px-2.5 text-[10px] font-semibold text-zinc-200 backdrop-blur-sm transition hover:border-rose-500/30 hover:bg-black/70 hover:text-zinc-50"
+                      >
+                        Close stack
+                      </button>
+                    </form>
+                  ) : null}
+                </div>
             </div>
-            <div className="oc-profile-meta mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
+
+            <div className="px-4 sm:px-5">
+              <div className="mb-2.5 flex min-w-0 items-end gap-3 pt-0.5">
+                <RankedAvatar
+                  avatarUrl={post.author.avatarUrl}
+                  className="-mt-[3rem] h-[68px] w-[68px] shrink-0 rounded-full shadow-[0_18px_36px_-14px_rgba(0,0,0,0.7)]"
+                  displayName={visibleName}
+                  fallbackClassName="text-xs font-semibold text-zinc-100"
+                  fallbackText={visibleName.slice(0, 2).toUpperCase()}
+                  overlay={
+                    post.profileId ? (
+                      <PresenceIndicator
+                        className="oc-overlay-avatar-elevated absolute bottom-0.5 right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+                        hideOfflinePresence={post.author.hideOfflinePresence}
+                        isLookingToPlay={post.author.isLookingToPlay}
+                        lastSeenAt={post.author.lastSeenAt}
+                        sizeClassName="h-2.5 w-2.5"
+                        userId={post.profileId}
+                      />
+                    ) : null
+                  }
+                  rankTier={post.rankTier}
+                  ringClassName="hidden"
+                />
+              </div>
+
+              <div className="flex items-start gap-3">
+                <h1 className="oc-profile-display min-w-0 text-[22px] font-semibold leading-[1.1] tracking-[-0.04em] text-zinc-50 sm:text-[26px]">
+                  {post.title}
+                </h1>
+              </div>
+              <div className="oc-profile-meta mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
               <span>
                 Created by{" "}
                 {ownerHref ? (
@@ -180,13 +220,19 @@ function StackSummaryHeader({
                   <span>{post.region}</span>
                 </>
               ) : null}
-              <span aria-hidden="true" className="text-zinc-700">&bull;</span>
-              <span>{statusLabel}</span>
+              {statusLabel ? (
+                <>
+                  <span aria-hidden="true" className="text-zinc-700">&bull;</span>
+                  <span>{statusLabel}</span>
+                </>
+              ) : null}
+              </div>
             </div>
           </div>
 
           {roleNeeds.size > 0 ? (
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="px-4 sm:px-5">
+              <div className="flex flex-wrap items-center gap-1.5">
               <span className="oc-profile-meta text-[10px] text-zinc-500">Needs</span>
               {Array.from(roleNeeds.entries()).map(([role, count]) => (
                 <span
@@ -196,10 +242,11 @@ function StackSummaryHeader({
                   {count} {COMPETITIVE_ROLE_LABELS[role]}
                 </span>
               ))}
+              </div>
             </div>
           ) : null}
 
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="oc-profile-meta text-[12px] font-medium text-zinc-300">
                   {post.currentMemberCount}/{post.maxGroupSize ?? post.currentMemberCount} members

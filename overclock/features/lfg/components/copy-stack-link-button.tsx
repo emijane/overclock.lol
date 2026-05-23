@@ -56,9 +56,9 @@ export function CopyStackLinkButton({ path }: CopyStackLinkButtonProps) {
       <button
         type="button"
         onClick={() => void handleCopy()}
-        className="oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border border-white/6 bg-white/3 px-3 text-[11px] font-semibold text-zinc-200 transition hover:border-white/12 hover:bg-white/6 hover:text-zinc-50"
+        className="oc-profile-display inline-flex h-7 items-center gap-1.25 rounded-[10px] border border-white/8 bg-black/55 px-2.5 text-[10px] font-semibold text-zinc-200 backdrop-blur-sm transition hover:border-white/12 hover:bg-black/70 hover:text-zinc-50"
       >
-        <Link2Icon className="h-3.5 w-3.5 shrink-0" />
+        <Link2Icon className="h-3.25 w-3.25 shrink-0" />
         Copy stack link
       </button>
       <AuthMessage message={message} type={messageType} variant="toast" />
