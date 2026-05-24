@@ -7,6 +7,23 @@
 
 **Enable timing logs:** set `STACKS_PERF=1` in `.env.local` and look for `[perf:stacks]` lines in server output.
 
+## 2026-05-24 update
+
+- `LFGPageShell` now overlaps stacks feed loading with the full profile read by using
+  the authenticated viewer ID for feed and current-stack fetches while the richer
+  profile query continues in parallel.
+- `get_lfg_feed_page_dto` now accepts an already-known `currentProfileId` so the
+  listing route can avoid an extra authorization lookup before the RPC call.
+- `getStackMemberContactInfoForViewer` now performs one membership-scoped member
+  query instead of a membership check query followed by a second contact query.
+- `/stacks` now has a dedicated feed skeleton that matches the shipped sidebar,
+  header, current-stack panel, and card grid layout.
+- `/stacks/[postId]` now has a route-level `loading.tsx` so the detail page can
+  stream a matching shell instead of waiting for the full detail payload.
+- Skeletons improve perceived loading and route streaming, but they do not
+  reduce real server-side data latency. Real latency work remains centered on
+  Supabase round-trips, dynamic rendering, and feed/detail hydration cost.
+
 ---
 
 ## 1. Symptoms

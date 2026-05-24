@@ -23,7 +23,7 @@ import {
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
 import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getCurrentProfile, getCurrentUserId } from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import {
@@ -228,28 +228,29 @@ function buildRoleOptions(
 
 async function getLFGPageData(
   type: LFGType,
-  profileId: string | null,
+  viewerProfileId: string | null,
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
   const tDto = Date.now();
   const [dtoResult, currentStack] = await Promise.all([
     getLFGFeedPageDto({
+      currentProfileId: viewerProfileId,
       filters: feedFilters,
       lfgType: type,
-      viewerProfileId: profileId,
+      viewerProfileId,
     })
       .then((dto) => ({ dto, postsErrorMessage: null }))
       .catch(() => ({
         dto: null,
         postsErrorMessage: "Try refreshing in a moment.",
       })),
-    type === "stacks" && profileId
-      ? getCurrentActiveStackForProfile(profileId).catch(() => null)
+    type === "stacks" && viewerProfileId
+      ? getCurrentActiveStackForProfile(viewerProfileId).catch(() => null)
       : Promise.resolve(null),
   ]);
   stacksPerfLog('getLFGPageData Promise.all dto+currentStack', tDto, dtoResult.dto?.posts.length);
 
-  if (!profileId) {
+  if (!viewerProfileId) {
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
@@ -308,10 +309,6 @@ export async function LFGPageShell({
 }: LFGPageShellProps) {
   const tPage = stacksPerfStart();
   const tProfile = stacksPerfStart();
-  const { profile, user } = await getCurrentProfile();
-  if (type === "stacks") {
-    stacksPerfLog("LFGPageShell stacks getCurrentProfile", tProfile, profile ? 1 : 0);
-  }
   const shouldShowComposer = Boolean(type && composerMode === "inline");
   const shouldShowFeed = Boolean(type && showFeed);
   const emptyPageData: LFGPageData = {
@@ -321,13 +318,28 @@ export async function LFGPageShell({
     inviteStates: {},
     posts: [],
     postsErrorMessage: null,
-    roleOptions: [],
-    stackRequestStates: {},
+      roleOptions: [],
+      stackRequestStates: {},
   };
-  const pageData =
+  const currentProfilePromise = getCurrentProfile().then((result) => {
+    if (type === "stacks") {
+      stacksPerfLog("LFGPageShell stacks getCurrentProfile", tProfile, result.profile ? 1 : 0);
+    }
+
+    return result;
+  });
+  const feedViewerProfileIdPromise =
+    type && shouldShowFeed ? getCurrentUserId() : Promise.resolve(null);
+  const pageDataPromise =
     type && shouldShowFeed
-      ? await getLFGPageData(type, profile?.id ?? null, feedFilters)
-      : emptyPageData;
+      ? feedViewerProfileIdPromise.then((viewerProfileId) =>
+          getLFGPageData(type, viewerProfileId, feedFilters)
+        )
+      : Promise.resolve(emptyPageData);
+  const [{ profile, user }, pageData] = await Promise.all([
+    currentProfilePromise,
+    pageDataPromise,
+  ]);
   const currentStackMembershipPostId =
     type === "stacks" ? pageData.currentStack?.id ?? null : null;
   const fallbackCurrentStack =

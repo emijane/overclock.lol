@@ -355,6 +355,7 @@ function normalizePosts(value: unknown) {
 }
 
 export async function getLFGFeedPageDto(input: {
+  currentProfileId?: string | null;
   filters?: LFGFeedFilters;
   lfgType: LFGType;
   viewerProfileId?: string | null;
@@ -363,14 +364,15 @@ export async function getLFGFeedPageDto(input: {
   let viewerProfileId: string | null = null;
 
   if (input.viewerProfileId) {
-    const { user, profile } = await getCurrentProfile();
+    const currentProfileId =
+      input.currentProfileId ??
+      (await getCurrentProfile()).profile?.id ??
+      null;
 
-    viewerProfileId = user
-      ? resolveAuthorizedViewerProfileId({
-          currentProfileId: profile?.id ?? null,
-          requestedViewerProfileId: input.viewerProfileId,
-        })
-      : null;
+    viewerProfileId = resolveAuthorizedViewerProfileId({
+      currentProfileId,
+      requestedViewerProfileId: input.viewerProfileId,
+    });
   }
 
   const tRpc = Date.now();

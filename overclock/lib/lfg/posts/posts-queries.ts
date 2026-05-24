@@ -801,19 +801,6 @@ export async function getStackMemberContactInfoForViewer(input: {
 }): Promise<Map<string, StackMemberContactInfo> | null> {
   const supabase = await createClient();
 
-  const { data: membershipRow, error: membershipError } = await supabase
-    .from("stack_members")
-    .select("profile_id")
-    .eq("post_id", input.postId)
-    .eq("profile_id", input.viewerProfileId)
-    .is("removed_at", null)
-    .limit(1)
-    .maybeSingle();
-
-  if (membershipError || typeof membershipRow?.profile_id !== "string") {
-    return null;
-  }
-
   const { data, error } = await supabase
     .from("stack_members")
     .select("profile_id, profiles:profile_id(discord_username, battlenet_handle)")
@@ -825,6 +812,14 @@ export async function getStackMemberContactInfoForViewer(input: {
   }
 
   const rows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+  const viewerIsActiveMember = rows.some(
+    (row) =>
+      typeof row.profile_id === "string" && row.profile_id === input.viewerProfileId
+  );
+
+  if (!viewerIsActiveMember) {
+    return null;
+  }
 
   const result = new Map<string, StackMemberContactInfo>();
 

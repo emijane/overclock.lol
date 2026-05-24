@@ -1,10 +1,5 @@
-import { LFGPageLoading } from "@/features/lfg/components/lfg-page-loading";
+import { StacksPageLoading } from "@/features/lfg/components/stacks-page-loading";
 
 export default function Loading() {
-  return (
-    <LFGPageLoading
-      title="Stacks"
-      helperText="For groups of 3-5 players and flexible sessions."
-    />
-  );
+  return <StacksPageLoading />;
 }

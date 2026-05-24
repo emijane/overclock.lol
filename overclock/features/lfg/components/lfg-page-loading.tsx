@@ -4,6 +4,8 @@ function SkeletonBlock({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-2xl bg-white/[0.06] ${className}`} />;
 }
 
+type LFGPageLoadingTone = "default" | "duos";
+
 export function LFGPageLoading({
   breadcrumb = false,
   composerCta = false,
@@ -11,6 +13,7 @@ export function LFGPageLoading({
   feedLoading = "cards",
   helperText,
   showDescription = true,
+  tone = "default",
   title,
 }: {
   breadcrumb?: boolean;
@@ -19,9 +22,10 @@ export function LFGPageLoading({
   feedLoading?: "cards" | "none";
   helperText?: string;
   showDescription?: boolean;
+  tone?: LFGPageLoadingTone;
   title: string;
 }) {
-  const isDuosLoading = title.includes("Duos");
+  const usesDuosTone = tone === "duos";
 
   return (
     <main
@@ -29,7 +33,7 @@ export function LFGPageLoading({
         composerOnly ? "pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
       }`}
     >
-      {isDuosLoading ? (
+      {usesDuosTone ? (
         <>
           <div aria-hidden="true" className="oc-atmosphere-bg pointer-events-none absolute inset-0" />
           <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
@@ -51,13 +55,15 @@ export function LFGPageLoading({
       )}
       <PageContainer
         className={`relative z-10 flex flex-col ${composerOnly ? "gap-2" : "gap-4"}`}
-        maxWidthClassName={composerOnly ? "max-w-4xl" : "max-w-[96rem]"}
+        maxWidthClassName={
+          composerOnly ? "max-w-4xl" : usesDuosTone ? "max-w-[98rem]" : "max-w-[96rem]"
+        }
       >
-        <section className={isDuosLoading ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"}>
-          <div className={isDuosLoading ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
+        <section className={usesDuosTone ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"}>
+          <div className={usesDuosTone ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
             <header
               className={`px-5 sm:px-6 ${
-                composerOnly ? "py-3 sm:py-4" : isDuosLoading ? "py-4 sm:py-5" : "py-5 sm:py-6"
+                composerOnly ? "py-3 sm:py-4" : usesDuosTone ? "py-4 sm:py-5" : "py-5 sm:py-6"
               }`}
             >
               <div className={composerCta ? "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" : undefined}>
@@ -67,7 +73,7 @@ export function LFGPageLoading({
                   ) : null}
                   <h1
                     className={`${breadcrumb ? "mt-3" : ""} ${
-                      isDuosLoading
+                      usesDuosTone
                         ? "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
                         : `font-semibold tracking-[-0.04em] text-zinc-50 ${
                             composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
@@ -135,7 +141,7 @@ export function LFGPageLoading({
                   <section className="px-5 py-1.5 sm:px-6 sm:py-2">
                     <div className="mb-4">
                       <div className={`flex items-center gap-3 px-4 py-3 ${
-                        isDuosLoading
+                        usesDuosTone
                           ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
                           : "rounded-[18px] border border-white/[0.07] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]"
                       }`}>
