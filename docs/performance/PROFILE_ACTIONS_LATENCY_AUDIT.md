@@ -4,6 +4,43 @@
 **Scope:** profile-related POST server actions after profile DTO optimization  
 **Status:** Audit only; no runtime changes
 
+## 2026-05-24 Duos Invite-Action Follow-Up
+
+This audit remains the canonical action baseline for invite and connection
+mutations, and the duos card actions now include extra measurement plus a
+lighter identity read.
+
+Current repo baseline on 2026-05-24:
+
+- `overclock/features/matches/actions.ts` now uses
+  `getCurrentProfileIdentity()` instead of the heavier full-profile lookup for
+  invite and connection actions
+- action timing is now split into:
+  - `[perf:matches] <action> auth+profile`
+  - `[perf:matches] <action> expire sweep` where applicable
+  - `[perf:matches] <action> rpc`
+  - `[perf:matches] <action> revalidate`
+  - `[perf:matches] <action> total`
+- this is meant to separate duos card action latency from broader route refresh
+  perception
+
+What did not change:
+
+- action result shapes stay the same
+- `/matches` and `/connections` revalidation still both run
+- SQL ownership and validation stays in the RPC layer
+
+Current interpretation:
+
+- if `auth+profile` remains high after the identity-helper change, the
+  remaining latency is mostly Supabase auth/session overhead rather than profile
+  row size
+- if `rpc` dominates, the next step is SQL-level investigation of
+  `send_play_invite`, `cancel_play_invite`, `decline_play_invite`,
+  `accept_play_invite`, and `remove_profile_connection`
+- if `revalidate` dominates, the next backlog item is narrowing invalidation or
+  separating server-action timing from client refresh timing in the calling UI
+
 ## Summary Diagnosis
 
 The slow profile-related POST actions are not suffering from UI/render work.

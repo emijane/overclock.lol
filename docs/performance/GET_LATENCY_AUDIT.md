@@ -44,6 +44,62 @@ Why this matters even before a runtime refactor:
 - `PresenceProvider` already follows the desired model because it resolves user
   identity in the browser instead of forcing root-layout server personalization
 
+## 2026-05-24 Duos Follow-Up
+
+This audit is still the canonical GET baseline for `/duos`, but the route has
+been tightened and instrumented further since the original write-up.
+
+Current repo baseline on 2026-05-24:
+
+- `/duos` and `/stacks` feed pages now use a smaller identity read when they
+  only need `id`, `username`, `region`, and `timezone`, instead of always
+  fetching the full owner-profile projection.
+- shared identity timings now log under `[perf:identity]`
+- duos feed timings now log under `[perf:duos]`
+- stacks timings remain under `[perf:stacks]`
+- invite and connection actions now log under `[perf:matches]`
+
+What changed in app code:
+
+- `overclock/features/lfg/components/lfg-page-shell.tsx` now uses
+  `getCurrentProfileIdentity()` for feed-only LFG pages such as `/duos`
+  instead of the heavier `getCurrentProfile()` path
+- `overclock/lib/profiles/get-current-profile.ts` now exposes that smaller
+  identity loader as a request-scoped cached helper
+- `overclock/lib/pages/lfg-feed-page-dto.ts` now emits duos-specific feed RPC
+  and normalization timings so `/duos` is no longer hidden behind stacks-only
+  labels
+
+Current interpretation:
+
+- `/duos` still remains a dynamic route because the Supabase server client uses
+  `cookies()` and the feed includes viewer-specific invite state
+- the feed RPC is still the main GET suspect until a live
+  `EXPLAIN (ANALYZE, BUFFERS)` confirms otherwise
+- migrations are a valid suspect only if the live plan shows scans, repeated
+  lookups, or sort work that the intended indexes should avoid
+
+Current SQL source of truth to inspect before any SQL rewrite:
+
+- `overclock/supabase/migrations/20260520140000_fix_stack_request_state_for_removed_members.sql`
+  is the latest checked-in `get_lfg_feed_page_dto` definition
+- relevant duos-adjacent indexes still checked in:
+  - `lfg_posts_active_expires_feed_idx`
+  - `play_invites_recipient_pending_idx`
+  - `play_invites_sender_pending_idx`
+  - `play_invites_source_post_status_idx`
+  - `profile_connections_pair_unique_idx`
+  - `profile_connections_active_low_idx`
+  - `profile_connections_active_high_idx`
+  - `user_blocks_blocker_created_idx`
+  - `user_blocks_blocked_created_idx`
+
+Verification gap:
+
+- this repo environment does not provide a direct live database execution path,
+  so `EXPLAIN (ANALYZE, BUFFERS)` still needs to be run against the deployed
+  Supabase database before any migration-level duos fix is justified
+
 ## Summary Diagnosis
 
 The 764ms and 1254ms application-code times are driven entirely by **Supabase RPC execution**, not middleware, proxy overhead, or updateLastSeen(). The proxy contributes 8–11ms (JWT decode + cookie writes). updateLastSeen() is client-only and fires after page paint — it is not in the GET critical path.

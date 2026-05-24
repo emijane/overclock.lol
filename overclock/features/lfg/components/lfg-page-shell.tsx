@@ -22,8 +22,12 @@ import {
   getCurrentActiveStackPostIdForProfile,
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
-import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
-import { getCurrentProfile, getCurrentUserId } from "@/lib/profiles/get-current-profile";
+import { duosPerfLog, stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
+import {
+  getCurrentProfile,
+  getCurrentProfileIdentity,
+  getCurrentUserId,
+} from "@/lib/profiles/get-current-profile";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 
 import {
@@ -68,6 +72,22 @@ type LFGPageData = {
   roleOptions: LFGRoleOption[];
   stackRequestStates: Record<string, "none" | "pending" | "accepted" | "declined">;
 };
+
+function logLFGRoutePerf(
+  type: LFGType,
+  label: string,
+  start: number,
+  rows?: number
+) {
+  if (type === "stacks") {
+    stacksPerfLog(label, start, rows);
+    return;
+  }
+
+  if (type === "duos") {
+    duosPerfLog(label, start, rows);
+  }
+}
 
 function getMissingProfileRequirements(profile: {
   competitivePlatform: string | null;
@@ -248,11 +268,7 @@ async function getLFGPageData(
       ? getCurrentActiveStackPostIdForProfile(viewerProfileId).catch(() => null)
       : Promise.resolve(null),
   ]);
-  stacksPerfLog(
-    "getLFGPageData Promise.all dto+currentStackLookup",
-    tDto,
-    dtoResult.dto?.posts.length
-  );
+  logLFGRoutePerf(type, "getLFGPageData Promise.all dto+currentStackLookup", tDto, dtoResult.dto?.posts.length);
 
   if (!viewerProfileId) {
     return {
@@ -349,6 +365,7 @@ export async function LFGPageShell({
   const tProfile = stacksPerfStart();
   const shouldShowComposer = Boolean(type && composerMode === "inline");
   const shouldShowFeed = Boolean(type && showFeed);
+  const needsFullProfile = shouldShowComposer;
   const emptyPageData: LFGPageData = {
     activePostCounts: { tank: 0, dps: 0, support: 0 },
     competitiveProfile: null,
@@ -359,9 +376,14 @@ export async function LFGPageShell({
       roleOptions: [],
       stackRequestStates: {},
   };
-  const currentProfilePromise = getCurrentProfile().then((result) => {
-    if (type === "stacks") {
-      stacksPerfLog("LFGPageShell stacks getCurrentProfile", tProfile, result.profile ? 1 : 0);
+  const currentProfilePromise = (
+    needsFullProfile ? getCurrentProfile() : getCurrentProfileIdentity()
+  ).then((result) => {
+    if (type) {
+      const profileLabel = needsFullProfile
+        ? "LFGPageShell getCurrentProfile"
+        : "LFGPageShell getCurrentProfileIdentity";
+      logLFGRoutePerf(type, profileLabel, tProfile, result.profile ? 1 : 0);
     }
 
     return result;
@@ -446,8 +468,8 @@ export async function LFGPageShell({
     Boolean(profile?.id) &&
     isBlockedFromStackCreate &&
     !resolvedActiveStackPostId;
-  if (type === "stacks") {
-    stacksPerfLog("LFGPageShell stacks total data load", tPage, pageData.posts.length);
+  if (type) {
+    logLFGRoutePerf(type, "LFGPageShell total data load", tPage, pageData.posts.length);
   }
 
   if (shouldShowCurrentStackFallback && process.env.NODE_ENV !== "production") {

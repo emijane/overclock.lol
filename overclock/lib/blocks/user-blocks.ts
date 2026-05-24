@@ -1,7 +1,10 @@
 import { revalidatePath } from "next/cache";
 
 import { stacksPerfLog } from "@/lib/dev/perf-log";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import {
+  getCurrentProfile,
+  getCurrentProfileIdentity,
+} from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 import { getBlockRevalidationPaths } from "./block-effects";
@@ -69,7 +72,7 @@ export function canCurrentProfileAccessBlockPair(input: {
 }
 
 async function getCurrentBlockAccessProfileId() {
-  const { user, profile } = await getCurrentProfile();
+  const { user, profile } = await getCurrentProfileIdentity();
 
   if (!user || !profile) {
     return null;

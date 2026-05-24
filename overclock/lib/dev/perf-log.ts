@@ -1,15 +1,36 @@
-// Temporary performance instrumentation for stacks route audit.
-// Enabled automatically in development unless STACKS_PERF=0 is set.
-// Remove this file and all stacksPerfLog() call sites when the audit is complete.
-const ENABLED = process.env.NODE_ENV !== "production" && process.env.STACKS_PERF !== "0";
+// Temporary performance instrumentation for route and action audits.
+// Enabled automatically in development unless an audit flag is explicitly set to 0.
+// Remove this file and its call sites when the audits are complete.
+const ENABLED =
+  process.env.NODE_ENV !== "production" &&
+  process.env.STACKS_PERF !== "0" &&
+  process.env.LFG_PERF !== "0" &&
+  process.env.MATCHES_PERF !== "0" &&
+  process.env.IDENTITY_PERF !== "0";
 
 export function stacksPerfStart(): number {
   return Date.now();
 }
 
-export function stacksPerfLog(label: string, start: number, rows?: number): void {
+function perfLog(scope: string, label: string, start: number, rows?: number): void {
   if (!ENABLED) return;
   const ms = Date.now() - start;
   const rowPart = rows !== undefined ? ` rows=${rows}` : "";
-  console.log(`[perf:stacks] ${label} +${ms}ms${rowPart}`);
+  console.log(`[perf:${scope}] ${label} +${ms}ms${rowPart}`);
+}
+
+export function stacksPerfLog(label: string, start: number, rows?: number): void {
+  perfLog("stacks", label, start, rows);
+}
+
+export function duosPerfLog(label: string, start: number, rows?: number): void {
+  perfLog("duos", label, start, rows);
+}
+
+export function identityPerfLog(label: string, start: number, rows?: number): void {
+  perfLog("identity", label, start, rows);
+}
+
+export function matchesPerfLog(label: string, start: number, rows?: number): void {
+  perfLog("matches", label, start, rows);
 }

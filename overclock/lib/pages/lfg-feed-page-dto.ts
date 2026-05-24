@@ -26,7 +26,7 @@ import {
 import type { LFGInviteStateMap, ProfileInviteState } from "@/lib/matches/play-invite-types";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
-import { stacksPerfLog } from "@/lib/dev/perf-log";
+import { duosPerfLog, stacksPerfLog } from "@/lib/dev/perf-log";
 import { createClient } from "@/lib/supabase/server";
 
 type StackRequestState = "none" | "pending" | "accepted" | "declined";
@@ -354,6 +354,22 @@ function normalizePosts(value: unknown) {
   return { posts, inviteStates, stackRequestStates };
 }
 
+function logFeedPerf(
+  lfgType: LFGType,
+  label: string,
+  start: number,
+  rows?: number
+) {
+  if (lfgType === "stacks") {
+    stacksPerfLog(label, start, rows);
+    return;
+  }
+
+  if (lfgType === "duos") {
+    duosPerfLog(label, start, rows);
+  }
+}
+
 export async function getLFGFeedPageDto(input: {
   currentProfileId?: string | null;
   filters?: LFGFeedFilters;
@@ -397,7 +413,7 @@ export async function getLFGFeedPageDto(input: {
       ? (data as Record<string, unknown>)
       : {};
   const rawPosts = Array.isArray(record.posts) ? record.posts : [];
-  stacksPerfLog("getLFGFeedPageDto rpc", tRpc, rawPosts.length);
+  logFeedPerf(input.lfgType, "getLFGFeedPageDto rpc", tRpc, rawPosts.length);
 
   if (error) {
     throw error;
@@ -411,7 +427,7 @@ export async function getLFGFeedPageDto(input: {
       : null;
   const tNormalize = Date.now();
   const { posts, inviteStates, stackRequestStates } = normalizePosts(record.posts);
-  stacksPerfLog("getLFGFeedPageDto normalizePosts", tNormalize, posts.length);
+  logFeedPerf(input.lfgType, "getLFGFeedPageDto normalizePosts", tNormalize, posts.length);
 
   return {
     posts,

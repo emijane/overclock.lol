@@ -1,9 +1,11 @@
 import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
 
-import { stacksPerfLog } from "@/lib/dev/perf-log";
+import { identityPerfLog } from "@/lib/dev/perf-log";
 import { createClient } from "@/lib/supabase/server";
 import { OWNER_PROFILE_SELECT } from "@/lib/profiles/profile-selects";
+
+const PROFILE_IDENTITY_SELECT = "id, username, region, timezone" as const;
 
 const loadCurrentUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
@@ -12,7 +14,7 @@ const loadCurrentUser = cache(async (): Promise<User | null> => {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  stacksPerfLog("getCurrentProfile auth.getUser", tUser, user ? 1 : 0);
+  identityPerfLog("getCurrentProfile auth.getUser", tUser, user ? 1 : 0);
 
   if (userError || !user) {
     return null;
@@ -35,7 +37,30 @@ const loadCurrentProfile = cache(async () => {
     .select(OWNER_PROFILE_SELECT)
     .eq("id", user.id)
     .maybeSingle();
-  stacksPerfLog("getCurrentProfile profiles query", tProfile, profile ? 1 : 0);
+  identityPerfLog("getCurrentProfile profiles query", tProfile, profile ? 1 : 0);
+
+  if (profileError) {
+    throw profileError;
+  }
+
+  return { user, profile };
+});
+
+const loadCurrentProfileIdentity = cache(async () => {
+  const user = await loadCurrentUser();
+
+  if (!user) {
+    return { user: null, profile: null };
+  }
+
+  const supabase = await createClient();
+  const tProfile = Date.now();
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select(PROFILE_IDENTITY_SELECT)
+    .eq("id", user.id)
+    .maybeSingle();
+  identityPerfLog("getCurrentProfileIdentity profiles query", tProfile, profile ? 1 : 0);
 
   if (profileError) {
     throw profileError;
@@ -49,6 +74,10 @@ const loadCurrentProfile = cache(async () => {
 // request-scoped identity lookup without hidden writes.
 export async function getCurrentProfile() {
   return loadCurrentProfile();
+}
+
+export async function getCurrentProfileIdentity() {
+  return loadCurrentProfileIdentity();
 }
 
 export async function getCurrentUserId() {
