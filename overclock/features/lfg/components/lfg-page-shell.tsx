@@ -6,6 +6,10 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
 import { createLFGPost } from "@/features/lfg/actions";
+import {
+  DUOS_PLACEHOLDER_POSTS,
+  STACKS_PLACEHOLDER_POSTS,
+} from "@/features/lfg/dev-fixtures";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
@@ -60,6 +64,7 @@ type LFGPageShellProps = {
   showFeed?: boolean;
   title: string;
   type?: LFGType;
+  useFixtures?: boolean;
 };
 
 type LFGPageData = {
@@ -249,8 +254,22 @@ function buildRoleOptions(
 async function getLFGPageData(
   type: LFGType,
   viewerProfileId: string | null,
-  feedFilters?: LFGFeedFilters
+  feedFilters?: LFGFeedFilters,
+  useFixtures = false
 ): Promise<LFGPageData> {
+  if (useFixtures) {
+    return {
+      activePostCounts: { tank: 0, dps: 0, support: 0 },
+      competitiveProfile: null,
+      currentStackPostId: null,
+      inviteStates: {},
+      posts: type === "stacks" ? STACKS_PLACEHOLDER_POSTS : DUOS_PLACEHOLDER_POSTS,
+      postsErrorMessage: null,
+      roleOptions: [],
+      stackRequestStates: {},
+    };
+  }
+
   const tDto = Date.now();
   const [dtoResult, currentStackPostId] = await Promise.all([
     getLFGFeedPageDto({
@@ -360,6 +379,7 @@ export async function LFGPageShell({
   showFeed = true,
   title,
   type,
+  useFixtures = false,
 }: LFGPageShellProps) {
   const tPage = stacksPerfStart();
   const tProfile = stacksPerfStart();
@@ -393,7 +413,7 @@ export async function LFGPageShell({
   const pageDataPromise =
     type && shouldShowFeed
       ? feedViewerProfileIdPromise.then((viewerProfileId) =>
-          getLFGPageData(type, viewerProfileId, feedFilters)
+          getLFGPageData(type, viewerProfileId, feedFilters, useFixtures)
         )
       : Promise.resolve(emptyPageData);
   const [{ profile, user }, pageData] = await Promise.all([
@@ -829,6 +849,7 @@ export async function LFGPageShell({
                   retryHref={sectionHref}
                   stackRequestStates={stackRequestStates}
                   tone={usesDuosFeedTone ? "duos" : "default"}
+                  type={type}
                   viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                 />
                 </div>

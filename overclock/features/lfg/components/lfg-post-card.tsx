@@ -112,8 +112,8 @@ export function LFGPostCard({
           <div className="absolute left-3 top-0 z-20">
             <RankedAvatar
               avatarUrl={post.author.avatarUrl}
-              className={`-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] border-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${
-                tone === "duos" ? "border-[#090909]" : "border-[var(--oc-bg-card)]"
+              className={`-mt-[1.5rem] h-[48px] w-[48px] shrink-0 rounded-[10px] shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${
+                tone === "duos" ? "border-0" : "border-2 border-[var(--oc-bg-card)]"
               }`}
               displayName={visibleName}
               fallbackClassName="text-xs font-semibold text-zinc-100"

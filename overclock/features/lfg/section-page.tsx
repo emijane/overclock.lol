@@ -34,6 +34,10 @@ function pickValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function isFixturesEnabled(value: string | string[] | undefined) {
+  return pickValue(value) === "1";
+}
+
 function buildCanonicalSearchParams(
   input: Record<string, string | string[] | undefined>
 ) {
@@ -78,6 +82,7 @@ export async function LFGSectionPage({
   const rawMinRank = pickValue(params.min_rank);
   const rawMaxRank = pickValue(params.max_rank);
   const rawSearch = pickValue(params.search);
+  const useFixtures = isFixturesEnabled(params.fixtures);
   const normalizedSearch = normalizeLFGSearchQuery(rawSearch);
   const normalizedRankBounds = normalizeLFGRankBounds({
     maxRank: normalizeLFGRankFilterOption(rawMaxRank),
@@ -137,6 +142,7 @@ export async function LFGSectionPage({
       activeStackPostId={activeStackPostId}
       message={message}
       messageType={messageType}
+      useFixtures={useFixtures}
       showFeed={config.showFeed}
       title={config.title}
       type={config.type}
