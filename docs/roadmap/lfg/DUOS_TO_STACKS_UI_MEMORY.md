@@ -97,6 +97,40 @@ When revisiting `/stacks`, review these Duos changes explicitly:
 - Prefer reusing the Duos cursor/query pattern for stacks instead of adding
   offset pagination or a separate loading model.
 
+## Duos Right Panel — Viewport-Locked Layout
+
+The duos right panel uses a "fill available height + internal scroll" approach instead of
+sticky positioning:
+
+- `section` (duos only): `flex min-w-0 flex-1 min-h-0 flex-col lg:overflow-hidden` — fills
+  the flex row, clips overflow on desktop so the page body never scrolls
+- `PageContainer` (sidebar layout): `flex flex-1 lg:min-h-0 items-stretch` — `lg:min-h-0`
+  is desktop-only so mobile body scroll still works; on desktop it bounds the chain so
+  `DuosInfiniteFeed`'s `overflow-y-auto` actually activates
+- Inner panel div: `flex flex-1 min-h-0 flex-col overflow-hidden` — always clips at its
+  bounds; on mobile the chain is content-sized (not viewport-bounded) so nothing clips
+- `DuosInfiniteFeed` wrapper: `flex min-h-0 flex-1 flex-col lg:overflow-y-auto` — the actual
+  scroll container; fills remaining height after the header and scrolls cards internally
+- Stacks section: retains `lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]`
+  unchanged until stacks adopts its own internal scroll
+
+`overflow-hidden` on the section and `overflow-y-auto` on the feed are desktop-only (`lg:`).
+On mobile, `PageContainer` has no `min-h-0` constraint (only `lg:min-h-0`) so the chain
+grows to content height and the body scrolls normally.
+
+## Duos Header — Search Bar Inline
+
+The search bar moved from below the h1 into the `PageReveal` row, right-aligned alongside
+the title. The "Search uses X–Y characters" disclaimer was removed.
+
+- `PageReveal` className (duos): `"flex items-center justify-between gap-4"` (row always, no
+  responsive column flip needed since sidebar handles layout)
+- `LFGSearchBar` now renders only `<form>` with no outer wrapper div and no disclaimer
+- Search bar is wired via the first branch of the right-side ternary in PageReveal;
+  stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
+
+Key files: `overclock/features/lfg/components/lfg-page-shell.tsx`
+
 ## Sidebar Sticky + Scroll Behavior (Duos + Stacks)
 
 The LFG sidebar (`overclock/features/lfg/components/lfg-sidebar.tsx`) now uses sticky

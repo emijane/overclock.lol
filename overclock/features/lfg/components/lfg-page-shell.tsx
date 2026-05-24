@@ -14,7 +14,6 @@ import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import {
   LFG_SEARCH_MAX_CHARACTERS,
-  LFG_SEARCH_MIN_CHARACTERS,
   type LFGFeedFilters,
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
@@ -163,47 +162,40 @@ function LFGSearchBar({
   useFixtures?: boolean;
 }) {
   return (
-    <div className="mt-4 space-y-1.5 sm:mt-5">
-      <form action={`/${type}`} className="max-w-[30rem]">
-        <div className="flex items-center gap-2.5 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-2.5 py-2">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500">
-            <SearchIcon className="h-3.5 w-3.5" />
-          </span>
-          <input
-            type="search"
-            name="search"
-            defaultValue={feedFilters?.search ?? ""}
-            maxLength={LFG_SEARCH_MAX_CHARACTERS}
-            placeholder={`Search ${type} posts`}
-            className="duos-search-input oc-profile-display h-7 min-w-0 flex-1 bg-transparent text-[13px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
-          />
-          {feedFilters?.mode ? (
-            <input type="hidden" name="mode" value={feedFilters.mode} />
-          ) : null}
-          {feedFilters?.role ? (
-            <input type="hidden" name="role" value={feedFilters.role} />
-          ) : null}
-          {feedFilters?.lookingFor ? (
-            <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
-          ) : null}
-          {feedFilters?.minRank ? (
-            <input type="hidden" name="min_rank" value={feedFilters.minRank} />
-          ) : null}
-          {feedFilters?.maxRank ? (
-            <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
-          ) : null}
-          {feedFilters?.region ? (
-            <input type="hidden" name="region" value={feedFilters.region} />
-          ) : null}
-          {useFixtures ? <input type="hidden" name="fixtures" value="1" /> : null}
-        </div>
-      </form>
-      <div className="px-1">
-        <p className="oc-profile-meta text-[10px]">
-          Search uses {LFG_SEARCH_MIN_CHARACTERS}-{LFG_SEARCH_MAX_CHARACTERS} characters.
-        </p>
+    <form action={`/${type}`} className="w-[18rem] shrink-0">
+      <div className="flex items-center gap-2 rounded-[10px] border border-white/[0.04] bg-white/[0.015] px-2 py-1.5">
+        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full border border-white/[0.04] bg-white/[0.02] text-zinc-500">
+          <SearchIcon className="h-3 w-3" />
+        </span>
+        <input
+          type="search"
+          name="search"
+          defaultValue={feedFilters?.search ?? ""}
+          maxLength={LFG_SEARCH_MAX_CHARACTERS}
+          placeholder={`Search ${type} posts`}
+          className="duos-search-input oc-profile-display h-5 min-w-0 flex-1 bg-transparent text-[11px] font-medium text-zinc-100 outline-none placeholder:text-zinc-500"
+        />
+        {feedFilters?.mode ? (
+          <input type="hidden" name="mode" value={feedFilters.mode} />
+        ) : null}
+        {feedFilters?.role ? (
+          <input type="hidden" name="role" value={feedFilters.role} />
+        ) : null}
+        {feedFilters?.lookingFor ? (
+          <input type="hidden" name="looking_for" value={feedFilters.lookingFor} />
+        ) : null}
+        {feedFilters?.minRank ? (
+          <input type="hidden" name="min_rank" value={feedFilters.minRank} />
+        ) : null}
+        {feedFilters?.maxRank ? (
+          <input type="hidden" name="max_rank" value={feedFilters.maxRank} />
+        ) : null}
+        {feedFilters?.region ? (
+          <input type="hidden" name="region" value={feedFilters.region} />
+        ) : null}
+        {useFixtures ? <input type="hidden" name="fixtures" value="1" /> : null}
       </div>
-    </div>
+    </form>
   );
 }
 
@@ -515,9 +507,6 @@ export async function LFGPageShell({
   const visiblePostCount = pageData.posts.length;
   const isDuosPage = type === "duos";
   const isStacksPage = type === "stacks";
-  const duosResultsLabel = isDuosPage
-    ? "Latest posts loaded first. Scroll to load more."
-    : `${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} returned`;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
@@ -594,7 +583,7 @@ export async function LFGPageShell({
           isComposerOnlyPage
             ? "flex flex-col gap-2"
             : useSidebarLayout
-              ? `flex min-h-full flex-1 items-stretch ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
+              ? `flex flex-1 lg:min-h-0 items-stretch ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
               : "flex flex-col gap-3"
         }`}
         maxWidthClassName={
@@ -619,33 +608,37 @@ export async function LFGPageShell({
           </Suspense>
         ) : null}
         <section
-          className={`${useSidebarLayout ? "flex min-w-0 flex-1 flex-col lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]" : ""} ${
+          className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 flex-col ${isDuosPage ? "lg:overflow-hidden" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
           <div
             className={
               usesDuosFeedTone
-                ? "flex flex-1 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
-                : "flex flex-1 flex-col overflow-hidden rounded-[28px]"
+                ? "flex flex-1 min-h-0 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                : "flex flex-1 min-h-0 flex-col overflow-hidden rounded-[28px]"
             }
           >
             <header
-              className={`px-5 sm:px-6 ${
+              className={`shrink-0 px-5 sm:px-6 ${
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "relative py-4 sm:py-5"
+                    ? "py-2.5 sm:py-3"
                     : "py-5 sm:py-7"
               }`}
             >
               <div
                 className={
-                  isComposerOnlyPage ? "space-y-3" : usesDuosFeedTone ? "space-y-4" : "space-y-5"
+                  isComposerOnlyPage ? "space-y-3" : usesDuosFeedTone ? "space-y-2" : "space-y-5"
                 }
               >
                 <PageReveal
-                  className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                  className={
+                    usesDuosFeedTone
+                      ? "flex items-center justify-between gap-4"
+                      : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                  }
                   delay={0}
                   disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
@@ -666,7 +659,7 @@ export async function LFGPageShell({
                     <h1
                       className={
                         usesDuosFeedTone
-                          ? "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
+                          ? "oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]"
                           : `font-semibold tracking-[-0.075em] text-zinc-50 ${
                               isComposerOnlyPage
                                 ? "text-4xl sm:text-5xl"
@@ -677,7 +670,9 @@ export async function LFGPageShell({
                       {displayTitle}
                     </h1>
                   </div>
-                  {type && composerMode === "cta" && !useSidebarLayout ? (
+                  {usesDuosFeedTone && type && shouldShowFeed ? (
+                    <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
+                  ) : type && composerMode === "cta" && !useSidebarLayout ? (
                     type === "stacks" && user && isBlockedFromStackCreate ? (
                       currentStackHref ? (
                         <Link
@@ -759,21 +754,7 @@ export async function LFGPageShell({
                     {helperText}
                   </p>
                 ) : null}
-                {usesDuosFeedTone && type && shouldShowFeed ? (
-                  <LFGSearchBar
-                    feedFilters={feedFilters}
-                    type={type}
-                    useFixtures={useFixtures}
-                  />
-                ) : null}
                 </div>
-                {usesDuosFeedTone ? (
-                  <p className="oc-profile-meta pointer-events-none absolute bottom-4 right-5 text-[10px] text-right sm:bottom-5 sm:right-6">
-                    {duosResultsLabel}
-                    {hasActiveLFGFeedFilters(feedFilters) ? " with current filters." : "."}
-                  </p>
-                ) : null}
-
               {type && shouldShowComposer ? (
                 <PageReveal
                   className={isComposerOnlyPage ? "mt-4" : "mt-8"}
