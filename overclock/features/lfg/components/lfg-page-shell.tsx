@@ -524,7 +524,7 @@ export async function LFGPageShell({
           isComposerOnlyPage
             ? "max-w-4xl"
             : usesDuosFeedTone
-              ? "max-w-[98rem]"
+              ? "max-w-none"
               : "max-w-[120rem]"
         }
       >

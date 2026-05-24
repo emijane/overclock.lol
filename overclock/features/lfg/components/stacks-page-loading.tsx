@@ -55,7 +55,7 @@ export function StacksPageLoading() {
 
       <PageContainer
         className="relative z-10 flex min-h-full flex-1 items-stretch gap-4 xl:gap-5"
-        maxWidthClassName="max-w-[98rem]"
+        maxWidthClassName="max-w-none"
       >
         <aside className="hidden min-h-full w-56 shrink-0 self-stretch lg:block">
           <div className="h-full overflow-hidden rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] p-3">

@@ -58,7 +58,7 @@ export function LFGPageLoading({
       <PageContainer
         className={`relative z-10 flex ${composerOnly ? "flex-col gap-2" : "min-h-full flex-1 flex-col gap-4"}`}
         maxWidthClassName={
-          composerOnly ? "max-w-4xl" : usesDuosTone ? "max-w-[98rem]" : "max-w-[96rem]"
+          composerOnly ? "max-w-4xl" : usesDuosTone ? "max-w-none" : "max-w-[96rem]"
         }
       >
         <section
