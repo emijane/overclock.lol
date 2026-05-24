@@ -123,10 +123,15 @@ browser E2E:
 ## Security-Sensitive Checks
 
 - guest `/stacks` does not receive viewer-only bundle data
+- authenticated `/stacks` ignores or rejects mismatched viewer-context IDs
 - guest or unrelated viewers never see owner/member contact info
+- guest or unrelated viewers never trigger stack contact-data reads before active
+  membership is proven
 - owner-only actions still depend on server-side ownership checks
 - accepted-member actions still depend on server-side membership checks
 - stack request state cannot be spoofed by client-only URL or form changes
+- block helper reads fail closed when the current signed-in profile is not the
+  viewer or one side of the pair
 
 ## Performance Regression Checks
 

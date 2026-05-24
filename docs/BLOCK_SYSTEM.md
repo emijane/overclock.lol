@@ -71,6 +71,10 @@ Server-side helpers live in `overclock/lib/blocks/user-blocks.ts`.
 
 These helpers are the app-level entrypoint for UI and server reads.
 
+They must only be used when the current authenticated profile is the viewer or
+one side of the pair. The helpers now fail closed in app code before calling
+the RPCs when that ownership check is not true.
+
 ## Enforcement Rules
 
 ### Search
@@ -88,6 +92,8 @@ These helpers are the app-level entrypoint for UI and server reads.
 
 - Feed queries exclude blocked authors for the current viewer
 - Stack member strips also filter blocked member profiles when feed data is normalized
+- Viewer bundle reads must derive the viewer from `auth.uid()` or reject the
+  supplied viewer ID
 
 ### Requests
 
@@ -142,6 +148,8 @@ Blocked-state failures in invite/request flows also stay generic.
 - The app does not expose whether the other user blocked the viewer
 - Generic unavailable states are used instead of explicit blocked messaging
 - No auth IDs, Discord IDs, email fields, or private profile data are surfaced in block UI
+- Direct RPC calls that try to inspect another user's block graph are treated as
+  forbidden
 
 ## Known Boundaries
 

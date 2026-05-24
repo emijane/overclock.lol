@@ -25,6 +25,7 @@ import {
 } from "@/lib/lfg/lfg-post-types";
 import type { LFGInviteStateMap, ProfileInviteState } from "@/lib/matches/play-invite-types";
 import { getProfileAvatarUrl, getProfileCoverUrl } from "@/lib/profiles/profile-media";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { createClient } from "@/lib/supabase/server";
 
@@ -40,6 +41,19 @@ export type LFGFeedPageDto = {
     heroPools: ProfileHeroPools;
   } | null;
 };
+
+export function resolveAuthorizedViewerProfileId(input: {
+  currentProfileId: string | null;
+  requestedViewerProfileId?: string | null;
+}) {
+  if (!input.currentProfileId || !input.requestedViewerProfileId) {
+    return null;
+  }
+
+  return input.currentProfileId === input.requestedViewerProfileId
+    ? input.currentProfileId
+    : null;
+}
 
 function isCompetitiveRole(value: unknown): value is CompetitiveRole {
   return value === "tank" || value === "dps" || value === "support";
@@ -346,10 +360,23 @@ export async function getLFGFeedPageDto(input: {
   viewerProfileId?: string | null;
 }): Promise<LFGFeedPageDto> {
   const supabase = await createClient();
+  let viewerProfileId: string | null = null;
+
+  if (input.viewerProfileId) {
+    const { user, profile } = await getCurrentProfile();
+
+    viewerProfileId = user
+      ? resolveAuthorizedViewerProfileId({
+          currentProfileId: profile?.id ?? null,
+          requestedViewerProfileId: input.viewerProfileId,
+        })
+      : null;
+  }
+
   const tRpc = Date.now();
   const { data, error } = await supabase.rpc("get_lfg_feed_page_dto", {
     p_lfg_type: input.lfgType,
-    p_viewer_profile_id: input.viewerProfileId ?? null,
+    p_viewer_profile_id: viewerProfileId,
     p_role: input.filters?.role ?? null,
     p_looking_for: input.filters?.lookingFor ?? null,
     p_mode: input.filters?.mode ?? null,

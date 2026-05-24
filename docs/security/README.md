@@ -17,3 +17,5 @@ the app today.
   - current operational notes for LFG feed protections and limits
 - `LFG_EXPIRATION_ARCHITECTURE.md`
   - safe execution model for LFG expiration and retention cleanup
+- `STACKS_SECURITY_HARDENING_2026-05-24.md`
+  - stack-specific hardening notes for viewer context, block helpers, and contact visibility

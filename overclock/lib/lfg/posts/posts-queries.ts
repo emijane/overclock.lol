@@ -3,6 +3,7 @@ import type { ProfileBadge } from "@/lib/badges/badge-types";
 import { getBlockedProfileIdsForViewer, isBlocked } from "@/lib/blocks/user-blocks";
 import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
+import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { createClient } from "@/lib/supabase/server";
 
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "../lfg-feed-filters";
@@ -335,6 +336,12 @@ async function getCurrentActiveStackPostIdFromMembershipQuery(
 }
 
 export async function getCurrentActiveStackPostIdForProfile(profileId: string) {
+  const { user, profile } = await getCurrentProfile();
+
+  if (!user || !profile || profile.id !== profileId) {
+    return null;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_profile_active_stack_post_id", {
     p_exclude_post_id: null,
@@ -785,18 +792,27 @@ export type StackMemberContactInfo = {
 /**
  * Fetches Discord and Battle.net contact info for all active members of a stack.
  * Returns null if the viewer is not an active (non-removed) member of the stack.
- * Enforces visibility server-side: contact columns are never selected for non-members.
- *
- * Membership is verified by checking that the viewer's profile_id appears in the
- * returned rows. Since the query filters removed_at IS NULL, a removed viewer will
- * not appear and null is returned — equivalent to the previous two-query approach
- * but in a single round-trip.
+ * Enforces visibility server-side by proving membership before selecting
+ * contact columns for the rest of the stack.
  */
 export async function getStackMemberContactInfoForViewer(input: {
   postId: string;
   viewerProfileId: string;
 }): Promise<Map<string, StackMemberContactInfo> | null> {
   const supabase = await createClient();
+
+  const { data: membershipRow, error: membershipError } = await supabase
+    .from("stack_members")
+    .select("profile_id")
+    .eq("post_id", input.postId)
+    .eq("profile_id", input.viewerProfileId)
+    .is("removed_at", null)
+    .limit(1)
+    .maybeSingle();
+
+  if (membershipError || typeof membershipRow?.profile_id !== "string") {
+    return null;
+  }
 
   const { data, error } = await supabase
     .from("stack_members")
@@ -809,17 +825,6 @@ export async function getStackMemberContactInfoForViewer(input: {
   }
 
   const rows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
-
-  // Viewer must appear among active (non-removed) members. If they were removed
-  // between the call-site guard and this fetch, removed_at IS NULL excludes them
-  // and this check correctly returns null.
-  const viewerIsActiveMember = rows.some(
-    (row) => typeof row.profile_id === "string" && row.profile_id === input.viewerProfileId
-  );
-
-  if (!viewerIsActiveMember) {
-    return null;
-  }
 
   const result = new Map<string, StackMemberContactInfo>();
 

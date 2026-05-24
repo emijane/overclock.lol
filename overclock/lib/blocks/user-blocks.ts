@@ -42,6 +42,41 @@ export type BlockedUserListItem = {
   username: string | null;
 };
 
+export function canCurrentProfileAccessBlockViewer(input: {
+  currentProfileId: string | null;
+  viewerProfileId: string | null;
+}) {
+  return Boolean(
+    input.currentProfileId &&
+      input.viewerProfileId &&
+      input.currentProfileId === input.viewerProfileId
+  );
+}
+
+export function canCurrentProfileAccessBlockPair(input: {
+  currentProfileId: string | null;
+  profileA: string | null;
+  profileB: string | null;
+}) {
+  return Boolean(
+    input.currentProfileId &&
+      input.profileA &&
+      input.profileB &&
+      (input.profileA === input.currentProfileId ||
+        input.profileB === input.currentProfileId)
+  );
+}
+
+async function getCurrentBlockAccessProfileId() {
+  const { user, profile } = await getCurrentProfile();
+
+  if (!user || !profile) {
+    return null;
+  }
+
+  return profile.id;
+}
+
 export function normalizeUserBlockRpcResult(value: unknown): UserBlockRpcResult {
   if (typeof value === "string") {
     try {
@@ -241,6 +276,18 @@ export async function isBlocked(viewerId: string | null, targetId: string | null
     return false;
   }
 
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  if (
+    !canCurrentProfileAccessBlockPair({
+      currentProfileId,
+      profileA: viewerId,
+      profileB: targetId,
+    })
+  ) {
+    return false;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("is_profile_blocked_by", {
     p_blocked_profile_id: targetId,
@@ -262,6 +309,18 @@ export async function hasEitherUserBlocked(
     return false;
   }
 
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  if (
+    !canCurrentProfileAccessBlockPair({
+      currentProfileId,
+      profileA: userA,
+      profileB: userB,
+    })
+  ) {
+    return false;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("has_either_user_blocked", {
     p_profile_a: userA,
@@ -277,6 +336,17 @@ export async function hasEitherUserBlocked(
 
 export async function getBlockedProfileIdsForViewer(viewerId: string | null) {
   if (!viewerId) {
+    return [] as string[];
+  }
+
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  if (
+    !canCurrentProfileAccessBlockViewer({
+      currentProfileId,
+      viewerProfileId: viewerId,
+    })
+  ) {
     return [] as string[];
   }
 
