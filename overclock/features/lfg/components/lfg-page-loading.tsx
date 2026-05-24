@@ -30,7 +30,9 @@ export function LFGPageLoading({
   return (
     <main
       className={`relative px-4 text-zinc-100 sm:px-6 ${
-        composerOnly ? "pb-0 pt-2 sm:pt-3" : "flex-1 py-5 sm:py-7"
+        composerOnly
+          ? "flex min-h-0 flex-col pb-0 pt-2 sm:pt-3"
+          : "flex min-h-0 flex-1 flex-col py-5 sm:py-7"
       }`}
     >
       {usesDuosTone ? (
@@ -54,13 +56,25 @@ export function LFGPageLoading({
         </>
       )}
       <PageContainer
-        className={`relative z-10 flex flex-col ${composerOnly ? "gap-2" : "gap-4"}`}
+        className={`relative z-10 flex ${composerOnly ? "flex-col gap-2" : "min-h-full flex-1 flex-col gap-4"}`}
         maxWidthClassName={
           composerOnly ? "max-w-4xl" : usesDuosTone ? "max-w-[98rem]" : "max-w-[96rem]"
         }
       >
-        <section className={usesDuosTone ? "oc-profile-shell rounded-[12px] bg-[#111111] p-px" : "rounded-[28px]"}>
-          <div className={usesDuosTone ? "overflow-hidden rounded-[11px] bg-[#090909]" : "overflow-hidden rounded-[28px]"}>
+        <section
+          className={
+            usesDuosTone
+              ? "flex min-h-full flex-1 flex-col oc-profile-shell rounded-[12px] bg-[#111111] p-px"
+              : "flex min-h-full flex-1 flex-col rounded-[28px]"
+          }
+        >
+          <div
+            className={
+              usesDuosTone
+                ? "flex min-h-full flex-1 flex-col overflow-hidden rounded-[11px] bg-[#090909]"
+                : "flex min-h-full flex-1 flex-col overflow-hidden rounded-[28px]"
+            }
+          >
             <header
               className={`px-5 sm:px-6 ${
                 composerOnly ? "py-3 sm:py-4" : usesDuosTone ? "py-4 sm:py-5" : "py-5 sm:py-6"
@@ -136,7 +150,7 @@ export function LFGPageLoading({
             </header>
 
             {composerOnly ? null : (
-              <>
+              <div className="flex min-h-0 flex-1 flex-col">
                   {composerCta ? (
                   <section className="px-5 py-1.5 sm:px-6 sm:py-2">
                     <div className="mb-4">
@@ -168,7 +182,7 @@ export function LFGPageLoading({
                   </section>
                 )}
 
-                <section className="border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
+                <section className="flex-1 border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
                   {feedLoading === "cards" ? (
                     <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                       {[0, 1, 2, 3].map((item) => (
@@ -210,7 +224,7 @@ export function LFGPageLoading({
                     </div>
                   ) : null}
                 </section>
-              </>
+              </div>
             )}
           </div>
         </section>

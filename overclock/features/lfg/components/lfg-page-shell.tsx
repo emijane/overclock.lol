@@ -484,7 +484,7 @@ export async function LFGPageShell({
 
   return (
     <main
-      className={`relative px-4 text-zinc-100 sm:px-6 ${
+      className={`relative flex min-h-0 flex-col px-4 text-zinc-100 sm:px-6 ${
         isComposerOnlyPage
           ? "pb-0 pt-2 sm:pb-0 sm:pt-3"
           : usesDuosFeedTone
@@ -517,7 +517,7 @@ export async function LFGPageShell({
           isComposerOnlyPage
             ? "flex flex-col gap-2"
             : useSidebarLayout
-              ? `flex items-start ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
+              ? `flex min-h-full flex-1 items-stretch ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
               : "flex flex-col gap-3"
         }`}
         maxWidthClassName={
@@ -529,7 +529,7 @@ export async function LFGPageShell({
         }
       >
         {useSidebarLayout && type ? (
-          <Suspense fallback={<div className="hidden w-56 shrink-0 lg:block" />}>
+          <Suspense fallback={<div className="hidden w-56 shrink-0 self-stretch lg:block" />}>
             <LFGSidebar
               createPostHref={resolvedCreatePostHref}
               currentStackHref={currentStackHref}
@@ -542,15 +542,15 @@ export async function LFGPageShell({
           </Suspense>
         ) : null}
         <section
-          className={`${useSidebarLayout ? "min-w-0 flex-1" : ""} ${
+          className={`${useSidebarLayout ? "flex min-h-full min-w-0 flex-1 flex-col" : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
           <div
             className={
               usesDuosFeedTone
-                ? "overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
-                : "overflow-hidden rounded-[28px]"
+                ? "flex min-h-full flex-1 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                : "flex min-h-full flex-1 flex-col overflow-hidden rounded-[28px]"
             }
           >
             <header
@@ -778,8 +778,8 @@ export async function LFGPageShell({
                 <div
                   className={
                     usesDuosFeedTone
-                      ? "border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
-                      : ""
+                      ? "flex min-h-0 flex-1 flex-col border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                      : "flex min-h-0 flex-1 flex-col"
                   }
                 >
                 {shouldShowCurrentStackPanel && profile?.id && resolvedActiveStackPostId ? (

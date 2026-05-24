@@ -47,18 +47,18 @@ function StackFeedCardSkeleton() {
 
 export function StacksPageLoading() {
   return (
-    <main className="oc-atmosphere-bg relative flex-1 px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
+    <main className="oc-atmosphere-bg relative flex min-h-0 flex-1 flex-col px-4 py-6 text-zinc-100 sm:px-6 sm:py-8">
       <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
       <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
       <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
       <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
 
       <PageContainer
-        className="relative z-10 flex items-start gap-4 xl:gap-5"
+        className="relative z-10 flex min-h-full flex-1 items-stretch gap-4 xl:gap-5"
         maxWidthClassName="max-w-[98rem]"
       >
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <div className="overflow-hidden rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] p-3">
+        <aside className="hidden min-h-full w-56 shrink-0 self-stretch lg:block">
+          <div className="h-full overflow-hidden rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] p-3">
             <SkeletonBlock className="h-8 w-28 rounded-[10px]" />
             <div className="mt-4 space-y-2.5">
               <SkeletonBlock className="h-9 w-full rounded-[10px]" />
@@ -75,8 +75,8 @@ export function StacksPageLoading() {
           </div>
         </aside>
 
-        <section className="min-w-0 flex-1">
-          <div className="overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]">
+        <section className="flex min-h-full min-w-0 flex-1 flex-col">
+          <div className="flex min-h-full flex-1 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]">
             <header className="relative px-5 py-4 sm:px-6 sm:py-5">
               <div className="space-y-4">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -99,7 +99,7 @@ export function StacksPageLoading() {
               <SkeletonBlock className="absolute bottom-4 right-5 hidden h-3 w-24 sm:block" />
             </header>
 
-            <div className="border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]">
+            <div className="flex min-h-0 flex-1 flex-col border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]">
               <section className="px-5 py-4 sm:px-6">
                 <div className="rounded-[10px] border border-white/[0.04] bg-white/[0.015] p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -124,7 +124,7 @@ export function StacksPageLoading() {
                 </section>
               </div>
 
-              <section className="border-t border-white/[0.03] px-5 py-5 sm:px-6 sm:py-6">
+              <section className="flex-1 border-t border-white/[0.03] px-5 py-5 sm:px-6 sm:py-6">
                 <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {[0, 1, 2, 3, 4, 5].map((item) => (
                     <StackFeedCardSkeleton key={item} />
