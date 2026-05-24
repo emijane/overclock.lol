@@ -347,6 +347,43 @@ Expected impact:
 4. Reduce identity overfetching.
 5. Refactor SQL only after live plans confirm the shape of the cost.
 
+## Phase 1 Implementation
+
+Phase 1 route-level instrumentation is now wired into app code for local
+measurement.
+
+Current log labels:
+
+- `[perf:identity] getCurrentProfile auth.getUser`
+- `[perf:identity] getCurrentProfile profiles query`
+- `[perf:matches] renderMatchesRoute auth+profile`
+- `[perf:matches] renderMatchesRoute dto`
+- `[perf:matches] renderMatchesRoute total`
+- `[perf:matches] getMatchesPageDto rpc`
+- `[perf:matches] getMatchesPageDto normalize`
+- `[perf:matches] getMatchesPageDto total`
+- `[perf:notifications] GET /api/notifications/menu auth+profile`
+- `[perf:notifications] GET /api/notifications/menu dto`
+- `[perf:notifications] GET /api/notifications/menu total`
+- `[perf:notifications] getNotificationsMenuDto rpc`
+- `[perf:notifications] getNotificationsMenuDto normalize`
+- `[perf:notifications] getNotificationsMenuDto total`
+
+Current env toggles:
+
+- `IDENTITY_PERF=0` disables identity logs
+- `MATCHES_PERF=0` disables route and matches DTO logs
+- `NOTIFICATIONS_PERF=0` disables notifications logs
+
+Recommended local measurement flow:
+
+1. Run `npm run dev`.
+2. Load `/connections` once cold.
+3. Reload `/connections` once warm.
+4. Watch both `[perf:matches]` and `[perf:notifications]` output together.
+5. Repeat with `npm run build && npm run start` for the production-like
+   comparison called out earlier in this audit.
+
 ## Suggested Commit Message
 
 `docs: add /connections performance and scalability audit`

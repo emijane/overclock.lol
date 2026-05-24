@@ -5,6 +5,11 @@ import type {
   PendingSentPlayInvite,
 } from "@/lib/matches/play-invites";
 import type { IncomingPendingStackRequest } from "@/lib/lfg/stack-request-types";
+import {
+  matchesPerfLog,
+  notificationsPerfLog,
+  stacksPerfStart,
+} from "@/lib/dev/perf-log";
 import { formatCurrentRank } from "@/lib/profiles/profile-editor";
 import { createClient } from "@/lib/supabase/server";
 
@@ -225,11 +230,15 @@ async function callRpc<T>(name: string, params: Record<string, unknown>) {
 }
 
 export async function getMatchesPageDto(currentProfileId: string): Promise<MatchesPageDto> {
+  const tTotal = stacksPerfStart();
+  const tRpc = stacksPerfStart();
   const data = await callRpc<Record<string, unknown>>("get_matches_page_dto", {
     p_current_profile_id: currentProfileId,
   });
+  matchesPerfLog("getMatchesPageDto rpc", tRpc);
 
-  return {
+  const tNormalize = stacksPerfStart();
+  const dto = {
     connections: normalizeConnections(data.connections),
     incomingInvites: normalizePendingInviteArray(
       data.incomingInvites
@@ -238,25 +247,45 @@ export async function getMatchesPageDto(currentProfileId: string): Promise<Match
       data.outgoingInvites
     ) as PendingSentPlayInvite[],
   };
+  matchesPerfLog(
+    "getMatchesPageDto normalize",
+    tNormalize,
+    dto.connections.length + dto.incomingInvites.length + dto.outgoingInvites.length
+  );
+  matchesPerfLog(
+    "getMatchesPageDto total",
+    tTotal,
+    dto.connections.length + dto.incomingInvites.length + dto.outgoingInvites.length
+  );
+
+  return dto;
 }
 
 export async function getNotificationsMenuDto(
   currentProfileId: string
 ): Promise<NotificationsMenuDto> {
+  const tTotal = stacksPerfStart();
+  const tRpc = stacksPerfStart();
   const data = await callRpc<Record<string, unknown>>(
     "get_notifications_menu_dto",
     {
       p_current_profile_id: currentProfileId,
     }
   );
+  notificationsPerfLog("getNotificationsMenuDto rpc", tRpc);
+  const tNormalize = stacksPerfStart();
   const incomingInvites = normalizePendingInviteArray(
     data.incomingInvites
   ) as IncomingPendingPlayInvite[];
   const stackRequests = normalizeStackRequests(data.stackRequests);
 
-  return {
+  const dto = {
     incomingInvites,
     stackRequests,
     totalCount: incomingInvites.length + stackRequests.length,
   };
+  notificationsPerfLog("getNotificationsMenuDto normalize", tNormalize, dto.totalCount);
+  notificationsPerfLog("getNotificationsMenuDto total", tTotal, dto.totalCount);
+
+  return dto;
 }

@@ -6,7 +6,8 @@ const ENABLED =
   process.env.STACKS_PERF !== "0" &&
   process.env.LFG_PERF !== "0" &&
   process.env.MATCHES_PERF !== "0" &&
-  process.env.IDENTITY_PERF !== "0";
+  process.env.IDENTITY_PERF !== "0" &&
+  process.env.NOTIFICATIONS_PERF !== "0";
 
 export function stacksPerfStart(): number {
   return Date.now();
@@ -33,4 +34,12 @@ export function identityPerfLog(label: string, start: number, rows?: number): vo
 
 export function matchesPerfLog(label: string, start: number, rows?: number): void {
   perfLog("matches", label, start, rows);
+}
+
+export function notificationsPerfLog(
+  label: string,
+  start: number,
+  rows?: number
+): void {
+  perfLog("notifications", label, start, rows);
 }
