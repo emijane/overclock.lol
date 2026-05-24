@@ -5,18 +5,13 @@ import { DarkPageShell } from "@/components/app-shell/dark-page-shell";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { MatchCard } from "@/features/matches/components/match-card";
 import { MatchInvitesTabs } from "@/features/matches/components/match-invites-tabs";
-import { MatchesRealtimeRefresh } from "@/features/matches/components/matches-realtime-refresh";
 import type { MatchesPageDto } from "@/lib/pages/matches-page-dto";
 
 type MatchesPageViewProps = {
-  currentProfileId: string;
   dto: MatchesPageDto;
 };
 
-export function MatchesPageView({
-  currentProfileId,
-  dto,
-}: MatchesPageViewProps) {
+export function MatchesPageView({ dto }: MatchesPageViewProps) {
   const connections = dto.connections;
   const pendingSentInvites = dto.outgoingInvites;
   const incomingPendingInvites = dto.incomingInvites;
@@ -27,7 +22,6 @@ export function MatchesPageView({
       maxWidthClassName="max-w-4xl"
       variant="matches"
     >
-        <MatchesRealtimeRefresh currentProfileId={currentProfileId} />
         <section className="oc-profile-shell rounded-[12px] bg-[#111111] p-px">
           <div className="overflow-hidden rounded-[11px] bg-[#090909]">
             <PageReveal>

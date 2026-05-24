@@ -94,7 +94,6 @@ export async function sendPlayInvite(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("sendPlayInvite revalidate", tRevalidate);
     logMatchesAction("sendPlayInvite total", tAction, 1);
 
@@ -159,7 +158,6 @@ export async function acceptPlayInvite(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("acceptPlayInvite revalidate", tRevalidate);
     logMatchesAction("acceptPlayInvite total", tAction, 1);
 
@@ -223,7 +221,6 @@ export async function declinePlayInvite(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("declinePlayInvite revalidate", tRevalidate);
     logMatchesAction("declinePlayInvite total", tAction, 1);
 
@@ -287,7 +284,6 @@ export async function cancelPlayInvite(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("cancelPlayInvite revalidate", tRevalidate);
     logMatchesAction("cancelPlayInvite total", tAction, 1);
 
@@ -340,7 +336,6 @@ export async function expirePlayInvites(input?: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("expirePlayInvites revalidate", tRevalidate);
     logMatchesAction("expirePlayInvites total", tAction, actionResult.expiredCount);
 
@@ -396,7 +391,6 @@ export async function removeProfileConnection(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
-    revalidatePath("/connections");
     logMatchesAction("removeProfileConnection revalidate", tRevalidate);
     logMatchesAction("removeProfileConnection total", tAction, 1);
 

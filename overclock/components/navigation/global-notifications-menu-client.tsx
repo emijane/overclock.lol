@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BellIcon } from "lucide-react";
 
@@ -26,6 +26,7 @@ const ROLE_LABELS: Record<string, string> = {
 
 type GlobalNotificationsMenuClientProps = {
   currentProfileId: string;
+  initialNotifications: NotificationsMenuDto | null;
 };
 
 function getAvatarFallback(name: string | null, username: string | null) {
@@ -35,19 +36,30 @@ function getAvatarFallback(name: string | null, username: string | null) {
 
 export function GlobalNotificationsMenuClient({
   currentProfileId,
+  initialNotifications,
 }: GlobalNotificationsMenuClientProps) {
   const router = useRouter();
-  const [invites, setInvites] = useState<IncomingPendingPlayInvite[]>([]);
-  const [stackRequests, setStackRequests] = useState<IncomingPendingStackRequest[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [invites, setInvites] = useState<IncomingPendingPlayInvite[]>(
+    initialNotifications?.incomingInvites ?? []
+  );
+  const [stackRequests, setStackRequests] = useState<IncomingPendingStackRequest[]>(
+    initialNotifications?.stackRequests ?? []
+  );
+  const [totalCount, setTotalCount] = useState(initialNotifications?.totalCount ?? 0);
+  const [isLoading, setIsLoading] = useState(initialNotifications === null);
   const [activeInviteId, setActiveInviteId] = useState<string | null>(null);
   const [feedbackByInviteId, setFeedbackByInviteId] = useState<
     Record<string, string | null>
   >({});
   const [isPending, startTransition] = useTransition();
 
-  async function refreshNotifications(signal?: AbortSignal) {
+  function applyNotificationsDto(dto: NotificationsMenuDto) {
+    setInvites(dto.incomingInvites);
+    setStackRequests(dto.stackRequests);
+    setTotalCount(dto.totalCount);
+  }
+
+  const refreshNotifications = useCallback(async (signal?: AbortSignal) => {
     setIsLoading(true);
 
     try {
@@ -64,9 +76,7 @@ export function GlobalNotificationsMenuClient({
       }
 
       const dto = (await response.json()) as NotificationsMenuDto;
-      setInvites(dto.incomingInvites);
-      setStackRequests(dto.stackRequests);
-      setTotalCount(dto.totalCount);
+      applyNotificationsDto(dto);
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) {
         console.error("Failed to refresh global notifications", error);
@@ -76,15 +86,28 @@ export function GlobalNotificationsMenuClient({
         setIsLoading(false);
       }
     }
-  }
+  }, []);
 
   useEffect(() => {
+    if (!initialNotifications) {
+      return;
+    }
+
+    applyNotificationsDto(initialNotifications);
+    setIsLoading(false);
+  }, [initialNotifications]);
+
+  useEffect(() => {
+    if (initialNotifications) {
+      return;
+    }
+
     const controller = new AbortController();
 
     void refreshNotifications(controller.signal);
 
     return () => controller.abort();
-  }, [currentProfileId]);
+  }, [currentProfileId, initialNotifications, refreshNotifications]);
 
   function setInviteFeedback(inviteId: string, message: string | null) {
     setFeedbackByInviteId((current) => ({
@@ -180,7 +203,10 @@ export function GlobalNotificationsMenuClient({
 
   return (
     <>
-      <PlayInviteRealtimeRefresh currentProfileId={currentProfileId} />
+      <PlayInviteRealtimeRefresh
+        currentProfileId={currentProfileId}
+        onRefresh={() => refreshNotifications()}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button

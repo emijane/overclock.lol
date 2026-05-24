@@ -30,5 +30,5 @@ export async function renderMatchesRoute() {
   );
   matchesPerfLog("renderMatchesRoute total", tRoute, 1);
 
-  return <MatchesPageView currentProfileId={profile.id} dto={dto} />;
+  return <MatchesPageView dto={dto} />;
 }

@@ -7,10 +7,12 @@ import { createClient } from "@/lib/supabase/client";
 
 type PlayInviteRealtimeRefreshProps = {
   currentProfileId: string;
+  onRefresh?: () => void | Promise<void>;
 };
 
 export function PlayInviteRealtimeRefresh({
   currentProfileId,
+  onRefresh,
 }: PlayInviteRealtimeRefreshProps) {
   const router = useRouter();
 
@@ -35,6 +37,7 @@ export function PlayInviteRealtimeRefresh({
       }
 
       refreshTimeoutId = window.setTimeout(() => {
+        void onRefresh?.();
         router.refresh();
       }, 250);
     }
@@ -61,7 +64,7 @@ export function PlayInviteRealtimeRefresh({
 
       void supabase.removeChannel(channel);
     };
-  }, [currentProfileId, router]);
+  }, [currentProfileId, onRefresh, router]);
 
   return null;
 }

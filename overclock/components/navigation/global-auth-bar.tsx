@@ -5,8 +5,10 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
 import { MainMenuUserSearch } from "@/components/navigation/main-menu-user-search";
 import { UserMenu } from "@/components/navigation/user-menu";
+import type { NotificationsMenuDto } from "@/lib/pages/matches-page-dto";
 
 type GlobalAuthBarProps = {
+  initialNotifications?: NotificationsMenuDto | null;
   profile: {
     avatar_url: string | null;
     display_name: string | null;
@@ -16,7 +18,11 @@ type GlobalAuthBarProps = {
 };
 
 // Shared top-right auth controls for any page in the app shell.
-export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
+export function GlobalAuthBar({
+  initialNotifications,
+  profile,
+  userId,
+}: GlobalAuthBarProps) {
   const signedInDiscoveryLinks = [
     { href: "/duos", label: "Duos" },
     { href: "/connections", label: "Connections" },
@@ -74,7 +80,10 @@ export function GlobalAuthBar({ profile, userId }: GlobalAuthBarProps) {
 
           {userId ? (
             <>
-              <GlobalNotificationsMenuClient currentProfileId={userId} />
+              <GlobalNotificationsMenuClient
+                currentProfileId={userId}
+                initialNotifications={initialNotifications ?? null}
+              />
 
               <UserMenu
                 avatarFallback={avatarFallback}

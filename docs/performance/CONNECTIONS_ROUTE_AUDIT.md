@@ -384,6 +384,34 @@ Recommended local measurement flow:
 5. Repeat with `npm run build && npm run start` for the production-like
    comparison called out earlier in this audit.
 
+## Phase 2 Implementation
+
+Phase 2 low-risk wins are now partially implemented in app code:
+
+- realtime ownership moved to the global notifications menu so `/connections`
+  no longer mounts a second `play_invites` subscriber for the same viewer
+- the notifications bell now receives an initial server payload from the auth
+  bar server component
+- the notifications menu no longer performs an immediate mount fetch when that
+  initial payload is available
+- realtime updates now refresh the bell's own local state in addition to
+  calling `router.refresh()`
+
+This reduces:
+
+- duplicate websocket subscriptions
+- duplicate refresh scheduling
+- first-visit client request waterfalls for the bell
+
+Current follow-up from the original Phase 2 list:
+
+- `revalidatePath("/connections")` was reviewed and removed in favor of the
+  canonical `/matches` path because `/connections` is an alias route that
+  renders the same shared implementation
+- if production behavior shows stale alias refreshes for users who stay on
+  `/connections`, restore the alias invalidation or move to a shared tag-based
+  invalidation strategy
+
 ## Suggested Commit Message
 
 `docs: add /connections performance and scalability audit`
