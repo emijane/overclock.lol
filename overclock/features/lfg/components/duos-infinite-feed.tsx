@@ -170,6 +170,7 @@ export function DuosInfiniteFeed({
   const [appendError, setAppendError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const isFetchingRef = useRef(false);
@@ -242,6 +243,11 @@ export function DuosInfiniteFeed({
       return;
     }
 
+    const scrollRoot = scrollContainerRef.current;
+    const isScrollContainer =
+      scrollRoot !== null &&
+      window.getComputedStyle(scrollRoot).overflowY !== "visible";
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
@@ -249,6 +255,7 @@ export function DuosInfiniteFeed({
         }
       },
       {
+        root: isScrollContainer ? scrollRoot : null,
         rootMargin: "1200px 0px",
       }
     );
@@ -261,7 +268,10 @@ export function DuosInfiniteFeed({
   }, [hasMore, loadNextPage]);
 
   return (
-    <>
+    <div
+      ref={scrollContainerRef}
+      className="flex min-h-0 flex-1 flex-col lg:overflow-y-auto oc-sidebar-scroll"
+    >
       <LFGPostList
         currentProfileId={currentProfileId}
         emptyStateDescription={emptyStateDescription}
@@ -287,6 +297,6 @@ export function DuosInfiniteFeed({
           sentinelRef={sentinelRef}
         />
       ) : null}
-    </>
+    </div>
   );
 }

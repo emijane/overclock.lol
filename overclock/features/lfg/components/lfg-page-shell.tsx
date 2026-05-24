@@ -619,15 +619,15 @@ export async function LFGPageShell({
           </Suspense>
         ) : null}
         <section
-          className={`${useSidebarLayout ? "flex min-h-full min-w-0 flex-1 flex-col" : ""} ${
+          className={`${useSidebarLayout ? "flex min-w-0 flex-1 flex-col lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]" : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
           <div
             className={
               usesDuosFeedTone
-                ? "flex min-h-full flex-1 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
-                : "flex min-h-full flex-1 flex-col overflow-hidden rounded-[28px]"
+                ? "flex flex-1 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                : "flex flex-1 flex-col overflow-hidden rounded-[28px]"
             }
           >
             <header
