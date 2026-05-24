@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 
+import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
@@ -75,6 +76,19 @@ async function getCurrentBlockAccessProfileId() {
   }
 
   return profile.id;
+}
+
+function logBlockPerf(
+  label: string | undefined,
+  phase: "access" | "rpc",
+  start: number,
+  rows?: number
+) {
+  if (!label) {
+    return;
+  }
+
+  stacksPerfLog(`${label} ${phase}`, start, rows);
 }
 
 export function normalizeUserBlockRpcResult(value: unknown): UserBlockRpcResult {
@@ -272,11 +286,28 @@ export async function getBlockedUsers(): Promise<BlockedUserListItem[]> {
 }
 
 export async function isBlocked(viewerId: string | null, targetId: string | null) {
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  return isBlockedTrusted({
+    currentProfileId,
+    targetId,
+    viewerId,
+  });
+}
+
+export async function isBlockedTrusted(input: {
+  currentProfileId: string | null;
+  perfLabel?: string;
+  targetId: string | null;
+  viewerId: string | null;
+}) {
+  const tAccess = Date.now();
+  const { currentProfileId, targetId, viewerId } = input;
+
   if (!viewerId || !targetId) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return false;
   }
-
-  const currentProfileId = await getCurrentBlockAccessProfileId();
 
   if (
     !canCurrentProfileAccessBlockPair({
@@ -285,14 +316,18 @@ export async function isBlocked(viewerId: string | null, targetId: string | null
       profileB: targetId,
     })
   ) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return false;
   }
+  logBlockPerf(input.perfLabel, "access", tAccess, 1);
 
   const supabase = await createClient();
+  const tRpc = Date.now();
   const { data, error } = await supabase.rpc("is_profile_blocked_by", {
     p_blocked_profile_id: targetId,
     p_blocker_profile_id: viewerId,
   });
+  logBlockPerf(input.perfLabel, "rpc", tRpc, data === true ? 1 : 0);
 
   if (error) {
     throw error;
@@ -305,11 +340,28 @@ export async function hasEitherUserBlocked(
   userA: string | null,
   userB: string | null
 ) {
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  return hasEitherUserBlockedTrusted({
+    currentProfileId,
+    userA,
+    userB,
+  });
+}
+
+export async function hasEitherUserBlockedTrusted(input: {
+  currentProfileId: string | null;
+  perfLabel?: string;
+  userA: string | null;
+  userB: string | null;
+}) {
+  const tAccess = Date.now();
+  const { currentProfileId, userA, userB } = input;
+
   if (!userA || !userB) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return false;
   }
-
-  const currentProfileId = await getCurrentBlockAccessProfileId();
 
   if (
     !canCurrentProfileAccessBlockPair({
@@ -318,14 +370,18 @@ export async function hasEitherUserBlocked(
       profileB: userB,
     })
   ) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return false;
   }
+  logBlockPerf(input.perfLabel, "access", tAccess, 1);
 
   const supabase = await createClient();
+  const tRpc = Date.now();
   const { data, error } = await supabase.rpc("has_either_user_blocked", {
     p_profile_a: userA,
     p_profile_b: userB,
   });
+  logBlockPerf(input.perfLabel, "rpc", tRpc, data === true ? 1 : 0);
 
   if (error) {
     throw error;
@@ -335,11 +391,26 @@ export async function hasEitherUserBlocked(
 }
 
 export async function getBlockedProfileIdsForViewer(viewerId: string | null) {
+  const currentProfileId = await getCurrentBlockAccessProfileId();
+
+  return getBlockedProfileIdsForViewerTrusted({
+    currentProfileId,
+    viewerId,
+  });
+}
+
+export async function getBlockedProfileIdsForViewerTrusted(input: {
+  currentProfileId: string | null;
+  perfLabel?: string;
+  viewerId: string | null;
+}) {
+  const tAccess = Date.now();
+  const { currentProfileId, viewerId } = input;
+
   if (!viewerId) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return [] as string[];
   }
-
-  const currentProfileId = await getCurrentBlockAccessProfileId();
 
   if (
     !canCurrentProfileAccessBlockViewer({
@@ -347,10 +418,13 @@ export async function getBlockedProfileIdsForViewer(viewerId: string | null) {
       viewerProfileId: viewerId,
     })
   ) {
+    logBlockPerf(input.perfLabel, "access", tAccess, 0);
     return [] as string[];
   }
+  logBlockPerf(input.perfLabel, "access", tAccess, 1);
 
   const supabase = await createClient();
+  const tRpc = Date.now();
   const { data, error } = await supabase.rpc("get_blocked_profile_ids_for_viewer", {
     p_viewer_profile_id: viewerId,
   });
@@ -360,8 +434,11 @@ export async function getBlockedProfileIdsForViewer(viewerId: string | null) {
   }
 
   if (!Array.isArray(data)) {
+    logBlockPerf(input.perfLabel, "rpc", tRpc, 0);
     return [];
   }
 
-  return data.filter((value): value is string => typeof value === "string");
+  const blockedIds = data.filter((value): value is string => typeof value === "string");
+  logBlockPerf(input.perfLabel, "rpc", tRpc, blockedIds.length);
+  return blockedIds;
 }

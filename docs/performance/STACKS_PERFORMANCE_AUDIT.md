@@ -24,6 +24,19 @@
   reduce real server-side data latency. Real latency work remains centered on
   Supabase round-trips, dynamic rendering, and feed/detail hydration cost.
 
+## 2026-05-24 follow-up
+
+- Block-helper reads now have trusted server-side helper variants that accept the
+  already-known authenticated profile id, which avoids an extra `getCurrentProfile()`
+  path on stacks readers that already know the viewer.
+- `/stacks` now treats current-stack hydration as deferred UI instead of part of
+  the critical listing route payload. The first pass resolves the stack post id,
+  and the current-stack panel streams in afterward.
+- `/stacks/[postId]` now keeps the public stack detail as the blocking payload,
+  while member contact info and owner pending requests stream as secondary panels.
+- Perf logs now split block-helper access checks from block-helper RPC time, and
+  split current-stack lookup from current-stack post hydration.
+
 ---
 
 ## 1. Symptoms

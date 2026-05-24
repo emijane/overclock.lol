@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeftIcon } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
@@ -372,6 +373,103 @@ function MemberList({
   );
 }
 
+function MemberListFallback() {
+  return <div className="min-h-[240px]" />;
+}
+
+function PendingRequestsFallback() {
+  return <div className="min-h-[96px]" />;
+}
+
+async function DeferredMemberList({
+  currentProfileId,
+  detail,
+  shouldFetchContactInfo,
+}: {
+  currentProfileId: string | null;
+  detail: StackPostDetail;
+  shouldFetchContactInfo: boolean;
+}) {
+  const tContactInfo = stacksPerfStart();
+  const contactInfoByProfileId =
+    currentProfileId && shouldFetchContactInfo
+      ? await getStackMemberContactInfoForViewer({
+          postId: detail.post.id,
+          viewerProfileId: currentProfileId,
+        })
+      : null;
+  stacksPerfLog(
+    "StackDetailPage member contact info",
+    tContactInfo,
+    contactInfoByProfileId?.size ?? 0
+  );
+
+  return (
+    <MemberList
+      contactInfoByProfileId={contactInfoByProfileId}
+      currentProfileId={currentProfileId}
+      detail={detail}
+    />
+  );
+}
+
+async function DeferredPendingRequestsSection({
+  currentProfileId,
+  detail,
+  shouldFetchIncomingRequests,
+}: {
+  currentProfileId: string | null;
+  detail: StackPostDetail;
+  shouldFetchIncomingRequests: boolean;
+}) {
+  const tPending = stacksPerfStart();
+  const pendingRequests =
+    currentProfileId && shouldFetchIncomingRequests
+      ? (await getIncomingPendingStackRequests({
+          currentProfileId,
+          postId: detail.post.id,
+        })).requests
+      : [];
+  stacksPerfLog(
+    "StackDetailPage owner pending requests",
+    tPending,
+    pendingRequests.length
+  );
+
+  if (!detail.isActive || !shouldFetchIncomingRequests) {
+    return null;
+  }
+
+  if (pendingRequests.length === 0) {
+    return (
+      <section className="rounded-[10px] border border-white/6 bg-white/2">
+        <div className="flex items-center gap-3 px-4 py-3 sm:px-5">
+          <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+            Pending requests
+          </p>
+          <span className="oc-profile-meta text-[11px] text-zinc-500">None</span>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="rounded-[10px] border border-white/6 bg-white/2">
+      <div className="px-4 py-4 sm:px-5 sm:py-4.5">
+        <div className="mb-3 flex items-center gap-2">
+          <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+            Pending requests
+          </p>
+          <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
+            {pendingRequests.length}
+          </span>
+        </div>
+        <StackDetailPendingRequests requests={pendingRequests} />
+      </div>
+    </section>
+  );
+}
+
 export async function StackDetailPage({
   message,
   messageType,
@@ -425,32 +523,15 @@ export async function StackDetailPage({
   });
   const profileId = currentProfileId;
 
-  const tViewerQueries = stacksPerfStart();
-  const [requestState, pendingRequests, memberContactInfo] = await Promise.all([
+  const tRequestState = stacksPerfStart();
+  const requestState =
     profileId && shouldFetchRequestState
-      ? getStackRequestStateForPost({
+      ? await getStackRequestStateForPost({
           currentProfileId: profileId,
           postId: detail.post.id,
         }).catch(() => "none" as const)
-      : Promise.resolve("none" as const),
-    profileId && shouldFetchIncomingRequests
-      ? getIncomingPendingStackRequests({
-          currentProfileId: profileId,
-          postId: detail.post.id,
-        }).then((r) => r.requests)
-      : Promise.resolve([]),
-    profileId && shouldFetchContactInfo
-      ? getStackMemberContactInfoForViewer({
-          postId: detail.post.id,
-          viewerProfileId: profileId,
-        })
-      : Promise.resolve(null),
-  ]);
-  stacksPerfLog(
-    "StackDetailPage viewer queries",
-    tViewerQueries,
-    pendingRequests.length
-  );
+      : "none";
+  stacksPerfLog("StackDetailPage request state", tRequestState, requestState === "none" ? 0 : 1);
   stacksPerfLog("StackDetailPage total data load", tPage, detail.post.stackMembers.length);
 
   return (
@@ -500,40 +581,25 @@ export async function StackDetailPage({
             requestState={requestState}
           />
 
-          <div className={isOwner && detail.isActive && pendingRequests.length > 0 ? "grid gap-4 xl:grid-cols-2" : ""}>
-            <MemberList
-              contactInfoByProfileId={memberContactInfo}
-              currentProfileId={currentProfileId}
-              detail={detail}
-            />
+          <div className={isOwner && detail.isActive ? "grid gap-4 xl:grid-cols-2" : ""}>
+            <Suspense fallback={<MemberListFallback />}>
+              <DeferredMemberList
+                currentProfileId={currentProfileId}
+                detail={detail}
+                shouldFetchContactInfo={shouldFetchContactInfo}
+              />
+            </Suspense>
 
-            {isOwner && detail.isActive && pendingRequests.length > 0 ? (
-              <section className="rounded-[10px] border border-white/6 bg-white/2">
-                <div className="px-4 py-4 sm:px-5 sm:py-4.5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                      Pending requests
-                    </p>
-                    <span className="oc-profile-pill border border-white/6 bg-white/3 px-2 py-0.5 text-[10px] text-zinc-300">
-                      {pendingRequests.length}
-                    </span>
-                  </div>
-                  <StackDetailPendingRequests requests={pendingRequests} />
-                </div>
-              </section>
+            {isOwner && detail.isActive ? (
+              <Suspense fallback={<PendingRequestsFallback />}>
+                <DeferredPendingRequestsSection
+                  currentProfileId={currentProfileId}
+                  detail={detail}
+                  shouldFetchIncomingRequests={shouldFetchIncomingRequests}
+                />
+              </Suspense>
             ) : null}
           </div>
-
-          {isOwner && detail.isActive && pendingRequests.length === 0 ? (
-            <section className="rounded-[10px] border border-white/6 bg-white/2">
-              <div className="flex items-center gap-3 px-4 py-3 sm:px-5">
-                <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Pending requests
-                </p>
-                <span className="oc-profile-meta text-[11px] text-zinc-500">None</span>
-              </div>
-            </section>
-          ) : null}
 
           {isAcceptedMember && !isOwner && detail.isActive ? (
             <section className="rounded-[10px] border border-white/6 bg-white/2">

@@ -1,9 +1,13 @@
 import { getProfileBadges } from "@/lib/badges/badges";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
-import { getBlockedProfileIdsForViewer, isBlocked } from "@/lib/blocks/user-blocks";
+import {
+  getBlockedProfileIdsForViewer,
+  getBlockedProfileIdsForViewerTrusted,
+  isBlocked,
+} from "@/lib/blocks/user-blocks";
 import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getCurrentUserId } from "@/lib/profiles/get-current-profile";
 import { createClient } from "@/lib/supabase/server";
 
 import { getLFGRankRangeTiers, type LFGFeedFilters } from "../lfg-feed-filters";
@@ -336,9 +340,9 @@ async function getCurrentActiveStackPostIdFromMembershipQuery(
 }
 
 export async function getCurrentActiveStackPostIdForProfile(profileId: string) {
-  const { user, profile } = await getCurrentProfile();
+  const currentUserId = await getCurrentUserId();
 
-  if (!user || !profile || profile.id !== profileId) {
+  if (!currentUserId || currentUserId !== profileId) {
     return null;
   }
 
@@ -501,13 +505,11 @@ async function getStackPostDetailByIdInternal(input: {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
   const blockedProfileIdsPromise = input.viewerProfileId
-    ? (() => {
-        const tBlocked = Date.now();
-        return getBlockedProfileIdsForViewer(input.viewerProfileId).then((blockedProfileIds) => {
-          stacksPerfLog("getStackPostDetailById blocks", tBlocked, blockedProfileIds.length);
-          return blockedProfileIds;
-        });
-      })()
+    ? getBlockedProfileIdsForViewerTrusted({
+        currentProfileId: input.viewerProfileId,
+        perfLabel: "getStackPostDetailById blocks",
+        viewerId: input.viewerProfileId,
+      })
     : Promise.resolve<string[]>([]);
   const postQueryPromise = (() => {
     let query = supabase

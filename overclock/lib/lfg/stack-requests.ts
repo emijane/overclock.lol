@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getBlockedProfileIdsForViewer } from "@/lib/blocks/user-blocks";
+import { getBlockedProfileIdsForViewerTrusted } from "@/lib/blocks/user-blocks";
 import { stacksPerfLog } from "@/lib/dev/perf-log";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import type { CompetitiveRole } from "@/lib/competitive/competitive-profile-types";
@@ -247,19 +247,11 @@ export async function getIncomingPendingStackRequests(input: {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
   const [blockedProfileIds, { data, error }] = await Promise.all([
-    (() => {
-      const tBlocked = Date.now();
-      return getBlockedProfileIdsForViewer(input.currentProfileId).then(
-        (blockedProfileIds) => {
-          stacksPerfLog(
-            "getIncomingPendingStackRequests blocks",
-            tBlocked,
-            blockedProfileIds.length
-          );
-          return blockedProfileIds;
-        }
-      );
-    })(),
+    getBlockedProfileIdsForViewerTrusted({
+      currentProfileId: input.currentProfileId,
+      perfLabel: "getIncomingPendingStackRequests blocks",
+      viewerId: input.currentProfileId,
+    }),
     (() => {
       const tQuery = Date.now();
       return supabase

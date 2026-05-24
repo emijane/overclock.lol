@@ -19,7 +19,7 @@ import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveStackPostById,
-  getCurrentActiveStackForProfile,
+  getCurrentActiveStackPostIdForProfile,
 } from "@/lib/lfg/posts/posts-queries";
 import { getLFGFeedPageDto } from "@/lib/pages/lfg-feed-page-dto";
 import { stacksPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
@@ -61,7 +61,7 @@ type LFGPageShellProps = {
 type LFGPageData = {
   activePostCounts: Record<"tank" | "dps" | "support", number>;
   competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>> | null;
-  currentStack: import("@/lib/lfg/lfg-post-types").LFGPost | null;
+  currentStackPostId: string | null;
   inviteStates: Record<string, "invite_to_play" | "invite_sent" | "connected">;
   posts: import("@/lib/lfg/lfg-post-types").LFGPost[];
   postsErrorMessage: string | null;
@@ -232,7 +232,7 @@ async function getLFGPageData(
   feedFilters?: LFGFeedFilters
 ): Promise<LFGPageData> {
   const tDto = Date.now();
-  const [dtoResult, currentStack] = await Promise.all([
+  const [dtoResult, currentStackPostId] = await Promise.all([
     getLFGFeedPageDto({
       currentProfileId: viewerProfileId,
       filters: feedFilters,
@@ -245,16 +245,20 @@ async function getLFGPageData(
         postsErrorMessage: "Try refreshing in a moment.",
       })),
     type === "stacks" && viewerProfileId
-      ? getCurrentActiveStackForProfile(viewerProfileId).catch(() => null)
+      ? getCurrentActiveStackPostIdForProfile(viewerProfileId).catch(() => null)
       : Promise.resolve(null),
   ]);
-  stacksPerfLog('getLFGPageData Promise.all dto+currentStack', tDto, dtoResult.dto?.posts.length);
+  stacksPerfLog(
+    "getLFGPageData Promise.all dto+currentStackLookup",
+    tDto,
+    dtoResult.dto?.posts.length
+  );
 
   if (!viewerProfileId) {
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
-      currentStack: null,
+      currentStackPostId: null,
       inviteStates: dtoResult.dto?.inviteStates ?? {},
       posts: dtoResult.dto?.posts ?? [],
       postsErrorMessage: dtoResult.postsErrorMessage,
@@ -279,13 +283,47 @@ async function getLFGPageData(
   return {
     activePostCounts,
     competitiveProfile,
-    currentStack,
+    currentStackPostId,
     inviteStates: dtoResult.dto?.inviteStates ?? {},
     posts: dtoResult.dto?.posts ?? [],
     postsErrorMessage: dtoResult.postsErrorMessage,
     roleOptions: competitiveProfile ? buildRoleOptions(competitiveProfile, heroPools) : [],
     stackRequestStates: dtoResult.dto?.stackRequestStates ?? {},
   };
+}
+
+function CurrentStackPanelFallback() {
+  return <div className="min-h-[104px]" />;
+}
+
+async function DeferredCurrentStackPanel({
+  activeStackPostId,
+  currentProfileId,
+  showBlockedCreateCopy,
+}: {
+  activeStackPostId: string;
+  currentProfileId: string;
+  showBlockedCreateCopy: boolean;
+}) {
+  const tHydrate = stacksPerfStart();
+  const currentStack = await getActiveStackPostById(activeStackPostId).catch(() => null);
+  stacksPerfLog(
+    "LFGPageShell current stack hydrate",
+    tHydrate,
+    currentStack ? 1 : 0
+  );
+
+  if (!currentStack) {
+    return <CurrentStackFallbackPanel blockingPostId={activeStackPostId} />;
+  }
+
+  return (
+    <CurrentStackPanel
+      currentProfileId={currentProfileId}
+      post={currentStack}
+      showBlockedCreateCopy={showBlockedCreateCopy}
+    />
+  );
 }
 
 export async function LFGPageShell({
@@ -314,7 +352,7 @@ export async function LFGPageShell({
   const emptyPageData: LFGPageData = {
     activePostCounts: { tank: 0, dps: 0, support: 0 },
     competitiveProfile: null,
-    currentStack: null,
+    currentStackPostId: null,
     inviteStates: {},
     posts: [],
     postsErrorMessage: null,
@@ -341,16 +379,7 @@ export async function LFGPageShell({
     pageDataPromise,
   ]);
   const currentStackMembershipPostId =
-    type === "stacks" ? pageData.currentStack?.id ?? null : null;
-  const fallbackCurrentStack =
-    type === "stacks" &&
-    profile?.id &&
-    (activeStackPostId ?? currentStackMembershipPostId) &&
-    !pageData.currentStack
-      ? await getActiveStackPostById(
-          activeStackPostId ?? currentStackMembershipPostId ?? ""
-        ).catch(() => null)
-      : null;
+    type === "stacks" ? pageData.currentStackPostId ?? null : null;
   const composerOnlyProfile =
     shouldShowComposer && !shouldShowFeed && profile?.id
       ? await Promise.all([
@@ -400,13 +429,13 @@ export async function LFGPageShell({
   const inviteStates = shouldShowFeed ? pageData.inviteStates : {};
   const stackRequestStates =
     isStacksFeed && profile?.id ? pageData.stackRequestStates : {};
-  const currentStack = isStacksFeed ? pageData.currentStack ?? fallbackCurrentStack : null;
-  const currentStackForBlockedState =
-    type === "stacks" ? pageData.currentStack ?? fallbackCurrentStack : null;
-  const resolvedActiveStackPostId =
-    activeStackPostId ?? currentStackForBlockedState?.id ?? currentStackMembershipPostId;
-  const currentStackHref = currentStack ? `/stacks/${currentStack.id}` : null;
-  const shouldShowCurrentStackPanel = Boolean(currentStack && profile?.id);
+  const resolvedActiveStackPostId = activeStackPostId ?? currentStackMembershipPostId;
+  const currentStackHref = resolvedActiveStackPostId
+    ? `/stacks/${resolvedActiveStackPostId}`
+    : null;
+  const shouldShowCurrentStackPanel = Boolean(
+    type === "stacks" && profile?.id && resolvedActiveStackPostId
+  );
   const showBlockedCurrentStackCopy = isBlockedByCurrentStackMessage(message);
   const isBlockedFromStackCreate =
     type === "stacks" &&
@@ -416,7 +445,7 @@ export async function LFGPageShell({
     type === "stacks" &&
     Boolean(profile?.id) &&
     isBlockedFromStackCreate &&
-    !currentStackForBlockedState;
+    !resolvedActiveStackPostId;
   if (type === "stacks") {
     stacksPerfLog("LFGPageShell stacks total data load", tPage, pageData.posts.length);
   }
@@ -424,7 +453,7 @@ export async function LFGPageShell({
   if (shouldShowCurrentStackFallback && process.env.NODE_ENV !== "production") {
     console.warn("[lfg] Current stack block mismatch", {
       activeStackPostId: resolvedActiveStackPostId ?? null,
-      hasCurrentStack: Boolean(currentStackForBlockedState),
+      hasCurrentStack: Boolean(resolvedActiveStackPostId),
       message: message ?? null,
       profileId: profile?.id ?? null,
       type: type ?? null,
@@ -679,12 +708,14 @@ export async function LFGPageShell({
                       title="Competitive profile required"
                     />
                   ) : type === "stacks" && isBlockedFromStackCreate ? (
-                    currentStackForBlockedState && profile?.id ? (
-                      <CurrentStackPanel
-                        currentProfileId={profile.id}
-                        post={currentStackForBlockedState}
-                        showBlockedCreateCopy
-                      />
+                    resolvedActiveStackPostId && profile?.id ? (
+                      <Suspense fallback={<CurrentStackPanelFallback />}>
+                        <DeferredCurrentStackPanel
+                          activeStackPostId={resolvedActiveStackPostId}
+                          currentProfileId={profile.id}
+                          showBlockedCreateCopy
+                        />
+                      </Suspense>
                     ) : (
                       <CurrentStackFallbackPanel blockingPostId={resolvedActiveStackPostId} />
                     )
@@ -729,12 +760,14 @@ export async function LFGPageShell({
                       : ""
                   }
                 >
-                {shouldShowCurrentStackPanel && profile?.id && currentStack ? (
-                  <CurrentStackPanel
-                    currentProfileId={profile.id}
-                    post={currentStack}
-                    showBlockedCreateCopy={showBlockedCurrentStackCopy}
-                  />
+                {shouldShowCurrentStackPanel && profile?.id && resolvedActiveStackPostId ? (
+                  <Suspense fallback={<CurrentStackPanelFallback />}>
+                    <DeferredCurrentStackPanel
+                      activeStackPostId={resolvedActiveStackPostId}
+                      currentProfileId={profile.id}
+                      showBlockedCreateCopy={showBlockedCurrentStackCopy}
+                    />
+                  </Suspense>
                 ) : shouldShowCurrentStackFallback ? (
                   <CurrentStackFallbackPanel blockingPostId={resolvedActiveStackPostId} />
                 ) : null}

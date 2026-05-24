@@ -68,12 +68,19 @@ Server-side helpers live in `overclock/lib/blocks/user-blocks.ts`.
 - `isBlocked(viewerId, targetId)`
 - `hasEitherUserBlocked(userA, userB)`
 - `getBlockedProfileIdsForViewer(viewerId)`
+- `isBlockedTrusted({ currentProfileId, viewerId, targetId })`
+- `hasEitherUserBlockedTrusted({ currentProfileId, userA, userB })`
+- `getBlockedProfileIdsForViewerTrusted({ currentProfileId, viewerId })`
 
 These helpers are the app-level entrypoint for UI and server reads.
 
 They must only be used when the current authenticated profile is the viewer or
 one side of the pair. The helpers now fail closed in app code before calling
 the RPCs when that ownership check is not true.
+
+The `*Trusted` variants are for server code that already knows the
+authenticated profile id and wants to avoid an extra profile lookup before
+calling the block RPC.
 
 ## Enforcement Rules
 
