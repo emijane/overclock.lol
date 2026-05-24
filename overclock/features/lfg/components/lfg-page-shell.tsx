@@ -6,10 +6,8 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
 import { createLFGPost } from "@/features/lfg/actions";
-import {
-  DUOS_PLACEHOLDER_POSTS,
-  STACKS_PLACEHOLDER_POSTS,
-} from "@/features/lfg/dev-fixtures";
+import { STACKS_PLACEHOLDER_POSTS } from "@/features/lfg/dev-fixtures";
+import { getDuosFeedInitialPage } from "@/features/lfg/duos-feed";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
@@ -41,6 +39,7 @@ import {
 } from "./current-stack-panel";
 import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
 import { LFGGameModePicker } from "./lfg-game-mode-picker";
+import { DuosInfiniteFeed } from "./duos-infinite-feed";
 import { LFGRolePicker, type LFGRoleOption } from "./lfg-role-picker";
 import { LFGPostList } from "./lfg-post-list";
 import { LFGSidebar } from "./lfg-sidebar";
@@ -71,7 +70,9 @@ type LFGPageData = {
   activePostCounts: Record<"tank" | "dps" | "support", number>;
   competitiveProfile: Awaited<ReturnType<typeof getCompetitiveProfile>> | null;
   currentStackPostId: string | null;
+  hasMorePosts: boolean;
   inviteStates: Record<string, "invite_to_play" | "invite_sent" | "connected">;
+  nextCursor: { createdAt: string; id: string } | null;
   posts: import("@/lib/lfg/lfg-post-types").LFGPost[];
   postsErrorMessage: string | null;
   roleOptions: LFGRoleOption[];
@@ -155,9 +156,11 @@ function LFGFiltersBar({ description }: { description: string }) {
 function LFGSearchBar({
   feedFilters,
   type,
+  useFixtures = false,
 }: {
   feedFilters?: LFGFeedFilters;
   type: LFGType;
+  useFixtures?: boolean;
 }) {
   return (
     <div className="mt-4 space-y-1.5 sm:mt-5">
@@ -192,6 +195,7 @@ function LFGSearchBar({
           {feedFilters?.region ? (
             <input type="hidden" name="region" value={feedFilters.region} />
           ) : null}
+          {useFixtures ? <input type="hidden" name="fixtures" value="1" /> : null}
         </div>
       </form>
       <div className="px-1">
@@ -257,13 +261,58 @@ async function getLFGPageData(
   feedFilters?: LFGFeedFilters,
   useFixtures = false
 ): Promise<LFGPageData> {
+  if (type === "duos") {
+    const tDuosPage = Date.now();
+    const dtoResult = await getDuosFeedInitialPage({
+      filters: feedFilters,
+      useFixtures,
+      viewerProfileId,
+    })
+      .then((dto) => ({ dto, postsErrorMessage: null }))
+      .catch(() => ({
+        dto: null,
+        postsErrorMessage: "Try refreshing in a moment.",
+      }));
+    logLFGRoutePerf(
+      type,
+      "getLFGPageData duos initial feed",
+      tDuosPage,
+      dtoResult.dto?.posts.length
+    );
+
+    return {
+      activePostCounts: dtoResult.dto?.viewerBundle?.activePostCounts ?? {
+        tank: 0,
+        dps: 0,
+        support: 0,
+      },
+      competitiveProfile: dtoResult.dto?.viewerBundle?.competitiveProfile ?? null,
+      currentStackPostId: null,
+      hasMorePosts: dtoResult.dto?.hasMore ?? false,
+      inviteStates: dtoResult.dto?.inviteStates ?? {},
+      nextCursor: dtoResult.dto?.nextCursor ?? null,
+      posts: dtoResult.dto?.posts ?? [],
+      postsErrorMessage: dtoResult.postsErrorMessage,
+      roleOptions:
+        dtoResult.dto?.viewerBundle?.competitiveProfile && dtoResult.dto.viewerBundle
+          ? buildRoleOptions(
+              dtoResult.dto.viewerBundle.competitiveProfile,
+              dtoResult.dto.viewerBundle.heroPools
+            )
+          : [],
+      stackRequestStates: {},
+    };
+  }
+
   if (useFixtures) {
     return {
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
       currentStackPostId: null,
+      hasMorePosts: false,
       inviteStates: {},
-      posts: type === "stacks" ? STACKS_PLACEHOLDER_POSTS : DUOS_PLACEHOLDER_POSTS,
+      nextCursor: null,
+      posts: STACKS_PLACEHOLDER_POSTS,
       postsErrorMessage: null,
       roleOptions: [],
       stackRequestStates: {},
@@ -294,7 +343,9 @@ async function getLFGPageData(
       activePostCounts: { tank: 0, dps: 0, support: 0 },
       competitiveProfile: null,
       currentStackPostId: null,
+      hasMorePosts: false,
       inviteStates: dtoResult.dto?.inviteStates ?? {},
+      nextCursor: null,
       posts: dtoResult.dto?.posts ?? [],
       postsErrorMessage: dtoResult.postsErrorMessage,
       roleOptions: [],
@@ -319,7 +370,9 @@ async function getLFGPageData(
     activePostCounts,
     competitiveProfile,
     currentStackPostId,
+    hasMorePosts: false,
     inviteStates: dtoResult.dto?.inviteStates ?? {},
+    nextCursor: null,
     posts: dtoResult.dto?.posts ?? [],
     postsErrorMessage: dtoResult.postsErrorMessage,
     roleOptions: competitiveProfile ? buildRoleOptions(competitiveProfile, heroPools) : [],
@@ -390,11 +443,13 @@ export async function LFGPageShell({
     activePostCounts: { tank: 0, dps: 0, support: 0 },
     competitiveProfile: null,
     currentStackPostId: null,
+    hasMorePosts: false,
     inviteStates: {},
+    nextCursor: null,
     posts: [],
     postsErrorMessage: null,
-      roleOptions: [],
-      stackRequestStates: {},
+    roleOptions: [],
+    stackRequestStates: {},
   };
   const currentProfilePromise = (
     needsFullProfile ? getCurrentProfile() : getCurrentProfileIdentity()
@@ -458,13 +513,15 @@ export async function LFGPageShell({
   const profileSetupCtaLabel = "Open Competitive Profile";
   const sectionHref = type ? `/${type}` : "/lfg";
   const visiblePostCount = pageData.posts.length;
-  const duosResultsLabel = `${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} returned`;
+  const isDuosPage = type === "duos";
+  const isStacksPage = type === "stacks";
+  const duosResultsLabel = isDuosPage
+    ? "Latest posts loaded first. Scroll to load more."
+    : `${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} returned`;
   const resolvedCreatePostHref = createPostHref ?? (type ? `/${type}/create` : "/lfg");
   const guestCreateHref = type ? `/login?next=/${type}/create` : "/login";
   const isComposerOnlyPage = shouldShowComposer && !shouldShowFeed;
   const displayTitle = isComposerOnlyPage ? `/ ${title}` : title;
-  const isDuosPage = type === "duos";
-  const isStacksPage = type === "stacks";
   const usesDuosFeedTone = isDuosPage || isStacksPage;
   const useSidebarLayout = shouldShowFeed && (type === "duos" || type === "stacks");
   const isStacksFeed = shouldShowFeed && type === "stacks";
@@ -703,7 +760,11 @@ export async function LFGPageShell({
                   </p>
                 ) : null}
                 {usesDuosFeedTone && type && shouldShowFeed ? (
-                  <LFGSearchBar feedFilters={feedFilters} type={type} />
+                  <LFGSearchBar
+                    feedFilters={feedFilters}
+                    type={type}
+                    useFixtures={useFixtures}
+                  />
                 ) : null}
                 </div>
                 {usesDuosFeedTone ? (
@@ -834,24 +895,46 @@ export async function LFGPageShell({
                 ) : (
                   <LFGFiltersBar description={filtersDescription} />
                 )}
-                <LFGPostList
-                  cardClassName={
-                    undefined
-                  }
-                  currentProfileId={profile?.id ?? null}
-                  emptyStateDescription={emptyStateDescription}
-                  emptyStateTitle={emptyStateTitle}
-                  errorMessage={pageData.postsErrorMessage}
-                  hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
-                  inviteStates={inviteStates}
-                  layout={type === "duos" || type === "stacks" ? "grid-3" : "list"}
-                  posts={pageData.posts}
-                  retryHref={sectionHref}
-                  stackRequestStates={stackRequestStates}
-                  tone={usesDuosFeedTone ? "duos" : "default"}
-                  type={type}
-                  viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
-                />
+                {type === "duos" ? (
+                  <DuosInfiniteFeed
+                    key={`duos-${useFixtures ? "fixtures" : "live"}-${JSON.stringify(
+                      feedFilters ?? {}
+                    )}`}
+                    currentProfileId={profile?.id ?? null}
+                    emptyStateDescription={emptyStateDescription}
+                    emptyStateTitle={emptyStateTitle}
+                    errorMessage={pageData.postsErrorMessage}
+                    feedFilters={feedFilters}
+                    hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
+                    initialHasMore={pageData.hasMorePosts}
+                    initialInviteStates={inviteStates}
+                    initialNextCursor={pageData.nextCursor}
+                    initialPosts={pageData.posts}
+                    retryHref={sectionHref}
+                    tone={usesDuosFeedTone ? "duos" : "default"}
+                    useFixtures={useFixtures}
+                    viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
+                  />
+                ) : (
+                  <LFGPostList
+                    cardClassName={
+                      undefined
+                    }
+                    currentProfileId={profile?.id ?? null}
+                    emptyStateDescription={emptyStateDescription}
+                    emptyStateTitle={emptyStateTitle}
+                    errorMessage={pageData.postsErrorMessage}
+                    hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
+                    inviteStates={inviteStates}
+                    layout={type === "stacks" ? "grid-3" : "list"}
+                    posts={pageData.posts}
+                    retryHref={sectionHref}
+                    stackRequestStates={stackRequestStates}
+                    tone={usesDuosFeedTone ? "duos" : "default"}
+                    type={type}
+                    viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
+                  />
+                )}
                 </div>
               </>
             ) : null}

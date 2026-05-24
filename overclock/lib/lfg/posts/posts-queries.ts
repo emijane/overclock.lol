@@ -5,7 +5,8 @@ import {
   getBlockedProfileIdsForViewerTrusted,
   isBlocked,
 } from "@/lib/blocks/user-blocks";
-import { stacksPerfLog } from "@/lib/dev/perf-log";
+import { duosPerfLog, stacksPerfLog } from "@/lib/dev/perf-log";
+import { getLFGPostInviteStates } from "@/lib/matches/play-invites";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { getCurrentUserId } from "@/lib/profiles/get-current-profile";
 import { createClient } from "@/lib/supabase/server";
@@ -31,6 +32,34 @@ export type StackPostDetail = {
   isExpired: boolean;
   post: LFGPost;
 };
+
+export type LFGFeedCursor = {
+  createdAt: string;
+  id: string;
+};
+
+export type ActiveLFGPostsPage = {
+  hasMore: boolean;
+  inviteStates: import("@/lib/matches/play-invite-types").LFGInviteStateMap;
+  nextCursor: LFGFeedCursor | null;
+  posts: LFGPost[];
+};
+
+function logFeedPerf(
+  lfgType: LFGType,
+  label: string,
+  start: number,
+  rows?: number
+) {
+  if (lfgType === "stacks") {
+    stacksPerfLog(label, start, rows);
+    return;
+  }
+
+  if (lfgType === "duos") {
+    duosPerfLog(label, start, rows);
+  }
+}
 
 async function loadBadgesByProfileId(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -483,6 +512,138 @@ export async function getActiveLFGPosts(
         : []
     )
   );
+}
+
+export async function getActiveLFGPostsPage(input: {
+  cursor?: LFGFeedCursor | null;
+  filters?: LFGFeedFilters;
+  lfgType: LFGType;
+  limit: number;
+  viewerProfileId?: string | null;
+}): Promise<ActiveLFGPostsPage> {
+  const supabase = await createClient();
+  const isStacks = input.lfgType === "stacks";
+  const blockedProfileIds = input.viewerProfileId
+    ? await getBlockedProfileIdsForViewer(input.viewerProfileId)
+    : [];
+
+  let query = supabase
+    .from("lfg_posts")
+    .select(
+      [
+        "id",
+        "profile_id",
+        "lfg_type",
+        "game_mode",
+        "title",
+        "status",
+        "looking_for_roles",
+        "posting_role",
+        "snapshot_platform",
+        "snapshot_rank_tier",
+        "snapshot_rank_division",
+        "snapshot_region",
+        "snapshot_timezone",
+        "hero_pool_snapshot",
+        "created_at",
+        ...(isStacks ? ["max_group_size", "current_member_count"] : []),
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+      ].join(",")
+    )
+    .eq("lfg_type", input.lfgType)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
+
+  query = isStacks
+    ? query.in("status", ["active", "filled"]).gt("expires_at", new Date().toISOString())
+    : query.eq("status", "active").gt("expires_at", new Date().toISOString());
+
+  if (input.filters?.role) {
+    query = query.eq("posting_role", input.filters.role);
+  }
+
+  if (input.filters?.lookingFor) {
+    query = query.contains("looking_for_roles", [input.filters.lookingFor]);
+  }
+
+  if (input.filters?.mode) {
+    query = query.eq("game_mode", input.filters.mode);
+  }
+
+  if (input.filters?.search) {
+    query = query.ilike("title", `%${input.filters.search}%`);
+  }
+
+  if (input.filters?.region) {
+    query = query.eq("snapshot_region", input.filters.region);
+  }
+
+  if (input.filters?.minRank || input.filters?.maxRank) {
+    query = query.in(
+      "snapshot_rank_tier",
+      getLFGRankRangeTiers({
+        maxRank: input.filters.maxRank,
+        minRank: input.filters.minRank,
+      })
+    );
+  }
+
+  if (blockedProfileIds.length > 0) {
+    query = query.not("profile_id", "in", `(${blockedProfileIds.join(",")})`);
+  }
+
+  if (input.cursor) {
+    query = query.or(
+      `created_at.lt.${input.cursor.createdAt},and(created_at.eq.${input.cursor.createdAt},id.lt.${input.cursor.id})`
+    );
+  }
+
+  const tQuery = Date.now();
+  const { data, error } = await query.limit(input.limit + 1);
+  logFeedPerf(input.lfgType, "getActiveLFGPostsPage query", tQuery, data?.length ?? 0);
+
+  if (error) {
+    throw error;
+  }
+
+  const postRows = ((data ?? []) as unknown) as Array<Record<string, unknown>>;
+  const pageRows = postRows.slice(0, input.limit);
+  const hasMore = postRows.length > input.limit;
+  const [badgesByProfileId, stackMembersByPostId] = await Promise.all([
+    loadBadgesByProfileId(supabase, pageRows, "getActiveLFGPostsPage"),
+    isStacks && pageRows.length > 0
+      ? loadStackMembersByPostId(supabase, pageRows, "getActiveLFGPostsPage")
+      : Promise.resolve(new Map<string, StackMember[]>()),
+  ]);
+
+  const posts = pageRows.map((row) =>
+    normalizeLFGPostRow(
+      row,
+      typeof row.profile_id === "string"
+        ? badgesByProfileId.get(row.profile_id) ?? []
+        : [],
+      typeof row.id === "string"
+        ? (stackMembersByPostId.get(row.id) ?? []).filter(
+            (member) => !blockedProfileIds.includes(member.profileId)
+          )
+        : []
+    )
+  );
+  const inviteStates = await getLFGPostInviteStates({
+    currentProfileId: input.viewerProfileId ?? null,
+    posts: posts.map((post) => ({
+      id: post.id,
+      profileId: post.profileId,
+    })),
+  });
+  const lastPost = posts.at(-1) ?? null;
+
+  return {
+    hasMore,
+    inviteStates,
+    nextCursor: hasMore && lastPost ? { createdAt: lastPost.createdAt, id: lastPost.id } : null,
+    posts,
+  };
 }
 
 export async function getCurrentActiveStackForProfile(
