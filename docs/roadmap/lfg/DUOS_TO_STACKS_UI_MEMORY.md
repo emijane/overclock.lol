@@ -97,6 +97,26 @@ When revisiting `/stacks`, review these Duos changes explicitly:
 - Prefer reusing the Duos cursor/query pattern for stacks instead of adding
   offset pagination or a separate loading model.
 
+## Sidebar Sticky + Scroll Behavior (Duos + Stacks)
+
+The LFG sidebar (`overclock/features/lfg/components/lfg-sidebar.tsx`) now uses sticky
+positioning with internal overflow scrolling.
+
+Key classes on `<aside>`:
+
+- `sticky top-6 sm:top-8` — sidebar sticks to viewport as page scrolls, with vertical
+  padding matching the page's `py-6 sm:py-8` rhythm
+- `max-h-[calc(100vh-3rem)] sm:max-h-[calc(100vh-4rem)]` — caps sidebar height at the
+  viewport minus balanced top+bottom breathing room
+- `overflow-y-auto oc-sidebar-scroll` — internal scroll when filter content exceeds
+  height; scrollbar styled to match the overclock theme (3px wide, `rgba(255,255,255,0.06)`
+  thumb, transparent track)
+
+Scrollbar styles live in `overclock/app/globals.css` under `.oc-sidebar-scroll`.
+
+When mirroring stacks sidebar: these same sticky/scroll classes should apply since the
+sidebar component is shared and `LFGSidebar` is used for both Duos and Stacks.
+
 ## What Is Intentionally Duos-Specific For Now
 
 These points should not be assumed to be automatic stacks decisions:

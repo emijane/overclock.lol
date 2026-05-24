@@ -342,6 +342,30 @@ summary {
   }
 }
 
+/* Sidebar themed scrollbar */
+
+.oc-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
+}
+
+.oc-sidebar-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.oc-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.oc-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+}
+
+.oc-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
 /* Search input chrome reset */
 
 .duos-search-input {

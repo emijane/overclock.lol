@@ -191,7 +191,7 @@ export function LFGSidebar({
 
   return (
     <aside
-      className={`hidden min-h-full w-56 shrink-0 self-stretch flex-col gap-4 p-4 lg:flex ${
+      className={`hidden w-56 shrink-0 self-start flex-col gap-4 p-4 lg:flex sticky top-6 sm:top-8 max-h-[calc(100vh-3rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll ${
         tone === "duos"
           ? "rounded-[10px] border border-white/[0.03] bg-white/[0.01]"
           : "rounded-xl border border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"

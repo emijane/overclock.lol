@@ -8,7 +8,7 @@ export function GlobalBackgroundShell({
   children,
 }: GlobalBackgroundShellProps) {
   return (
-    <div className="oc-atmosphere-bg relative flex-1 overflow-hidden">
+    <div className="oc-atmosphere-bg relative flex-1 overflow-clip">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
