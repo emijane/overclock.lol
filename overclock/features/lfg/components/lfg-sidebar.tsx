@@ -105,15 +105,16 @@ function FilterSection({
         onClick={() => setIsOpen((prev) => !prev)}
         className={`flex w-full items-center justify-between py-0.5 transition hover:text-zinc-300 ${
           tone === "duos"
-            ? "oc-profile-meta text-[11px] font-medium uppercase tracking-[0.16em]"
+            ? "oc-profile-meta text-[11px] font-medium uppercase tracking-[0.16em] hover:text-zinc-100"
             : "text-[11px] font-medium text-zinc-400"
         }`}
+        style={tone === "duos" ? { color: "rgb(212 212 216 / 0.88)" } : undefined}
       >
         {title}
         {isOpen ? (
-          <ChevronUpIcon className="h-2.5 w-2.5 shrink-0 text-zinc-500" />
+          <ChevronUpIcon className="h-2.5 w-2.5 shrink-0 text-zinc-400" />
         ) : (
-          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-500" />
+          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-400" />
         )}
       </button>
       {isOpen ? <div className="mt-1 space-y-px">{children}</div> : null}
@@ -205,6 +206,7 @@ export function LFGSidebar({
               ? "oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em]"
               : "text-[10px] font-medium text-zinc-600"
           }`}
+          style={tone === "duos" ? { color: "rgb(228 228 231 / 0.9)" } : undefined}
         >
           LFG
         </p>
