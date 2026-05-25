@@ -131,6 +131,9 @@ the title. The "Search uses X-Y characters" disclaimer was removed.
 - `PageReveal` className (duos): `"flex items-center justify-between gap-4"` (row always, no
   responsive column flip needed since sidebar handles layout)
 - `LFGSearchBar` now renders only `<form>` with no outer wrapper div and no disclaimer
+- Duos pairs that search form with the primary `Create Post` / `Log in to Post` CTA on the
+  same top row, immediately to the right of search on desktop and stacked beneath it on
+  narrower widths
 - Search bar is wired via the first branch of the right-side ternary in `PageReveal`;
   stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
 - Duos also adds a second compact utility row under the title/search line:

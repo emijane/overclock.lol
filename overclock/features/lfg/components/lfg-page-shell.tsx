@@ -682,7 +682,18 @@ export async function LFGPageShell({
                       {displayTitle}
                     </h1>
                   </div>
-                  {usesDuosFeedTone && type && shouldShowFeed ? (
+                  {isDuosPage && shouldShowFeed ? (
+                    <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
+                      <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
+                      <Link
+                        href={user ? resolvedCreatePostHref : guestCreateHref}
+                        className="oc-profile-display inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                        {user ? "Create Post" : "Log in to Post"}
+                      </Link>
+                    </div>
+                  ) : usesDuosFeedTone && type && shouldShowFeed ? (
                     <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
                   ) : type && composerMode === "cta" && !useSidebarLayout ? (
                     type === "stacks" && user && isBlockedFromStackCreate ? (
