@@ -687,9 +687,9 @@ export async function LFGPageShell({
                       <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
                       <Link
                         href={user ? resolvedCreatePostHref : guestCreateHref}
-                        className="oc-profile-display inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                        className="group oc-profile-display inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-300 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
                       >
-                        <PlusIcon className="h-4 w-4" />
+                        <PlusIcon className="h-4 w-4 text-zinc-400 transition-colors duration-200 group-hover:text-white" />
                         {user ? "Create Post" : "Log in to Post"}
                       </Link>
                     </div>
