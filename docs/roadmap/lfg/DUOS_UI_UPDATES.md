@@ -26,6 +26,8 @@ Current header shape on `/duos`:
 - large `/ Duos` heading
 - no inline "LFG Channel" eyebrow
 - Duos feed search
+- compact utility strip under the title row with:
+  status copy on the left and a live "Showing X posts" filter summary on the right
 - compact first-pass filter bar below the header
 
 ## Current Create Page Shape

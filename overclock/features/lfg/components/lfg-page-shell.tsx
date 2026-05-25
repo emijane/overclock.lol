@@ -9,6 +9,7 @@ import { createLFGPost } from "@/features/lfg/actions";
 import { STACKS_PLACEHOLDER_POSTS } from "@/features/lfg/dev-fixtures";
 import { getDuosFeedInitialPage } from "@/features/lfg/duos-feed";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
@@ -17,7 +18,7 @@ import {
   type LFGFeedFilters,
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
-import type { LFGType } from "@/lib/lfg/lfg-post-types";
+import { getLFGGameModeLabel, type LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveStackPostById,
   getCurrentActiveStackPostIdForProfile,
@@ -130,6 +131,27 @@ function formatMissingFields(fields: string[]) {
   }
 
   return `${fields.slice(0, -1).join(", ")}, and ${fields[fields.length - 1]}`;
+}
+
+function buildDuosHeaderSummary(
+  visiblePostCount: number,
+  feedFilters?: LFGFeedFilters
+) {
+  const summaryParts = [`Showing ${visiblePostCount} posts`];
+  const filterParts = [
+    feedFilters?.region ?? null,
+    feedFilters?.mode ? getLFGGameModeLabel(feedFilters.mode) : null,
+    feedFilters?.role ? `Role: ${COMPETITIVE_ROLE_LABELS[feedFilters.role]}` : null,
+    feedFilters?.lookingFor ? `Needs: ${COMPETITIVE_ROLE_LABELS[feedFilters.lookingFor]}` : null,
+  ].filter((value): value is string => Boolean(value));
+
+  if (filterParts.length > 0) {
+    summaryParts.push(...filterParts.slice(0, 3));
+  } else {
+    summaryParts.push("All regions", "All roles");
+  }
+
+  return summaryParts.join(" • ");
 }
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -521,6 +543,8 @@ export async function LFGPageShell({
   const currentStackHref = resolvedActiveStackPostId
     ? `/stacks/${resolvedActiveStackPostId}`
     : null;
+  const duosHeaderSummary =
+    isDuosPage && shouldShowFeed ? buildDuosHeaderSummary(visiblePostCount, feedFilters) : null;
   const shouldShowCurrentStackPanel = Boolean(
     type === "stacks" && profile?.id && resolvedActiveStackPostId
   );
@@ -624,7 +648,7 @@ export async function LFGPageShell({
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "bg-[linear-gradient(180deg,rgba(9,10,14,0.98)_0%,rgba(9,10,14,0.94)_100%)] py-2.5 sm:py-3"
+                    ? "py-2.5 sm:py-3"
                     : "py-5 sm:py-7"
               }`}
             >
@@ -734,6 +758,16 @@ export async function LFGPageShell({
                     </div>
                     ) : null}
                   </PageReveal>
+                {isDuosPage && shouldShowFeed && duosHeaderSummary ? (
+                  <div className="flex flex-col gap-1 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                    <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-400">
+                      Find a ranked partner, warmup duo, or comms-first queue.
+                    </p>
+                    <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 sm:text-right">
+                      {duosHeaderSummary}
+                    </p>
+                  </div>
+                ) : null}
                 {description ? (
                   <p
                     className={`max-w-xl leading-5 ${

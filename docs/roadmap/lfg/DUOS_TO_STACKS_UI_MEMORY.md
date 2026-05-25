@@ -133,6 +133,11 @@ the title. The "Search uses X-Y characters" disclaimer was removed.
 - `LFGSearchBar` now renders only `<form>` with no outer wrapper div and no disclaimer
 - Search bar is wired via the first branch of the right-side ternary in `PageReveal`;
   stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
+- Duos also adds a second compact utility row under the title/search line:
+  fixed status copy on the left plus a derived `Showing X posts` filter summary on the right
+- The summary is based on already-loaded Duos page state only:
+  visible post count plus selected region / mode / role / needs filters, with no claimed
+  global active-post total
 
 Key files: `overclock/features/lfg/components/lfg-page-shell.tsx`
 
