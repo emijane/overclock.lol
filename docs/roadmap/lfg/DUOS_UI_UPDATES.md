@@ -37,6 +37,8 @@ Current header shape on `/duos`:
 - mobile no longer wraps the full desktop dropdown row inline; it now uses a dedicated
   `Filters` trigger plus a centered mobile filter modal and only shows removable pills
   when filters are active
+- mobile now uses a slightly denser Duos shell and tighter spacing so the page feels closer
+  to the desktop panel composition without changing the shared atmosphere background recipe
 
 ## Current Create Page Shape
 

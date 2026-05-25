@@ -630,7 +630,7 @@ export async function LFGPageShell({
           <div
             className={
               usesDuosFeedTone
-                ? "flex flex-1 min-h-0 flex-col overflow-hidden rounded-[10px] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                ? "flex flex-1 min-h-0 flex-col overflow-hidden rounded-[16px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_28%,rgba(7,7,9,0.96)_100%)] shadow-[0_16px_36px_rgba(0,0,0,0.22)] sm:rounded-[10px] sm:border-0 sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] sm:shadow-none"
                 : "flex flex-1 min-h-0 flex-col overflow-hidden rounded-[28px]"
             }
           >
@@ -639,19 +639,23 @@ export async function LFGPageShell({
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "py-2.5 sm:py-3"
+                    ? "py-2 sm:py-3"
                     : "py-5 sm:py-7"
               }`}
             >
               <div
                 className={
-                  isComposerOnlyPage ? "space-y-3" : usesDuosFeedTone ? "space-y-2" : "space-y-5"
+                  isComposerOnlyPage
+                    ? "space-y-3"
+                    : usesDuosFeedTone
+                      ? "space-y-1.5 sm:space-y-2"
+                      : "space-y-5"
                 }
               >
                 <PageReveal
                   className={
                     usesDuosFeedTone
-                      ? "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+                      ? "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
                       : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                   }
                   delay={0}
@@ -907,7 +911,7 @@ export async function LFGPageShell({
                 <div
                   className={
                     usesDuosFeedTone
-                      ? "flex min-h-0 flex-1 flex-col border-t border-white/[0.03] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                      ? "flex min-h-0 flex-1 flex-col border-t border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.014)_0%,rgba(255,255,255,0.006)_100%)] sm:border-t sm:border-white/[0.03] sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
                       : "flex min-h-0 flex-1 flex-col"
                   }
                 >

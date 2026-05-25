@@ -155,8 +155,11 @@ Key files: `overclock/features/lfg/components/lfg-page-shell.tsx`
 Additional mobile note:
 
 - Duos no longer keeps the full inline dropdown toolbar visible on small screens.
-- Mobile now uses a compact `Filters` trigger that opens a bottom-sheet style filter
-  surface, while removable pills stay hidden until filters are active.
+- Mobile now uses a compact `Filters` trigger that opens a centered filter modal,
+  while removable pills stay hidden until filters are active.
+- Mobile also uses a slightly stronger shell treatment and tighter spacing so it exposes
+  less raw atmosphere background than before, while still sharing the same atmosphere
+  background layers as desktop.
 
 ## Sidebar Sticky + Scroll Behavior (Duos + Stacks)
 
