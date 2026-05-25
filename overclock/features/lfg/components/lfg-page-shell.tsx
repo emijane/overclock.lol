@@ -37,6 +37,7 @@ import {
   isBlockedByCurrentStackMessage,
 } from "./current-stack-panel";
 import {
+  buildClearFiltersHref,
   buildFeedFilterSearchParams,
   getActiveLFGFilterChips,
 } from "./lfg-active-filter-links";
@@ -533,6 +534,13 @@ export async function LFGPageShell({
           feedFilters
         )
       : [];
+  const duosClearFiltersHref =
+    isDuosPage && shouldShowFeed && duosHeaderChips.length > 0
+      ? buildClearFiltersHref(
+          sectionHref,
+          buildFeedFilterSearchParams(feedFilters, useFixtures)
+        )
+      : null;
   const shouldShowCurrentStackPanel = Boolean(
     type === "stacks" && profile?.id && resolvedActiveStackPostId
   );
@@ -609,13 +617,8 @@ export async function LFGPageShell({
         {useSidebarLayout && type ? (
           <Suspense fallback={<div className="hidden w-56 shrink-0 self-stretch lg:block" />}>
             <LFGSidebar
-              createPostHref={resolvedCreatePostHref}
-              currentStackHref={currentStackHref}
-              hasActiveStack={isBlockedFromStackCreate}
-              isLoggedIn={Boolean(user)}
               selectedFilters={feedFilters}
               tone={usesDuosFeedTone ? "duos" : "default"}
-              type={type}
             />
           </Suspense>
         ) : null}
@@ -681,11 +684,6 @@ export async function LFGPageShell({
                     >
                       {displayTitle}
                     </h1>
-                    {isDuosPage && shouldShowFeed ? (
-                      <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-300">
-                        Find a ranked partner, warmup duo, or comms-first queue.
-                      </p>
-                    ) : null}
                   </div>
                   {isDuosPage && shouldShowFeed ? (
                     <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
@@ -787,6 +785,14 @@ export async function LFGPageShell({
                             <XIcon className="h-3 w-3 text-zinc-400" />
                           </Link>
                         ))}
+                        {duosClearFiltersHref ? (
+                          <Link
+                            href={duosClearFiltersHref}
+                            className="inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                          >
+                            Clear filters
+                          </Link>
+                        ) : null}
                       </div>
                     ) : (
                       <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 sm:text-right">

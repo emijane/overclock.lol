@@ -136,11 +136,17 @@ the title. The "Search uses X-Y characters" disclaimer was removed.
   narrower widths
 - Search bar is wired via the first branch of the right-side ternary in `PageReveal`;
   stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
-- Duos now keeps the support/status copy directly inside the title block on row 1
+- Duos row 1 now uses a simpler title block with no extra support/status sentence
 - The second row is an active-state toolbar with:
   `Active filters` on the left plus removable active-filter pills on the right
 - The header pills reuse the same clear-link and label logic as the active filter controls,
   and the lower filter bar no longer duplicates the removable chip row for Duos
+- When active filters exist, the same header pill row also renders a `Clear filters` pill
+  so bulk-clear stays in the same control lane as single-filter removal
+- The shared left sidebar no longer shows a duplicate `Create Post` button, so the inline
+  top-row search + CTA cluster is the only feed-level create affordance inside the main Duos
+  browsing shell
+- The shared left sidebar also no longer renders its older standalone `clear filters` link
 - When no active filters are present, the utility row falls back to a compact
   `Showing X posts • All regions • All roles` summary with no claimed global active total
 

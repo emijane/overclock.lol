@@ -6,8 +6,6 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   LayoutGridIcon,
-  PlusIcon,
-  RotateCcwIcon,
   Users2Icon,
   UsersIcon,
 } from "lucide-react";
@@ -23,7 +21,6 @@ import {
 import {
   getLFGGameModeLabel,
   LFG_GAME_MODE_OPTIONS,
-  type LFGType,
 } from "@/lib/lfg/lfg-post-types";
 
 type FilterKey =
@@ -64,19 +61,6 @@ function buildRankFilterHref(
     params.delete("min_rank");
     params.delete("max_rank");
   }
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
-
-function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) {
-  const params = new URLSearchParams(searchParams.toString());
-  params.delete("mode");
-  params.delete("role");
-  params.delete("looking_for");
-  params.delete("min_rank");
-  params.delete("max_rank");
-  params.delete("region");
-  params.delete("search");
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
@@ -146,42 +130,17 @@ function FilterItem({
 }
 
 type LFGSidebarProps = {
-  createPostHref: string;
-  currentStackHref?: string | null;
-  hasActiveStack?: boolean;
-  isLoggedIn: boolean;
   selectedFilters?: LFGFeedFilters;
   tone?: "default" | "duos";
-  type: LFGType;
 };
 
 export function LFGSidebar({
-  createPostHref,
-  currentStackHref,
-  hasActiveStack = false,
-  isLoggedIn,
   selectedFilters,
   tone = "default",
-  type,
 }: LFGSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
-
-  const hasActiveFilters = Boolean(
-    selectedFilters?.lookingFor ||
-      selectedFilters?.maxRank ||
-      selectedFilters?.minRank ||
-      selectedFilters?.mode ||
-      selectedFilters?.role ||
-      selectedFilters?.region ||
-      selectedFilters?.search
-  );
-
-  const resolvedCreateHref = isLoggedIn
-    ? createPostHref
-    : `/login?next=/${type}/create`;
-  const shouldBlockStackCreate = type === "stacks" && isLoggedIn && hasActiveStack;
 
   // Single rank selection — both min and max set to the same tier
   const selectedRank =
@@ -235,56 +194,6 @@ export function LFGSidebar({
           })}
         </ul>
       </nav>
-
-      <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
-
-      {/* Create post */}
-      {shouldBlockStackCreate ? (
-        <div className="space-y-2">
-          <div
-            aria-disabled="true"
-            className={`px-2.5 ${
-              tone === "duos"
-                ? "rounded-[8px] border border-white/[0.04] bg-white/[0.015]"
-                : "rounded-md border border-white/8 bg-white/2"
-            }`}
-          >
-            <div className="oc-profile-display flex h-8 items-center gap-1.5 text-[12px] font-semibold text-zinc-500">
-              <PlusIcon className="h-3 w-3 shrink-0" />
-              Create Post
-            </div>
-          </div>
-          <div className="px-0.5">
-            <p className="oc-profile-meta text-[10px] leading-4 text-zinc-500">
-              You already have an active stack.
-            </p>
-            {currentStackHref ? (
-              <Link
-                href={currentStackHref}
-                className={`oc-profile-display mt-2 inline-flex h-7 items-center rounded-[10px] border px-3 text-[11px] font-semibold transition ${
-                  tone === "duos"
-                    ? "border-white/[0.06] bg-white/[0.03] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
-                    : "border-white/8 bg-white/2 text-zinc-300 hover:border-white/11 hover:text-zinc-100"
-                }`}
-              >
-                View current stack
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      ) : (
-        <Link
-          href={resolvedCreateHref}
-          className={`flex items-center gap-1.5 px-2.5 text-[12px] transition ${
-            tone === "duos"
-              ? "oc-profile-display h-8 rounded-[8px] border border-white/[0.04] bg-white/[0.02] font-semibold text-zinc-400 hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-zinc-200"
-              : "h-7 rounded-md border border-white/8 bg-white/2 font-medium text-zinc-400 hover:border-white/11 hover:text-zinc-200"
-          }`}
-        >
-          <PlusIcon className="h-3 w-3 shrink-0" />
-          Create Post
-        </Link>
-      )}
 
       <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
@@ -364,20 +273,6 @@ export function LFGSidebar({
             />
           ))}
         </FilterSection>
-
-        {hasActiveFilters ? (
-          <Link
-            href={buildClearFiltersHref(pathname, params)}
-            className={`flex items-center gap-1 pt-0.5 transition hover:text-zinc-400 ${
-              tone === "duos"
-                ? "oc-profile-meta text-[11px] font-normal"
-                : "text-[11px] font-normal text-zinc-600"
-            }`}
-          >
-            <RotateCcwIcon className="h-2.5 w-2.5 shrink-0" />
-            clear filters
-          </Link>
-        ) : null}
       </div>
     </aside>
   );
