@@ -25,9 +25,10 @@ Current header shape on `/duos`:
 
 - large `/ Duos` heading
 - no inline "LFG Channel" eyebrow
-- Duos feed search with the `Create Post` / `Log in to Post` CTA inline on the same top row
-- compact utility strip under the title row with:
-  status copy on the left and removable active-filter pills on the right
+- two-row toolbar layout:
+  title plus support copy on the left and search + `Create Post` / `Log in to Post` on the right
+- second active-state row under the title row with:
+  `Active filters` label on the left and removable active-filter pills on the right
 - compact first-pass filter bar below the header
 
 ## Current Create Page Shape

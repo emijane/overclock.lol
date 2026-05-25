@@ -648,7 +648,7 @@ export async function LFGPageShell({
                 <PageReveal
                   className={
                     usesDuosFeedTone
-                      ? "flex items-center justify-between gap-4"
+                      ? "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
                       : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                   }
                   delay={0}
@@ -681,9 +681,14 @@ export async function LFGPageShell({
                     >
                       {displayTitle}
                     </h1>
+                    {isDuosPage && shouldShowFeed ? (
+                      <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-300">
+                        Find a ranked partner, warmup duo, or comms-first queue.
+                      </p>
+                    ) : null}
                   </div>
                   {isDuosPage && shouldShowFeed ? (
-                    <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
+                    <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
                       <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
                       <Link
                         href={user ? resolvedCreatePostHref : guestCreateHref}
@@ -758,9 +763,9 @@ export async function LFGPageShell({
                     ) : null}
                   </PageReveal>
                 {isDuosPage && shouldShowFeed ? (
-                  <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                    <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-400">
-                      Find a ranked partner, warmup duo, or comms-first queue.
+                  <div className="flex flex-col gap-2 border-t border-white/[0.04] pt-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                    <p className="oc-profile-meta pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
+                      Active filters
                     </p>
                     {duosHeaderChips.length > 0 ? (
                       <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
@@ -768,11 +773,11 @@ export async function LFGPageShell({
                           <Link
                             key={chip.key}
                             href={chip.href}
-                            className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 transition hover:border-white/[0.12] hover:bg-white/[0.06]"
+                            className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] transition hover:border-white/[0.12] hover:bg-white/[0.06]"
                           >
-                            <span className="oc-profile-meta text-[11px]">{chip.label}:</span>
+                            <span className="oc-profile-meta">{chip.label}:</span>
                             <span
-                              className={`oc-profile-display text-[12px] font-medium text-zinc-100 ${
+                              className={`oc-profile-display font-medium text-zinc-100 ${
                                 chip.key === "search" ? "max-w-[11rem] truncate" : ""
                               }`}
                               title={chip.value}

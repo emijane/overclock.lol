@@ -128,16 +128,17 @@ are desktop-only (`lg:`). On mobile, `PageContainer` has no `min-h-0` constraint
 The search bar moved from below the h1 into the `PageReveal` row, right-aligned alongside
 the title. The "Search uses X-Y characters" disclaimer was removed.
 
-- `PageReveal` className (duos): `"flex items-center justify-between gap-4"` (row always, no
-  responsive column flip needed since sidebar handles layout)
+- `PageReveal` className (duos): now uses a stricter split-toolbar row instead of the earlier
+  single-line title/search layout
 - `LFGSearchBar` now renders only `<form>` with no outer wrapper div and no disclaimer
 - Duos pairs that search form with the primary `Create Post` / `Log in to Post` CTA on the
   same top row, immediately to the right of search on desktop and stacked beneath it on
   narrower widths
 - Search bar is wired via the first branch of the right-side ternary in `PageReveal`;
   stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
-- Duos also adds a second compact utility row under the title/search line:
-  fixed status copy on the left plus removable active-filter pills on the right
+- Duos now keeps the support/status copy directly inside the title block on row 1
+- The second row is an active-state toolbar with:
+  `Active filters` on the left plus removable active-filter pills on the right
 - The header pills reuse the same clear-link and label logic as the active filter controls,
   and the lower filter bar no longer duplicates the removable chip row for Duos
 - When no active filters are present, the utility row falls back to a compact
