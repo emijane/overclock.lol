@@ -104,8 +104,12 @@ export function LFGPostCard({
               />
             </>
           ) : null}
-          <div className={`absolute inset-0 bg-gradient-to-b from-black/24 via-black/44 ${tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"}`} />
-          <div className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent ${tone === "duos" ? "to-[var(--oc-bg-elevated)]" : "to-[var(--oc-bg-card)]"}`} />
+          {tone !== "duos" ? (
+            <>
+              <div className="absolute inset-0 bg-linear-to-b from-black/24 via-black/44 to-(--oc-bg-card)" />
+              <div className="absolute inset-x-0 bottom-0 h-8 bg-linear-to-b from-transparent to-(--oc-bg-card)" />
+            </>
+          ) : null}
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
@@ -137,8 +141,13 @@ export function LFGPostCard({
             />
           </div>
           <div className="absolute right-3 top-2 z-20 flex items-center gap-1">
+              {createdAtLabel ? (
+                <span suppressHydrationWarning className="oc-profile-meta text-[9px] font-medium">
+                  {createdAtLabel}
+                </span>
+              ) : null}
               {post.platform ? (
-                <span className="oc-profile-meta inline-flex h-4.5 items-center rounded-[5px] border border-white/[0.06] bg-black/40 px-1.5 text-[9px] font-medium text-zinc-300">
+                <span className="oc-profile-meta inline-flex h-4.5 items-center rounded-[5px] border border-white/6 bg-black/40 px-1.5 text-[9px] font-medium text-zinc-300">
                   {post.platform}
                 </span>
               ) : null}
@@ -147,11 +156,6 @@ export function LFGPostCard({
               >
                 {gameModeLabel}
               </span>
-              {createdAtLabel ? (
-                <span suppressHydrationWarning className="oc-profile-meta text-[9px] font-medium">
-                  {createdAtLabel}
-                </span>
-              ) : null}
               {showActions && isOwner && returnPath ? (
                 <LFGPostActionsMenu
                   postId={post.id}
@@ -287,7 +291,7 @@ export function LFGPostCard({
                     key={`${post.id}-${hero.id}`}
                     title={hero.label}
                     aria-label={hero.label}
-                    className={`relative h-8 w-8 overflow-hidden rounded-[8px] border border-white/[0.06] ${
+                    className={`relative h-8 w-8 overflow-hidden rounded-[8px] border border-white/6 ${
                       tone === "duos" ? "bg-zinc-900/80" : "bg-zinc-900/90 shadow-[0_5px_12px_rgba(0,0,0,0.14)]"
                     }`}
                   >
