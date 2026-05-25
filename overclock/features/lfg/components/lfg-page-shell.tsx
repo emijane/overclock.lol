@@ -608,7 +608,7 @@ export async function LFGPageShell({
           </Suspense>
         ) : null}
         <section
-          className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 flex-col ${isDuosPage ? "lg:overflow-hidden" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
+          className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 flex-col ${isDuosPage ? "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-hidden" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
@@ -620,11 +620,11 @@ export async function LFGPageShell({
             }
           >
             <header
-              className={`shrink-0 px-5 sm:px-6 ${
+              className={`relative z-10 shrink-0 px-5 sm:px-6 ${
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "py-2.5 sm:py-3"
+                    ? "bg-[linear-gradient(180deg,rgba(9,10,14,0.98)_0%,rgba(9,10,14,0.94)_100%)] py-2.5 sm:py-3"
                     : "py-5 sm:py-7"
               }`}
             >
