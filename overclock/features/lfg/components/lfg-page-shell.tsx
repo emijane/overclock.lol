@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
 
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageReveal } from "@/components/app-shell/page-reveal";
@@ -9,7 +9,6 @@ import { createLFGPost } from "@/features/lfg/actions";
 import { STACKS_PLACEHOLDER_POSTS } from "@/features/lfg/dev-fixtures";
 import { getDuosFeedInitialPage } from "@/features/lfg/duos-feed";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
-import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
@@ -18,7 +17,7 @@ import {
   type LFGFeedFilters,
 } from "@/lib/lfg/lfg-feed-filters";
 import { hasActiveLFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
-import { getLFGGameModeLabel, type LFGType } from "@/lib/lfg/lfg-post-types";
+import type { LFGType } from "@/lib/lfg/lfg-post-types";
 import {
   getActiveStackPostById,
   getCurrentActiveStackPostIdForProfile,
@@ -37,6 +36,10 @@ import {
   CurrentStackPanel,
   isBlockedByCurrentStackMessage,
 } from "./current-stack-panel";
+import {
+  buildFeedFilterSearchParams,
+  getActiveLFGFilterChips,
+} from "./lfg-active-filter-links";
 import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
 import { LFGGameModePicker } from "./lfg-game-mode-picker";
 import { DuosInfiniteFeed } from "./duos-infinite-feed";
@@ -131,27 +134,6 @@ function formatMissingFields(fields: string[]) {
   }
 
   return `${fields.slice(0, -1).join(", ")}, and ${fields[fields.length - 1]}`;
-}
-
-function buildDuosHeaderSummary(
-  visiblePostCount: number,
-  feedFilters?: LFGFeedFilters
-) {
-  const summaryParts = [`Showing ${visiblePostCount} posts`];
-  const filterParts = [
-    feedFilters?.region ?? null,
-    feedFilters?.mode ? getLFGGameModeLabel(feedFilters.mode) : null,
-    feedFilters?.role ? `Role: ${COMPETITIVE_ROLE_LABELS[feedFilters.role]}` : null,
-    feedFilters?.lookingFor ? `Needs: ${COMPETITIVE_ROLE_LABELS[feedFilters.lookingFor]}` : null,
-  ].filter((value): value is string => Boolean(value));
-
-  if (filterParts.length > 0) {
-    summaryParts.push(...filterParts.slice(0, 3));
-  } else {
-    summaryParts.push("All regions", "All roles");
-  }
-
-  return summaryParts.join(" • ");
 }
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -543,8 +525,14 @@ export async function LFGPageShell({
   const currentStackHref = resolvedActiveStackPostId
     ? `/stacks/${resolvedActiveStackPostId}`
     : null;
-  const duosHeaderSummary =
-    isDuosPage && shouldShowFeed ? buildDuosHeaderSummary(visiblePostCount, feedFilters) : null;
+  const duosHeaderChips =
+    isDuosPage && shouldShowFeed
+      ? getActiveLFGFilterChips(
+          sectionHref,
+          buildFeedFilterSearchParams(feedFilters, useFixtures),
+          feedFilters
+        )
+      : [];
   const shouldShowCurrentStackPanel = Boolean(
     type === "stacks" && profile?.id && resolvedActiveStackPostId
   );
@@ -758,14 +746,37 @@ export async function LFGPageShell({
                     </div>
                     ) : null}
                   </PageReveal>
-                {isDuosPage && shouldShowFeed && duosHeaderSummary ? (
-                  <div className="flex flex-col gap-1 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                {isDuosPage && shouldShowFeed ? (
+                  <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                     <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-400">
                       Find a ranked partner, warmup duo, or comms-first queue.
                     </p>
-                    <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 sm:text-right">
-                      {duosHeaderSummary}
-                    </p>
+                    {duosHeaderChips.length > 0 ? (
+                      <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
+                        {duosHeaderChips.map((chip) => (
+                          <Link
+                            key={chip.key}
+                            href={chip.href}
+                            className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 transition hover:border-white/[0.12] hover:bg-white/[0.06]"
+                          >
+                            <span className="oc-profile-meta text-[11px]">{chip.label}:</span>
+                            <span
+                              className={`oc-profile-display text-[12px] font-medium text-zinc-100 ${
+                                chip.key === "search" ? "max-w-[11rem] truncate" : ""
+                              }`}
+                              title={chip.value}
+                            >
+                              {chip.value}
+                            </span>
+                            <XIcon className="h-3 w-3 text-zinc-400" />
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 sm:text-right">
+                        Showing {visiblePostCount} posts / All regions / All roles
+                      </p>
+                    )}
                   </div>
                 ) : null}
                 {description ? (
@@ -894,6 +905,7 @@ export async function LFGPageShell({
                     <Suspense fallback={<div className="h-14" />}>
                       <LFGFeedFiltersPanel
                         activeCount={visiblePostCount}
+                        activeFilterDisplay={isDuosPage ? "toolbar" : "row"}
                         selectedFilters={feedFilters}
                         tone={usesDuosFeedTone ? "duos" : "default"}
                       />
@@ -903,6 +915,7 @@ export async function LFGPageShell({
                   <Suspense fallback={<div className="h-14" />}>
                     <LFGFeedFiltersPanel
                       activeCount={visiblePostCount}
+                      activeFilterDisplay={isDuosPage ? "toolbar" : "row"}
                       selectedFilters={feedFilters}
                       tone={usesDuosFeedTone ? "duos" : "default"}
                     />

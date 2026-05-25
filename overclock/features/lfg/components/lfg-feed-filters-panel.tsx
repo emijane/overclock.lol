@@ -24,61 +24,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-type FilterKey =
-  | "looking_for"
-  | "max_rank"
-  | "min_rank"
-  | "mode"
-  | "region"
-  | "search"
-  | "role";
-
-function buildFilterHref(
-  pathname: string,
-  searchParams: URLSearchParams,
-  key: FilterKey,
-  value?: string
-) {
-  const params = new URLSearchParams(searchParams.toString());
-
-  if (value) {
-    params.set(key, value);
-  } else {
-    params.delete(key);
-  }
-
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
-
-function buildClearFiltersHref(pathname: string, searchParams: URLSearchParams) {
-  const params = new URLSearchParams(searchParams.toString());
-
-  params.delete("mode");
-  params.delete("role");
-  params.delete("looking_for");
-  params.delete("min_rank");
-  params.delete("max_rank");
-  params.delete("region");
-  params.delete("search");
-
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
-
-function buildClearFilterHref(
-  pathname: string,
-  searchParams: URLSearchParams,
-  key: FilterKey
-) {
-  const params = new URLSearchParams(searchParams.toString());
-
-  params.delete(key);
-
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
+import {
+  buildClearFiltersHref,
+  buildFilterHref,
+  getActiveLFGFilterChips,
+  type FilterKey,
+} from "./lfg-active-filter-links";
 
 function FilterDropdown({
   anyLabel,
@@ -163,10 +114,12 @@ function FilterDropdown({
 
 export function LFGFeedFiltersPanel({
   activeCount,
+  activeFilterDisplay = "row",
   selectedFilters,
   tone = "default",
 }: {
   activeCount: number;
+  activeFilterDisplay?: "row" | "toolbar";
   selectedFilters?: LFGFeedFilters;
   tone?: "default" | "duos";
 }) {
@@ -235,66 +188,7 @@ export function LFGFeedFiltersPanel({
   const selectedRegionLabel = selectedFilters?.region
     ? (selectedFilters.region as LFGRegion)
     : "Region";
-  const activeFilterChips = [
-    selectedFilters?.mode
-      ? {
-          href: buildClearFilterHref(pathname, params, "mode"),
-          key: "mode",
-          label: "Mode",
-          value: getLFGGameModeLabel(selectedFilters.mode),
-        }
-      : null,
-    selectedFilters?.role
-      ? {
-          href: buildClearFilterHref(pathname, params, "role"),
-          key: "role",
-          label: "Role",
-          value: COMPETITIVE_ROLE_LABELS[selectedFilters.role],
-        }
-      : null,
-    selectedFilters?.lookingFor
-      ? {
-          href: buildClearFilterHref(pathname, params, "looking_for"),
-          key: "looking_for",
-          label: "Needs",
-          value: COMPETITIVE_ROLE_LABELS[selectedFilters.lookingFor],
-        }
-      : null,
-    selectedFilters?.minRank
-      ? {
-          href: buildClearFilterHref(pathname, params, "min_rank"),
-          key: "min_rank",
-          label: "Min Rank",
-          value: selectedFilters.minRank,
-        }
-      : null,
-    selectedFilters?.maxRank
-      ? {
-          href: buildClearFilterHref(pathname, params, "max_rank"),
-          key: "max_rank",
-          label: "Max Rank",
-          value: selectedFilters.maxRank,
-        }
-      : null,
-    selectedFilters?.region
-      ? {
-          href: buildClearFilterHref(pathname, params, "region"),
-          key: "region",
-          label: "Region",
-          value: selectedFilters.region,
-        }
-      : null,
-    selectedFilters?.search
-      ? {
-          href: buildClearFilterHref(pathname, params, "search"),
-          key: "search",
-          label: "Search",
-          value: selectedFilters.search,
-        }
-      : null,
-  ].filter((chip): chip is { href: string; key: string; label: string; value: string } =>
-    Boolean(chip)
-  );
+  const activeFilterChips = getActiveLFGFilterChips(pathname, params, selectedFilters);
 
   return (
     <section className="px-5 py-1.5 sm:px-6 sm:py-2">
@@ -361,9 +255,22 @@ export function LFGFeedFiltersPanel({
           <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.18em]">
             {activeCount} active listings
           </p>
+          {activeFilterDisplay === "toolbar" && hasActiveFilters ? (
+            <Link
+              href={buildClearFiltersHref(pathname, params)}
+              className={`oc-profile-meta inline-flex h-7 items-center gap-1 rounded-[10px] border border-dashed px-2.5 text-[11px] font-medium transition hover:text-zinc-100 ${
+                tone === "duos"
+                  ? "border-white/[0.1] bg-white/[0.02] hover:border-white/[0.16] hover:bg-white/[0.04]"
+                  : "border-white/[0.12] bg-[#05070b] hover:border-white/[0.18]"
+              }`}
+            >
+              Clear All
+              <XIcon className="h-3 w-3 text-zinc-400" />
+            </Link>
+          ) : null}
         </div>
       </div>
-      {activeFilterChips.length > 0 ? (
+      {activeFilterDisplay === "row" && activeFilterChips.length > 0 ? (
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
           {activeFilterChips.map((chip) => (
             <Link

@@ -134,10 +134,11 @@ the title. The "Search uses X-Y characters" disclaimer was removed.
 - Search bar is wired via the first branch of the right-side ternary in `PageReveal`;
   stacks/LFG pages keep their existing CTA and manage-posts logic unchanged
 - Duos also adds a second compact utility row under the title/search line:
-  fixed status copy on the left plus a derived `Showing X posts` filter summary on the right
-- The summary is based on already-loaded Duos page state only:
-  visible post count plus selected region / mode / role / needs filters, with no claimed
-  global active-post total
+  fixed status copy on the left plus removable active-filter pills on the right
+- The header pills reuse the same clear-link and label logic as the active filter controls,
+  and the lower filter bar no longer duplicates the removable chip row for Duos
+- When no active filters are present, the utility row falls back to a compact
+  `Showing X posts • All regions • All roles` summary with no claimed global active total
 
 Key files: `overclock/features/lfg/components/lfg-page-shell.tsx`
 
