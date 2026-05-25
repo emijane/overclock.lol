@@ -179,13 +179,14 @@
 
 ## Navbar Behavior
 - Global auth bar:
-  - `border-b border-white/5 bg-black/40 backdrop-blur-md`
-  - wide container `max-w-[96rem]`
-  - logo left, discovery links center/right, utilities grouped
+  - low-contrast bottom divider with dark translucent shell and backdrop blur
+  - wide container aligned to the broad app shell width
+  - logo left, compact discovery nav, and utilities grouped into one toolbar lane
 - Nav items are quiet by default:
   - `text-zinc-400`
   - transparent border
   - hover adds dark capsule and visible border
+- active nav items use the same capsule language with stronger text, border, and fill
 - Avatar, notifications, and nav links all use rounded compact hit areas
 
 ## Card Patterns

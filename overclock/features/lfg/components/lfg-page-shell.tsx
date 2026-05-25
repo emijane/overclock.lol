@@ -761,7 +761,7 @@ export async function LFGPageShell({
                     ) : null}
                   </PageReveal>
                 {isDuosPage && shouldShowFeed ? (
-                  <div className="flex flex-col gap-2 border-t border-white/[0.04] pt-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="hidden border-t border-white/[0.04] pt-2 sm:flex sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                     <p className="oc-profile-meta pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
                       Active filters
                     </p>
@@ -928,6 +928,7 @@ export async function LFGPageShell({
                       <LFGFeedFiltersPanel
                         activeCount={visiblePostCount}
                         activeFilterDisplay={isDuosPage ? "toolbar" : "row"}
+                        mobileMode={isDuosPage ? "sheet" : "inline"}
                         selectedFilters={feedFilters}
                         tone={usesDuosFeedTone ? "duos" : "default"}
                       />
@@ -938,6 +939,7 @@ export async function LFGPageShell({
                     <LFGFeedFiltersPanel
                       activeCount={visiblePostCount}
                       activeFilterDisplay={isDuosPage ? "toolbar" : "row"}
+                      mobileMode={isDuosPage ? "sheet" : "inline"}
                       selectedFilters={feedFilters}
                       tone={usesDuosFeedTone ? "duos" : "default"}
                     />

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageContainer } from "@/components/app-shell/page-container";
+import { GlobalDiscoveryNav } from "@/components/navigation/global-discovery-nav";
 import { GlobalNotificationsMenuClient } from "@/components/navigation/global-notifications-menu-client";
 import { MainMenuUserSearch } from "@/components/navigation/main-menu-user-search";
 import { UserMenu } from "@/components/navigation/user-menu";
@@ -43,14 +44,14 @@ export function GlobalAuthBar({
   const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
-    <header className="relative z-[70] border-b border-white/[0.04] bg-transparent px-6 py-3.5">
+    <header className="relative z-[70] border-b border-white/[0.06] bg-[rgba(6,6,8,0.72)] px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-[rgba(6,6,8,0.62)] sm:px-6 sm:py-3.5">
       <PageContainer
-        className="flex items-center justify-between gap-4"
+        className="flex items-center justify-between gap-3 sm:gap-4"
         maxWidthClassName="max-w-[120rem]"
       >
         <Link
           href="/"
-          className="oc-profile-display flex items-center gap-2.5 text-[18px] font-semibold tracking-[-0.035em] text-white/92"
+          className="oc-profile-display flex shrink-0 items-center gap-2.5 text-[17px] font-semibold tracking-[-0.035em] text-white/92 sm:text-[18px]"
         >
           <Image
             src="/branding/kitty-v1/kitty-v1-white-cross-border.png"
@@ -63,23 +64,13 @@ export function GlobalAuthBar({
           <span>overclock.lol</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-2.5 lg:gap-3">
           <MainMenuUserSearch />
 
-          <nav className="flex items-center gap-1">
-            {discoveryLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="oc-profile-display rounded-[10px] border border-transparent px-3 py-2 text-[13px] font-semibold tracking-[-0.02em] text-zinc-400 transition hover:border-white/[0.08] hover:bg-[#171717] hover:text-zinc-100"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <GlobalDiscoveryNav links={discoveryLinks} />
 
           {userId ? (
-            <>
+            <div className="flex shrink-0 items-center gap-2">
               <GlobalNotificationsMenuClient
                 currentProfileId={userId}
                 initialNotifications={initialNotifications ?? null}
@@ -91,7 +82,7 @@ export function GlobalAuthBar({
                 profileHref={profileHref}
                 visibleName={visibleName}
               />
-            </>
+            </div>
           ) : null}
         </div>
       </PageContainer>

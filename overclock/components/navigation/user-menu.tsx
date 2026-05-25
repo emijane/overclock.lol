@@ -51,9 +51,9 @@ export function UserMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="oc-profile-icon-button rounded-full cursor-pointer"
+          className="oc-profile-icon-button h-9 w-9 cursor-pointer rounded-[10px] border border-white/[0.06] bg-white/[0.03] p-0 text-zinc-300 transition hover:border-white/[0.10] hover:bg-white/[0.05] hover:text-zinc-100"
         >
-          <Avatar className="h-9 w-9">
+          <Avatar className="h-8 w-8">
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt={`${visibleName} avatar`} />
             ) : null}
@@ -65,7 +65,7 @@ export function UserMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-56 border border-white/[0.06] !bg-[#111111] text-zinc-100"
+        className="w-56 rounded-[16px] border border-white/[0.06] !bg-[rgba(12,12,14,0.98)] text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)] backdrop-blur-md"
       >
         <DropdownMenuLabel className="px-3 py-2">
           <span className="oc-profile-display block text-sm font-semibold text-zinc-100">

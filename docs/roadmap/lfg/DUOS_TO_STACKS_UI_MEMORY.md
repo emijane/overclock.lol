@@ -152,6 +152,12 @@ the title. The "Search uses X-Y characters" disclaimer was removed.
 
 Key files: `overclock/features/lfg/components/lfg-page-shell.tsx`
 
+Additional mobile note:
+
+- Duos no longer keeps the full inline dropdown toolbar visible on small screens.
+- Mobile now uses a compact `Filters` trigger that opens a bottom-sheet style filter
+  surface, while removable pills stay hidden until filters are active.
+
 ## Sidebar Sticky + Scroll Behavior (Duos + Stacks)
 
 The LFG sidebar (`overclock/features/lfg/components/lfg-sidebar.tsx`) now uses sticky

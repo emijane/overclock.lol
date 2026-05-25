@@ -34,6 +34,9 @@ Current header shape on `/duos`:
   feed-level create entry
 - the left sidebar no longer repeats a separate `clear filters` action either
 - compact first-pass filter bar below the header
+- mobile no longer wraps the full desktop dropdown row inline; it now uses a dedicated
+  `Filters` trigger plus a centered mobile filter modal and only shows removable pills
+  when filters are active
 
 ## Current Create Page Shape
 

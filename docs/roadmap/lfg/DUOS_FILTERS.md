@@ -299,11 +299,12 @@ The current filter release already includes:
 - shared dropdown controls in the feed header
 - clear-filter behavior
 - reuse on both `/duos` and `/stacks`
+- a Duos-specific centered mobile filter modal instead of forcing the desktop inline toolbar to wrap
 
 Follow-up work that still makes sense:
 
 - add filter-aware empty-state messaging
-- polish mobile spacing and readability further as the filter bar evolves
+- refine the mobile modal further if more LFG surfaces adopt the same pattern
 
 ## Recommendation
 

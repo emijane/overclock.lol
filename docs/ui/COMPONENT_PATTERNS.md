@@ -217,6 +217,7 @@
 - Rules:
   - nav should feel quiet until interacted with
   - utility controls sit in the same visual family as nav pills
+  - active/current nav items should use the same capsule shape with a stronger fill and border
 
 ## Notification UI
 - Purpose: show pending invite activity without becoming a dashboard

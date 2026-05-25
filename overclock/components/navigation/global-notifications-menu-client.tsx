@@ -212,7 +212,7 @@ export function GlobalNotificationsMenuClient({
           <button
             type="button"
             aria-label="Notifications"
-            className="oc-profile-icon-button relative inline-flex h-9 w-9 cursor-pointer items-center justify-center text-zinc-300 hover:text-zinc-100"
+            className="oc-profile-icon-button relative inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] text-zinc-300 transition hover:border-white/[0.10] hover:bg-white/[0.05] hover:text-zinc-100"
           >
             <BellIcon className="h-4.5 w-4.5" />
             {totalCount > 0 ? (
@@ -225,7 +225,7 @@ export function GlobalNotificationsMenuClient({
 
         <DropdownMenuContent
           align="end"
-          className="w-[22rem] overflow-hidden rounded-[14px] border border-white/[0.06] bg-[#111111] p-0 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)]"
+          className="w-[22rem] overflow-hidden rounded-[16px] border border-white/[0.06] bg-[rgba(12,12,14,0.98)] p-0 text-zinc-100 shadow-[0_18px_44px_rgba(0,0,0,0.35)] backdrop-blur-md"
         >
           {isLoading ? (
             <div className="px-5 py-8 text-center">

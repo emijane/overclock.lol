@@ -150,9 +150,9 @@ export function MainMenuUserSearch() {
   const showDropdown = isOpen && (isLoading || errorMessage || results.length > 0 || query.trim());
 
   return (
-    <div ref={containerRef} className="relative hidden md:block">
-      <div className="flex h-8 w-52 items-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-zinc-300 transition hover:border-white/[0.1] focus-within:border-white/[0.12] focus-within:bg-[#171717] sm:w-56 lg:w-60">
-        <SearchIcon className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
+    <div ref={containerRef} className="relative hidden shrink-0 md:block">
+      <div className="flex h-9 w-48 items-center gap-2 rounded-[12px] border border-white/[0.06] bg-white/[0.025] px-3 text-zinc-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] transition hover:border-white/[0.1] hover:bg-white/[0.035] focus-within:border-white/[0.12] focus-within:bg-white/[0.04] sm:w-52 lg:w-56 xl:w-60">
+        <SearchIcon className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
         <input
           type="search"
           value={query}
@@ -168,13 +168,13 @@ export function MainMenuUserSearch() {
           placeholder="SEARCH PLAYERS"
           autoComplete="off"
           spellCheck={false}
-          className="oc-profile-meta h-6 min-w-0 flex-1 bg-transparent text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-100 outline-none placeholder:text-zinc-500"
+          className="oc-profile-meta h-6 min-w-0 flex-1 bg-transparent text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-100 outline-none placeholder:text-zinc-400"
           aria-label="Search players by username or display name"
         />
       </div>
 
       {showDropdown ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-80 w-full overflow-hidden rounded-[14px] border border-white/[0.06] bg-[#111111] shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
+        <div className="absolute right-0 top-[calc(100%+0.55rem)] z-80 w-full overflow-hidden rounded-[16px] border border-white/[0.06] bg-[rgba(12,12,14,0.98)] shadow-[0_18px_44px_rgba(0,0,0,0.32)] backdrop-blur-md">
           {isLoading ? (
             <div className="oc-profile-meta px-4 py-3 text-sm">Searching...</div>
           ) : errorMessage ? (
@@ -190,7 +190,7 @@ export function MainMenuUserSearch() {
                 return (
                   <li
                     key={result.username}
-                    className="border-b border-white/[0.06]"
+                    className="border-b border-white/[0.05]"
                   >
                     <Link
                       href={href}
@@ -200,7 +200,7 @@ export function MainMenuUserSearch() {
                       }}
                       onMouseEnter={() => setActiveIndex(index)}
                       className={`flex items-center gap-3 px-4 py-3 transition ${
-                        isActive ? "bg-[#171717]" : "hover:bg-white/[0.02]"
+                        isActive ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"
                       }`}
                     >
                       <ProfileResultRow
@@ -219,7 +219,7 @@ export function MainMenuUserSearch() {
                     setIsOpen(false);
                     setActiveIndex(-1);
                   }}
-                  className="oc-profile-display flex items-center px-4 py-3 text-[13px] text-zinc-400 transition hover:bg-white/[0.02] hover:text-zinc-100"
+                  className="oc-profile-display flex items-center px-4 py-3 text-[13px] text-zinc-400 transition hover:bg-white/[0.03] hover:text-zinc-100"
                 >
                   View all results for &ldquo;{normalizeProfileSearchQuery(query)}&rdquo;
                 </Link>
