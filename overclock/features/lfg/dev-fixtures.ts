@@ -4,6 +4,34 @@ import type { LFGHeroSnapshot, LFGPost, LFGType, StackMember } from "@/lib/lfg/l
 import { REGION_TO_TIMEZONES, RANK_TIERS } from "@/lib/profiles/profile-options";
 
 const FIXTURE_POST_COUNT = 54;
+
+const FIXTURE_BANNER_IMAGES = [
+  "/placeholders/banner/0a37d3299090e714c27ca4ba36220aa6.jpg",
+  "/placeholders/banner/1fa29c0ad6805b6130bb78f451f422f0.jpg",
+  "/placeholders/banner/3436f860fcf6fb3d63c8b3f1879e9f8e.jpg",
+  "/placeholders/banner/410a68e361c75ed91e2571fe8f5257d5.jpg",
+  "/placeholders/banner/5f85828c351bbf6f3c7efdfff2fdef5b.jpg",
+  "/placeholders/banner/743c7285a67febbdc8d5c3ad257fd708.jpg",
+  "/placeholders/banner/896c615739b2594bc646fbdc17c45ed6.jpg",
+  "/placeholders/banner/a979c6c076340785ffc56a699230048d.jpg",
+  "/placeholders/banner/b5e3338ba6dd51ccdd1b7cbc5118cad3.jpg",
+  "/placeholders/banner/b8dae323f9892e3de4ed7ceccbd340e3.jpg",
+];
+
+const FIXTURE_PFP_IMAGES = [
+  "/placeholders/pfp/0f8a88f3c987b51046a7d8086c750449.jpg",
+  "/placeholders/pfp/1b07b82738e053b64b5d95dcd28a2781.jpg",
+  "/placeholders/pfp/21cb93eea0f079f0a76050e64b609938.jpg",
+  "/placeholders/pfp/307fc483e1fec4c910b3c2165873b616.jpg",
+  "/placeholders/pfp/33c9a77e102d4d6dcc11795ac3418440.jpg",
+  "/placeholders/pfp/3f9ba3b5ebd62338b85c10e0b613dd01.jpg",
+  "/placeholders/pfp/4239fad75f074f573f6691cc4009ffe5.jpg",
+  "/placeholders/pfp/4437760c905f6a330a05e57921d6986e.jpg",
+  "/placeholders/pfp/7f59d3651ffcb134c91c7643b19809e8.jpg",
+  "/placeholders/pfp/9456d44e85751efac16fc93a639b5e48.jpg",
+  "/placeholders/pfp/b0a951c7cae698d6871b8a9beb228aa1.jpg",
+  "/placeholders/pfp/c2972ae005ef58efc97273174639887b.jpg",
+];
 const FIXTURE_REGIONS = Object.keys(REGION_TO_TIMEZONES) as Array<
   keyof typeof REGION_TO_TIMEZONES
 >;
@@ -86,10 +114,12 @@ function getFixtureRankTier(index: number) {
 }
 
 function buildFixtureAuthor(index: number) {
+  const imageIndex = index - (FIXTURE_POST_COUNT - 12);
+  const useImages = imageIndex >= 0;
   return {
-    avatarUrl: null,
+    avatarUrl: useImages ? (FIXTURE_PFP_IMAGES[imageIndex % FIXTURE_PFP_IMAGES.length] ?? null) : null,
     badges: [],
-    coverImageUrl: null,
+    coverImageUrl: useImages ? (FIXTURE_BANNER_IMAGES[imageIndex % FIXTURE_BANNER_IMAGES.length] ?? null) : null,
     displayName: `${FIXTURE_AUTHOR_NAMES[index % FIXTURE_AUTHOR_NAMES.length]} ${index + 1}`,
     hideOfflinePresence: true,
     isLookingToPlay: false,
