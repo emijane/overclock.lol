@@ -1,8 +1,5 @@
-import { getRankIconSrc } from "@/lib/competitive/rank-icons";
-import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 import type { PendingSentPlayInvite } from "@/lib/matches/play-invites";
 import {
-  formatMatchRegion,
   formatMatchRole,
   formatMatchTimestamp,
   getDisplayableMatchMetaLabel,
@@ -21,24 +18,6 @@ export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
     : null;
   const metadata: MatchMetaChip[] = [];
 
-  const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
-  const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
-  const rankColors = getRankPillColors(invite.participant.rankTier);
-
-  if (rankLabel) {
-    metadata.push({
-      iconAlt: `${rankLabel} rank icon`,
-      iconSrc: rankIconSrc,
-      label: rankLabel,
-      style: {
-        backgroundColor: rankColors.bgSolid,
-        borderColor: rankColors.border,
-        color: rankColors.text,
-      },
-      tone: "primary",
-    });
-  }
-
   const roleLabel = getDisplayableMatchMetaLabel(
     formatMatchRole(invite.participant.mainRole)
   );
@@ -47,21 +26,13 @@ export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
     metadata.push({ label: roleLabel, tone: "secondary" });
   }
 
-  const regionLabel = getDisplayableMatchMetaLabel(
-    formatMatchRegion(invite.participant.region)
-  );
-
-  if (regionLabel) {
-    metadata.push({ label: regionLabel, tone: "secondary" });
-  }
-
   const expiresLabel = formatMatchTimestamp("Expires", invite.expiresAt);
 
   return (
     <MatchRowIdentity
       action={<PendingSentInviteCancelButton inviteId={invite.id} />}
       footer={
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {invite.message ?? invite.sourcePostTitle ? (
             <p className="oc-profile-meta line-clamp-2 text-[10px] leading-[1.125rem] text-zinc-400">
               {invite.message ?? invite.sourcePostTitle}

@@ -4,11 +4,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
-import { getRankIconSrc } from "@/lib/competitive/rank-icons";
-import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 import {
-  formatMatchRegion,
   formatMatchRole,
   formatMatchTimestamp,
   getDisplayableMatchMetaLabel,
@@ -30,38 +27,12 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   const [isPending, startTransition] = useTransition();
   const metadata: MatchMetaChip[] = [];
 
-  const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
-  const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
-  const rankColors = getRankPillColors(invite.participant.rankTier);
-
-  if (rankLabel) {
-    metadata.push({
-      iconAlt: `${rankLabel} rank icon`,
-      iconSrc: rankIconSrc,
-      label: rankLabel,
-      style: {
-        backgroundColor: rankColors.bgSolid,
-        borderColor: rankColors.border,
-        color: rankColors.text,
-      },
-      tone: "primary",
-    });
-  }
-
   const roleLabel = getDisplayableMatchMetaLabel(
     formatMatchRole(invite.participant.mainRole)
   );
 
   if (roleLabel) {
     metadata.push({ label: roleLabel, tone: "secondary" });
-  }
-
-  const regionLabel = getDisplayableMatchMetaLabel(
-    formatMatchRegion(invite.participant.region)
-  );
-
-  if (regionLabel) {
-    metadata.push({ label: regionLabel, tone: "secondary" });
   }
 
   const expiresLabel = formatMatchTimestamp("Expires", invite.expiresAt);
@@ -97,7 +68,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   return (
     <MatchRowIdentity
       action={
-        <div className="flex shrink-0 items-center gap-1.5 rounded-[10px] border border-white/[0.05] bg-white/[0.015] p-1">
+        <div className="flex shrink-0 items-center gap-1 rounded-[10px] border border-white/[0.05] bg-white/[0.015] p-[3px]">
           <button
             type="button"
             disabled={isPending}
@@ -119,13 +90,13 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
         </div>
       }
       footer={
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {invite.message ?? invite.sourcePostTitle ? (
             <p className="oc-profile-meta line-clamp-2 text-[10px] leading-[1.125rem] text-zinc-400">
               {invite.message ?? invite.sourcePostTitle}
             </p>
           ) : null}
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {expiresLabel ? (
               <span className="oc-profile-meta text-[9px] uppercase tracking-[0.12em] text-zinc-500">
                 {expiresLabel}

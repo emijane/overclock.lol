@@ -111,9 +111,9 @@ export function MatchRowIdentity({
   const title = participant.displayName ?? participant.username ?? "Unknown player";
 
   return (
-    <div className="oc-list-row-hover group px-4 py-3 sm:px-5">
-      <div className="flex items-start justify-between gap-3 sm:gap-4">
-        <div className="flex min-w-0 flex-1 items-start gap-3">
+    <div className="oc-list-row-hover group px-4 py-2.5 sm:px-5">
+      <div className="flex items-start justify-between gap-2.5 sm:gap-3">
+        <div className="flex min-w-0 flex-1 items-start gap-2.5">
           <Avatar className="oc-overlay-avatar-elevated h-10 w-10 shrink-0 rounded-full ring-1 ring-white/[0.06]">
             {participant.avatarUrl ? (
               <AvatarImage src={participant.avatarUrl} alt={`${title} avatar`} />
@@ -124,7 +124,7 @@ export function MatchRowIdentity({
           </Avatar>
 
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+            <div className="flex flex-wrap items-baseline gap-x-1 gap-y-0.5">
               {href ? (
                 <Link
                   href={href}
@@ -143,7 +143,7 @@ export function MatchRowIdentity({
             </div>
 
             {primaryMeta.length > 0 ? (
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <div className="mt-1 flex flex-wrap gap-1">
                 {primaryMeta.map((item) => (
                   <span
                     key={`${item.tone ?? "secondary"}-${item.label}`}
@@ -169,8 +169,8 @@ export function MatchRowIdentity({
               </div>
             ) : null}
 
-            {supportingText ? <div className="mt-1.5 min-w-0">{supportingText}</div> : null}
-            {footer ? <div className="mt-2 min-w-0">{footer}</div> : null}
+            {supportingText ? <div className="mt-1 min-w-0">{supportingText}</div> : null}
+            {footer ? <div className="mt-1.5 min-w-0">{footer}</div> : null}
           </div>
         </div>
 
