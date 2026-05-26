@@ -1,85 +1,62 @@
-import Link from "next/link";
 import { FaDiscord } from "react-icons/fa";
 import { SiBattledotnet } from "react-icons/si";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ActiveProfileConnection } from "@/lib/matches/play-invites";
 import { RemoveConnectionButton } from "@/features/matches/components/remove-connection-button";
+import {
+  formatMatchRegion,
+  formatMatchRole,
+  formatMatchTimestamp,
+  MatchRowIdentity,
+} from "./match-row-shared";
 
 type MatchCardProps = {
   connection: ActiveProfileConnection;
 };
 
-function getAvatarFallback(name: string | null, username: string | null) {
-  const fallbackSource = name ?? username ?? "P";
-  return fallbackSource.slice(0, 1).toUpperCase();
-}
-
 export function MatchCard({ connection }: MatchCardProps) {
   const participantHref = connection.participant.username
     ? `/u/${connection.participant.username}`
     : null;
-  const hasContacts =
-    Boolean(connection.participant.discordUsername) ||
-    Boolean(connection.participant.battlenetHandle);
+  const metadata = [
+    connection.participant.rankLabel,
+    formatMatchRole(connection.participant.mainRole),
+    formatMatchRegion(connection.participant.region),
+  ].filter((value): value is string => Boolean(value));
+  const connectedLabel = formatMatchTimestamp("Connected", connection.connectedAt);
+  const hasDetails = Boolean(
+    connectedLabel ||
+      connection.participant.discordUsername ||
+      connection.participant.battlenetHandle
+  );
 
   return (
-    <div className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02] sm:px-5">
-      <Avatar className="h-10 w-10 shrink-0 rounded-full">
-        {connection.participant.avatarUrl ? (
-          <AvatarImage
-            src={connection.participant.avatarUrl}
-            alt={`${connection.participant.displayName ?? connection.participant.username ?? "Player"} avatar`}
-          />
-        ) : null}
-        <AvatarFallback className="bg-zinc-900 text-sm text-zinc-100">
-          {getAvatarFallback(
-            connection.participant.displayName,
-            connection.participant.username
-          )}
-        </AvatarFallback>
-      </Avatar>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-1.5">
-          {participantHref ? (
-            <Link
-              href={participantHref}
-              className="oc-profile-display cursor-pointer text-[15px] font-semibold tracking-[-0.02em] text-zinc-100 hover:underline"
-            >
-              {connection.participant.displayName ?? connection.participant.username ?? "Unknown player"}
-            </Link>
-          ) : (
-            <span className="oc-profile-display text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
-              {connection.participant.displayName ?? connection.participant.username ?? "Unknown player"}
-            </span>
-          )}
-          {connection.participant.username ? (
-            <span className="oc-profile-meta truncate text-[11px]">
-              @{connection.participant.username}
-            </span>
-          ) : null}
-        </div>
-
-        {hasContacts ? (
-          <div className="oc-profile-meta mt-0.5 flex flex-wrap gap-x-3 text-[11px]">
-            {connection.participant.discordUsername ? (
-              <span className="flex items-center gap-1">
-                <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
-                {connection.participant.discordUsername}
-              </span>
-            ) : null}
-            {connection.participant.battlenetHandle ? (
-              <span className="flex items-center gap-1">
-                <SiBattledotnet className="h-3.5 w-3.5 shrink-0 text-[#148EFF]" />
-                {connection.participant.battlenetHandle}
-              </span>
-            ) : null}
+    <MatchRowIdentity
+      action={<RemoveConnectionButton connectionId={connection.id} />}
+      footer={
+        hasDetails ? (
+          <div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
+              {connectedLabel ? <span className="oc-profile-meta">{connectedLabel}</span> : null}
+              {connection.participant.discordUsername ? (
+                <span className="oc-profile-meta flex items-center gap-1">
+                  <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
+                  {connection.participant.discordUsername}
+                </span>
+              ) : null}
+              {connection.participant.battlenetHandle ? (
+                <span className="oc-profile-meta flex items-center gap-1">
+                  <SiBattledotnet className="oc-social-battlenet h-3.5 w-3.5 shrink-0" />
+                  {connection.participant.battlenetHandle}
+                </span>
+              ) : null}
+            </div>
           </div>
-        ) : null}
-      </div>
-
-      <RemoveConnectionButton connectionId={connection.id} />
-    </div>
+        ) : null
+      }
+      href={participantHref}
+      participant={connection.participant}
+      primaryMeta={metadata}
+    />
   );
 }

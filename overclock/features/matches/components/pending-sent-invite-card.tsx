@@ -1,65 +1,43 @@
-import Link from "next/link";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { PendingSentPlayInvite } from "@/lib/matches/play-invites";
+import {
+  formatMatchRegion,
+  formatMatchRole,
+  formatMatchTimestamp,
+  MatchRowIdentity,
+} from "./match-row-shared";
 import { PendingSentInviteCancelButton } from "./pending-sent-invite-cancel-button";
 
 type PendingSentInviteCardProps = {
   invite: PendingSentPlayInvite;
 };
 
-function getAvatarFallback(name: string | null, username: string | null) {
-  const fallbackSource = name ?? username ?? "P";
-  return fallbackSource.slice(0, 1).toUpperCase();
-}
-
 export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
   const participantHref = invite.participant.username
     ? `/u/${invite.participant.username}`
     : null;
+  const metadata = [
+    invite.participant.rankLabel,
+    formatMatchRole(invite.participant.mainRole),
+    formatMatchRegion(invite.participant.region),
+  ].filter((value): value is string => Boolean(value));
+  const expiresLabel = formatMatchTimestamp("Expires", invite.expiresAt);
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02] sm:px-5">
-      <Avatar className="h-10 w-10 shrink-0 rounded-full">
-        {invite.participant.avatarUrl ? (
-          <AvatarImage
-            src={invite.participant.avatarUrl}
-            alt={`${invite.participant.displayName ?? invite.participant.username ?? "Player"} avatar`}
-          />
-        ) : null}
-        <AvatarFallback className="bg-zinc-900 text-sm text-zinc-100">
-          {getAvatarFallback(invite.participant.displayName, invite.participant.username)}
-        </AvatarFallback>
-      </Avatar>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-1.5">
-          {participantHref ? (
-            <Link
-              href={participantHref}
-              className="oc-profile-display cursor-pointer text-[15px] font-semibold tracking-[-0.02em] text-zinc-100 hover:underline"
-            >
-              {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
-            </Link>
-          ) : (
-            <span className="oc-profile-display text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
-              {invite.participant.displayName ?? invite.participant.username ?? "Unknown player"}
-            </span>
-          )}
-          {invite.participant.username ? (
-            <span className="oc-profile-meta truncate text-[11px]">
-              @{invite.participant.username}
-            </span>
+    <MatchRowIdentity
+      action={<PendingSentInviteCancelButton inviteId={invite.id} />}
+      footer={
+        <div className="space-y-1">
+          {invite.message ?? invite.sourcePostTitle ? (
+            <p className="oc-profile-meta truncate text-[11px] text-zinc-400">
+              {invite.message ?? invite.sourcePostTitle}
+            </p>
           ) : null}
+          {expiresLabel ? <p className="oc-profile-meta text-[11px]">{expiresLabel}</p> : null}
         </div>
-        {(invite.message ?? invite.sourcePostTitle) ? (
-          <p className="oc-profile-meta mt-0.5 truncate text-[11px]">
-            {invite.message ?? invite.sourcePostTitle}
-          </p>
-        ) : null}
-      </div>
-
-      <PendingSentInviteCancelButton inviteId={invite.id} />
-    </div>
+      }
+      href={participantHref}
+      participant={invite.participant}
+      primaryMeta={metadata}
+    />
   );
 }

@@ -1,5 +1,5 @@
-import { StacksPageLoading } from "@/features/lfg/components/stacks-page-loading";
+import { LFGPageLoading } from "@/features/lfg/components/lfg-page-loading";
 
 export default function Loading() {
-  return <StacksPageLoading />;
+  return <LFGPageLoading feedLoading="cards" feedVariant="stacks" title="Stacks" tone="duos" />;
 }

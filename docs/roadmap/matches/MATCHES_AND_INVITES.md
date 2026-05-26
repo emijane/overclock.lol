@@ -146,9 +146,8 @@ invite management. `/connections` is a route alias that re-exports this page.
 
 It currently includes:
 
-- `Recent Connections`
 - tabbed pending invites card with `Incoming` and `Outgoing`
-- `Earlier Connections` when enough active connections exist
+- `Active connections`
 
 ### Active Connections
 
@@ -166,8 +165,7 @@ Active connection cards show:
 The active connections section currently:
 
 - shows a connection count in the card header
-- keeps the header fixed while the list body scrolls when the connection list
-  grows tall
+- keeps the list body scrollable when the connection list grows tall
 
 ### Incoming Invites
 
@@ -176,11 +174,30 @@ Incoming pending invites on `/matches` can be:
 - accepted
 - declined
 
+Incoming invite rows currently show:
+
+- participant avatar
+- display name and username
+- role, rank, and region
+- source post title or invite message when present
+- invite expiry context
+- `Accept`
+- `Decline`
+
 ### Outgoing Invites
 
 Outgoing pending invites on `/matches` can be:
 
 - cancelled
+
+Outgoing invite rows currently show:
+
+- participant avatar
+- display name and username
+- role, rank, and region
+- source post title or invite message when present
+- invite expiry context
+- `Cancel`
 
 ## Contact Unlock Rules
 
