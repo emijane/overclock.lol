@@ -101,7 +101,7 @@ export default async function AccountPostsPage({
       <AccountSectionCard
         title="Post history"
         description="Filter your listing history by lifecycle state and manage anything that is still live."
-        className="flex h-270 flex-col overflow-hidden"
+        className="flex min-h-[32rem] flex-col overflow-hidden"
         contentClassName="flex min-h-0 flex-1 flex-col p-0"
       >
         <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />

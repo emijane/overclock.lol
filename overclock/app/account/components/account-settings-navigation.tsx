@@ -69,7 +69,7 @@ export function AccountSettingsNavigation({
   }
 
   return (
-    <section className="sticky top-6 hidden w-56 shrink-0 self-start flex-col gap-3 rounded-[10px] border border-white/[0.03] bg-white/[0.01] p-3 lg:flex">
+    <section className="hidden w-56 shrink-0 flex-col gap-3 rounded-[10px] border border-white/[0.03] bg-white/[0.01] p-3 lg:flex">
       <div>
         <p
           className="oc-profile-meta mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]"
@@ -85,7 +85,7 @@ export function AccountSettingsNavigation({
       <div className="border-t border-white/[0.03]" />
 
       <nav aria-label="Account settings sections" className="space-y-px">
-        <ul className="space-y-1.5">
+        <ul className="space-y-px">
           {ACCOUNT_NAV_ITEMS.map((item) => {
             const isActive = item.match(pathname);
 

@@ -97,7 +97,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         <AccountSectionCard
           title="Presence & Privacy"
           description="Set how visible your account is to other players when they browse, connect, or send invites."
-          contentClassName="divide-y divide-white/[0.06]"
+          contentClassName="divide-y divide-white/[0.05]"
         >
           <AvailabilityToggleCard
             initialIsLookingToPlay={profile.is_looking_to_play ?? false}
