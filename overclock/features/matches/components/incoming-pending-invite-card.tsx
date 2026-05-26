@@ -9,6 +9,7 @@ import {
   formatMatchRegion,
   formatMatchRole,
   formatMatchTimestamp,
+  getDisplayableMatchMetaLabel,
   type MatchMetaChip,
   MATCH_DESTRUCTIVE_BUTTON_CLASSNAME,
   MatchRowIdentity,
@@ -27,20 +28,27 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   const [isPending, startTransition] = useTransition();
   const metadata: MatchMetaChip[] = [];
 
-  if (invite.participant.rankLabel) {
-    metadata.push({ label: invite.participant.rankLabel, tone: "primary" });
+  const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
+
+  if (rankLabel) {
+    metadata.push({ label: rankLabel, tone: "primary" });
   }
 
-  const roleLabel = formatMatchRole(invite.participant.mainRole);
+  const roleLabel = getDisplayableMatchMetaLabel(
+    formatMatchRole(invite.participant.mainRole)
+  );
 
   if (roleLabel) {
     metadata.push({ label: roleLabel, tone: "secondary" });
   }
 
-  metadata.push({
-    label: formatMatchRegion(invite.participant.region) ?? "Not set",
-    tone: invite.participant.region ? "secondary" : "muted",
-  });
+  const regionLabel = getDisplayableMatchMetaLabel(
+    formatMatchRegion(invite.participant.region)
+  );
+
+  if (regionLabel) {
+    metadata.push({ label: regionLabel, tone: "secondary" });
+  }
 
   const expiresLabel = formatMatchTimestamp("Expires", invite.expiresAt);
 
@@ -75,13 +83,13 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   return (
     <MatchRowIdentity
       action={
-        <div className="flex shrink-0 items-center gap-2 rounded-[12px] border border-white/[0.05] bg-white/[0.015] p-1">
+        <div className="flex shrink-0 items-center gap-1.5 rounded-[10px] border border-white/[0.05] bg-white/[0.015] p-1">
           <button
             type="button"
             disabled={isPending}
             aria-disabled={isPending}
             onClick={() => handleInviteAction("accept")}
-            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] bg-zinc-100 px-3.5 text-[11px] font-semibold text-black shadow-[0_10px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-100/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 active:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+            className="oc-profile-display inline-flex h-7 items-center rounded-[9px] bg-zinc-100 px-3 text-[10px] font-semibold text-black shadow-[0_10px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-100/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 active:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "..." : "Accept"}
           </button>
@@ -99,18 +107,18 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
       footer={
         <div className="space-y-2">
           {invite.message ?? invite.sourcePostTitle ? (
-            <p className="oc-profile-meta line-clamp-2 text-[11px] leading-5 text-zinc-400">
+            <p className="oc-profile-meta line-clamp-2 text-[10px] leading-[1.125rem] text-zinc-400">
               {invite.message ?? invite.sourcePostTitle}
             </p>
           ) : null}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             {expiresLabel ? (
-              <span className="oc-profile-meta text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+              <span className="oc-profile-meta text-[9px] uppercase tracking-[0.12em] text-zinc-500">
                 {expiresLabel}
               </span>
             ) : null}
             {feedback ? (
-              <span className="oc-profile-meta text-[11px] text-rose-300">{feedback}</span>
+              <span className="oc-profile-meta text-[10px] text-rose-300">{feedback}</span>
             ) : null}
           </div>
         </div>

@@ -7,6 +7,7 @@ import {
   formatMatchRegion,
   formatMatchRole,
   formatMatchTimestamp,
+  getDisplayableMatchMetaLabel,
   type MatchMetaChip,
   MatchRowIdentity,
 } from "./match-row-shared";
@@ -21,20 +22,27 @@ export function MatchCard({ connection }: MatchCardProps) {
     : null;
   const metadata: MatchMetaChip[] = [];
 
-  if (connection.participant.rankLabel) {
-    metadata.push({ label: connection.participant.rankLabel, tone: "primary" });
+  const rankLabel = getDisplayableMatchMetaLabel(connection.participant.rankLabel);
+
+  if (rankLabel) {
+    metadata.push({ label: rankLabel, tone: "primary" });
   }
 
-  const roleLabel = formatMatchRole(connection.participant.mainRole);
+  const roleLabel = getDisplayableMatchMetaLabel(
+    formatMatchRole(connection.participant.mainRole)
+  );
 
   if (roleLabel) {
     metadata.push({ label: roleLabel, tone: "secondary" });
   }
 
-  metadata.push({
-    label: formatMatchRegion(connection.participant.region) ?? "Not set",
-    tone: connection.participant.region ? "secondary" : "muted",
-  });
+  const regionLabel = getDisplayableMatchMetaLabel(
+    formatMatchRegion(connection.participant.region)
+  );
+
+  if (regionLabel) {
+    metadata.push({ label: regionLabel, tone: "secondary" });
+  }
 
   const connectedLabel = formatMatchTimestamp("Connected", connection.connectedAt);
   const hasDetails = Boolean(
@@ -50,21 +58,21 @@ export function MatchCard({ connection }: MatchCardProps) {
         hasDetails ? (
           <div className="space-y-2">
             {connectedLabel ? (
-              <p className="oc-profile-meta text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+              <p className="oc-profile-meta text-[9px] uppercase tracking-[0.12em] text-zinc-500">
                 {connectedLabel}
               </p>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-2 text-[11px]">
+            <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
               {connection.participant.discordUsername ? (
-                <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-zinc-300">
-                  <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
+                <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 text-zinc-300">
+                  <FaDiscord className="oc-social-discord h-3 w-3 shrink-0" />
                   {connection.participant.discordUsername}
                 </span>
               ) : null}
               {connection.participant.battlenetHandle ? (
-                <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-zinc-300">
-                  <SiBattledotnet className="oc-social-battlenet h-3.5 w-3.5 shrink-0" />
+                <span className="oc-profile-meta inline-flex items-center gap-1.5 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 text-zinc-300">
+                  <SiBattledotnet className="oc-social-battlenet h-3 w-3 shrink-0" />
                   {connection.participant.battlenetHandle}
                 </span>
               ) : null}
