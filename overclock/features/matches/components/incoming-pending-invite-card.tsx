@@ -9,6 +9,8 @@ import {
   formatMatchRegion,
   formatMatchRole,
   formatMatchTimestamp,
+  type MatchMetaChip,
+  MATCH_DESTRUCTIVE_BUTTON_CLASSNAME,
   MatchRowIdentity,
 } from "./match-row-shared";
 
@@ -23,11 +25,23 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
     : null;
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const metadata = [
-    invite.participant.rankLabel,
-    formatMatchRole(invite.participant.mainRole),
-    formatMatchRegion(invite.participant.region),
-  ].filter((value): value is string => Boolean(value));
+  const metadata: MatchMetaChip[] = [];
+
+  if (invite.participant.rankLabel) {
+    metadata.push({ label: invite.participant.rankLabel, tone: "primary" });
+  }
+
+  const roleLabel = formatMatchRole(invite.participant.mainRole);
+
+  if (roleLabel) {
+    metadata.push({ label: roleLabel, tone: "secondary" });
+  }
+
+  metadata.push({
+    label: formatMatchRegion(invite.participant.region) ?? "Not set",
+    tone: invite.participant.region ? "secondary" : "muted",
+  });
+
   const expiresLabel = formatMatchTimestamp("Expires", invite.expiresAt);
 
   function handleInviteAction(action: "accept" | "decline") {
@@ -61,13 +75,13 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   return (
     <MatchRowIdentity
       action={
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 rounded-[12px] border border-white/[0.05] bg-white/[0.015] p-1">
           <button
             type="button"
             disabled={isPending}
             aria-disabled={isPending}
             onClick={() => handleInviteAction("accept")}
-            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] bg-zinc-100 px-3.5 text-[11px] font-semibold text-black transition-all duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] bg-zinc-100 px-3.5 text-[11px] font-semibold text-black shadow-[0_10px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-100/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 active:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "..." : "Accept"}
           </button>
@@ -76,21 +90,25 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
             disabled={isPending}
             aria-disabled={isPending}
             onClick={() => handleInviteAction("decline")}
-            className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
+            className={MATCH_DESTRUCTIVE_BUTTON_CLASSNAME}
           >
             {isPending ? "..." : "Decline"}
           </button>
         </div>
       }
       footer={
-        <div className="space-y-1">
+        <div className="space-y-2">
           {invite.message ?? invite.sourcePostTitle ? (
-            <p className="oc-profile-meta truncate text-[11px] text-zinc-400">
+            <p className="oc-profile-meta line-clamp-2 text-[11px] leading-5 text-zinc-400">
               {invite.message ?? invite.sourcePostTitle}
             </p>
           ) : null}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            {expiresLabel ? <span className="oc-profile-meta text-[11px]">{expiresLabel}</span> : null}
+            {expiresLabel ? (
+              <span className="oc-profile-meta text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+                {expiresLabel}
+              </span>
+            ) : null}
             {feedback ? (
               <span className="oc-profile-meta text-[11px] text-rose-300">{feedback}</span>
             ) : null}
