@@ -42,10 +42,10 @@ function EditorDropdownField({
         <button
           type="button"
           disabled={disabled}
-          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[14px] border bg-[#262626] px-3 text-left text-xs outline-none transition ${
+          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[10px] border bg-white/[0.05] px-3 text-left text-xs outline-none transition ${
             disabled
-              ? "cursor-not-allowed border-white/10 text-zinc-600 opacity-70"
-              : "border-white/10 text-zinc-100 hover:border-white/20 hover:bg-[#303030] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
+              ? "cursor-not-allowed border-white/[0.08] text-zinc-600 opacity-70"
+              : "border-white/[0.08] text-zinc-100 hover:border-white/[0.12] hover:bg-white/[0.08] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
           }`}
         >
           <span className={value ? "text-zinc-100" : "text-zinc-500"}>
@@ -119,7 +119,7 @@ export function CompetitiveRoleEditorShell({
 
   return (
     <PageReveal variant="fade">
-      <section className="border-t border-white/10 px-5 py-3 sm:px-6 sm:py-4">
+      <section className="border-t border-white/[0.05] px-5 py-3 sm:px-6 sm:py-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-base font-semibold tracking-[-0.03em] text-zinc-50">
             {COMPETITIVE_ROLE_LABELS[role]}
@@ -131,7 +131,7 @@ export function CompetitiveRoleEditorShell({
               <Switch
                 checked={mainRoleEnabled}
                 onCheckedChange={setMainRoleEnabled}
-                className="h-5 w-9 cursor-pointer border-white/12 bg-[#262626] data-[state=checked]:bg-zinc-100"
+                className="h-5 w-9 cursor-pointer border-white/[0.12] bg-white/[0.05] data-[state=checked]:bg-zinc-100"
               />
             </label>
             {roleProfile ? (
@@ -144,7 +144,7 @@ export function CompetitiveRoleEditorShell({
                 />
                 <button
                   type="submit"
-                  className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/12 bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-[#303030] hover:text-rose-200"
+                  className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-white/[0.08] hover:text-rose-200"
                 >
                   Remove
                 </button>
@@ -205,7 +205,7 @@ export function CompetitiveRoleEditorShell({
 
             <button
               type="submit"
-              className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.14] bg-[#262626] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white"
+              className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.08] hover:text-white"
             >
               Save
             </button>

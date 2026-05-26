@@ -26,7 +26,7 @@ function SaveButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-8 cursor-pointer items-center justify-center rounded-[10px] border border-white/[0.14] bg-[#262626] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.2] hover:bg-[#303030] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
+      className="inline-flex h-8 cursor-pointer items-center justify-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-3 text-xs font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:border-white/[0.08] disabled:bg-white/[0.03] disabled:text-zinc-600"
     >
       {pending ? "Saving..." : "Save"}
     </button>
@@ -40,7 +40,7 @@ export function CompetitiveProfileSettings({
   const [platform, setPlatform] = useState(selectedPlatform ?? "");
 
   return (
-    <section className="border-t border-white/10 px-5 py-3 sm:px-6 sm:py-4">
+    <section className="border-t border-white/[0.05] px-5 py-3 sm:px-6 sm:py-3.5">
       <form action={saveCompetitiveProfileSettings}>
         <input type="hidden" name="platform" value={platform} />
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -49,7 +49,7 @@ export function CompetitiveProfileSettings({
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex h-8 min-w-[78px] cursor-pointer items-center justify-between gap-2 rounded-[14px] border border-white/10 bg-[#262626] px-2.5 text-left text-[11px] font-medium text-zinc-100 outline-none transition hover:border-white/20 hover:bg-[#303030] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
+                  className="inline-flex h-8 min-w-[78px] cursor-pointer items-center justify-between gap-2 rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 text-left text-[11px] font-medium text-zinc-100 outline-none transition hover:border-white/[0.12] hover:bg-white/[0.08] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
                 >
                   <span>{platform || "Platform"}</span>
                   <ChevronDownIcon className="h-4 w-4 shrink-0 text-zinc-500" />

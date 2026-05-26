@@ -32,7 +32,7 @@ export function CompetitiveRoleCard({
   const rankIconSrc = roleProfile ? getRankIconSrc(roleProfile.rankTier) : null;
 
   return (
-    <article className="group flex h-full flex-col rounded-[16px] border border-white/10 bg-[#05070b] p-3 transition-all duration-200 hover:bg-[#080b10]">
+    <article className="group flex h-full flex-col rounded-[16px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_100%)] p-3 transition-all duration-200 hover:border-white/[0.12] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.026)_0%,rgba(255,255,255,0.012)_100%)]">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -73,7 +73,7 @@ export function CompetitiveRoleCard({
               : `Set up ${COMPETITIVE_ROLE_LABELS[role]}`
           }
           title={isConfigured ? "Edit role" : "Set up role"}
-          className="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[10px] border border-white/10 bg-[#262626] text-zinc-100 backdrop-blur-md transition-all duration-200 hover:bg-[#303030] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+          className="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] text-zinc-100 backdrop-blur-md transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           <PencilIcon className="h-3 w-3" />
         </button>
@@ -86,7 +86,7 @@ export function CompetitiveRoleCard({
               <div
                 key={hero.id}
                 title={hero.label}
-                className="relative h-7 w-7 shrink-0 overflow-hidden rounded-[8px] bg-zinc-900"
+                className="relative h-7 w-7 shrink-0 overflow-hidden rounded-[8px] bg-zinc-900 ring-1 ring-white/[0.06]"
               >
                 <Image
                   src={hero.imageSrc}
