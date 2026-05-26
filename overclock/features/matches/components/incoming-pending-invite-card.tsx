@@ -67,7 +67,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
             disabled={isPending}
             aria-disabled={isPending}
             onClick={() => handleInviteAction("accept")}
-            className="oc-profile-display inline-flex h-8 items-center rounded-full bg-zinc-100 px-3.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] bg-zinc-100 px-3.5 text-[11px] font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "..." : "Accept"}
           </button>
@@ -76,7 +76,7 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
             disabled={isPending}
             aria-disabled={isPending}
             onClick={() => handleInviteAction("decline")}
-            className="oc-profile-meta inline-flex h-8 items-center rounded-full border border-white/8 bg-white/[0.03] px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition hover:border-white/12 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
+            className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/8 bg-white/[0.03] px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition hover:border-white/12 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "..." : "Decline"}
           </button>

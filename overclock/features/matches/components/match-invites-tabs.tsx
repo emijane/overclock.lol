@@ -26,48 +26,38 @@ export function MatchInvitesTabs({
   const visibleInvites = activeTab === "incoming" ? incomingInvites : outgoingInvites;
 
   return (
-    <div className="oc-surface-panel overflow-hidden rounded-[22px]">
-      <div className="flex flex-col gap-3 border-b border-white/6 px-4 py-4 sm:px-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.18em]">
-              Invite inbox
-            </p>
-            <h2 className="oc-profile-display mt-1 text-[15px] font-semibold tracking-[-0.02em] text-zinc-100">
-              Pending invites
-            </h2>
-          </div>
-          <span className="oc-profile-meta inline-flex min-w-8 items-center justify-center rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold tabular-nums text-zinc-300">
-            {incomingInvites.length + outgoingInvites.length}
-          </span>
-        </div>
+    <div>
+      <div className="flex flex-col gap-2 border-b border-white/6 px-4 py-4 sm:px-5">
+        <p className="oc-profile-meta text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+          Invite type
+        </p>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           <button
             type="button"
             onClick={() => setActiveTab("incoming")}
-            className={`oc-profile-display inline-flex h-8 items-center rounded-full border px-3 text-[12px] font-semibold tracking-[-0.02em] transition ${
+            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition ${
               activeTab === "incoming"
-                ? "border-white/10 bg-white/[0.08] text-zinc-100"
-                : "border-white/8 bg-white/[0.03] text-zinc-500 hover:text-zinc-300"
+                ? "border-white/8 bg-white/[0.05] text-zinc-200"
+                : "border-white/[0.05] bg-transparent text-zinc-500 hover:border-white/[0.07] hover:text-zinc-300"
             }`}
           >
             Incoming
-            <span className="oc-profile-meta ml-1.5 tabular-nums text-[11px] text-zinc-400">
+            <span className="oc-profile-meta ml-1.25 tabular-nums text-[10px] text-zinc-500">
               {incomingInvites.length}
             </span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("outgoing")}
-            className={`oc-profile-display inline-flex h-8 items-center rounded-full border px-3 text-[12px] font-semibold tracking-[-0.02em] transition ${
+            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition ${
               activeTab === "outgoing"
-                ? "border-white/10 bg-white/[0.08] text-zinc-100"
-                : "border-white/8 bg-white/[0.03] text-zinc-500 hover:text-zinc-300"
+                ? "border-white/8 bg-white/[0.05] text-zinc-200"
+                : "border-white/[0.05] bg-transparent text-zinc-500 hover:border-white/[0.07] hover:text-zinc-300"
             }`}
           >
             Outgoing
-            <span className="oc-profile-meta ml-1.5 tabular-nums text-[11px] text-zinc-400">
+            <span className="oc-profile-meta ml-1.25 tabular-nums text-[10px] text-zinc-500">
               {outgoingInvites.length}
             </span>
           </button>

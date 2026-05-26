@@ -118,7 +118,7 @@ export function MatchRowIdentity({
             {primaryMeta.map((item) => (
               <span
                 key={item}
-                className="oc-profile-meta oc-profile-pill px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300"
+                className="oc-profile-meta oc-profile-pill rounded-[10px] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300"
               >
                 {item}
               </span>
