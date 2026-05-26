@@ -27,7 +27,7 @@ export function MatchInvitesTabs({
 
   return (
     <div>
-      <div className="flex flex-col gap-2 border-b border-white/6 px-4 py-4 sm:px-5">
+      <div className="flex flex-col gap-2 border-b border-white/[0.06] px-4 py-4 sm:px-5">
         <p className="oc-profile-meta text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500">
           Invite type
         </p>
@@ -36,10 +36,10 @@ export function MatchInvitesTabs({
           <button
             type="button"
             onClick={() => setActiveTab("incoming")}
-            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition ${
+            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition-all duration-200 ${
               activeTab === "incoming"
-                ? "border-white/8 bg-white/[0.05] text-zinc-200"
-                : "border-white/[0.05] bg-transparent text-zinc-500 hover:border-white/[0.07] hover:text-zinc-300"
+                ? "border-white/[0.06] bg-white/[0.03] text-zinc-200"
+                : "border-white/[0.04] bg-transparent text-zinc-500 hover:border-white/[0.06] hover:bg-white/[0.02] hover:text-zinc-300"
             }`}
           >
             Incoming
@@ -50,10 +50,10 @@ export function MatchInvitesTabs({
           <button
             type="button"
             onClick={() => setActiveTab("outgoing")}
-            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition ${
+            className={`inline-flex h-7 items-center rounded-[10px] border px-2.5 text-[11px] font-medium transition-all duration-200 ${
               activeTab === "outgoing"
-                ? "border-white/8 bg-white/[0.05] text-zinc-200"
-                : "border-white/[0.05] bg-transparent text-zinc-500 hover:border-white/[0.07] hover:text-zinc-300"
+                ? "border-white/[0.06] bg-white/[0.03] text-zinc-200"
+                : "border-white/[0.04] bg-transparent text-zinc-500 hover:border-white/[0.06] hover:bg-white/[0.02] hover:text-zinc-300"
             }`}
           >
             Outgoing
@@ -80,11 +80,11 @@ export function MatchInvitesTabs({
           ))}
         </ul>
       ) : (
-        <div className="px-5 py-8 text-center">
+        <div className="grid min-h-[240px] place-items-center px-5 py-10 text-center">
           <p className="oc-profile-display text-sm font-medium tracking-[-0.01em] text-zinc-200">
             {activeTab === "incoming" ? "No incoming invites" : "No outgoing invites"}
           </p>
-          <p className="oc-profile-meta mt-1 text-sm">
+          <p className="oc-profile-meta mt-2 text-[11px] leading-5">
             {activeTab === "incoming" ? "No incoming invites." : "No outgoing invites."}
           </p>
         </div>

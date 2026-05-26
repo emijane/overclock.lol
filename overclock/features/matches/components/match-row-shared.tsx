@@ -85,7 +85,7 @@ export function MatchRowIdentity({
   const title = participant.displayName ?? participant.username ?? "Unknown player";
   const content = (
     <>
-      <Avatar className="oc-overlay-avatar h-10 w-10 shrink-0 rounded-full ring-1 ring-white/8">
+      <Avatar className="oc-overlay-avatar-elevated h-10 w-10 shrink-0 rounded-full ring-1 ring-white/[0.06]">
         {participant.avatarUrl ? (
           <AvatarImage src={participant.avatarUrl} alt={`${title} avatar`} />
         ) : null}
@@ -118,7 +118,7 @@ export function MatchRowIdentity({
             {primaryMeta.map((item) => (
               <span
                 key={item}
-                className="oc-profile-meta oc-profile-pill rounded-[10px] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300"
+                className="oc-profile-meta rounded-[10px] border border-white/[0.06] bg-zinc-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300"
               >
                 {item}
               </span>
@@ -134,5 +134,5 @@ export function MatchRowIdentity({
     </>
   );
 
-  return <div className="oc-list-row-hover flex items-start gap-3 px-4 py-3 sm:px-5">{content}</div>;
+  return <div className="oc-list-row-hover flex items-start gap-3 px-4 py-3.5 sm:px-5">{content}</div>;
 }

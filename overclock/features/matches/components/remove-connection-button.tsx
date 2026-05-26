@@ -48,7 +48,7 @@ export function RemoveConnectionButton({
         disabled={isPending}
         aria-disabled={isPending}
         onClick={handleRemoveConnection}
-        className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/8 bg-white/[0.03] px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition hover:border-white/12 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
+        className="oc-profile-meta inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isPending ? "Removing..." : "Remove"}
       </button>
