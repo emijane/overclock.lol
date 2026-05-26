@@ -1,4 +1,5 @@
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 import type { PendingSentPlayInvite } from "@/lib/matches/play-invites";
 import {
   formatMatchRegion,
@@ -22,13 +23,19 @@ export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
 
   const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
   const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
+  const rankColors = getRankPillColors(invite.participant.rankTier);
 
   if (rankLabel) {
     metadata.push({
       iconAlt: `${rankLabel} rank icon`,
       iconSrc: rankIconSrc,
       label: rankLabel,
-      tone: "secondary",
+      style: {
+        backgroundColor: rankColors.bgSolid,
+        borderColor: rankColors.border,
+        color: rankColors.text,
+      },
+      tone: "primary",
     });
   }
 

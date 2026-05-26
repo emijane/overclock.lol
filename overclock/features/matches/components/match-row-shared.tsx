@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { MatchParticipant } from "@/lib/matches/play-invites";
@@ -9,6 +9,7 @@ export type MatchMetaChip = {
   iconAlt?: string;
   iconSrc?: string | null;
   label: string;
+  style?: CSSProperties;
   tone?: "primary" | "secondary" | "muted";
 };
 
@@ -146,10 +147,11 @@ export function MatchRowIdentity({
                 {primaryMeta.map((item) => (
                   <span
                     key={`${item.tone ?? "secondary"}-${item.label}`}
+                    style={item.style}
                     className={`oc-profile-meta inline-flex min-h-[1.375rem] items-center rounded-[9px] border px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.08em] ${
                       item.tone === "muted"
-                          ? "border-white/[0.05] bg-white/[0.02] text-zinc-500"
-                          : "border-white/[0.06] bg-zinc-900/70 text-zinc-300"
+                        ? "border-white/[0.05] bg-white/[0.02] text-zinc-500"
+                        : "border-white/[0.06] bg-zinc-900/70 text-zinc-300"
                     }`}
                   >
                     {item.iconSrc ? (

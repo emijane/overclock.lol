@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 import {
   formatMatchRegion,
@@ -31,13 +32,19 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
 
   const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
   const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
+  const rankColors = getRankPillColors(invite.participant.rankTier);
 
   if (rankLabel) {
     metadata.push({
       iconAlt: `${rankLabel} rank icon`,
       iconSrc: rankIconSrc,
       label: rankLabel,
-      tone: "secondary",
+      style: {
+        backgroundColor: rankColors.bgSolid,
+        borderColor: rankColors.border,
+        color: rankColors.text,
+      },
+      tone: "primary",
     });
   }
 

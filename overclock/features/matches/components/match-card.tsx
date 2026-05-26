@@ -2,6 +2,7 @@ import { FaDiscord } from "react-icons/fa";
 import { SiBattledotnet } from "react-icons/si";
 
 import { getRankIconSrc } from "@/lib/competitive/rank-icons";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 import type { ActiveProfileConnection } from "@/lib/matches/play-invites";
 import { RemoveConnectionButton } from "@/features/matches/components/remove-connection-button";
 import {
@@ -25,13 +26,19 @@ export function MatchCard({ connection }: MatchCardProps) {
 
   const rankLabel = getDisplayableMatchMetaLabel(connection.participant.rankLabel);
   const rankIconSrc = getRankIconSrc(connection.participant.rankTier);
+  const rankColors = getRankPillColors(connection.participant.rankTier);
 
   if (rankLabel) {
     metadata.push({
       iconAlt: `${rankLabel} rank icon`,
       iconSrc: rankIconSrc,
       label: rankLabel,
-      tone: "secondary",
+      style: {
+        backgroundColor: rankColors.bgSolid,
+        borderColor: rankColors.border,
+        color: rankColors.text,
+      },
+      tone: "primary",
     });
   }
 
