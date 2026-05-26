@@ -18,7 +18,7 @@ const TABS: { label: string; value: TabValue }[] = [
 
 export function AccountPostTabs({ counts, selectedStatus }: AccountPostTabsProps) {
   return (
-    <div className="flex items-center gap-0.5 border-b border-white/6 px-3 py-2 sm:px-4">
+    <div className="flex items-center gap-1 border-b border-white/[0.06] px-4 py-3 sm:px-5">
       {TABS.map(({ label, value }) => {
         const isActive = selectedStatus === value;
         const count = counts[value];
@@ -28,16 +28,16 @@ export function AccountPostTabs({ counts, selectedStatus }: AccountPostTabsProps
           <Link
             key={value}
             href={href}
-            className={`inline-flex h-8 items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold transition ${
+            className={`oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border px-3 text-[12px] font-semibold transition ${
               isActive
-                ? "bg-white/8 text-zinc-100"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "border-white/[0.08] bg-white/[0.06] text-zinc-100"
+                : "border-transparent text-zinc-500 hover:border-white/[0.06] hover:bg-white/[0.03] hover:text-zinc-300"
             }`}
           >
             {label}
             {count > 0 ? (
               <span
-                className={`text-[12px] tabular-nums ${
+                className={`oc-profile-meta text-[11px] tabular-nums ${
                   isActive ? "text-zinc-400" : "text-zinc-600"
                 }`}
               >

@@ -1,12 +1,12 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ChevronLeftIcon } from "lucide-react";
 
-import { DarkPageShell } from "@/components/app-shell/dark-page-shell";
-import { AuthMessage } from "@/features/auth/components";
+import { AccountPageHeader } from "@/app/account/components/account-page-header";
+import { AccountSectionCard } from "@/app/account/components/account-section-card";
 import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
 import { AccountPostPagination } from "@/app/account/posts/components/account-post-pagination";
 import { AccountPostTabs } from "@/app/account/posts/components/account-post-tabs";
+import { AuthMessage } from "@/features/auth/components";
 import {
   getLFGPostDisplayStatus,
   isLFGPostDisplayStatus,
@@ -55,7 +55,9 @@ function getEmptyStateCopy(status: TabValue) {
   };
 }
 
-export default async function AccountPostsPage({ searchParams }: AccountPostsPageProps) {
+export default async function AccountPostsPage({
+  searchParams,
+}: AccountPostsPageProps) {
   const params = searchParams ? await searchParams : {};
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
@@ -80,67 +82,67 @@ export default async function AccountPostsPage({ searchParams }: AccountPostsPag
   const emptyState = getEmptyStateCopy(selectedStatus);
 
   return (
-    <DarkPageShell
-      containerClassName="flex flex-col gap-3"
-      maxWidthClassName="max-w-4xl"
-    >
-        <AuthMessage message={message} type={messageType} />
+    <>
+      <AuthMessage message={message} type={messageType} variant="toast" />
 
-        <section className="oc-surface-panel flex h-270 flex-col overflow-hidden rounded-[22px]">
-          <header className="shrink-0 px-5 py-4 sm:px-6 sm:py-5">
-            <div className="space-y-2">
-              <Link
-                href="/account"
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
-              >
-                <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
-                Account
-              </Link>
-              <h1 className="text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
-                My Posts
-              </h1>
-            </div>
-          </header>
+      <AccountPageHeader
+        title="My posts"
+        description="Review active, closed, and expired listings without leaving your account workspace."
+        actions={
+          <Link
+            href="/duos/create"
+            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+          >
+            Create post
+          </Link>
+        }
+      />
 
-          <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
+      <AccountSectionCard
+        title="Post history"
+        description="Filter your listing history by lifecycle state and manage anything that is still live."
+        className="flex h-270 flex-col"
+        contentClassName="flex min-h-0 flex-1 flex-col p-0"
+      >
+        <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
 
-          <div className="flex min-h-0 flex-1 flex-col px-5 py-4 sm:px-6">
-            {paginatedPosts.length === 0 ? (
-              <div className="flex flex-1 items-center justify-center">
-                <div className="text-center">
-                  <p className="text-sm font-medium text-zinc-300">
-                    {emptyState.title}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-6 text-zinc-500">
-                    {emptyState.description}
-                  </p>
-                </div>
+        <div className="flex min-h-0 flex-1 flex-col px-5 py-4 sm:px-6">
+          {paginatedPosts.length === 0 ? (
+            <div className="flex flex-1 items-center justify-center">
+              <div className="text-center">
+                <p className="oc-profile-display text-sm font-medium text-zinc-300">
+                  {emptyState.title}
+                </p>
+                <p className="mt-1.5 text-sm leading-6 text-zinc-500">
+                  {emptyState.description}
+                </p>
               </div>
-            ) : (
-              <>
-                <div className="grid gap-2">
-                  {paginatedPosts.map((post) => {
-                    const displayStatus =
-                      post.displayStatus ?? getLFGPostDisplayStatus(post);
-                    return (
-                      <AccountPostCard
-                        key={post.id}
-                        displayStatus={displayStatus}
-                        post={post}
-                        showActions={displayStatus === "active"}
-                      />
-                    );
-                  })}
-                </div>
-                <AccountPostPagination
-                  currentPage={safePage}
-                  selectedStatus={selectedStatus}
-                  totalPages={totalPages}
-                />
-              </>
-            )}
-          </div>
-        </section>
-    </DarkPageShell>
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-2">
+                {paginatedPosts.map((post) => {
+                  const displayStatus =
+                    post.displayStatus ?? getLFGPostDisplayStatus(post);
+                  return (
+                    <AccountPostCard
+                      key={post.id}
+                      displayStatus={displayStatus}
+                      post={post}
+                      showActions={displayStatus === "active"}
+                    />
+                  );
+                })}
+              </div>
+              <AccountPostPagination
+                currentPage={safePage}
+                selectedStatus={selectedStatus}
+                totalPages={totalPages}
+              />
+            </>
+          )}
+        </div>
+      </AccountSectionCard>
+    </>
   );
 }

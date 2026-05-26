@@ -10,7 +10,7 @@ featured videos, and create LFG posts.
 - `/login` is the auth entry point.
 - `/onboarding` creates the app profile and reserves a username.
 - `/u/[username]` renders the public profile and hosts the profile edit modal for owners.
-- `/account` manages manual availability and offline presence privacy settings.
+- `/account` is the main account settings hub for profile details, presence privacy, blocked users, and account-level controls.
 - `/account/competitive` manages per-role Competitive Profile setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private LFG management page for active and past posts.

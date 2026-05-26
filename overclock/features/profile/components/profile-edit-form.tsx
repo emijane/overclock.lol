@@ -27,39 +27,54 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
       <input type="hidden" name="x_url" value={form.xUrl} />
       <input type="hidden" name="youtube_url" value={form.youtubeUrl} />
 
-      {/* Cover + avatar preview */}
-      <div className="relative mb-10">
-        <div className="relative h-24 overflow-hidden rounded-t-[21px]">
-          {coverImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={coverImageUrl}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="h-full w-full bg-linear-to-b from-[#0f1117] to-[#05070b]" />
-          )}
-          <div className="absolute bottom-2 right-2">
-            <ProfileCoverUploadButton />
+      <div className="border-b border-white/[0.06] px-5 py-5 sm:px-6">
+        <div className="relative overflow-hidden rounded-[22px] border border-white/[0.06] bg-white/[0.02]">
+          <div className="relative h-28">
+            {coverImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={coverImageUrl}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="h-full w-full bg-linear-to-b from-[#0f1117] to-[#05070b]" />
+            )}
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(5,7,11,0.24)_58%,rgba(5,7,11,0.82)_100%)]" />
+            <div className="absolute bottom-3 right-3">
+              <ProfileCoverUploadButton />
+            </div>
           </div>
-        </div>
-        <div className="absolute -bottom-8 left-4 sm:left-5">
-          <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-[#05070b] bg-zinc-800">
-            <AvatarUploadButton avatarUrl={avatarUrl} initial={initial} />
+
+          <div className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-5">
+            <div className="flex items-end gap-3">
+              <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-[#05070b] bg-zinc-800 shadow-[0_12px_26px_rgba(0,0,0,0.28)]">
+                <AvatarUploadButton avatarUrl={avatarUrl} initial={initial} />
+              </div>
+              <div className="pb-1">
+                <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Public identity
+                </p>
+                <p className="oc-profile-display mt-1 text-[15px] font-semibold tracking-[-0.02em] text-zinc-50">
+                  Profile basics
+                </p>
+                <p className="mt-1 text-[12px] leading-5 text-zinc-500">
+                  Update the visuals and details tied to your public player page.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Fields */}
-      <div className="px-4 pb-4 sm:px-5">
-        <ProfileEditFormFields form={form} profile={profile} />
-        <div className="mt-3 flex justify-end">
+      <div className="px-5 py-5 sm:px-6">
+        <ProfileEditFormFields form={form} profile={profile} variant="settings" />
+        <div className="mt-4 flex justify-end">
           <button
             type="submit"
-            className="inline-flex h-8 items-center rounded-[10px] border border-white/10 bg-white/8 px-4 text-sm font-semibold text-zinc-100 transition hover:bg-white/12 hover:text-white"
+            className="oc-profile-display inline-flex h-9 items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-4 text-[13px] font-semibold text-zinc-100 transition hover:border-white/[0.12] hover:bg-white/[0.08] hover:text-white"
           >
-            Save
+            Save changes
           </button>
         </div>
       </div>

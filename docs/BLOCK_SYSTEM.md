@@ -128,8 +128,8 @@ calling the block RPC.
 
 ### Account Page
 
-- Blocked users are shown in a compact account card on `/account`
-- Each row shows avatar, display name, username, block date, and an unblock button
+- Blocked users are shown inside the `Safety` section on `/account`
+- Each row shows avatar, display name or username, block date, status copy, and an unblock button
 - Empty state copy: `No blocked users yet.`
 
 ### Dropdown Actions

@@ -25,27 +25,18 @@ export async function AccountBlockedUsersCard() {
   const blockedUsers = await getBlockedUsers();
 
   return (
-    <section className="oc-card-lift overflow-hidden rounded-[12px]">
-      <div className="border-b border-white/[0.06] px-4 py-3 sm:px-4.5">
-        <h2 className="oc-profile-display text-[16px] font-semibold tracking-[-0.03em] text-zinc-50">
-          Blocked users
-        </h2>
-        <p className="mt-1 text-[13px] leading-6 text-zinc-400">
-          Manage the players you do not want interacting with your account.
-        </p>
-      </div>
-
+    <div className="overflow-hidden">
       {blockedUsers.length === 0 ? (
-        <div className="px-4 py-4.5 sm:px-4.5 sm:py-5">
+        <div className="px-5 py-5 sm:px-6">
           <p className="oc-profile-display text-[14px] font-medium text-zinc-200">
             No blocked users yet.
           </p>
-          <p className="mt-1 text-[13px] leading-6 text-zinc-500">
+          <p className="mt-1.5 max-w-xl text-[13px] leading-6 text-zinc-500">
             Use profile and post dropdowns to block a player when you need to.
           </p>
         </div>
       ) : (
-        <div className="max-h-[26rem] overflow-y-auto">
+        <div className="max-h-[25rem] overflow-y-auto">
           <ul>
             {blockedUsers.map((blockedUser, index) => {
               const primaryLabel = blockedUser.username
@@ -56,10 +47,12 @@ export async function AccountBlockedUsersCard() {
               return (
                 <li
                   key={blockedUser.profileId}
-                  className={index < blockedUsers.length - 1 ? "border-b border-white/[0.06]" : ""}
+                  className={`${
+                    index < blockedUsers.length - 1 ? "border-b border-white/[0.06]" : ""
+                  }`}
                 >
-                  <div className="flex items-center gap-3 px-4 py-3 sm:px-4.5">
-                    <Avatar className="h-10 w-10 shrink-0 rounded-full">
+                  <div className="oc-list-row-hover flex items-center gap-3 px-5 py-4 sm:px-6">
+                    <Avatar className="h-11 w-11 shrink-0 rounded-full border border-white/[0.06]">
                       {blockedUser.avatarUrl ? (
                         <AvatarImage
                           src={blockedUser.avatarUrl}
@@ -72,10 +65,18 @@ export async function AccountBlockedUsersCard() {
                     </Avatar>
 
                     <div className="min-w-0 flex-1">
-                      <p className="oc-profile-display truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-100">
-                        {primaryLabel}
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <p className="oc-profile-display truncate text-[14px] font-semibold tracking-[-0.02em] text-zinc-100">
+                          {primaryLabel}
+                        </p>
+                        <span className="rounded-full border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                          Blocked
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[12px] leading-5 text-zinc-500">
+                        Hidden from invites, requests, and profile discovery on your account.
                       </p>
-                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                         {blockedAtLabel ? (
                           <p className="oc-profile-meta text-[11px] font-medium text-zinc-600">
                             Blocked {blockedAtLabel}
@@ -97,6 +98,6 @@ export async function AccountBlockedUsersCard() {
           </ul>
         </div>
       )}
-    </section>
+    </div>
   );
 }

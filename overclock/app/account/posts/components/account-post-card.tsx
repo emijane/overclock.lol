@@ -58,15 +58,15 @@ export function AccountPostCard({
     <article
       className={`rounded-[18px] border bg-[#05070b] transition-all duration-150 ${
         isActive
-          ? "border-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/14 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_6px_20px_rgba(0,0,0,0.24)]"
-          : "border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+          ? "border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/[0.12] hover:bg-[#080b10] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_28px_rgba(0,0,0,0.24)]"
+          : "border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
       }`}
     >
       <div className="px-4 py-3">
         {/* Title row: title left, status + actions right, all center-aligned */}
         <div className="flex items-center gap-2">
           <p
-            className={`min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 tracking-[-0.02em] ${
+            className={`oc-profile-display min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 tracking-[-0.02em] ${
               isActive ? "text-zinc-100" : "text-zinc-500"
             }`}
           >
@@ -100,7 +100,7 @@ export function AccountPostCard({
               />
             ) : null}
             <span
-              className={`text-[11px] font-semibold ${
+              className={`oc-profile-display text-[11px] font-semibold ${
                 isActive ? "text-zinc-300" : "text-zinc-600"
               }`}
             >
@@ -108,19 +108,25 @@ export function AccountPostCard({
             </span>
             <Dot />
             <span
-              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+              className={`oc-profile-meta text-[11px] ${
+                isActive ? "text-zinc-500" : "text-zinc-700"
+              }`}
             >
               {roleLabel}
             </span>
             <Dot />
             <span
-              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+              className={`oc-profile-meta text-[11px] ${
+                isActive ? "text-zinc-500" : "text-zinc-700"
+              }`}
             >
               {gameModeLabel}
             </span>
             <Dot />
             <span
-              className={`text-[11px] ${isActive ? "text-zinc-500" : "text-zinc-700"}`}
+              className={`oc-profile-meta text-[11px] ${
+                isActive ? "text-zinc-500" : "text-zinc-700"
+              }`}
             >
               {sectionLabel}
             </span>
@@ -128,7 +134,7 @@ export function AccountPostCard({
               <>
                 <Dot />
                 <span
-                  className={`text-[11px] ${
+                  className={`oc-profile-meta text-[11px] ${
                     isActive ? "text-zinc-600" : "text-zinc-700"
                   }`}
                 >

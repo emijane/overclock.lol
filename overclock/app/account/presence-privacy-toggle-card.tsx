@@ -36,10 +36,12 @@ export function PresencePrivacyToggleCard({
     <SettingsToggleCard
       ariaLabel="Toggle appear offline"
       checked={hideOfflinePresence}
+      checkedLabel="Hidden"
       description="Hide your presence dot from other users."
       disabled={isPending}
       onCheckedChange={handleCheckedChange}
       title="Appear offline"
+      uncheckedLabel="Visible"
     />
   );
 }

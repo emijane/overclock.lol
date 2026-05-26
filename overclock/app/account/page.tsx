@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { DarkPageShell } from "@/components/app-shell/dark-page-shell";
-import { PageReveal } from "@/components/app-shell/page-reveal";
+import { AccountPageHeader } from "@/app/account/components/account-page-header";
+import { AccountSectionCard } from "@/app/account/components/account-section-card";
 import { AccountBlockedUsersCard } from "@/features/blocks/components/account-blocked-users-card";
 import { AuthMessage } from "@/features/auth/components";
 import { ProfileEditForm } from "@/features/profile/components/profile-edit-form";
@@ -50,52 +51,70 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   };
 
   return (
-    <DarkPageShell
-      containerClassName="flex flex-col gap-3"
-      maxWidthClassName="max-w-4xl"
-    >
-        <section className="rounded-[28px]">
-          <div className="overflow-hidden rounded-[28px]">
-            <PageReveal>
-              <header className="py-4 sm:py-5">
-                <AuthMessage message={message} type={messageType} />
-                <h1 className="mt-2 text-3xl font-semibold tracking-[-0.07em] text-zinc-50 sm:text-4xl">
-                  Account
-                </h1>
-              </header>
-            </PageReveal>
+    <>
+      <AuthMessage message={message} type={messageType} variant="toast" />
 
-            <PageReveal delay={1}>
-              <div className="grid gap-3">
-                <div className="oc-surface-panel overflow-hidden rounded-[22px]">
-                  <ProfileEditForm
-                    avatarUrl={getProfileAvatarUrl(
-                      profile.avatar_url ?? null,
-                      profile.avatar_updated_at ?? null
-                    )}
-                    coverImageUrl={getProfileCoverUrl(
-                      profile.cover_image_path ?? null,
-                      profile.cover_image_updated_at ?? null
-                    )}
-                    profile={editProfile}
-                  />
-                </div>
+      <AccountPageHeader
+        title="General"
+        description="Update your public profile details, presence visibility, and account safety controls from one place."
+        actions={
+          <>
+            <Link
+              href="/account/competitive"
+              className="oc-profile-display inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+            >
+              Competitive profile
+            </Link>
+            <Link
+              href="/account/posts"
+              className="oc-profile-display inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
+            >
+              My posts
+            </Link>
+          </>
+        }
+      />
 
-                <div className="oc-surface-panel overflow-hidden rounded-[22px]">
-                  <AvailabilityToggleCard
-                    initialIsLookingToPlay={profile.is_looking_to_play ?? false}
-                  />
-                  <div className="border-t border-white/6" />
-                  <PresencePrivacyToggleCard
-                    initialHideOfflinePresence={profile.hide_offline_presence ?? false}
-                  />
-                </div>
+      <div className="grid gap-3">
+        <AccountSectionCard
+          title="Profile"
+          description="Control the profile details and public links attached to your overclock.lol player page."
+          contentClassName="p-0"
+        >
+          <ProfileEditForm
+            avatarUrl={getProfileAvatarUrl(
+              profile.avatar_url ?? null,
+              profile.avatar_updated_at ?? null
+            )}
+            coverImageUrl={getProfileCoverUrl(
+              profile.cover_image_path ?? null,
+              profile.cover_image_updated_at ?? null
+            )}
+            profile={editProfile}
+          />
+        </AccountSectionCard>
 
-                <AccountBlockedUsersCard />
-              </div>
-            </PageReveal>
-          </div>
-        </section>
-    </DarkPageShell>
+        <AccountSectionCard
+          title="Presence & Privacy"
+          description="Set how visible your account is to other players when they browse, connect, or send invites."
+          contentClassName="divide-y divide-white/[0.06]"
+        >
+          <AvailabilityToggleCard
+            initialIsLookingToPlay={profile.is_looking_to_play ?? false}
+          />
+          <PresencePrivacyToggleCard
+            initialHideOfflinePresence={profile.hide_offline_presence ?? false}
+          />
+        </AccountSectionCard>
+
+        <AccountSectionCard
+          title="Safety"
+          description="Blocked users are hidden from invites, requests, and profile discovery on your account."
+          contentClassName="p-0"
+        >
+          <AccountBlockedUsersCard />
+        </AccountSectionCard>
+      </div>
+    </>
   );
 }

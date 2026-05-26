@@ -27,13 +27,15 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - Use the account page pattern from `overclock/app/account/page.tsx`
 - Use:
   - `overclock/components/app-shell/dark-page-shell.tsx`
-  - `overclock/components/app-shell/page-container.tsx`
-  - `overclock/components/app-shell/page-reveal.tsx`
+  - `overclock/app/account/layout.tsx`
+  - `overclock/app/account/components/account-settings-navigation.tsx`
+  - `overclock/app/account/components/account-page-header.tsx`
+  - `overclock/app/account/components/account-section-card.tsx`
   - `oc-surface-panel` from `overclock/app/globals.css`
 - For account toggle rows, use:
   - `overclock/app/account/components/settings-toggle-card.tsx`
 - Use when:
-  - the page matches the account/login/legal/matches dark centered-panel family
+  - the page should read like an enterprise account workspace with persistent account navigation
   - the toggle row is staying inside the account route group
 - Avoid when:
   - the page needs a feed shell, profile rail, or a cross-domain shared control

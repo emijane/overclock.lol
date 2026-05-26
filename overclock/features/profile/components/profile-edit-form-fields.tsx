@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { FaDiscord, FaTwitch, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -39,7 +40,30 @@ type ProfileEditFormState = {
 type ProfileEditFormFieldsProps = {
   form: ProfileEditFormState;
   profile: ProfileEditProfile;
+  variant?: "default" | "settings";
 };
+
+function ProfileSettingsFieldSection({
+  children,
+  description,
+  title,
+}: {
+  children: ReactNode;
+  description: string;
+  title: string;
+}) {
+  return (
+    <section className="rounded-[18px] border border-white/[0.06] bg-white/[0.025] p-4 sm:p-4.5">
+      <div className="mb-3">
+        <h3 className="oc-profile-display text-[14px] font-semibold tracking-[-0.02em] text-zinc-100">
+          {title}
+        </h3>
+        <p className="mt-1 text-[12px] leading-5 text-zinc-500">{description}</p>
+      </div>
+      {children}
+    </section>
+  );
+}
 
 function DropdownField({
   disabled = false,
@@ -111,7 +135,153 @@ const socialInput =
 export function ProfileEditFormFields({
   form,
   profile,
+  variant = "default",
 }: ProfileEditFormFieldsProps) {
+  if (variant === "settings") {
+    return (
+      <div className="grid gap-3">
+        <ProfileSettingsFieldSection
+          title="Identity"
+          description="Control the core details shown on your public player profile."
+        >
+          <div className="grid gap-2">
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+                Name
+              </span>
+              <input
+                name="display_name"
+                type="text"
+                value={form.displayName}
+                onChange={(e) => form.setDisplayName(e.target.value)}
+                aria-label="Display name"
+                className="h-14 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+              />
+            </div>
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+                Bio
+              </span>
+              <textarea
+                name="bio"
+                rows={3}
+                value={form.bio}
+                onChange={(e) => form.setBio(e.target.value)}
+                maxLength={PROFILE_BIO_MAX_CHARACTERS}
+                aria-label="Bio"
+                className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+              />
+              <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-zinc-600">
+                {form.bio.length}/{PROFILE_BIO_MAX_CHARACTERS}
+              </span>
+            </div>
+          </div>
+        </ProfileSettingsFieldSection>
+
+        <ProfileSettingsFieldSection
+          title="Connected identity"
+          description="Reference the account details tied to your Overwatch and Discord presence."
+        >
+          <div className="grid gap-2">
+            {profile.discordUsername ? (
+              <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2">
+                <p className="text-[11px] font-medium text-zinc-500">Currently logged in as</p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
+                  <span className="text-sm text-zinc-300">{profile.discordUsername}</span>
+                </div>
+              </div>
+            ) : null}
+            <div className="relative">
+              <SiBattledotnet className="oc-social-battlenet pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+              <input
+                name="battlenet_handle"
+                type="text"
+                value={form.battleNetHandle}
+                onChange={(e) => form.setBattleNetHandle(e.target.value)}
+                placeholder="Battle.net"
+                aria-label="Battle.net tag"
+                maxLength={40}
+                className={socialInput}
+              />
+            </div>
+          </div>
+        </ProfileSettingsFieldSection>
+
+        <ProfileSettingsFieldSection
+          title="Social links"
+          description="Keep your public contact and content links current."
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="relative">
+              <FaTwitch className="oc-social-twitch pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+              <input
+                type="text"
+                value={form.twitchHandle}
+                onChange={(e) => form.setTwitchHandle(e.target.value)}
+                placeholder="Twitch"
+                aria-label="Twitch username"
+                maxLength={100}
+                className={socialInput}
+              />
+            </div>
+
+            <div className="relative">
+              <FaXTwitter className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+              <input
+                type="text"
+                value={form.xHandle}
+                onChange={(e) => form.setXHandle(e.target.value)}
+                placeholder="X"
+                aria-label="X username"
+                maxLength={60}
+                className={socialInput}
+              />
+            </div>
+
+            <div className="relative sm:col-span-2">
+              <FaYoutube className="oc-social-youtube pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+              <input
+                type="text"
+                value={form.youtubeHandle}
+                onChange={(e) => form.setYoutubeHandle(e.target.value)}
+                placeholder="YouTube"
+                aria-label="YouTube channel"
+                maxLength={100}
+                className={socialInput}
+              />
+            </div>
+          </div>
+        </ProfileSettingsFieldSection>
+
+        <ProfileSettingsFieldSection
+          title="Region and server"
+          description="Set your default region and server so account features can route you correctly."
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            <DropdownField
+              inputName="region"
+              label="Region"
+              value={form.selectedRegion}
+              placeholder="Region"
+              options={REGION_OPTIONS}
+              onSelect={form.handleRegionSelect}
+            />
+            <DropdownField
+              disabled={!form.selectedRegion}
+              inputName="timezone"
+              label="Server"
+              value={form.selectedTimezone}
+              placeholder={form.selectedRegion ? "Server" : "Region first"}
+              options={form.timezoneOptions}
+              onSelect={form.setSelectedTimezone}
+            />
+          </div>
+        </ProfileSettingsFieldSection>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-3">
       <div className="grid gap-2">

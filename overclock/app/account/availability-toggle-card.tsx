@@ -34,10 +34,12 @@ export function AvailabilityToggleCard({
     <SettingsToggleCard
       ariaLabel="Toggle looking to play"
       checked={isLookingToPlay}
+      checkedLabel="Visible"
       description="Let others know you&apos;re open to invites right now."
       disabled={isPending}
       onCheckedChange={handleCheckedChange}
       title="Looking to play"
+      uncheckedLabel="Hidden"
     />
   );
 }

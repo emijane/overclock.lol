@@ -34,8 +34,9 @@ The current product shape is profile-first rather than feed-first:
 
 - `/login` is the main entry point and auth gate.
 - `/onboarding` creates an app profile for a Discord-authenticated user.
-- `/account` now ships small account controls for `Looking to play` and offline
-  presence privacy, plus a lightweight placeholder for future account settings.
+- `/account` is now the main account settings hub for profile details,
+  presence/privacy controls, blocked users, and account-level navigation into
+  competitive setup and post management.
 - `/account/competitive` manages per-role rank and hero setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private owner-only surface for managing LFG posts.
@@ -73,7 +74,8 @@ The homepage currently redirects to `/login`.
    route instead of an inline feed composer.
 8. Active posts appear in section feeds and on the public profile.
 9. They can review active, closed, and expired posts from `/account/posts`.
-10. They can toggle `Looking to play` and hide offline presence from `/account`.
+10. They can manage profile details, toggle `Looking to play`, hide offline
+    presence, and review blocked users from `/account`.
 
 ## Technical Context
 
