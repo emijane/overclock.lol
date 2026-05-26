@@ -101,7 +101,7 @@ export default async function AccountPostsPage({
       <AccountSectionCard
         title="Post history"
         description="Filter your listing history by lifecycle state and manage anything that is still live."
-        className="flex h-270 flex-col"
+        className="flex h-270 flex-col overflow-hidden"
         contentClassName="flex min-h-0 flex-1 flex-col p-0"
       >
         <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
@@ -109,11 +109,11 @@ export default async function AccountPostsPage({
         <div className="flex min-h-0 flex-1 flex-col px-5 py-4 sm:px-6">
           {paginatedPosts.length === 0 ? (
             <div className="flex flex-1 items-center justify-center">
-              <div className="text-center">
-                <p className="oc-profile-display text-sm font-medium text-zinc-300">
+              <div className="rounded-[18px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.008)_100%)] px-5 py-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <p className="oc-profile-display text-sm font-medium text-zinc-200">
                   {emptyState.title}
                 </p>
-                <p className="mt-1.5 text-sm leading-6 text-zinc-500">
+                <p className="mt-1.5 max-w-md text-sm leading-6 text-zinc-500">
                   {emptyState.description}
                 </p>
               </div>

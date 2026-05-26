@@ -41,7 +41,7 @@ export function AccountSettingsNavigation({
     return (
       <nav
         aria-label="Account settings sections"
-        className="oc-surface-panel overflow-x-auto rounded-[22px] p-2"
+        className="overflow-x-auto rounded-[10px] border border-white/[0.04] bg-white/[0.02] p-2"
       >
         <div className="flex min-w-max items-center gap-2">
           {ACCOUNT_NAV_ITEMS.map((item) => {
@@ -52,9 +52,9 @@ export function AccountSettingsNavigation({
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`inline-flex h-9 items-center gap-2 rounded-[12px] border px-3 text-[12px] font-semibold transition ${
+                className={`inline-flex h-8 items-center gap-2 rounded-[8px] border px-3 text-[12px] font-semibold transition ${
                   isActive
-                    ? "border-white/[0.1] bg-white/[0.07] text-zinc-50"
+                    ? "border-white/[0.1] bg-white/[0.07] text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
                     : "border-transparent bg-transparent text-zinc-500 hover:border-white/[0.06] hover:bg-white/[0.03] hover:text-zinc-200"
                 }`}
               >
@@ -69,20 +69,22 @@ export function AccountSettingsNavigation({
   }
 
   return (
-    <section className="oc-surface-panel sticky top-24 overflow-hidden rounded-[24px]">
-      <div className="border-b border-white/[0.06] px-5 py-4">
-        <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
-          Settings
-        </p>
-        <h2 className="oc-profile-display mt-1.5 text-[20px] font-semibold tracking-[-0.04em] text-zinc-50">
+    <section className="sticky top-6 hidden w-56 shrink-0 self-start flex-col gap-3 rounded-[10px] border border-white/[0.03] bg-white/[0.01] p-3 lg:flex">
+      <div>
+        <p
+          className="oc-profile-meta mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]"
+          style={{ color: "rgb(228 228 231 / 0.9)" }}
+        >
           Account
-        </h2>
-        <p className="mt-2 text-[13px] leading-6 text-zinc-400">
-          Manage your profile, competitive setup, post history, and safety controls.
+        </p>
+        <p className="text-[11px] leading-5 text-zinc-500">
+          Settings, profile setup, and post management.
         </p>
       </div>
 
-      <nav aria-label="Account settings sections" className="p-2">
+      <div className="border-t border-white/[0.03]" />
+
+      <nav aria-label="Account settings sections" className="space-y-px">
         <ul className="space-y-1.5">
           {ACCOUNT_NAV_ITEMS.map((item) => {
             const isActive = item.match(pathname);
@@ -92,26 +94,26 @@ export function AccountSettingsNavigation({
                 <Link
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-start gap-3 rounded-[16px] border px-3.5 py-3 transition ${
+                  className={`flex items-start gap-2.5 rounded-[8px] px-2.5 py-2.5 transition ${
                     isActive
-                      ? "border-white/[0.09] bg-white/[0.05] text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                      : "border-transparent text-zinc-400 hover:border-white/[0.06] hover:bg-white/[0.03] hover:text-zinc-100"
+                      ? "bg-white/[0.06] text-zinc-200"
+                      : "text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
                   }`}
                 >
                   <span
-                    className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border ${
+                    className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border ${
                       isActive
                         ? "border-white/[0.08] bg-white/[0.06] text-zinc-50"
                         : "border-white/[0.05] bg-white/[0.025] text-zinc-500"
                     }`}
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-3.5 w-3.5" />
                   </span>
                   <span className="min-w-0">
-                    <span className="oc-profile-display block text-[14px] font-semibold tracking-[-0.02em]">
+                    <span className="oc-profile-display block text-[13px] font-semibold tracking-[-0.02em]">
                       {item.label}
                     </span>
-                    <span className="mt-1 block text-[12px] leading-5 text-zinc-500">
+                    <span className="mt-0.5 block text-[11px] leading-4.5 text-zinc-500">
                       {item.description}
                     </span>
                   </span>

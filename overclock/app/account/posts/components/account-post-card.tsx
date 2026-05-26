@@ -56,13 +56,13 @@ export function AccountPostCard({
 
   return (
     <article
-      className={`rounded-[18px] border bg-[#05070b] transition-all duration-150 ${
+      className={`rounded-[20px] border bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_22%,rgba(5,7,11,0.98)_100%)] transition-all duration-150 ${
         isActive
-          ? "border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/[0.12] hover:bg-[#080b10] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_28px_rgba(0,0,0,0.24)]"
+          ? "border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/[0.12] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_14px_30px_rgba(0,0,0,0.24)]"
           : "border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
       }`}
     >
-      <div className="px-4 py-3">
+      <div className="px-4 py-3.5">
         {/* Title row: title left, status + actions right, all center-aligned */}
         <div className="flex items-center gap-2">
           <p
@@ -86,7 +86,7 @@ export function AccountPostCard({
         </div>
 
         {/* Metadata row: rank · role · mode · section · time — heroes pinned right */}
-        <div className="mt-1.5 flex items-center justify-between gap-3">
+        <div className="mt-2 flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
             {rankIconSrc ? (
               <Image

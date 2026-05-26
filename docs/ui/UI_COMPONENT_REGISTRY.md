@@ -34,6 +34,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
   - `oc-surface-panel` from `overclock/app/globals.css`
 - For account toggle rows, use:
   - `overclock/app/account/components/settings-toggle-card.tsx`
+- Visual direction:
+  - keep the account workspace layout and navigation
+  - match duos-style density, compact pills, and low-contrast borders through the shared account chrome
+  - do not import feed-shell behavior unless the page truly needs feed orchestration
 - Use when:
   - the page should read like an enterprise account workspace with persistent account navigation
   - the toggle row is staying inside the account route group
@@ -102,6 +106,9 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 ### Management / account post card
 
 - `overclock/app/account/posts/components/account-post-card.tsx`
+- Use when:
+  - the card belongs to the account workspace management panel
+  - the content is a post-history or account-owned listing row, not a public discovery card
 
 ### Profile media card
 
@@ -116,6 +123,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - `overclock/app/account/components/settings-toggle-card.tsx`
 - Use when:
   - two or more account settings rows share the same title, description, and switch layout
+  - the account route group needs a scalable default row pattern for future toggles
 - Avoid when:
   - the control is reused outside account-route-owned UI
   - the row needs different actions than a simple trailing `Switch`
@@ -227,6 +235,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 
 - Need a feed page: `overclock/features/lfg/components/lfg-page-shell.tsx`
 - Need a settings page: `overclock/app/account/page.tsx`
+- Need an account workspace shell: `overclock/app/account/layout.tsx` plus the shared account chrome components
 - Need the repeated dark route wrapper: `overclock/components/app-shell/dark-page-shell.tsx`
 - Need a profile section: `overclock/app/u/[username]/profile/profile-header.tsx`
 - Need a card: `overclock/features/lfg/components/lfg-post-card.tsx`

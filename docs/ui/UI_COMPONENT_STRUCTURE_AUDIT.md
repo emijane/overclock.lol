@@ -204,6 +204,30 @@ Traits:
   - `px-4 py-6 sm:px-6 sm:py-8`
   - inner panels `rounded-[22px]` to `rounded-[28px]`
 
+### Pattern A1: Account workspace with duos-style density
+
+Best examples:
+
+- `overclock/app/account/page.tsx`
+- `overclock/app/account/competitive/page.tsx`
+- `overclock/app/account/posts/page.tsx`
+
+Traits:
+
+- keeps the account-specific layout and persistent section navigation from `overclock/app/account/layout.tsx`
+- uses shared account chrome:
+  - `overclock/app/account/components/account-page-header.tsx`
+  - `overclock/app/account/components/account-section-card.tsx`
+  - `overclock/app/account/components/account-settings-navigation.tsx`
+- borrows duos-style density through:
+  - tighter headings
+  - compact action pills
+  - low-contrast borders
+  - subtle top glow and dense panel rhythm
+- remains distinct from the feed shell:
+  - no LFG sidebar/filter/composer behavior
+  - no feed-page orchestration in settings routes
+
 ### Pattern B: Feature-owned feed page shell
 
 Best example:
@@ -251,6 +275,7 @@ Traits:
 
 - One `oc-surface-panel` container for full page workflow
 - internal header, tabs, scrollable list, pagination
+- should live inside the account workspace shell when part of the `/account` route group
 - works well for dashboard-style management views
 
 ## Component Reuse Map
@@ -432,7 +457,7 @@ These should not be merged blindly, but they clearly share:
 - `overclock/app/account/availability-toggle-card.tsx`
 - `overclock/app/account/presence-privacy-toggle-card.tsx`
 
-These are near duplicates and could later become one reusable settings-toggle row.
+These already share the route-owned `overclock/app/account/components/settings-toggle-card.tsx` row pattern and should continue to use that component for scalable account settings work.
 
 ## Gold-Standard Pages / Components To Copy From
 
@@ -443,6 +468,7 @@ These are near duplicates and could later become one reusable settings-toggle ro
 - Account settings pages:
   - `overclock/app/account/page.tsx`
   - `overclock/app/account/competitive/page.tsx`
+  - `overclock/app/account/posts/page.tsx`
 - Profile page:
   - `overclock/app/u/[username]/page.tsx`
 
@@ -474,6 +500,12 @@ These are near duplicates and could later become one reusable settings-toggle ro
 ### Need a dashboard/settings page
 
 - Start from `overclock/app/account/page.tsx`
+- Reuse the account workspace shell first:
+  - `overclock/app/account/layout.tsx`
+  - `overclock/app/account/components/account-page-header.tsx`
+  - `overclock/app/account/components/account-section-card.tsx`
+  - `overclock/app/account/components/account-settings-navigation.tsx`
+- If the page is inside `/account`, keep that workspace structure even when matching duos visual polish.
 
 ### Need a profile/public identity section
 

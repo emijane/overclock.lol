@@ -28,12 +28,14 @@ export async function AccountBlockedUsersCard() {
     <div className="overflow-hidden">
       {blockedUsers.length === 0 ? (
         <div className="px-5 py-5 sm:px-6">
-          <p className="oc-profile-display text-[14px] font-medium text-zinc-200">
-            No blocked users yet.
-          </p>
-          <p className="mt-1.5 max-w-xl text-[13px] leading-6 text-zinc-500">
-            Use profile and post dropdowns to block a player when you need to.
-          </p>
+          <div className="rounded-[18px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.008)_100%)] px-4 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+            <p className="oc-profile-display text-[14px] font-medium text-zinc-200">
+              No blocked users yet.
+            </p>
+            <p className="mt-1.5 max-w-xl text-[13px] leading-6 text-zinc-500">
+              Use profile and post dropdowns to block a player when you need to.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="max-h-[25rem] overflow-y-auto">
@@ -48,10 +50,10 @@ export async function AccountBlockedUsersCard() {
                 <li
                   key={blockedUser.profileId}
                   className={`${
-                    index < blockedUsers.length - 1 ? "border-b border-white/[0.06]" : ""
+                    index < blockedUsers.length - 1 ? "border-b border-white/[0.05]" : ""
                   }`}
                 >
-                  <div className="oc-list-row-hover flex items-center gap-3 px-5 py-4 sm:px-6">
+                  <div className="oc-list-row-hover flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-4.5">
                     <Avatar className="h-11 w-11 shrink-0 rounded-full border border-white/[0.06]">
                       {blockedUser.avatarUrl ? (
                         <AvatarImage

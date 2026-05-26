@@ -71,6 +71,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
 
 - Feed page: start from `overclock/features/lfg/components/lfg-page-shell.tsx`
 - Settings page: start from `overclock/app/account/page.tsx`
+- Account workspace page: keep the account route structure from `overclock/app/account/layout.tsx` and match the duos-style density from the current account shared chrome instead of borrowing feed-specific sidebar/filter behavior.
 - Profile page or section: start from `overclock/app/u/[username]/page.tsx` and `overclock/app/u/[username]/profile/profile-header.tsx`
 - Management panel: start from `overclock/app/account/posts/page.tsx`
 
@@ -82,6 +83,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
 - Empty state: start from `overclock/features/lfg/components/lfg-post-list.tsx`
 - Dropdown: start from `overclock/components/ui/dropdown-menu.tsx`
 - Pill/chip: start from `oc-profile-pill` and current LFG/profile chip usage
+- Account toggle row: start from `overclock/app/account/components/settings-toggle-card.tsx`
 
 ## Styling Rules
 
@@ -118,6 +120,10 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
   - same interaction pattern
   - same visual treatment
 - Do not combine unrelated examples if one strong source-of-truth page already exists.
+- For settings work:
+  - reuse the account workspace shell for navigation, headers, and section framing
+  - borrow duos density, compact controls, and border treatment only at the visual-language level
+  - do not collapse settings pages into the LFG feed shell unless the page truly behaves like a feed
 
 ## Refusal Rules
 
