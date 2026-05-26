@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { acceptPlayInvite, declinePlayInvite } from "@/features/matches/actions";
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { IncomingPendingPlayInvite } from "@/lib/matches/play-invites";
 import {
   formatMatchRegion,
@@ -29,9 +30,15 @@ export function IncomingPendingInviteCard({ invite }: IncomingPendingInviteCardP
   const metadata: MatchMetaChip[] = [];
 
   const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
+  const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
 
   if (rankLabel) {
-    metadata.push({ label: rankLabel, tone: "primary" });
+    metadata.push({
+      iconAlt: `${rankLabel} rank icon`,
+      iconSrc: rankIconSrc,
+      label: rankLabel,
+      tone: "secondary",
+    });
   }
 
   const roleLabel = getDisplayableMatchMetaLabel(

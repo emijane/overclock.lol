@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -5,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { MatchParticipant } from "@/lib/matches/play-invites";
 
 export type MatchMetaChip = {
+  iconAlt?: string;
+  iconSrc?: string | null;
   label: string;
   tone?: "primary" | "secondary" | "muted";
 };
@@ -144,13 +147,20 @@ export function MatchRowIdentity({
                   <span
                     key={`${item.tone ?? "secondary"}-${item.label}`}
                     className={`oc-profile-meta inline-flex min-h-[1.375rem] items-center rounded-[9px] border px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.08em] ${
-                      item.tone === "primary"
-                        ? "border-sky-300/18 bg-sky-400/[0.14] text-sky-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                        : item.tone === "muted"
+                      item.tone === "muted"
                           ? "border-white/[0.05] bg-white/[0.02] text-zinc-500"
                           : "border-white/[0.06] bg-zinc-900/70 text-zinc-300"
                     }`}
                   >
+                    {item.iconSrc ? (
+                      <Image
+                        src={item.iconSrc}
+                        alt={item.iconAlt ?? ""}
+                        width={12}
+                        height={12}
+                        className="mr-1 h-3 w-3 shrink-0 object-contain"
+                      />
+                    ) : null}
                     {item.label}
                   </span>
                 ))}

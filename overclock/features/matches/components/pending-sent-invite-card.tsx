@@ -1,3 +1,4 @@
+import { getRankIconSrc } from "@/lib/competitive/rank-icons";
 import type { PendingSentPlayInvite } from "@/lib/matches/play-invites";
 import {
   formatMatchRegion,
@@ -20,9 +21,15 @@ export function PendingSentInviteCard({ invite }: PendingSentInviteCardProps) {
   const metadata: MatchMetaChip[] = [];
 
   const rankLabel = getDisplayableMatchMetaLabel(invite.participant.rankLabel);
+  const rankIconSrc = getRankIconSrc(invite.participant.rankTier);
 
   if (rankLabel) {
-    metadata.push({ label: rankLabel, tone: "primary" });
+    metadata.push({
+      iconAlt: `${rankLabel} rank icon`,
+      iconSrc: rankIconSrc,
+      label: rankLabel,
+      tone: "secondary",
+    });
   }
 
   const roleLabel = getDisplayableMatchMetaLabel(
