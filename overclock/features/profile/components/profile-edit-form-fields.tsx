@@ -55,7 +55,7 @@ function ProfileSettingsFieldSection({
   return (
     <section className="rounded-[18px] border border-white/[0.06] bg-white/[0.025] p-4 sm:p-4.5">
       <div className="mb-3">
-        <h3 className="oc-profile-display text-[14px] font-semibold tracking-[-0.02em] text-zinc-100">
+        <h3 className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-zinc-300">
           {title}
         </h3>
         <p className="mt-1 text-[12px] leading-5 text-zinc-500">{description}</p>
@@ -146,7 +146,7 @@ export function ProfileEditFormFields({
         >
           <div className="grid gap-2">
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+              <span className="pointer-events-none absolute left-3 top-2 font-mono text-[10px] font-medium text-zinc-500">
                 Name
               </span>
               <input
@@ -159,7 +159,7 @@ export function ProfileEditFormFields({
               />
             </div>
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+              <span className="pointer-events-none absolute left-3 top-2 font-mono text-[10px] font-medium text-zinc-500">
                 Bio
               </span>
               <textarea
@@ -185,7 +185,7 @@ export function ProfileEditFormFields({
           <div className="grid gap-2">
             {profile.discordUsername ? (
               <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2">
-                <p className="text-[11px] font-medium text-zinc-500">Currently logged in as</p>
+                <p className="font-mono text-[10px] font-medium text-zinc-500">Currently logged in as</p>
                 <div className="mt-1.5 flex items-center gap-2">
                   <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
                   <span className="text-sm text-zinc-300">{profile.discordUsername}</span>

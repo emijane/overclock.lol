@@ -55,7 +55,7 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
                 <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
                   Public identity
                 </p>
-                <p className="oc-profile-display mt-1 text-[14px] font-semibold tracking-[-0.02em] text-zinc-50">
+                <p className="mt-1 font-mono text-[13px] font-semibold text-zinc-50">
                   Profile basics
                 </p>
                 <p className="mt-1 text-[11px] leading-5 text-zinc-500">

@@ -41,7 +41,7 @@ export default function AccountLayout({
             <div className="border-b border-white/[0.05] px-3 py-3 lg:hidden">
               <AccountSettingsNavigation mobile />
             </div>
-            <div className="mx-auto flex min-h-0 w-full max-w-[76rem] flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
+            <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
               {children}
             </div>
           </div>
