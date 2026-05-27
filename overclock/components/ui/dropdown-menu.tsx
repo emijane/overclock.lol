@@ -30,7 +30,7 @@ export function DropdownMenuItem({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item>) {
   return (
     <DropdownMenuPrimitive.Item
-      className={`flex cursor-pointer select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none transition hover:bg-zinc-900 focus:bg-zinc-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 ${className}`}
+      className={`flex cursor-pointer select-none items-center gap-2 rounded-lg px-2 py-1 text-[13px] outline-none transition hover:bg-zinc-900 focus:bg-zinc-900 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 ${className}`}
       {...props}
     />
   );

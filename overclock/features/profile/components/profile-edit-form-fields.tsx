@@ -91,7 +91,7 @@ function DropdownField({
             type="button"
             disabled={disabled}
             aria-label={label}
-            className={`inline-flex h-9 w-full items-center justify-between rounded-xl border px-3 text-left text-sm outline-none transition ${
+            className={`inline-flex h-9 w-full items-center justify-between rounded-xl border px-3 text-left text-[13px] outline-none transition ${
               disabled
                 ? "cursor-not-allowed border-white/6 bg-white/2 text-zinc-600 opacity-60"
                 : "border-white/10 bg-white/4 text-zinc-100 hover:border-white/20"
@@ -130,7 +130,7 @@ function DropdownField({
 }
 
 const socialInput =
-  "h-9 w-full rounded-xl border border-white/10 bg-white/4 pl-9 pr-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20";
+  "h-9 w-full rounded-xl border border-white/10 bg-white/4 pl-9 pr-3 text-[13px] text-zinc-100 outline-none placeholder:text-zinc-500 transition hover:border-white/20 focus:border-white/20";
 
 export function ProfileEditFormFields({
   form,
@@ -155,7 +155,7 @@ export function ProfileEditFormFields({
                 value={form.displayName}
                 onChange={(e) => form.setDisplayName(e.target.value)}
                 aria-label="Display name"
-                className="h-14 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+                className="h-12 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-5 text-[13px] text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
               />
             </div>
             <div className="relative">
@@ -169,7 +169,7 @@ export function ProfileEditFormFields({
                 onChange={(e) => form.setBio(e.target.value)}
                 maxLength={PROFILE_BIO_MAX_CHARACTERS}
                 aria-label="Bio"
-                className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+                className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-5 text-[13px] text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
               />
               <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-zinc-600">
                 {form.bio.length}/{PROFILE_BIO_MAX_CHARACTERS}
@@ -188,7 +188,7 @@ export function ProfileEditFormFields({
                 <p className="font-mono text-[10px] font-medium text-zinc-500">Currently logged in as</p>
                 <div className="mt-1.5 flex items-center gap-2">
                   <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
-                  <span className="text-sm text-zinc-300">{profile.discordUsername}</span>
+                  <span className="text-[13px] text-zinc-300">{profile.discordUsername}</span>
                 </div>
               </div>
             ) : null}
@@ -286,7 +286,7 @@ export function ProfileEditFormFields({
     <div className="grid gap-3">
       <div className="grid gap-2">
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+          <span className="pointer-events-none absolute left-3 top-2 font-mono text-[10px] font-medium text-zinc-500">
             Name
           </span>
           <input
@@ -295,11 +295,11 @@ export function ProfileEditFormFields({
             value={form.displayName}
             onChange={(e) => form.setDisplayName(e.target.value)}
             aria-label="Display name"
-            className="h-14 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+            className="h-12 w-full rounded-xl border border-white/10 bg-white/4 px-3 pb-2 pt-5 text-[13px] text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
           />
         </div>
         <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-2 text-[11px] font-medium text-zinc-500">
+          <span className="pointer-events-none absolute left-3 top-2 font-mono text-[10px] font-medium text-zinc-500">
             Bio
           </span>
           <textarea
@@ -309,7 +309,7 @@ export function ProfileEditFormFields({
             onChange={(e) => form.setBio(e.target.value)}
             maxLength={PROFILE_BIO_MAX_CHARACTERS}
             aria-label="Bio"
-            className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-6 text-sm text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
+            className="w-full resize-none rounded-xl border border-white/10 bg-white/4 px-3 pb-5 pt-5 text-[13px] text-zinc-100 outline-none transition hover:border-white/20 focus:border-white/20"
           />
           <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-zinc-600">
             {form.bio.length}/{PROFILE_BIO_MAX_CHARACTERS}
@@ -323,7 +323,7 @@ export function ProfileEditFormFields({
             <p className="text-[11px] font-medium text-zinc-500">Currently logged in as</p>
             <div className="mt-1.5 flex items-center gap-2">
               <FaDiscord className="oc-social-discord h-3.5 w-3.5 shrink-0" />
-              <span className="text-sm text-zinc-300">{profile.discordUsername}</span>
+              <span className="text-[13px] text-zinc-300">{profile.discordUsername}</span>
             </div>
           </div>
         ) : null}
