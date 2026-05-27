@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { PageReveal } from "@/components/app-shell/page-reveal";
+
 import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
 import { AccountPostPagination } from "@/app/account/posts/components/account-post-pagination";
 import { AccountPostTabs } from "@/app/account/posts/components/account-post-tabs";
@@ -83,6 +85,7 @@ export default async function AccountPostsPage({
     <>
       <AuthMessage message={message} type={messageType} variant="toast" />
 
+      <PageReveal variant="fade">
       <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
         <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
           My posts
@@ -135,6 +138,7 @@ export default async function AccountPostsPage({
           </>
         )}
       </div>
+      </PageReveal>
     </>
   );
 }

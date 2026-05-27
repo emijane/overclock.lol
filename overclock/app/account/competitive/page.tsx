@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/features/auth/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
@@ -34,24 +35,26 @@ export default async function CompetitiveProfilePage({
     <>
       <AuthMessage message={message} type={messageType} variant="toast" />
 
-      <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
-        <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
-          Competitive
-        </h1>
-        <Link
-          href="/duos/create"
-          className="inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 font-mono text-[11px] font-medium text-zinc-400 transition hover:border-white/[0.1] hover:bg-white/[0.05] hover:text-zinc-200"
-        >
-          Create post
-        </Link>
-      </div>
+      <PageReveal variant="fade">
+        <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
+          <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
+            Competitive
+          </h1>
+          <Link
+            href="/duos/create"
+            className="inline-flex h-7 items-center rounded-[10px] border border-white/6 bg-white/3 px-2.5 font-mono text-[11px] font-medium text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-200"
+          >
+            Create post
+          </Link>
+        </div>
 
-      <div className="border-t border-white/[0.05]" />
+        <div className="border-t border-white/5" />
 
-      <CompetitiveProfileManager
-        competitiveProfile={competitiveProfile}
-        heroSelections={heroPools.heroPicks}
-      />
+        <CompetitiveProfileManager
+          competitiveProfile={competitiveProfile}
+          heroSelections={heroPools.heroPicks}
+        />
+      </PageReveal>
     </>
   );
 }

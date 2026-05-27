@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AccountBlockedUsersCard } from "@/features/blocks/components/account-blocked-users-card";
 import { AuthMessage } from "@/features/auth/components";
 import { ProfileEditForm } from "@/features/profile/components/profile-edit-form";
@@ -61,6 +62,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
     <>
       <AuthMessage message={message} type={messageType} variant="toast" />
 
+      <PageReveal variant="fade">
       <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
         <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
           Account
@@ -114,6 +116,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       )}
 
       {activeTab === "safety" && <AccountBlockedUsersCard />}
+      </PageReveal>
     </>
   );
 }
