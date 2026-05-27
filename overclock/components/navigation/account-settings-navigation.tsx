@@ -40,6 +40,8 @@ type AccountSettingsNavigationProps = {
   mobile?: boolean;
 };
 
+const ACCOUNT_NAV_SUBHEADING = "/ ACCOUNT";
+
 export function AccountSettingsNavigation({
   mobile = false,
 }: AccountSettingsNavigationProps) {
@@ -48,7 +50,11 @@ export function AccountSettingsNavigation({
   if (mobile) {
     return (
       <nav aria-label="Account settings sections" className="overflow-x-auto">
-        <div className="flex min-w-max items-center gap-1">
+        <div className="space-y-2">
+          <p className="oc-profile-meta px-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-300">
+            {ACCOUNT_NAV_SUBHEADING}
+          </p>
+          <div className="flex min-w-max items-center gap-1">
           {ACCOUNT_NAV_ITEMS.map((item) => {
             const isActive = item.match(pathname);
             return (
@@ -67,6 +73,7 @@ export function AccountSettingsNavigation({
               </Link>
             );
           })}
+          </div>
         </div>
       </nav>
     );
@@ -74,6 +81,9 @@ export function AccountSettingsNavigation({
 
   return (
     <nav aria-label="Account settings sections" className="sticky top-8 p-2">
+      <p className="oc-profile-meta px-2.5 pb-2 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-300">
+        {ACCOUNT_NAV_SUBHEADING}
+      </p>
       <ul className="space-y-px">
         {ACCOUNT_NAV_ITEMS.map((item) => {
           const isActive = item.match(pathname);
