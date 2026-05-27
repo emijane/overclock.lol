@@ -47,19 +47,21 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
           </div>
 
           <div className="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-end sm:justify-between sm:px-5 sm:py-4">
-            <div className="flex items-end gap-3">
+            <div className="flex items-center gap-3">
               <div className="h-18 w-18 overflow-hidden rounded-full bg-zinc-800 shadow-[0_10px_22px_rgba(0,0,0,0.26)]">
                 <AvatarUploadButton avatarUrl={avatarUrl} initial={initial} />
               </div>
-              <div className="pb-1">
-                <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
-                  Public identity
+              <div>
+                <p className="oc-profile-display text-[14px] font-semibold tracking-[-0.02em] text-zinc-50">
+                  {profile.displayName}
                 </p>
-                <p className="mt-1 font-mono text-[13px] font-semibold text-zinc-50">
-                  Profile basics
-                </p>
-                <p className="mt-1 text-[11px] leading-5 text-zinc-500">
-                  Update the visuals and details tied to your public player page.
+                <p className="mt-0.5 font-mono text-[11px] text-zinc-400">
+                  @{profile.username}
+                  {profile.createdAt ? (
+                    <span className="ml-2 text-zinc-500">
+                      · joined {new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(profile.createdAt))}
+                    </span>
+                  ) : null}
                 </p>
               </div>
             </div>

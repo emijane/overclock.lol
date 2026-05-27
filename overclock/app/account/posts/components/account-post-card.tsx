@@ -62,11 +62,11 @@ export function AccountPostCard({
           : "border-white/5 bg-white/2.5"
       }`}
     >
-      <div className="px-4 py-3.5">
+      <div className="px-3.5 py-2.5">
         {/* Title row: title left, status + actions right, all center-aligned */}
         <div className="flex items-center gap-2">
           <p
-            className={`oc-profile-display min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 tracking-[-0.02em] ${
+            className={`oc-profile-display min-w-0 flex-1 truncate text-[13px] font-semibold leading-5 tracking-[-0.02em] ${
               isActive ? "text-zinc-100" : "text-zinc-500"
             }`}
           >
@@ -86,7 +86,7 @@ export function AccountPostCard({
         </div>
 
         {/* Metadata row: rank · role · mode · section · time — heroes pinned right */}
-        <div className="mt-2 flex items-center justify-between gap-3">
+        <div className="mt-1 flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
             {rankIconSrc ? (
               <Image

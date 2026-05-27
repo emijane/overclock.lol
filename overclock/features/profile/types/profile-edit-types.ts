@@ -9,6 +9,7 @@ export type SocialValues = {
 
 export type ProfileEditProfile = {
   bio: string | null;
+  createdAt: string | null;
   discordUsername: string | null;
   displayName: string;
   lookingFor: string[];
@@ -16,4 +17,5 @@ export type ProfileEditProfile = {
   returnTo: string;
   socials: SocialValues;
   timezone: string | null;
+  username: string;
 };

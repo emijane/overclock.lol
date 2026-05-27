@@ -116,7 +116,7 @@ export default async function AccountPostsPage({
           </div>
         ) : (
           <>
-            <div className="grid gap-2">
+            <div className="grid gap-1.5">
               {paginatedPosts.map((post) => {
                 const displayStatus =
                   post.displayStatus ?? getLFGPostDisplayStatus(post);

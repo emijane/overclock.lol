@@ -44,6 +44,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   const editProfile = {
     bio: profile.bio,
+    createdAt: profile.created_at ?? null,
     discordUsername: profile.discord_username ?? null,
     displayName: profile.display_name,
     lookingFor: profile.looking_for ?? [],
@@ -56,6 +57,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       youtube: profile.youtube_url ?? "",
     },
     timezone: profile.timezone,
+    username: profile.username,
   };
 
   return (
