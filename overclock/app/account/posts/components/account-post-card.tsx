@@ -56,10 +56,10 @@ export function AccountPostCard({
 
   return (
     <article
-      className={`rounded-[20px] border bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_22%,rgba(5,7,11,0.98)_100%)] transition-all duration-150 ${
+      className={`rounded-[14px] border transition-all duration-150 ${
         isActive
-          ? "border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/[0.12] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_14px_30px_rgba(0,0,0,0.24)]"
-          : "border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+          ? "border-white/8 bg-white/5 hover:border-white/12 hover:bg-white/[0.07]"
+          : "border-white/5 bg-white/2.5"
       }`}
     >
       <div className="px-4 py-3.5">

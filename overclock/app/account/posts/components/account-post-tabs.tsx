@@ -18,7 +18,7 @@ const TABS: { label: string; value: TabValue }[] = [
 
 export function AccountPostTabs({ counts, selectedStatus }: AccountPostTabsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5 border-b border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_100%)] px-4 py-3 sm:px-5">
+    <div className="flex flex-wrap items-center gap-1.5 border-b border-white/5 px-5 py-2.5 sm:px-6">
       {TABS.map(({ label, value }) => {
         const isActive = selectedStatus === value;
         const count = counts[value];
@@ -28,18 +28,16 @@ export function AccountPostTabs({ counts, selectedStatus }: AccountPostTabsProps
           <Link
             key={value}
             href={href}
-            className={`oc-profile-display inline-flex h-8 items-center gap-1.5 rounded-[10px] border px-3 text-[12px] font-semibold transition ${
+            className={`inline-flex h-7 items-center gap-1.5 rounded-[10px] border px-2.5 font-mono text-[11px] font-medium transition ${
               isActive
-                ? "border-white/[0.08] bg-white/[0.06] text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                : "border-transparent text-zinc-500 hover:border-white/[0.06] hover:bg-white/[0.03] hover:text-zinc-300"
+                ? "border-white/10 bg-white/[0.07] text-zinc-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                : "border-white/6 bg-white/3 text-zinc-500 hover:border-white/10 hover:bg-white/6 hover:text-zinc-300"
             }`}
           >
             {label}
             {count > 0 ? (
               <span
-                className={`oc-profile-meta text-[11px] tabular-nums ${
-                  isActive ? "text-zinc-400" : "text-zinc-600"
-                }`}
+                className={`tabular-nums ${isActive ? "text-zinc-400" : "text-zinc-600"}`}
               >
                 {count}
               </span>

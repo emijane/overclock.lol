@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { AccountPageHeader } from "@/app/account/components/account-page-header";
-import { AccountSectionCard } from "@/app/account/components/account-section-card";
 import { AccountPostCard } from "@/app/account/posts/components/account-post-card";
 import { AccountPostPagination } from "@/app/account/posts/components/account-post-pagination";
 import { AccountPostTabs } from "@/app/account/posts/components/account-post-tabs";
@@ -85,64 +83,58 @@ export default async function AccountPostsPage({
     <>
       <AuthMessage message={message} type={messageType} variant="toast" />
 
-      <AccountPageHeader
-        title="My posts"
-        description="Review active, closed, and expired listings without leaving your account workspace."
-        actions={
-          <Link
-            href="/duos/create"
-            className="oc-profile-display inline-flex h-8 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3 text-[12px] font-semibold text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            Create post
-          </Link>
-        }
-      />
+      <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
+        <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
+          My posts
+        </h1>
+        <Link
+          href="/duos/create"
+          className="inline-flex h-7 items-center rounded-[10px] border border-white/6 bg-white/3 px-2.5 font-mono text-[11px] font-medium text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-200"
+        >
+          Create post
+        </Link>
+      </div>
 
-      <AccountSectionCard
-        title="Post history"
-        description="Filter your listing history by lifecycle state and manage anything that is still live."
-        className="flex min-h-[32rem] flex-col overflow-hidden"
-        contentClassName="flex min-h-0 flex-1 flex-col p-0"
-      >
-        <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
+      <div className="border-t border-white/5" />
 
-        <div className="flex min-h-0 flex-1 flex-col px-5 py-4 sm:px-6">
-          {paginatedPosts.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center">
-              <div className="rounded-[18px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.008)_100%)] px-5 py-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-                <p className="oc-profile-display text-sm font-medium text-zinc-200">
-                  {emptyState.title}
-                </p>
-                <p className="mt-1.5 max-w-md text-sm leading-6 text-zinc-500">
-                  {emptyState.description}
-                </p>
-              </div>
+      <AccountPostTabs counts={counts} selectedStatus={selectedStatus} />
+
+      <div className="px-5 py-4 sm:px-6">
+        {paginatedPosts.length === 0 ? (
+          <div className="flex items-center justify-center py-10">
+            <div className="text-center">
+              <p className="font-mono text-[13px] font-medium text-zinc-400">
+                {emptyState.title}
+              </p>
+              <p className="mt-1.5 max-w-sm font-mono text-[11px] leading-5 text-zinc-600">
+                {emptyState.description}
+              </p>
             </div>
-          ) : (
-            <>
-              <div className="grid gap-2">
-                {paginatedPosts.map((post) => {
-                  const displayStatus =
-                    post.displayStatus ?? getLFGPostDisplayStatus(post);
-                  return (
-                    <AccountPostCard
-                      key={post.id}
-                      displayStatus={displayStatus}
-                      post={post}
-                      showActions={displayStatus === "active"}
-                    />
-                  );
-                })}
-              </div>
-              <AccountPostPagination
-                currentPage={safePage}
-                selectedStatus={selectedStatus}
-                totalPages={totalPages}
-              />
-            </>
-          )}
-        </div>
-      </AccountSectionCard>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-2">
+              {paginatedPosts.map((post) => {
+                const displayStatus =
+                  post.displayStatus ?? getLFGPostDisplayStatus(post);
+                return (
+                  <AccountPostCard
+                    key={post.id}
+                    displayStatus={displayStatus}
+                    post={post}
+                    showActions={displayStatus === "active"}
+                  />
+                );
+              })}
+            </div>
+            <AccountPostPagination
+              currentPage={safePage}
+              selectedStatus={selectedStatus}
+              totalPages={totalPages}
+            />
+          </>
+        )}
+      </div>
     </>
   );
 }
