@@ -6,8 +6,9 @@ works in the live codebase.
 Use this as the maintenance reference for product behavior, not as a future
 spec.
 
-Note: `/connections` is a route alias that re-exports `/matches` for legacy
-link compatibility. The primary route and implementation is `/matches`.
+Note: `/connections` is the account-workspace entry point for connection
+management. `/matches` remains the standalone matches surface, and both routes
+share the same invite/connection DTO pipeline.
 
 ## Overview
 
@@ -59,7 +60,7 @@ When a user sends an invite, a `pending` row is created in `play_invites`.
 Pending invites:
 
 - appear for the recipient in the main notification bell
-- appear for the sender in `/matches` under outgoing invites
+- appear for the sender in `/matches` and `/connections` under outgoing invites
 - can be accepted or declined by the recipient
 - can be cancelled by the sender
 - can expire automatically
@@ -70,7 +71,7 @@ If the recipient accepts:
 
 - the invite becomes `accepted`
 - the pair is upserted into `profile_connections`
-- both participants can see the connection in `/matches`
+- both participants can see the connection in `/matches` and `/connections`
 - Discord and Battle.net contact info can be shown there
 - both public profiles show the active connection count
 
@@ -118,8 +119,8 @@ Pending invites expire. Active connections do not.
 The app currently enforces expiry in two ways:
 
 - lifecycle RPC logic prevents expired pending invites from being accepted
-- `/matches` performs an expiry sweep before rendering so stale pending rows are
-  cleaned up
+- the shared matches/connections route loader performs an expiry sweep before
+  rendering so stale pending rows are cleaned up
 
 Realtime refresh behavior also helps the UI stop showing rows once they change.
 
@@ -141,8 +142,9 @@ It does not act as a full historical inbox.
 
 ## Matches Page
 
-`/matches` is the authenticated home for active connections and pending
-invite management. `/connections` is a route alias that re-exports this page.
+`/matches` is the standalone authenticated home for active connections and
+pending invite management. `/connections` presents the same data inside the
+account workspace shell.
 
 It currently includes:
 
@@ -281,6 +283,6 @@ that build profile and LFG invite state from live data.
   current active relationship source of truth.
 - Keep contact unlock logic tied to active connected state only.
 - Keep invite state derivation centralized so profiles, LFG cards, the bell,
-  and `/connections` do not drift.
+  `/matches`, and `/connections` do not drift.
 - If product adds rematch or replay flows later, do not overload the current
   `connected` UI state without defining the new lifecycle clearly.

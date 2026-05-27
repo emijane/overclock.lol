@@ -26,9 +26,9 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 
 - Use the account page pattern from `overclock/app/account/page.tsx`
 - Use:
-  - `overclock/components/app-shell/dark-page-shell.tsx`
   - `overclock/app/account/layout.tsx`
-  - `overclock/app/account/components/account-settings-navigation.tsx`
+  - `overclock/components/app-shell/account-workspace-shell.tsx`
+  - `overclock/components/navigation/account-settings-navigation.tsx`
   - `overclock/app/account/components/account-page-header.tsx`
   - `overclock/app/account/components/account-section-card.tsx`
   - `oc-surface-panel` from `overclock/app/globals.css`

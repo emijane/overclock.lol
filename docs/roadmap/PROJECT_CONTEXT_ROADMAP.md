@@ -101,9 +101,9 @@ The homepage currently redirects to `/login`.
   reusable section UI lives under `app/lfg/*`.
 - Presence and availability UI now live in shared app components and account
   settings, with current status displayed on profile surfaces and LFG cards.
-- The global authenticated shell currently includes top-level Duos /
-  Connections / Stacks navigation, a pending-invite notification bell, the
-  account menu, and smaller toast-style alerts below the main menu.
+- The global authenticated shell currently includes top-level Duos / Stacks
+  navigation, a pending-invite notification bell, the account menu, and
+  smaller toast-style alerts below the main menu.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 
@@ -119,11 +119,11 @@ These are already visible in the codebase today:
   feature.
 - Invite to Play now ships as a lightweight connection system: pending invites
   still live in `play_invites`, accepted invites now upsert durable active rows
-  in `profile_connections`, `/matches` renders active connections plus
-  pending invite management, public profiles show connection counts, accepted
-  players can unmatch, and the bell plus `/matches` refresh on realtime
-  invite changes. `/connections` is a route alias that re-exports `/matches`
-  for legacy link compatibility.
+  in `profile_connections`, `/matches` renders active connections plus pending
+  invite management, `/connections` exposes the same connection data inside the
+  account workspace, public profiles show connection counts, accepted players
+  can unmatch, and the bell plus matches surfaces refresh on realtime invite
+  changes.
 
 ## Roadmap
 

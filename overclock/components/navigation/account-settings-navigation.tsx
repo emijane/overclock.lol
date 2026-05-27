@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Layers3Icon, ShieldCheckIcon, SlidersHorizontalIcon } from "lucide-react";
+import {
+  Layers3Icon,
+  ShieldCheckIcon,
+  SlidersHorizontalIcon,
+  UsersRoundIcon,
+} from "lucide-react";
 
 const ACCOUNT_NAV_ITEMS = [
   {
@@ -22,6 +27,12 @@ const ACCOUNT_NAV_ITEMS = [
     icon: Layers3Icon,
     label: "My posts",
     match: (pathname: string) => pathname.startsWith("/account/posts"),
+  },
+  {
+    href: "/connections",
+    icon: UsersRoundIcon,
+    label: "Connections",
+    match: (pathname: string) => pathname === "/connections",
   },
 ] as const;
 
@@ -62,10 +73,7 @@ export function AccountSettingsNavigation({
   }
 
   return (
-    <nav
-      aria-label="Account settings sections"
-      className="sticky top-8 p-2"
-    >
+    <nav aria-label="Account settings sections" className="sticky top-8 p-2">
       <ul className="space-y-px">
         {ACCOUNT_NAV_ITEMS.map((item) => {
           const isActive = item.match(pathname);

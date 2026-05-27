@@ -26,7 +26,6 @@ export function GlobalAuthBar({
 }: GlobalAuthBarProps) {
   const signedInDiscoveryLinks = [
     { href: "/duos", label: "Duos" },
-    { href: "/connections", label: "Connections" },
     { href: "/stacks", label: "Stacks" },
   ] as const;
   const guestDiscoveryLinks = [

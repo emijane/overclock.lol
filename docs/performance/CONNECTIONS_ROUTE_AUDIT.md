@@ -6,13 +6,21 @@
 
 ## Summary
 
-`/connections` is not its own implementation. It is a route alias that reuses
-the `/matches` server flow.
+Update 2026-05-27:
+
+- `/connections` now renders as an account-workspace page instead of a direct
+  alias wrapper around `/matches`
+- it still uses the same matches-domain auth and DTO loader path audited below
+- alias-specific notes in this audit should be read as historical unless they
+  explicitly describe the shared loader path
+
+`/connections` is not its own data implementation. It reuses the shared
+matches server loader while rendering inside the account workspace shell.
 
 Current request path:
 
 - `overclock/app/connections/page.tsx`
-- `overclock/features/matches/render-matches-route.tsx`
+- `overclock/features/matches/load-matches-route-dto.ts`
 - `overclock/lib/profiles/get-current-profile.ts`
 - `overclock/lib/pages/matches-page-dto.ts`
 - `public.get_matches_page_dto(uuid)`
@@ -161,7 +169,7 @@ identity + DTO path.
 This makes request-path efficiency much more important because the app cannot
 hide inefficiency behind CDN or browser reuse for signed-in traffic.
 
-### P2 - `/connections` remains an alias, but mutations still invalidate both alias and canonical route
+### P2 - `/connections` and `/matches` still share the same invalidation-sensitive data
 
 Invite and connection server actions revalidate:
 
@@ -231,7 +239,7 @@ Those checks are required before we rank SQL rewrites by exact payoff.
 
 ### Phase 1 - get trustworthy measurements
 
-1. Add route-level timing logs around `renderMatchesRoute()`,
+1. Add route-level timing logs around the shared matches route loader,
    `getCurrentProfile()`, and `getMatchesPageDto()`.
 2. Add timing logs to `/api/notifications/menu` and `getNotificationsMenuDto()`.
 3. Measure `/connections` in production mode, not only `npm run dev`.
@@ -356,9 +364,9 @@ Current log labels:
 
 - `[perf:identity] getCurrentProfile auth.getUser`
 - `[perf:identity] getCurrentProfile profiles query`
-- `[perf:matches] renderMatchesRoute auth+profile`
-- `[perf:matches] renderMatchesRoute dto`
-- `[perf:matches] renderMatchesRoute total`
+- `[perf:matches] loadMatchesRouteDto auth+profile`
+- `[perf:matches] loadMatchesRouteDto dto`
+- `[perf:matches] loadMatchesRouteDto total`
 - `[perf:matches] getMatchesPageDto rpc`
 - `[perf:matches] getMatchesPageDto normalize`
 - `[perf:matches] getMatchesPageDto total`
@@ -405,12 +413,9 @@ This reduces:
 
 Current follow-up from the original Phase 2 list:
 
-- `revalidatePath("/connections")` was reviewed and removed in favor of the
-  canonical `/matches` path because `/connections` is an alias route that
-  renders the same shared implementation
-- if production behavior shows stale alias refreshes for users who stay on
-  `/connections`, restore the alias invalidation or move to a shared tag-based
-  invalidation strategy
+- if production behavior shows stale account-workspace connections views,
+  review whether path-based invalidation should cover both `/matches` and
+  `/connections` or move to a shared tag-based invalidation strategy
 
 ## Suggested Commit Message
 

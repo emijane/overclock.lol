@@ -97,17 +97,20 @@ Why this is the target:
 Use `/matches` as the reference split:
 
 - `overclock/app/matches/*`
-  - owns request-time orchestration for `/matches` and the `/connections` alias
-  - handles auth gating, onboarding redirects, and page DTO loading
+  - owns the standalone `/matches` route entrypoint
+- `overclock/app/connections/*`
+  - owns the account-workspace `/connections` route entrypoint
 - `overclock/features/matches/*`
-  - owns matches UI plus invite/connection server actions
+  - owns matches UI plus invite/connection server actions and the shared
+    route-loader used by both route entrypoints
 - `overclock/lib/pages/matches-page-dto.ts`
   - owns DTO RPC loading and normalization for the page-shaped read model
 - `overclock/lib/matches/*`
   - owns invite/connection record access and pure invite helpers
 
-Do not add matches mutations back under `app/matches/*`. Keep that route folder
-focused on request-time page orchestration.
+Do not add matches mutations back under `app/matches/*` or
+`app/connections/*`. Keep those route folders focused on request-time page
+orchestration.
 
 ## Current Follow-Up Targets
 
