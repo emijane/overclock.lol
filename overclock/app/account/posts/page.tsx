@@ -13,7 +13,7 @@ import {
   type LFGPostDisplayStatus,
 } from "@/lib/lfg/lfg-post-display-status";
 import { getAccountPostsPageDto } from "@/lib/pages/account-posts-page-dto";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getCurrentProfileIdentity } from "@/lib/profiles/get-current-profile";
 
 type AccountPostsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -64,7 +64,7 @@ export default async function AccountPostsPage({
   const selectedStatus = getSelectedStatus(pickValue(params.status));
   const currentPage = Math.max(1, Number(pickValue(params.page)) || 1);
 
-  const { user, profile } = await getCurrentProfile();
+  const { user, profile } = await getCurrentProfileIdentity();
 
   if (!user) redirect("/login");
   if (!profile) redirect("/onboarding");

@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import {
   isCompetitiveRole,
@@ -12,9 +12,11 @@ import {
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
 import {
   getProfileHeroPools,
+  HERO_POOLS_CACHE_TAG,
   saveProfileHeroPools,
   type HeroPoolSelections,
 } from "@/lib/heroes/profile-hero-pools";
+import { COMPETITIVE_PROFILE_CACHE_TAG } from "@/lib/competitive/competitive-profile";
 import {
   PLATFORM_OPTIONS,
   RANK_TIERS,
@@ -249,6 +251,8 @@ export async function saveCompetitiveRoleProfile(formData: FormData) {
     competitiveRedirect("Saved rank, but could not save hero pool.");
   }
 
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
+  revalidateTag(HERO_POOLS_CACHE_TAG(user.id));
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role saved.", "success");
 }
@@ -286,6 +290,7 @@ export async function saveCompetitiveProfileSettings(formData: FormData) {
     competitiveRedirect("Unable to save competitive profile settings right now.");
   }
 
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
   revalidatePath("/account/competitive");
   revalidatePath("/duos");
   revalidatePath("/stacks");
@@ -361,6 +366,8 @@ export async function removeCompetitiveRoleProfile(formData: FormData) {
     competitiveRedirect("Removed role, but could not clear hero pool.");
   }
 
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
+  revalidateTag(HERO_POOLS_CACHE_TAG(user.id));
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role removed.", "success");
 }

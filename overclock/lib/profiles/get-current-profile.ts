@@ -2,13 +2,13 @@ import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
 
 import { identityPerfLog } from "@/lib/dev/perf-log";
-import { createClient } from "@/lib/supabase/server";
+import { getServerClient } from "@/lib/supabase/server";
 import { OWNER_PROFILE_SELECT } from "@/lib/profiles/profile-selects";
 
 const PROFILE_IDENTITY_SELECT = "id, username, region, timezone" as const;
 
 const loadCurrentUser = cache(async (): Promise<User | null> => {
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const tUser = Date.now();
   const {
     data: { user },
@@ -30,7 +30,7 @@ const loadCurrentProfile = cache(async () => {
     return { user: null, profile: null };
   }
 
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const tProfile = Date.now();
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
@@ -53,7 +53,7 @@ const loadCurrentProfileIdentity = cache(async () => {
     return { user: null, profile: null };
   }
 
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const tProfile = Date.now();
   const { data: profile, error: profileError } = await supabase
     .from("profiles")

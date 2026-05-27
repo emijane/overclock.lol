@@ -1,6 +1,7 @@
 // Server-only Supabase client helpers shared by Server Components, server
 // actions, and route handlers. Keep this module free of client-only imports.
 
+import { cache } from 'react';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
@@ -28,3 +29,7 @@ export async function createClient() {
         }
     );
 }
+
+// Returns the same client instance within a single request, avoiding repeated
+// cookie reads when multiple data functions call createClient() in parallel.
+export const getServerClient = cache(createClient);

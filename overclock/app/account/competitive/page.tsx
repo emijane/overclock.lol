@@ -5,7 +5,7 @@ import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/features/auth/components";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
-import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { getCurrentProfileIdentity } from "@/lib/profiles/get-current-profile";
 
 import { CompetitiveProfileManager } from "./components/competitive-profile-manager";
 
@@ -23,13 +23,15 @@ export default async function CompetitiveProfilePage({
   const params = searchParams ? await searchParams : {};
   const message = pickValue(params.message);
   const messageType = pickValue(params.type);
-  const { user, profile } = await getCurrentProfile();
+  const { user, profile } = await getCurrentProfileIdentity();
 
   if (!user) redirect("/login");
   if (!profile) redirect("/onboarding");
 
-  const competitiveProfile = await getCompetitiveProfile(profile.id);
-  const heroPools = await getProfileHeroPools(profile.id);
+  const [competitiveProfile, heroPools] = await Promise.all([
+    getCompetitiveProfile(profile.id),
+    getProfileHeroPools(profile.id),
+  ]);
 
   return (
     <>

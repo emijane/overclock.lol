@@ -1,4 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+
+import { createClient, getServerClient } from "@/lib/supabase/server";
 
 export const HERO_POOL_ROLE_OPTIONS = ["tank", "dps", "support"] as const;
 
@@ -21,6 +24,9 @@ export const EMPTY_PROFILE_HERO_POOLS: ProfileHeroPools = {
   heroPicks: EMPTY_HERO_POOL_SELECTIONS,
   roles: [],
 };
+
+export const HERO_POOLS_CACHE_TAG = (profileId: string) =>
+  `hero-pools:${profileId}`;
 
 export function isHeroPoolRoleOption(
   value: string
@@ -63,8 +69,8 @@ function normalizeHeroPoolRoles(value: unknown): HeroPoolRoleOption[] {
   );
 }
 
-export async function getProfileHeroPools(profileId: string) {
-  const supabase = await createClient();
+async function fetchProfileHeroPools(profileId: string) {
+  const supabase = await getServerClient();
   const { data, error } = await supabase
     .from("profile_hero_pools")
     .select("roles, hero_picks")
@@ -84,6 +90,14 @@ export async function getProfileHeroPools(profileId: string) {
     roles: normalizeHeroPoolRoles(data.roles),
   } satisfies ProfileHeroPools;
 }
+
+// Per-request deduplication via react.cache, cross-request persistence via
+// unstable_cache. Invalidate with revalidateTag(HERO_POOLS_CACHE_TAG(profileId)).
+export const getProfileHeroPools = cache((profileId: string) =>
+  unstable_cache(fetchProfileHeroPools, [`hero-pools:${profileId}`], {
+    tags: [HERO_POOLS_CACHE_TAG(profileId)],
+  })(profileId)
+);
 
 export async function saveProfileHeroPools(
   profileId: string,

@@ -12,7 +12,15 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\" -Recurse -Directory)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\\\\app\\\\account\" -Recurse -File)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\misa\\\\Documents\\\\GitHub\\\\overclock.lol\\\\overclock\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(cat)",
+      "Read(//tmp/**)",
+      "Bash(cat > *)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }

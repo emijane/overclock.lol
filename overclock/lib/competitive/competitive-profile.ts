@@ -1,3 +1,6 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+
 import {
   isCompetitivePlatform,
   isCompetitiveRankTier,
@@ -5,7 +8,10 @@ import {
   type CompetitiveProfile,
   type CompetitiveRoleProfile,
 } from "@/lib/competitive/competitive-profile-types";
-import { createClient } from "@/lib/supabase/server";
+import { getServerClient } from "@/lib/supabase/server";
+
+export const COMPETITIVE_PROFILE_CACHE_TAG = (profileId: string) =>
+  `competitive-profile:${profileId}`;
 
 function normalizeCompetitiveRoleProfile(
   row: Record<string, unknown>
@@ -30,10 +36,8 @@ function normalizeCompetitiveRoleProfile(
   };
 }
 
-export async function getCompetitiveProfile(
-  profileId: string
-): Promise<CompetitiveProfile> {
-  const supabase = await createClient();
+async function fetchCompetitiveProfile(profileId: string): Promise<CompetitiveProfile> {
+  const supabase = await getServerClient();
 
   const [profileResult, roleResult] = await Promise.all([
     supabase
@@ -79,3 +83,11 @@ export async function getCompetitiveProfile(
       .filter((role): role is CompetitiveRoleProfile => Boolean(role)),
   };
 }
+
+// Per-request deduplication via react.cache, cross-request persistence via
+// unstable_cache. Invalidate with revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(profileId)).
+export const getCompetitiveProfile = cache((profileId: string) =>
+  unstable_cache(fetchCompetitiveProfile, [`competitive-profile:${profileId}`], {
+    tags: [COMPETITIVE_PROFILE_CACHE_TAG(profileId)],
+  })(profileId)
+);
