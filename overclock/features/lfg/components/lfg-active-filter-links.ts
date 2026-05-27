@@ -110,7 +110,7 @@ export function getActiveLFGFilterChips(
   searchParams: URLSearchParams,
   selectedFilters?: LFGFeedFilters
 ): ActiveLFGFilterChip[] {
-  return [
+  const chips: Array<ActiveLFGFilterChip | null> = [
     selectedFilters?.region
       ? {
           href: buildClearFilterHref(pathname, searchParams, "region"),
@@ -167,5 +167,7 @@ export function getActiveLFGFilterChips(
           value: selectedFilters.search,
         }
       : null,
-  ].filter((chip): chip is ActiveLFGFilterChip => Boolean(chip));
+  ];
+
+  return chips.filter((chip): chip is ActiveLFGFilterChip => chip !== null);
 }

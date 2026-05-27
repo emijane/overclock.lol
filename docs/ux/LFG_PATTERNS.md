@@ -100,12 +100,14 @@
   - Rank: single-tier selection sets both `min_rank` and `max_rank` to the same value
   - Region is optional and lightweight
   - Clear Filters link shown only when any filter is active
+  - On desktop, active filter chips render in the sidebar only, not in the header
+  - Active sidebar chips include an `x` affordance that clears only that filter
 
 ## Sidebar Layout Rules (Duos / Stacks)
 - Sidebar width: `w-52` (208px)
 - Contains: LFG section nav, Create Post CTA, inline filter sections per category
 - LFG nav items: Overview, Duos, Stacks (Scrims + Teams marked "Soon", non-interactive)
-- Filter sections: Mode, Role, Needs, Region, Rank — each collapsible, open by default
+- Filter sections: Mode, Role, Needs, Region, Rank - each collapsible, closed by default
 - Selected item indicator: filled `bg-sky-400` dot; unselected: transparent dot placeholder
 - Create Post button: `bg-violet-600/80` pill, links to create page or login for guests
 - Sidebar is a flex sibling to the main section inside `PageContainer`

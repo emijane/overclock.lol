@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
+import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { AuthenticatedWorkspaceShell } from "@/components/app-shell/authenticated-workspace-shell";
 import { PageReveal } from "@/components/app-shell/page-reveal";
@@ -9,7 +9,6 @@ import { createLFGPost } from "@/features/lfg/actions";
 import { STACKS_PLACEHOLDER_POSTS } from "@/features/lfg/dev-fixtures";
 import { getDuosFeedInitialPage } from "@/features/lfg/duos-feed";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
-import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
@@ -37,11 +36,6 @@ import {
   CurrentStackPanel,
   isBlockedByCurrentStackMessage,
 } from "./current-stack-panel";
-import {
-  buildClearFiltersHref,
-  buildFeedFilterSearchParams,
-  getActiveLFGFilterChips,
-} from "./lfg-active-filter-links";
 import { LFGFeedFiltersPanel } from "./lfg-feed-filters-panel";
 import { LFGGameModePicker } from "./lfg-game-mode-picker";
 import { DuosInfiniteFeed } from "./duos-infinite-feed";
@@ -136,21 +130,6 @@ function formatMissingFields(fields: string[]) {
   }
 
   return `${fields.slice(0, -1).join(", ")}, and ${fields[fields.length - 1]}`;
-}
-
-function getFeedStatusSummary(input: {
-  visiblePostCount: number;
-  selectedFilters?: LFGFeedFilters;
-}) {
-  const { selectedFilters, visiblePostCount } = input;
-  const roleLabel = selectedFilters?.role
-    ? COMPETITIVE_ROLE_OPTIONS.includes(selectedFilters.role)
-      ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
-      : selectedFilters.role
-    : "All roles";
-  const regionLabel = selectedFilters?.region ?? "All regions";
-
-  return `Showing ${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} / ${regionLabel} / ${roleLabel}`;
 }
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -542,25 +521,6 @@ export async function LFGPageShell({
   const currentStackHref = resolvedActiveStackPostId
     ? `/stacks/${resolvedActiveStackPostId}`
     : null;
-  const duosHeaderChips =
-    useSidebarLayout && shouldShowFeed
-      ? getActiveLFGFilterChips(
-          sectionHref,
-          buildFeedFilterSearchParams(feedFilters, useFixtures),
-          feedFilters
-        )
-      : [];
-  const duosClearFiltersHref =
-    useSidebarLayout && shouldShowFeed && duosHeaderChips.length > 0
-      ? buildClearFiltersHref(
-          sectionHref,
-          buildFeedFilterSearchParams(feedFilters, useFixtures)
-        )
-      : null;
-  const feedStatusSummary = getFeedStatusSummary({
-    selectedFilters: feedFilters,
-    visiblePostCount,
-  });
   const shouldShowCurrentStackPanel = Boolean(
     type === "stacks" && profile?.id && resolvedActiveStackPostId
   );
@@ -623,7 +583,9 @@ export async function LFGPageShell({
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "py-3 sm:py-4"
+                    ? shouldShowFeed
+                      ? "border-b border-white/[0.04] py-2.5 sm:py-3"
+                      : "py-3 sm:py-4"
                     : "py-5 sm:py-7"
               }`}
             >
@@ -632,23 +594,24 @@ export async function LFGPageShell({
                   isComposerOnlyPage
                     ? "space-y-3"
                     : usesDuosFeedTone
-                      ? "space-y-3"
+                      ? shouldShowFeed
+                        ? "space-y-2"
+                        : "space-y-3"
                       : "space-y-5"
                 }
               >
                 <PageReveal
                   className={
                     usesDuosFeedTone && shouldShowFeed
-                      ? "rounded-[18px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.028)_0%,rgba(255,255,255,0.012)_100%)] px-5 py-4.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-6 sm:py-5"
+                      ? "px-0 py-0"
                       : ""
                   }
                   delay={0}
                   disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
                   {usesDuosFeedTone && shouldShowFeed ? (
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div className="min-w-0 space-y-2.5">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="min-w-0 space-y-2">
                           {breadcrumbHref && breadcrumbLabel ? (
                             <Link
                               href={breadcrumbHref}
@@ -658,7 +621,7 @@ export async function LFGPageShell({
                               {breadcrumbLabel}
                             </Link>
                           ) : null}
-                          <div className="space-y-1.5">
+                          <div className="space-y-1">
                             <h1 className="oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]">
                               {displayTitle}
                             </h1>
@@ -669,7 +632,7 @@ export async function LFGPageShell({
                               <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-500">
                                 {helperText}
                               </p>
-                            ) : null}
+                              ) : null}
                           </div>
                         </div>
                         <div className="flex w-full flex-col items-stretch gap-2 sm:flex-row sm:items-center lg:w-auto lg:justify-end">
@@ -688,52 +651,6 @@ export async function LFGPageShell({
                             {user ? "Create Post" : "Log in to Post"}
                           </Link>
                         </div>
-                      </div>
-
-                      <div className="flex flex-col gap-2.5 border-t border-white/[0.04] pt-3.5 lg:flex-row lg:items-start lg:justify-between">
-                        <div className="space-y-2">
-                          <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
-                            Active filters
-                          </p>
-                          {duosHeaderChips.length > 0 ? (
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              {duosHeaderChips.map((chip) => (
-                                <Link
-                                  key={chip.key}
-                                  href={chip.href}
-                                  className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] transition hover:border-white/[0.12] hover:bg-white/[0.06]"
-                                >
-                                  <span className="oc-profile-meta">{chip.label}:</span>
-                                  <span
-                                    className={`oc-profile-display font-medium text-zinc-100 ${
-                                      chip.key === "search" ? "max-w-[11rem] truncate" : ""
-                                    }`}
-                                    title={chip.value}
-                                  >
-                                    {chip.value}
-                                  </span>
-                                  <XIcon className="h-3 w-3 text-zinc-400" />
-                                </Link>
-                              ))}
-                              {duosClearFiltersHref ? (
-                                <Link
-                                  href={duosClearFiltersHref}
-                                  className="inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
-                                >
-                                  Clear filters
-                                </Link>
-                              ) : null}
-                            </div>
-                          ) : (
-                            <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500">
-                              No filters applied right now.
-                            </p>
-                          )}
-                        </div>
-                        <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 lg:max-w-[13rem] lg:text-right">
-                          {feedStatusSummary}
-                        </p>
-                      </div>
                     </div>
                   ) : (
                     <div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
@@ -17,34 +17,10 @@ import {
   LFG_GAME_MODE_OPTIONS,
 } from "@/lib/lfg/lfg-post-types";
 import {
+  buildFilterHref,
   buildClearFiltersHref,
   getActiveLFGFilterChips,
 } from "./lfg-active-filter-links";
-
-type FilterKey =
-  | "looking_for"
-  | "max_rank"
-  | "min_rank"
-  | "mode"
-  | "region"
-  | "role"
-  | "search";
-
-function buildFilterHref(
-  pathname: string,
-  searchParams: URLSearchParams,
-  key: FilterKey,
-  value?: string
-) {
-  const params = new URLSearchParams(searchParams.toString());
-  if (value) {
-    params.set(key, value);
-  } else {
-    params.delete(key);
-  }
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
 
 function buildRankFilterHref(
   pathname: string,
@@ -72,7 +48,7 @@ function FilterSection({
   tone?: "default" | "duos";
   title: string;
 }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="space-y-1.5 border-t border-white/[0.03] pt-3 first:border-t-0 first:pt-0">
@@ -143,9 +119,7 @@ export function LFGSidebar({
       : undefined;
 
   return (
-    <aside
-      className="hidden w-56 shrink-0 self-start flex-col gap-4 px-2 py-1 lg:flex"
-    >
+    <div className="flex min-w-0 flex-col gap-4 px-2 py-1">
       <div className="space-y-2 pb-3">
         <div className="flex items-center justify-between gap-2">
           <p
@@ -177,10 +151,12 @@ export function LFGSidebar({
                 key={chip.key}
                 href={chip.href}
                 className="inline-flex h-6 items-center gap-1 rounded-[8px] bg-white/[0.03] px-2 font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition hover:bg-white/[0.05] hover:text-zinc-100"
+                aria-label={`Remove ${chip.label} filter`}
                 title={`${chip.label}: ${chip.value}`}
               >
                 <span className="text-zinc-500">{chip.label}</span>
                 <span className="max-w-[6.5rem] truncate">{chip.value}</span>
+                <XIcon className="h-3 w-3 text-zinc-500" />
               </Link>
             ))}
           </div>
@@ -267,6 +243,6 @@ export function LFGSidebar({
           ))}
         </FilterSection>
       </div>
-    </aside>
+    </div>
   );
 }

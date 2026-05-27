@@ -48,7 +48,7 @@ export async function AuthenticatedWorkspaceShell({
       >
         <div className="mx-auto flex w-full max-w-[88rem] items-start gap-4 xl:gap-5">
           <aside className="sticky top-8 hidden w-56 shrink-0 self-start lg:block">
-            <div className="max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll">
+            <div className="max-h-[calc(100vh-4rem)] overflow-x-hidden overflow-y-auto oc-sidebar-scroll">
               <GlobalSidebarNavServer />
             </div>
           </aside>
@@ -61,7 +61,7 @@ export async function AuthenticatedWorkspaceShell({
             <aside
               className={`sticky top-8 hidden w-56 shrink-0 self-start lg:block ${rightRailClassName}`.trim()}
             >
-              <div className="max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll">
+              <div className="max-h-[calc(100vh-4rem)] overflow-x-hidden overflow-y-auto oc-sidebar-scroll">
                 {rightRail}
               </div>
             </aside>

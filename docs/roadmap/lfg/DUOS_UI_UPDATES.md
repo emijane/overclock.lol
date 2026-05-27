@@ -25,14 +25,13 @@ Current header shape on `/duos`:
 
 - large `/ Duos` heading
 - no inline "LFG Channel" eyebrow
-- two-row toolbar layout:
+- single toolbar layout:
   title on the left and search + `Create Post` / `Log in to Post` on the right
-- second active-state row under the title row with:
-  `Active filters` label on the left and removable active-filter pills on the right
-- when filters are active, that pill row also includes a header-level `Clear filters` pill
+- header sits directly inside the main duos shell rather than inside a second rounded panel
+- the feed separates from the header with a subtle divider instead of a nested surface
 - the left sidebar no longer repeats a `Create Post` button; the header CTA is the primary
   feed-level create entry
-- the left sidebar no longer repeats a separate `clear filters` action either
+- desktop active-filter visibility and removal live in the right sidebar only
 - compact first-pass filter bar below the header
 - mobile no longer wraps the full desktop dropdown row inline; it now uses a dedicated
   `Filters` trigger plus a centered mobile filter modal and only shows removable pills
