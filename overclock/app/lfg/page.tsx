@@ -12,7 +12,7 @@ export default function LFGPage() {
   return (
     <LFGPageShell
       title="LFG"
-      description="Use the top navigation to choose a community, then browse posts with filters when the feed is connected."
+      description="Choose a community from the desktop sidebar or mobile navigation, then browse posts once the feed is connected."
     />
   );
 }

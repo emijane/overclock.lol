@@ -121,7 +121,7 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` and `docs/ui/UI_COMPONENT_REGISTRY
   - same visual treatment
 - Do not combine unrelated examples if one strong source-of-truth page already exists.
 - For settings work:
-  - reuse the account workspace shell for navigation, headers, and section framing
+  - reuse the authenticated workspace shell plus the account page framing patterns for desktop navigation, headers, and section framing
   - borrow duos density, compact controls, and border treatment only at the visual-language level
   - do not collapse settings pages into the LFG feed shell unless the page truly behaves like a feed
 

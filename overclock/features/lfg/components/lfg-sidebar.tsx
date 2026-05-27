@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  LayoutGridIcon,
-  Users2Icon,
-  UsersIcon,
-} from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 
 import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
@@ -22,6 +16,10 @@ import {
   getLFGGameModeLabel,
   LFG_GAME_MODE_OPTIONS,
 } from "@/lib/lfg/lfg-post-types";
+import {
+  buildClearFiltersHref,
+  getActiveLFGFilterChips,
+} from "./lfg-active-filter-links";
 
 type FilterKey =
   | "looking_for"
@@ -64,12 +62,6 @@ function buildRankFilterHref(
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
-
-const LFG_NAV_ITEMS = [
-  { href: "/lfg", label: "Overview", Icon: LayoutGridIcon },
-  { href: "/duos", label: "Duos", Icon: UsersIcon },
-  { href: "/stacks", label: "Stacks", Icon: Users2Icon },
-] as const;
 
 function FilterSection({
   children,
@@ -141,8 +133,9 @@ export function LFGSidebar({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
+  const activeFilterChips = getActiveLFGFilterChips(pathname, params, selectedFilters);
+  const clearFiltersHref = buildClearFiltersHref(pathname, params);
 
-  // Single rank selection — both min and max set to the same tier
   const selectedRank =
     selectedFilters?.minRank &&
     selectedFilters.minRank === selectedFilters?.maxRank
@@ -151,53 +144,40 @@ export function LFGSidebar({
 
   return (
     <aside
-      className={`hidden w-56 shrink-0 self-start flex-col gap-3 p-3 lg:flex sticky top-6 sm:top-8 max-h-[calc(100vh-3rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll ${
+      className={`hidden w-56 shrink-0 self-start flex-col gap-3 rounded-[10px] border p-3 lg:flex ${
         tone === "duos"
-          ? "rounded-[10px] border border-white/[0.03] bg-white/[0.01]"
-          : "rounded-xl border border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"
+          ? "border-white/[0.03] bg-white/[0.01]"
+          : "border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"
       }`}
     >
-      {/* LFG navigation */}
-      <nav>
-        <p
-          className={`mb-1.5 ${
-            tone === "duos"
-              ? "oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em]"
-              : "text-[10px] font-medium text-zinc-600"
-          }`}
-          style={tone === "duos" ? { color: "rgb(228 228 231 / 0.9)" } : undefined}
-        >
-          LFG
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <p
+            className={`${
+              tone === "duos"
+                ? "oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em]"
+                : "text-[10px] font-medium text-zinc-600"
+            }`}
+            style={tone === "duos" ? { color: "rgb(228 228 231 / 0.9)" } : undefined}
+          >
+            / FILTERS
+          </p>
+          {activeFilterChips.length > 0 ? (
+            <Link
+              href={clearFiltersHref}
+              className="oc-profile-meta text-[10px] uppercase tracking-[0.14em] text-zinc-500 transition hover:text-zinc-200"
+            >
+              Clear
+            </Link>
+          ) : null}
+        </div>
+        <p className="oc-profile-meta text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+          {activeFilterChips.length} active
         </p>
-        <ul className="space-y-px">
-          {LFG_NAV_ITEMS.map(({ href, label, Icon }) => {
-            const isActive = pathname === href;
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={`flex items-center gap-2 px-2.5 text-[12px] transition ${
-                    isActive
-                      ? tone === "duos"
-                        ? "h-8 rounded-[8px] bg-white/[0.06] font-semibold text-zinc-200"
-                        : "h-7 rounded-md bg-white/5 font-medium text-zinc-200"
-                      : tone === "duos"
-                        ? "h-8 rounded-[8px] font-medium text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
-                        : "h-7 rounded-md font-normal text-zinc-500 hover:bg-white/3 hover:text-zinc-300"
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      </div>
 
       <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
-      {/* Filters */}
       <div className="space-y-3">
         <FilterSection title="/ mode" tone={tone}>
           {LFG_GAME_MODE_OPTIONS.map((mode) => (

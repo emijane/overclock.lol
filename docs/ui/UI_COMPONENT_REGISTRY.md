@@ -27,8 +27,9 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 - Use the account page pattern from `overclock/app/account/page.tsx`
 - Use:
   - `overclock/app/account/layout.tsx`
+  - `overclock/components/app-shell/authenticated-workspace-shell.tsx`
   - `overclock/components/app-shell/account-workspace-shell.tsx`
-  - `overclock/components/navigation/account-settings-navigation.tsx`
+  - `overclock/components/navigation/global-sidebar-nav.tsx`
   - `overclock/app/account/components/account-page-header.tsx`
   - `overclock/app/account/components/account-section-card.tsx`
   - `oc-surface-panel` from `overclock/app/globals.css`
@@ -235,7 +236,8 @@ Use `docs/ui/UI_COMPONENT_STRUCTURE_AUDIT.md` as the source of truth. This file 
 
 - Need a feed page: `overclock/features/lfg/components/lfg-page-shell.tsx`
 - Need a settings page: `overclock/app/account/page.tsx`
-- Need an account workspace shell: `overclock/app/account/layout.tsx` plus the shared account chrome components
+- Need an authenticated desktop workspace shell: `overclock/components/app-shell/authenticated-workspace-shell.tsx`
+- Need an account workspace shell: `overclock/app/account/layout.tsx` plus `overclock/components/app-shell/account-workspace-shell.tsx`
 - Need the repeated dark route wrapper: `overclock/components/app-shell/dark-page-shell.tsx`
 - Need a profile section: `overclock/app/u/[username]/profile/profile-header.tsx`
 - Need a card: `overclock/features/lfg/components/lfg-post-card.tsx`

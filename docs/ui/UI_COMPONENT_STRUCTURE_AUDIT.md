@@ -216,8 +216,9 @@ Traits:
 
 - keeps the account-specific layout and persistent section navigation from `overclock/app/account/layout.tsx`
 - uses shared account chrome:
+  - `overclock/components/app-shell/authenticated-workspace-shell.tsx`
   - `overclock/components/app-shell/account-workspace-shell.tsx`
-  - `overclock/components/navigation/account-settings-navigation.tsx`
+  - `overclock/components/navigation/global-sidebar-nav.tsx`
   - `overclock/app/account/components/account-page-header.tsx`
   - `overclock/app/account/components/account-section-card.tsx`
 - borrows duos-style density through:
@@ -503,8 +504,9 @@ These already share the route-owned `overclock/app/account/components/settings-t
 - Start from `overclock/app/account/page.tsx`
 - Reuse the account workspace shell first:
   - `overclock/app/account/layout.tsx`
+  - `overclock/components/app-shell/authenticated-workspace-shell.tsx`
   - `overclock/components/app-shell/account-workspace-shell.tsx`
-  - `overclock/components/navigation/account-settings-navigation.tsx`
+  - `overclock/components/navigation/global-sidebar-nav.tsx`
   - `overclock/app/account/components/account-page-header.tsx`
   - `overclock/app/account/components/account-section-card.tsx`
 - If the page is inside `/account`, keep that workspace structure even when matching duos visual polish.

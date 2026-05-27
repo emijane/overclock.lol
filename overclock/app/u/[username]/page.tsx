@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { AuthenticatedWorkspaceShell } from "@/components/app-shell/authenticated-workspace-shell";
 import { AuthMessage } from "@/features/auth/components";
 import { RecentProfilePosts } from "@/features/profile/components/recent-profile-posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
@@ -100,24 +101,8 @@ export default async function ProfilePage({
     ].filter((link): link is NonNullable<typeof link> => Boolean(link));
 
     return (
-        <main className="oc-atmosphere-bg relative -mt-[76px] flex-1 px-4 pb-4 pt-[92px] text-[15px] text-zinc-100 sm:px-6 sm:pb-5 sm:pt-[92px]">
-            <div
-                aria-hidden="true"
-                className="oc-atmosphere-dots-primary pointer-events-none absolute inset-x-0 -top-24 bottom-0"
-            />
-            <div
-                aria-hidden="true"
-                className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-x-0 -top-24 bottom-0"
-            />
-            <div
-                aria-hidden="true"
-                className="oc-atmosphere-spotlight pointer-events-none absolute inset-x-0 -top-24 bottom-0"
-            />
-            <div
-                aria-hidden="true"
-                className="oc-atmosphere-vignette pointer-events-none absolute inset-x-0 -top-24 bottom-0"
-            />
-            <div className="relative z-10 mx-auto grid w-full max-w-4xl gap-2.5">
+        <AuthenticatedWorkspaceShell centerClassName="mx-auto w-full max-w-4xl">
+            <div className="grid w-full gap-2.5">
                 {isOwner ? (
                     <AuthMessage message={message} type={messageType} />
                 ) : null}
@@ -184,6 +169,6 @@ export default async function ProfilePage({
                     </div>
                 </div>
             </div>
-        </main>
+        </AuthenticatedWorkspaceShell>
     );
 }

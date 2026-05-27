@@ -66,7 +66,9 @@ export function GlobalAuthBar({
         <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-2.5 lg:gap-3">
           <MainMenuUserSearch />
 
-          <GlobalDiscoveryNav links={discoveryLinks} />
+          <div className="lg:hidden">
+            <GlobalDiscoveryNav links={discoveryLinks} />
+          </div>
 
           {userId ? (
             <div className="flex shrink-0 items-center gap-2">

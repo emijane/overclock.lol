@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeftIcon, FilterIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
 
-import { PageContainer } from "@/components/app-shell/page-container";
+import { AuthenticatedWorkspaceShell } from "@/components/app-shell/authenticated-workspace-shell";
 import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/components/auth/auth-message";
 import { createLFGPost } from "@/features/lfg/actions";
@@ -568,60 +568,27 @@ export async function LFGPageShell({
     });
   }
 
+  const desktopRightRail =
+    useSidebarLayout && type ? (
+      <Suspense fallback={<div className="h-px" />}>
+        <LFGSidebar
+          selectedFilters={feedFilters}
+          tone={usesDuosFeedTone ? "duos" : "default"}
+        />
+      </Suspense>
+    ) : null;
+  const centerClassName = isComposerOnlyPage
+    ? "mx-auto w-full max-w-4xl"
+    : useSidebarLayout
+      ? ""
+      : "mx-auto w-full max-w-[120rem]";
+
   return (
-    <main
-      className={`relative flex min-h-0 flex-col px-4 text-zinc-100 sm:px-6 ${
-        isComposerOnlyPage
-          ? "pb-0 pt-2 sm:pb-0 sm:pt-3"
-          : usesDuosFeedTone
-            ? "oc-atmosphere-bg flex-1 py-6 sm:py-8"
-            : "flex-1 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.08),transparent_24%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.03),transparent_18%),#09090b] py-6 sm:py-8"
-      }`}
+    <AuthenticatedWorkspaceShell
+      centerClassName={centerClassName}
+      rightRail={desktopRightRail}
     >
-      {usesDuosFeedTone ? (
-        <>
-          <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
-        </>
-      ) : (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
-          />
-        </>
-      )}
       <AuthMessage message={message} type={messageType} variant="toast" />
-      <PageContainer
-        className={`relative z-10 ${
-          isComposerOnlyPage
-            ? "flex flex-col gap-2"
-            : useSidebarLayout
-              ? `flex flex-1 lg:min-h-0 items-stretch ${usesDuosFeedTone ? "gap-4 xl:gap-5" : "gap-6"}`
-              : "flex flex-col gap-3"
-        }`}
-        maxWidthClassName={
-          isComposerOnlyPage
-            ? "max-w-4xl"
-            : usesDuosFeedTone
-              ? "max-w-none"
-              : "max-w-[120rem]"
-        }
-      >
-        {useSidebarLayout && type ? (
-          <Suspense fallback={<div className="hidden w-56 shrink-0 self-stretch lg:block" />}>
-            <LFGSidebar
-              selectedFilters={feedFilters}
-              tone={usesDuosFeedTone ? "duos" : "default"}
-            />
-          </Suspense>
-        ) : null}
         <section
           className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 flex-col ${isDuosPage ? "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-hidden" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
@@ -996,7 +963,6 @@ export async function LFGPageShell({
             ) : null}
           </div>
         </section>
-      </PageContainer>
-    </main>
+    </AuthenticatedWorkspaceShell>
   );
 }
