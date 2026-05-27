@@ -251,8 +251,8 @@ export async function saveCompetitiveRoleProfile(formData: FormData) {
     competitiveRedirect("Saved rank, but could not save hero pool.");
   }
 
-  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
-  revalidateTag(HERO_POOLS_CACHE_TAG(user.id));
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id), "max");
+  revalidateTag(HERO_POOLS_CACHE_TAG(user.id), "max");
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role saved.", "success");
 }
@@ -290,7 +290,7 @@ export async function saveCompetitiveProfileSettings(formData: FormData) {
     competitiveRedirect("Unable to save competitive profile settings right now.");
   }
 
-  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id), "max");
   revalidatePath("/account/competitive");
   revalidatePath("/duos");
   revalidatePath("/stacks");
@@ -366,8 +366,8 @@ export async function removeCompetitiveRoleProfile(formData: FormData) {
     competitiveRedirect("Removed role, but could not clear hero pool.");
   }
 
-  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id));
-  revalidateTag(HERO_POOLS_CACHE_TAG(user.id));
+  revalidateTag(COMPETITIVE_PROFILE_CACHE_TAG(user.id), "max");
+  revalidateTag(HERO_POOLS_CACHE_TAG(user.id), "max");
   revalidatePath("/account/competitive");
   competitiveRedirect("Competitive role removed.", "success");
 }
