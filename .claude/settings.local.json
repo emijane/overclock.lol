@@ -17,7 +17,10 @@
       "Bash(Select-Object Name, FullName)",
       "Bash(cat)",
       "Read(//tmp/**)",
-      "Bash(cat > *)"
+      "Bash(cat > *)",
+      "Bash(python -c \"import yaml; yaml.safe_load\\(open\\('c:/Users/misa/Documents/GitHub/overclock.lol/.github/workflows/ci.yml'\\)\\)\")",
+      "Bash(node -e \"require\\('js-yaml'\\).load\\(require\\('fs'\\).readFileSync\\('c:/Users/misa/Documents/GitHub/overclock.lol/.github/workflows/ci.yml','utf8'\\)\\); console.log\\('YAML valid'\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const txt=fs.readFileSync\\('c:/Users/misa/Documents/GitHub/overclock.lol/.github/workflows/ci.yml','utf8'\\); console.log\\(txt\\)\")"
     ],
     "additionalDirectories": [
       "\\tmp"
