@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { AuthenticatedWorkspaceShell } from "@/components/app-shell/authenticated-workspace-shell";
+import { PageReveal } from "@/components/app-shell/page-reveal";
 import { AuthMessage } from "@/features/auth/components";
 import { RecentProfilePosts } from "@/features/profile/components/recent-profile-posts";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
@@ -102,73 +103,75 @@ export default async function ProfilePage({
 
     return (
         <AuthenticatedWorkspaceShell centerClassName="w-full max-w-4xl">
-            <div className="grid w-full gap-2.5">
-                {isOwner ? (
-                    <AuthMessage message={message} type={messageType} />
-                ) : null}
-                <div
-                    className="rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.014)_0%,rgba(255,255,255,0.006)_100%)] shadow-none"
-                    style={{
-                        ...profileAccentStyle,
-                        borderColor: "var(--profile-rank-border)",
-                    }}
-                >
+            <PageReveal variant="fade">
+                <div className="grid w-full gap-2.5">
+                    {isOwner ? (
+                        <AuthMessage message={message} type={messageType} />
+                    ) : null}
                     <div
-                        className="overflow-hidden rounded-[9px] bg-transparent"
-                        style={profileAccentStyle}
+                        className="flex flex-1 flex-col overflow-clip rounded-[16px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_28%,rgba(7,7,9,0.96)_100%)] shadow-[0_16px_36px_rgba(0,0,0,0.22)] sm:rounded-[10px] sm:border-0 sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] sm:shadow-none"
+                        style={{
+                            ...profileAccentStyle,
+                            borderColor: "var(--profile-rank-border)",
+                        }}
                     >
-                        <EditableProfileHeader
-                            avatarUrl={getProfileAvatarUrl(
-                                profile.avatarUrl ?? null,
-                                profile.avatarUpdatedAt ?? null
-                            )}
-                            bio={profile.bio}
-                            badges={badges}
-                            connectionCount={connectionCount}
-                            coverImageUrl={coverImageUrl}
-                            createdAt={profile.createdAt}
-                            currentRank={currentRank}
-                            currentRankTier={profileRankTier}
-                            currentRankIconSrc={currentRankIconSrc}
-                            currentViewerProfileId={viewer.profileId}
-                            displayName={displayName}
-                            hideOfflinePresence={profile.hideOfflinePresence}
-                            id={profile.id}
-                            initiallyBlockedByViewer={initiallyBlockedByViewer}
-                            isOwner={isOwner}
-                            isLookingToPlay={profile.isLookingToPlay}
-                            lastSeenAt={profile.lastSeenAt}
-                            lookingFor={profile.lookingFor}
-                            platform={competitiveProfile.platform}
-                            region={profile.region}
-                            socialLinks={socialLinks}
-                            timezone={profile.timezone}
-                            username={profile.username}
-                            activeConnectionId={activeConnectionId}
-                            pendingOutgoingInviteId={pendingOutgoingInviteId}
-                            profileActionState={inviteState}
-                            viewerState={viewer.viewerState}
-                        />
-                        <PreferredHeroPools
-                            competitiveProfile={competitiveProfile}
-                            heroPicks={heroPools.heroPicks}
-                            isOwner={isOwner}
-                            roles={heroPools.roles}
-                        />
-                        <FeaturedClipsSection
-                            clips={featuredClips as FeaturedClip[]}
-                            isOwner={isOwner}
-                            rankTier={profileRankTier}
-                        />
-                        <RecentProfilePosts
-                            isOwner={isOwner}
-                            posts={recentPosts}
-                            profileUsername={profile.username}
-                            rankTier={profileRankTier}
-                        />
+                        <div
+                            className="flex w-full min-w-0 flex-1 flex-col overflow-hidden bg-transparent sm:rounded-[10px]"
+                            style={profileAccentStyle}
+                        >
+                            <EditableProfileHeader
+                                avatarUrl={getProfileAvatarUrl(
+                                    profile.avatarUrl ?? null,
+                                    profile.avatarUpdatedAt ?? null
+                                )}
+                                bio={profile.bio}
+                                badges={badges}
+                                connectionCount={connectionCount}
+                                coverImageUrl={coverImageUrl}
+                                createdAt={profile.createdAt}
+                                currentRank={currentRank}
+                                currentRankTier={profileRankTier}
+                                currentRankIconSrc={currentRankIconSrc}
+                                currentViewerProfileId={viewer.profileId}
+                                displayName={displayName}
+                                hideOfflinePresence={profile.hideOfflinePresence}
+                                id={profile.id}
+                                initiallyBlockedByViewer={initiallyBlockedByViewer}
+                                isOwner={isOwner}
+                                isLookingToPlay={profile.isLookingToPlay}
+                                lastSeenAt={profile.lastSeenAt}
+                                lookingFor={profile.lookingFor}
+                                platform={competitiveProfile.platform}
+                                region={profile.region}
+                                socialLinks={socialLinks}
+                                timezone={profile.timezone}
+                                username={profile.username}
+                                activeConnectionId={activeConnectionId}
+                                pendingOutgoingInviteId={pendingOutgoingInviteId}
+                                profileActionState={inviteState}
+                                viewerState={viewer.viewerState}
+                            />
+                            <PreferredHeroPools
+                                competitiveProfile={competitiveProfile}
+                                heroPicks={heroPools.heroPicks}
+                                isOwner={isOwner}
+                                roles={heroPools.roles}
+                            />
+                            <FeaturedClipsSection
+                                clips={featuredClips as FeaturedClip[]}
+                                isOwner={isOwner}
+                                rankTier={profileRankTier}
+                            />
+                            <RecentProfilePosts
+                                isOwner={isOwner}
+                                posts={recentPosts}
+                                profileUsername={profile.username}
+                                rankTier={profileRankTier}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </PageReveal>
         </AuthenticatedWorkspaceShell>
     );
 }

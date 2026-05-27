@@ -1,12 +1,13 @@
 import type React from "react";
 import Image from "next/image";
 
+import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
+import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
+import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
+
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileBadge } from "./profile-badge";
 import { ProfileSocialLinks } from "./profile-social-links";
-import type { ProfileBadge as UserProfileBadge } from "@/lib/badges/badge-types";
-import { PROFILE_COVER_ASPECT_RATIO } from "@/lib/profiles/profile-media";
-import { getRankPillColors } from "@/lib/competitive/rank-border-styles";
 
 type ProfileHeaderProps = {
   avatarUrl: string | null;
@@ -38,7 +39,6 @@ type ProfileHeaderProps = {
   profileAction?: React.ReactNode;
 };
 
-
 export function ProfileHeader({
   avatarUrl,
   bio,
@@ -63,6 +63,7 @@ export function ProfileHeader({
   profileAction,
 }: ProfileHeaderProps) {
   const ltpColors = getRankPillColors(currentRankTier);
+
   return (
     <section className="bg-transparent">
       <div className="pb-4 sm:pb-5">
@@ -166,7 +167,11 @@ export function ProfileHeader({
                 @{username}
                 {createdAt ? (
                   <span className="ml-2 text-zinc-600">
-                    · Joined {new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(createdAt))}
+                    {"\u00B7"} Joined{" "}
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    }).format(new Date(createdAt))}
                   </span>
                 ) : null}
               </p>
@@ -181,11 +186,21 @@ export function ProfileHeader({
                   {isLookingToPlay ? (
                     <span
                       className="oc-profile-meta inline-flex items-center gap-1 rounded-[10px] border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em]"
-                      style={{ background: ltpColors.bgSolid, borderColor: ltpColors.border, color: ltpColors.text }}
+                      style={{
+                        background: ltpColors.bgSolid,
+                        borderColor: ltpColors.border,
+                        color: ltpColors.text,
+                      }}
                     >
                       <span className="relative flex h-1.25 w-1.25">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ backgroundColor: ltpColors.dot }} />
-                        <span className="relative inline-flex h-1.25 w-1.25 rounded-full" style={{ backgroundColor: ltpColors.dot }} />
+                        <span
+                          className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60"
+                          style={{ backgroundColor: ltpColors.dot }}
+                        />
+                        <span
+                          className="relative inline-flex h-1.25 w-1.25 rounded-full"
+                          style={{ backgroundColor: ltpColors.dot }}
+                        />
                       </span>
                       Looking to play
                     </span>
