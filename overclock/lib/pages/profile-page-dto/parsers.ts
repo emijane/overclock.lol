@@ -316,6 +316,8 @@ export function normalizeProfilePageDto(value: unknown): ProfilePageDto {
               typeof profileRecord.youtubeUrl === "string" ? profileRecord.youtubeUrl : null,
             lastSeenAt:
               typeof profileRecord.lastSeenAt === "string" ? profileRecord.lastSeenAt : null,
+            createdAt:
+              typeof profileRecord.createdAt === "string" ? profileRecord.createdAt : null,
             isLookingToPlay: profileRecord.isLookingToPlay === true,
             hideOfflinePresence: profileRecord.hideOfflinePresence === true,
           }

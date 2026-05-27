@@ -141,6 +141,7 @@ export default async function ProfilePage({
                             badges={badges}
                             connectionCount={connectionCount}
                             coverImageUrl={coverImageUrl}
+                            createdAt={profile.createdAt}
                             currentRank={currentRank}
                             currentRankTier={profileRankTier}
                             currentRankIconSrc={currentRankIconSrc}

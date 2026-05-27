@@ -29,6 +29,7 @@ export type ProfilePageDto = {
     bio: string | null;
     coverImagePath: string | null;
     coverImageUpdatedAt: string | null;
+    createdAt: string | null;
     currentRankDivision: number | null;
     currentRankTier: string | null;
     discordAvatarUrl: string | null;

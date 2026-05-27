@@ -14,6 +14,7 @@ type ProfileHeaderProps = {
   bio: string | null;
   connectionCount?: number;
   coverImageUrl: string | null;
+  createdAt: string | null;
   currentRank: string | null;
   currentRankTier?: string | null;
   currentRankIconSrc: string | null;
@@ -43,6 +44,7 @@ export function ProfileHeader({
   bio,
   connectionCount = 0,
   coverImageUrl,
+  createdAt,
   currentRank,
   currentRankIconSrc,
   currentRankTier,
@@ -162,6 +164,11 @@ export function ProfileHeader({
               </div>
               <p className="oc-profile-meta mt-0.5 text-[12px] font-medium tracking-[0.01em]">
                 @{username}
+                {createdAt ? (
+                  <span className="ml-2 text-zinc-600">
+                    · Joined {new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(createdAt))}
+                  </span>
+                ) : null}
               </p>
               {bio ? (
                 <p className="mt-1.5 max-w-xl break-words text-[15px] leading-6 tracking-[-0.015em] text-zinc-300 [overflow-wrap:anywhere]">
