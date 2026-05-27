@@ -147,6 +147,22 @@ body {
   background: var(--oc-surface);
 }
 
+.oc-profile-rank-shell {
+  box-shadow:
+    0 10px 20px color-mix(in srgb, var(--profile-rank-glow) 62%, transparent),
+    0 18px 36px color-mix(in srgb, var(--profile-rank-glow) 40%, transparent),
+    0 16px 36px rgba(0, 0, 0, 0.22);
+}
+
+@media (min-width: 640px) {
+  .oc-profile-rank-shell {
+    box-shadow:
+      0 12px 24px color-mix(in srgb, var(--profile-rank-glow) 72%, transparent),
+      0 22px 44px color-mix(in srgb, var(--profile-rank-glow) 46%, transparent),
+      0 16px 36px rgba(0, 0, 0, 0.22);
+  }
+}
+
 .oc-profile-pill {
   border: 1px solid var(--oc-border);
   border-radius: var(--oc-radius-pill);
@@ -336,6 +352,7 @@ summary {
 
   .oc-card-lift,
   .oc-profile-icon-button,
+  .oc-profile-rank-shell,
   .oc-profile-text-button,
   .oc-surface-solid-lift,
   .oc-list-row-hover {
