@@ -167,11 +167,15 @@ Current routes exist at:
 These pages share one LFG architecture but should feel like standalone
 community spaces. Category navigation belongs in the global app navigation, not
 as a repeated card row inside every page. On desktop, LFG-specific browsing
-filters belong in the contextual right rail rather than the primary app
-sidebar. Queue mode should remain a post-level attribute and filter inside
-these pages, not a separate parent route or page-level route split. Duos is
-currently browse-first, with its post composer living on the dedicated
-`/duos/create` route instead of inline on the feed.
+filters belong in the contextual right rail beside the centered feed container
+rather than in the primary app sidebar or pinned to the window edge. Desktop
+feed pages should keep title, search, create action, filter summary, and result
+status inside one integrated top band so the centered feed panel reads as a
+single workspace instead of a detached toolbar plus empty canvas. Queue mode
+should remain a post-level attribute and filter inside these pages, not a
+separate parent route or page-level route split. Duos is currently browse-first,
+with its post composer living on the dedicated `/duos/create` route instead of
+inline on the feed.
 
 Example post composer state:
 

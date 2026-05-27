@@ -75,13 +75,13 @@ function FilterSection({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div>
+    <div className="space-y-1.5 border-t border-white/[0.03] pt-3 first:border-t-0 first:pt-0">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full items-center justify-between py-0.5 transition hover:text-zinc-300 ${
+        className={`flex w-full items-center justify-between px-2.5 py-0.5 transition hover:text-zinc-300 ${
           tone === "duos"
-            ? "oc-profile-meta text-[11px] font-medium uppercase tracking-[0.16em] hover:text-zinc-100"
+            ? "oc-profile-meta text-[10px] font-medium uppercase tracking-[0.16em] hover:text-zinc-100"
             : "text-[11px] font-medium text-zinc-400"
         }`}
         style={tone === "duos" ? { color: "rgb(212 212 216 / 0.88)" } : undefined}
@@ -93,7 +93,7 @@ function FilterSection({
           <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-400" />
         )}
       </button>
-      {isOpen ? <div className="mt-1 space-y-px">{children}</div> : null}
+      {isOpen ? <div className="space-y-px">{children}</div> : null}
     </div>
   );
 }
@@ -110,9 +110,9 @@ function FilterItem({
   return (
     <Link
       href={href}
-      className={`flex h-7 items-center px-2 text-[12px] transition ${
+      className={`flex h-8 items-center rounded-[10px] px-2.5 font-mono text-[12px] font-medium transition ${
         isSelected
-          ? "bg-white/[0.06] font-medium text-zinc-100"
+          ? "bg-white/[0.07] text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
           : "text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
       }`}
     >
@@ -144,19 +144,15 @@ export function LFGSidebar({
 
   return (
     <aside
-      className={`hidden w-56 shrink-0 self-start flex-col gap-3 rounded-[10px] border p-3 lg:flex ${
-        tone === "duos"
-          ? "border-white/[0.03] bg-white/[0.01]"
-          : "border-white/6 bg-[#05070b] shadow-[0_24px_70px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.03)]"
-      }`}
+      className="hidden w-56 shrink-0 self-start flex-col gap-4 px-2 py-1 lg:flex"
     >
-      <div className="space-y-2">
+      <div className="space-y-2 pb-3">
         <div className="flex items-center justify-between gap-2">
           <p
             className={`${
               tone === "duos"
-                ? "oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em]"
-                : "text-[10px] font-medium text-zinc-600"
+                ? "oc-profile-meta px-2.5 text-[10px] font-medium uppercase tracking-[0.16em]"
+                : "px-2.5 text-[10px] font-medium text-zinc-600"
             }`}
             style={tone === "duos" ? { color: "rgb(228 228 231 / 0.9)" } : undefined}
           >
@@ -165,18 +161,35 @@ export function LFGSidebar({
           {activeFilterChips.length > 0 ? (
             <Link
               href={clearFiltersHref}
-              className="oc-profile-meta text-[10px] uppercase tracking-[0.14em] text-zinc-500 transition hover:text-zinc-200"
+              className="oc-profile-meta px-2.5 text-[10px] uppercase tracking-[0.14em] text-zinc-500 transition hover:text-zinc-200"
             >
               Clear
             </Link>
           ) : null}
         </div>
-        <p className="oc-profile-meta text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+        <p className="oc-profile-meta px-2.5 text-[10px] uppercase tracking-[0.14em] text-zinc-500">
           {activeFilterChips.length} active
         </p>
+        {activeFilterChips.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5 px-2.5">
+            {activeFilterChips.map((chip) => (
+              <Link
+                key={chip.key}
+                href={chip.href}
+                className="inline-flex h-6 items-center gap-1 rounded-[8px] bg-white/[0.03] px-2 font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-zinc-300 transition hover:bg-white/[0.05] hover:text-zinc-100"
+                title={`${chip.label}: ${chip.value}`}
+              >
+                <span className="text-zinc-500">{chip.label}</span>
+                <span className="max-w-[6.5rem] truncate">{chip.value}</span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="oc-profile-meta px-2.5 text-[11px] leading-5 text-zinc-500">
+            Pick a mode, role, or rank to narrow the feed.
+          </p>
+        )}
       </div>
-
-      <div className={tone === "duos" ? "border-t border-white/[0.03]" : "border-t border-white/5"} />
 
       <div className="space-y-3">
         <FilterSection title="/ mode" tone={tone}>

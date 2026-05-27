@@ -7,7 +7,7 @@ import type {
   InviteViewerState,
   LFGInviteStateMap,
 } from "@/lib/matches/play-invite-types";
-import type { LFGPost, LFGType } from "@/lib/lfg/lfg-post-types";
+import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
 import { StackPostCard } from "./stack-post-card";
 
@@ -26,7 +26,6 @@ type LFGPostListProps = {
   retryHref?: string;
   stackRequestStates?: StackRequestStateMap;
   tone?: "default" | "duos";
-  type?: LFGType;
   viewerState?: InviteViewerState;
 };
 
@@ -83,7 +82,6 @@ export function LFGPostList({
   retryHref,
   stackRequestStates,
   tone = "default",
-  type,
   viewerState = "guest",
 }: LFGPostListProps) {
   const [invitedProfileIds, setInvitedProfileIds] = useState<Set<string>>(new Set());
@@ -94,7 +92,7 @@ export function LFGPostList({
 
   if (errorMessage) {
     return (
-      <section className="px-5 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3">
+      <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
         <LFGFeedPlaceholder
           ctaHref={retryHref}
           ctaLabel="Reload Section"
@@ -108,7 +106,7 @@ export function LFGPostList({
 
   if (posts.length === 0) {
     return (
-      <section className="px-5 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3">
+      <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
         <LFGFeedPlaceholder
           description={
             hasActiveFilters
@@ -123,13 +121,13 @@ export function LFGPostList({
   }
 
   return (
-    <section className="px-5 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3">
+    <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
       <div
         className={
           layout === "grid-3"
             ? tone === "duos"
-              ? `grid gap-2.5 md:grid-cols-2 ${type === "duos" ? "xl:grid-cols-4" : "xl:grid-cols-3"}`
-              : "grid gap-3 md:grid-cols-2 xl:grid-cols-4"
+              ? "grid gap-2.5 md:grid-cols-2 lg:grid-cols-3"
+              : "grid gap-3 md:grid-cols-2 lg:grid-cols-3"
             : "grid gap-3"
         }
       >

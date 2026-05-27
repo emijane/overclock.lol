@@ -4,6 +4,7 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { GlobalSidebarNavServer } from "@/components/navigation/global-sidebar-nav-server";
 
 type AuthenticatedWorkspaceShellProps = {
+  balanceDesktopCenter?: boolean;
   children: ReactNode;
   centerClassName?: string;
   mainClassName?: string;
@@ -13,8 +14,9 @@ type AuthenticatedWorkspaceShellProps = {
 };
 
 export async function AuthenticatedWorkspaceShell({
+  balanceDesktopCenter = true,
   children,
-  centerClassName = "",
+  centerClassName = "w-full max-w-4xl",
   mainClassName = "",
   maxWidthClassName = "max-w-none",
   rightRail,
@@ -41,28 +43,35 @@ export async function AuthenticatedWorkspaceShell({
         className="oc-atmosphere-vignette pointer-events-none absolute inset-0"
       />
       <PageContainer
-        className="relative z-10 flex flex-1 items-stretch gap-4 xl:gap-5"
+        className="relative z-10 flex flex-1"
         maxWidthClassName={maxWidthClassName}
       >
-        <aside className="hidden w-56 shrink-0 self-start lg:block">
-          <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll">
-            <GlobalSidebarNavServer />
-          </div>
-        </aside>
-        <section
-          className={`flex min-w-0 flex-1 flex-col ${centerClassName}`.trim()}
-        >
-          {children}
-        </section>
-        {rightRail ? (
-          <aside
-            className={`hidden w-56 shrink-0 self-start lg:block ${rightRailClassName}`.trim()}
-          >
+        <div className="mx-auto flex w-full max-w-[88rem] items-start gap-4 xl:gap-5">
+          <aside className="hidden w-56 shrink-0 self-start lg:block">
             <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll">
-              {rightRail}
+              <GlobalSidebarNavServer />
             </div>
           </aside>
-        ) : null}
+          <section
+            className={`flex min-w-0 flex-1 basis-0 flex-col ${centerClassName}`.trim()}
+          >
+            {children}
+          </section>
+          {rightRail ? (
+            <aside
+              className={`hidden w-56 shrink-0 self-start lg:block ${rightRailClassName}`.trim()}
+            >
+              <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto oc-sidebar-scroll">
+                {rightRail}
+              </div>
+            </aside>
+          ) : balanceDesktopCenter ? (
+            <div
+              aria-hidden="true"
+              className="hidden w-56 shrink-0 self-start lg:block"
+            />
+          ) : null}
+          </div>
       </PageContainer>
     </main>
   );

@@ -9,6 +9,7 @@ import { createLFGPost } from "@/features/lfg/actions";
 import { STACKS_PLACEHOLDER_POSTS } from "@/features/lfg/dev-fixtures";
 import { getDuosFeedInitialPage } from "@/features/lfg/duos-feed";
 import { getCompetitiveProfile } from "@/lib/competitive/competitive-profile";
+import { COMPETITIVE_ROLE_LABELS } from "@/lib/competitive/competitive-role-labels";
 import { COMPETITIVE_ROLE_OPTIONS } from "@/lib/competitive/competitive-profile-types";
 import { getProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 import { HERO_ROSTER } from "@/lib/heroes/hero-roster";
@@ -135,6 +136,21 @@ function formatMissingFields(fields: string[]) {
   }
 
   return `${fields.slice(0, -1).join(", ")}, and ${fields[fields.length - 1]}`;
+}
+
+function getFeedStatusSummary(input: {
+  visiblePostCount: number;
+  selectedFilters?: LFGFeedFilters;
+}) {
+  const { selectedFilters, visiblePostCount } = input;
+  const roleLabel = selectedFilters?.role
+    ? COMPETITIVE_ROLE_OPTIONS.includes(selectedFilters.role)
+      ? COMPETITIVE_ROLE_LABELS[selectedFilters.role]
+      : selectedFilters.role
+    : "All roles";
+  const regionLabel = selectedFilters?.region ?? "All regions";
+
+  return `Showing ${visiblePostCount} ${visiblePostCount === 1 ? "post" : "posts"} / ${regionLabel} / ${roleLabel}`;
 }
 
 function LFGFiltersBar({ description }: { description: string }) {
@@ -527,7 +543,7 @@ export async function LFGPageShell({
     ? `/stacks/${resolvedActiveStackPostId}`
     : null;
   const duosHeaderChips =
-    isDuosPage && shouldShowFeed
+    useSidebarLayout && shouldShowFeed
       ? getActiveLFGFilterChips(
           sectionHref,
           buildFeedFilterSearchParams(feedFilters, useFixtures),
@@ -535,12 +551,16 @@ export async function LFGPageShell({
         )
       : [];
   const duosClearFiltersHref =
-    isDuosPage && shouldShowFeed && duosHeaderChips.length > 0
+    useSidebarLayout && shouldShowFeed && duosHeaderChips.length > 0
       ? buildClearFiltersHref(
           sectionHref,
           buildFeedFilterSearchParams(feedFilters, useFixtures)
         )
       : null;
+  const feedStatusSummary = getFeedStatusSummary({
+    selectedFilters: feedFilters,
+    visiblePostCount,
+  });
   const shouldShowCurrentStackPanel = Boolean(
     type === "stacks" && profile?.id && resolvedActiveStackPostId
   );
@@ -577,11 +597,7 @@ export async function LFGPageShell({
         />
       </Suspense>
     ) : null;
-  const centerClassName = isComposerOnlyPage
-    ? "mx-auto w-full max-w-4xl"
-    : useSidebarLayout
-      ? ""
-      : "mx-auto w-full max-w-[120rem]";
+  const centerClassName = "w-full max-w-4xl";
 
   return (
     <AuthenticatedWorkspaceShell
@@ -606,7 +622,7 @@ export async function LFGPageShell({
                 isComposerOnlyPage
                   ? "py-3 sm:py-4"
                   : usesDuosFeedTone
-                    ? "py-2 sm:py-3"
+                    ? "py-3 sm:py-4"
                     : "py-5 sm:py-7"
               }`}
             >
@@ -615,61 +631,147 @@ export async function LFGPageShell({
                   isComposerOnlyPage
                     ? "space-y-3"
                     : usesDuosFeedTone
-                      ? "space-y-1.5 sm:space-y-2"
+                      ? "space-y-3"
                       : "space-y-5"
                 }
               >
                 <PageReveal
                   className={
-                    usesDuosFeedTone
-                      ? "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
-                      : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                    usesDuosFeedTone && shouldShowFeed
+                      ? "rounded-[18px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.028)_0%,rgba(255,255,255,0.012)_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-5"
+                      : ""
                   }
                   delay={0}
                   disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
-                  <div className={isComposerOnlyPage ? "space-y-2" : "space-y-3"}>
-                    {breadcrumbHref && breadcrumbLabel ? (
-                      <Link
-                        href={breadcrumbHref}
+                  {usesDuosFeedTone && shouldShowFeed ? (
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="min-w-0 space-y-2">
+                          {breadcrumbHref && breadcrumbLabel ? (
+                            <Link
+                              href={breadcrumbHref}
+                              className="oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500 transition hover:text-zinc-300"
+                            >
+                              <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
+                              {breadcrumbLabel}
+                            </Link>
+                          ) : null}
+                          <div className="space-y-1.5">
+                            <h1 className="oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]">
+                              {displayTitle}
+                            </h1>
+                            <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-400">
+                              {description}
+                            </p>
+                            {helperText ? (
+                              <p className="oc-profile-meta max-w-xl text-[11px] leading-5 text-zinc-500">
+                                {helperText}
+                              </p>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="flex w-full flex-col items-stretch gap-2 sm:flex-row sm:items-center lg:w-auto lg:justify-end">
+                          {type ? (
+                            <LFGSearchBar
+                              feedFilters={feedFilters}
+                              type={type}
+                              useFixtures={useFixtures}
+                            />
+                          ) : null}
+                          <Link
+                            href={user ? resolvedCreatePostHref : guestCreateHref}
+                            className="group oc-profile-display inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-300 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                          >
+                            <PlusIcon className="h-4 w-4 text-zinc-400 transition-colors duration-200 group-hover:text-white" />
+                            {user ? "Create Post" : "Log in to Post"}
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 border-t border-white/[0.04] pt-3 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="space-y-2">
+                          <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
+                            Active filters
+                          </p>
+                          {duosHeaderChips.length > 0 ? (
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {duosHeaderChips.map((chip) => (
+                                <Link
+                                  key={chip.key}
+                                  href={chip.href}
+                                  className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] transition hover:border-white/[0.12] hover:bg-white/[0.06]"
+                                >
+                                  <span className="oc-profile-meta">{chip.label}:</span>
+                                  <span
+                                    className={`oc-profile-display font-medium text-zinc-100 ${
+                                      chip.key === "search" ? "max-w-[11rem] truncate" : ""
+                                    }`}
+                                    title={chip.value}
+                                  >
+                                    {chip.value}
+                                  </span>
+                                  <XIcon className="h-3 w-3 text-zinc-400" />
+                                </Link>
+                              ))}
+                              {duosClearFiltersHref ? (
+                                <Link
+                                  href={duosClearFiltersHref}
+                                  className="inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
+                                >
+                                  Clear filters
+                                </Link>
+                              ) : null}
+                            </div>
+                          ) : (
+                            <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500">
+                              No filters applied right now.
+                            </p>
+                          )}
+                        </div>
+                        <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 lg:max-w-[13rem] lg:text-right">
+                          {feedStatusSummary}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div
                         className={
                           usesDuosFeedTone
-                            ? "oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
-                            : "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                            ? "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+                            : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                         }
                       >
-                        <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
-                        {breadcrumbLabel}
-                      </Link>
-                    ) : null}
-                    <h1
-                      className={
-                        usesDuosFeedTone
-                          ? "oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]"
-                          : `font-semibold tracking-[-0.075em] text-zinc-50 ${
-                              isComposerOnlyPage
-                                ? "text-4xl sm:text-5xl"
-                                : "text-5xl sm:text-6xl"
-                            }`
-                      }
-                    >
-                      {displayTitle}
-                    </h1>
-                  </div>
-                  {isDuosPage && shouldShowFeed ? (
-                    <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
-                      <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
-                      <Link
-                        href={user ? resolvedCreatePostHref : guestCreateHref}
-                        className="group oc-profile-display inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-3.5 text-[13px] font-semibold text-zinc-300 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
-                      >
-                        <PlusIcon className="h-4 w-4 text-zinc-400 transition-colors duration-200 group-hover:text-white" />
-                        {user ? "Create Post" : "Log in to Post"}
-                      </Link>
-                    </div>
-                  ) : usesDuosFeedTone && type && shouldShowFeed ? (
-                    <LFGSearchBar feedFilters={feedFilters} type={type} useFixtures={useFixtures} />
-                  ) : type && composerMode === "cta" && !useSidebarLayout ? (
+                        <div className={isComposerOnlyPage ? "space-y-2" : "space-y-3"}>
+                          {breadcrumbHref && breadcrumbLabel ? (
+                            <Link
+                              href={breadcrumbHref}
+                              className={
+                                usesDuosFeedTone
+                                  ? "oc-profile-meta inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-zinc-300"
+                                  : "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500 transition hover:text-zinc-300"
+                              }
+                            >
+                              <ChevronLeftIcon className="h-3.5 w-3.5 shrink-0" />
+                              {breadcrumbLabel}
+                            </Link>
+                          ) : null}
+                          <h1
+                            className={
+                              usesDuosFeedTone
+                                ? "oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]"
+                                : `font-semibold tracking-[-0.075em] text-zinc-50 ${
+                                    isComposerOnlyPage
+                                      ? "text-4xl sm:text-5xl"
+                                      : "text-5xl sm:text-6xl"
+                                  }`
+                            }
+                          >
+                            {displayTitle}
+                          </h1>
+                        </div>
+                        {type && composerMode === "cta" && !useSidebarLayout ? (
                     type === "stacks" && user && isBlockedFromStackCreate ? (
                       currentStackHref ? (
                         <Link
@@ -729,73 +831,37 @@ export async function LFGPageShell({
                         Manage posts
                       </Link>
                     </div>
-                    ) : null}
-                  </PageReveal>
-                {isDuosPage && shouldShowFeed ? (
-                  <div className="hidden border-t border-white/[0.04] pt-2 sm:flex sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                    <p className="oc-profile-meta pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
-                      Active filters
-                    </p>
-                    {duosHeaderChips.length > 0 ? (
-                      <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
-                        {duosHeaderChips.map((chip) => (
-                          <Link
-                            key={chip.key}
-                            href={chip.href}
-                            className="inline-flex h-7 items-center gap-1.5 rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] transition hover:border-white/[0.12] hover:bg-white/[0.06]"
-                          >
-                            <span className="oc-profile-meta">{chip.label}:</span>
-                            <span
-                              className={`oc-profile-display font-medium text-zinc-100 ${
-                                chip.key === "search" ? "max-w-[11rem] truncate" : ""
-                              }`}
-                              title={chip.value}
-                            >
-                              {chip.value}
-                            </span>
-                            <XIcon className="h-3 w-3 text-zinc-400" />
-                          </Link>
-                        ))}
-                        {duosClearFiltersHref ? (
-                          <Link
-                            href={duosClearFiltersHref}
-                            className="inline-flex h-7 items-center rounded-[10px] border border-white/[0.06] bg-white/[0.03] px-2.5 text-[11px] text-zinc-300 transition hover:border-white/[0.12] hover:bg-white/[0.06] hover:text-white"
-                          >
-                            Clear filters
-                          </Link>
                         ) : null}
                       </div>
-                    ) : (
-                      <p className="oc-profile-meta text-[11px] leading-5 text-zinc-500 sm:text-right">
-                        Showing {visiblePostCount} posts / All regions / All roles
-                      </p>
-                    )}
-                  </div>
-                ) : null}
-                {description ? (
-                  <p
-                    className={`max-w-xl leading-5 ${
-                      usesDuosFeedTone ? "oc-profile-meta text-[11px]" : "text-sm text-zinc-400"
-                    }`}
-                  >
-                    {description}
-                  </p>
-                ) : null}
-                {helperText ? (
-                  <p
-                    className={
-                      usesDuosFeedTone
-                        ? "oc-profile-meta text-[11px] leading-5"
-                        : "text-sm leading-6 text-zinc-500"
-                    }
-                  >
-                    {helperText}
-                  </p>
-                ) : null}
-                </div>
+                      {description ? (
+                        <p
+                          className={`mt-3 max-w-xl leading-5 ${
+                            usesDuosFeedTone
+                              ? "oc-profile-meta text-[11px]"
+                              : "text-sm text-zinc-400"
+                          }`}
+                        >
+                          {description}
+                        </p>
+                      ) : null}
+                      {helperText ? (
+                        <p
+                          className={`mt-2 ${
+                            usesDuosFeedTone
+                              ? "oc-profile-meta text-[11px] leading-5"
+                              : "text-sm leading-6 text-zinc-500"
+                          }`}
+                        >
+                          {helperText}
+                        </p>
+                      ) : null}
+                    </div>
+                  )}
+                </PageReveal>
+              </div>
               {type && shouldShowComposer ? (
                 <PageReveal
-                  className={isComposerOnlyPage ? "mt-4" : "mt-8"}
+                  className={isComposerOnlyPage ? "mt-4" : "mt-6"}
                   delay={1}
                   disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
@@ -954,7 +1020,6 @@ export async function LFGPageShell({
                     retryHref={sectionHref}
                     stackRequestStates={stackRequestStates}
                     tone={usesDuosFeedTone ? "duos" : "default"}
-                    type={type}
                     viewerState={!user ? "guest" : profile ? "signed_in" : "profile_required"}
                   />
                 )}

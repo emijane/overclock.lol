@@ -101,10 +101,15 @@ The homepage currently redirects to `/login`.
   reusable section UI lives under `app/lfg/*`.
 - Presence and availability UI now live in shared app components and account
   settings, with current status displayed on profile surfaces and LFG cards.
-- The global authenticated shell now uses a sticky desktop sidebar for primary
-  app navigation, keeps mobile navigation in the top header, and still includes
-  the pending-invite bell, account menu, and smaller toast-style alerts below
-  the main menu.
+- The global authenticated shell now uses a centered desktop content column
+  with a sticky left sidebar for primary app navigation, keeps mobile
+  navigation in the top header, and still includes the pending-invite bell,
+  account menu, and smaller toast-style alerts below the main menu.
+- Desktop LFG browse pages now treat the centered feed panel as one integrated
+  workspace: title, search, create action, active-filter summary, and result
+  status live in the same top band, while contextual filters stay in the right
+  rail styled as a sibling navigation surface rather than a boxed utility
+  panel.
 - Metadata and top-level docs should stay aligned with the current profile-first
   product as the app evolves.
 

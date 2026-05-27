@@ -101,7 +101,7 @@ export default async function ProfilePage({
     ].filter((link): link is NonNullable<typeof link> => Boolean(link));
 
     return (
-        <AuthenticatedWorkspaceShell centerClassName="mx-auto w-full max-w-4xl">
+        <AuthenticatedWorkspaceShell centerClassName="w-full max-w-4xl">
             <div className="grid w-full gap-2.5">
                 {isOwner ? (
                     <AuthMessage message={message} type={messageType} />

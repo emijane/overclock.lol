@@ -107,7 +107,7 @@ function DuosAppendStatus({
 }) {
   if (errorMessage) {
     return (
-      <div className="px-5 pb-6 pt-1 sm:px-6">
+      <div className="px-5 pb-6 pt-0.5 sm:px-6">
         <div className="flex items-center justify-between rounded-[10px] border border-amber-400/20 bg-amber-300/[0.05] px-3 py-2.5">
           <p className="oc-profile-meta text-[11px] text-amber-100/80">{errorMessage}</p>
           <button
@@ -127,15 +127,15 @@ function DuosAppendStatus({
   }
 
   return (
-    <div className="px-5 pb-6 pt-1 sm:px-6">
+    <div className="px-5 pb-6 pt-0.5 sm:px-6">
       <div
         ref={sentinelRef}
         aria-hidden="true"
         className="h-12 rounded-[10px] border border-dashed border-white/[0.05] bg-white/[0.012]"
       />
       {isLoading ? (
-        <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }, (_, index) => (
+        <div className="mt-2 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }, (_, index) => (
             <div
               key={`duos-feed-loading-${index}`}
               className="h-48 animate-pulse rounded-[10px] border border-white/[0.04] bg-white/[0.02]"
@@ -283,7 +283,6 @@ export function DuosInfiniteFeed({
         posts={posts}
         retryHref={retryHref}
         tone={tone}
-        type="duos"
         viewerState={viewerState}
       />
       {!errorMessage && posts.length > 0 ? (
