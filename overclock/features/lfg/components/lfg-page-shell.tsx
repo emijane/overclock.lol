@@ -597,7 +597,8 @@ export async function LFGPageShell({
         />
       </Suspense>
     ) : null;
-  const centerClassName = "w-full max-w-4xl";
+  const centerClassName =
+    useSidebarLayout && isDuosPage ? "w-full max-w-[58rem]" : "w-full max-w-4xl";
 
   return (
     <AuthenticatedWorkspaceShell
@@ -606,7 +607,7 @@ export async function LFGPageShell({
     >
       <AuthMessage message={message} type={messageType} variant="toast" />
         <section
-          className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 flex-col ${isDuosPage ? "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-hidden" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
+          className={`${useSidebarLayout ? `flex min-w-0 flex-1 min-h-0 w-full flex-col ${isDuosPage ? "lg:self-start" : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"}` : ""} ${
             usesDuosFeedTone ? "" : "rounded-[28px]"
           }`}
         >
@@ -638,16 +639,16 @@ export async function LFGPageShell({
                 <PageReveal
                   className={
                     usesDuosFeedTone && shouldShowFeed
-                      ? "rounded-[18px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.028)_0%,rgba(255,255,255,0.012)_100%)] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-5"
+                      ? "rounded-[18px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.028)_0%,rgba(255,255,255,0.012)_100%)] px-5 py-4.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-6 sm:py-5"
                       : ""
                   }
                   delay={0}
                   disabled={!(animateOnLoad && isComposerOnlyPage)}
                 >
                   {usesDuosFeedTone && shouldShowFeed ? (
-                    <div className="space-y-3">
-                      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                        <div className="min-w-0 space-y-2">
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="min-w-0 space-y-2.5">
                           {breadcrumbHref && breadcrumbLabel ? (
                             <Link
                               href={breadcrumbHref}
@@ -689,7 +690,7 @@ export async function LFGPageShell({
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-2 border-t border-white/[0.04] pt-3 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="flex flex-col gap-2.5 border-t border-white/[0.04] pt-3.5 lg:flex-row lg:items-start lg:justify-between">
                         <div className="space-y-2">
                           <p className="oc-profile-meta text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-300">
                             Active filters

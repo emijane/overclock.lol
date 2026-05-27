@@ -92,7 +92,7 @@ export function LFGPostList({
 
   if (errorMessage) {
     return (
-      <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
+      <section className="px-5 pb-6 pt-2 sm:px-6 sm:pb-7 sm:pt-2.5">
         <LFGFeedPlaceholder
           ctaHref={retryHref}
           ctaLabel="Reload Section"
@@ -106,7 +106,7 @@ export function LFGPostList({
 
   if (posts.length === 0) {
     return (
-      <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
+      <section className="px-5 pb-6 pt-2 sm:px-6 sm:pb-7 sm:pt-2.5">
         <LFGFeedPlaceholder
           description={
             hasActiveFilters
@@ -121,12 +121,12 @@ export function LFGPostList({
   }
 
   return (
-    <section className="px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
+    <section className="px-5 pb-6 pt-2 sm:px-6 sm:pb-7 sm:pt-2.5">
       <div
         className={
           layout === "grid-3"
             ? tone === "duos"
-              ? "grid gap-2.5 md:grid-cols-2 lg:grid-cols-3"
+              ? "grid gap-3.5 md:grid-cols-2"
               : "grid gap-3 md:grid-cols-2 lg:grid-cols-3"
             : "grid gap-3"
         }

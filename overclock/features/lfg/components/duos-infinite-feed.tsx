@@ -134,8 +134,8 @@ function DuosAppendStatus({
         className="h-12 rounded-[10px] border border-dashed border-white/[0.05] bg-white/[0.012]"
       />
       {isLoading ? (
-        <div className="mt-2 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }, (_, index) => (
+        <div className="mt-2 grid gap-3 md:grid-cols-2">
+          {Array.from({ length: 2 }, (_, index) => (
             <div
               key={`duos-feed-loading-${index}`}
               className="h-48 animate-pulse rounded-[10px] border border-white/[0.04] bg-white/[0.02]"
@@ -270,7 +270,7 @@ export function DuosInfiniteFeed({
   return (
     <div
       ref={scrollContainerRef}
-      className="flex min-h-0 flex-1 flex-col lg:overflow-y-auto oc-sidebar-scroll"
+      className="flex min-h-0 flex-1 flex-col"
     >
       <LFGPostList
         currentProfileId={currentProfileId}
