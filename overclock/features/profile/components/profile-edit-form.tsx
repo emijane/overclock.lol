@@ -48,7 +48,7 @@ export function ProfileEditForm({ avatarUrl, coverImageUrl, profile }: ProfileEd
 
           <div className="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-end sm:justify-between sm:px-5 sm:py-4">
             <div className="flex items-end gap-3">
-              <div className="h-18 w-18 overflow-hidden rounded-full border-2 border-[#05070b] bg-zinc-800 shadow-[0_10px_22px_rgba(0,0,0,0.26)]">
+              <div className="h-18 w-18 overflow-hidden rounded-full bg-zinc-800 shadow-[0_10px_22px_rgba(0,0,0,0.26)]">
                 <AvatarUploadButton avatarUrl={avatarUrl} initial={initial} />
               </div>
               <div className="pb-1">

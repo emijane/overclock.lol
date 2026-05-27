@@ -42,7 +42,7 @@ function EditorDropdownField({
         <button
           type="button"
           disabled={disabled}
-          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[10px] border bg-white/[0.05] px-3 text-left text-xs outline-none transition ${
+          className={`inline-flex h-9 w-full cursor-pointer items-center justify-between rounded-[10px] border bg-white/[0.05] px-3 text-left text-[12px] outline-none transition ${
             disabled
               ? "cursor-not-allowed border-white/[0.08] text-zinc-600 opacity-70"
               : "border-white/[0.08] text-zinc-100 hover:border-white/[0.12] hover:bg-white/[0.08] focus-visible:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400/30"
@@ -56,9 +56,9 @@ function EditorDropdownField({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)] text-xs"
+        className="z-[120] w-[var(--radix-dropdown-menu-trigger-width)]"
       >
-        <DropdownMenuItem onSelect={() => onSelect("")} className="cursor-pointer text-xs">
+        <DropdownMenuItem onSelect={() => onSelect("")} className="cursor-pointer">
           <span className="flex w-full items-center justify-between gap-3">
             <span>{placeholder}</span>
             {!value ? <CheckIcon className="h-4 w-4 text-sky-400" /> : null}
@@ -68,7 +68,7 @@ function EditorDropdownField({
           <DropdownMenuItem
             key={option}
             onSelect={() => onSelect(option)}
-            className="cursor-pointer text-xs"
+            className="cursor-pointer"
           >
             <span className="flex w-full items-center justify-between gap-3">
               <span>{option}</span>
@@ -121,12 +121,12 @@ export function CompetitiveRoleEditorShell({
     <PageReveal variant="fade">
       <section className="border-t border-white/[0.05] px-5 py-3 sm:px-6 sm:py-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-base font-semibold tracking-[-0.03em] text-zinc-50">
+          <h2 className="font-mono text-[14px] font-semibold text-zinc-50">
             {COMPETITIVE_ROLE_LABELS[role]}
           </h2>
 
           <div className="flex items-center gap-2">
-            <label className="inline-flex h-7 items-center gap-2 px-0.5 text-[11px] font-medium text-zinc-300">
+            <label className="inline-flex h-7 items-center gap-2 px-0.5 font-mono text-[11px] font-medium text-zinc-300">
               <span>Main role</span>
               <Switch
                 checked={mainRoleEnabled}
@@ -144,12 +144,40 @@ export function CompetitiveRoleEditorShell({
                 />
                 <button
                   type="submit"
-                  className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-white/[0.08] hover:text-rose-200"
+                  className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 font-mono text-[11px] font-semibold text-zinc-400 transition hover:border-rose-300/35 hover:bg-white/[0.08] hover:text-rose-200"
                 >
                   Remove
                 </button>
               </form>
             ) : null}
+            <form action={saveCompetitiveRoleProfile}>
+              <input type="hidden" name="role" value={role} />
+              <input
+                type="hidden"
+                name="was_main_role"
+                value={isMainRole ? "true" : "false"}
+              />
+              <input type="hidden" name="rank_tier" value={selectedRankTier} />
+              <input
+                type="hidden"
+                name="rank_division"
+                value={selectedRankDivision}
+              />
+              <input
+                type="hidden"
+                name="hero_ids"
+                value={JSON.stringify(selectedHeroIds)}
+              />
+              {mainRoleEnabled ? (
+                <input type="hidden" name="main_role" value="on" />
+              ) : null}
+              <button
+                type="submit"
+                className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/8 bg-white/5 px-2.5 font-mono text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/12 hover:bg-white/8 hover:text-white"
+              >
+                Save
+              </button>
+            </form>
           </div>
         </div>
 
@@ -180,37 +208,6 @@ export function CompetitiveRoleEditorShell({
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-          <form action={saveCompetitiveRoleProfile}>
-            <input type="hidden" name="role" value={role} />
-            <input
-              type="hidden"
-              name="was_main_role"
-              value={isMainRole ? "true" : "false"}
-            />
-            <input type="hidden" name="rank_tier" value={selectedRankTier} />
-            <input
-              type="hidden"
-              name="rank_division"
-              value={selectedRankDivision}
-            />
-            <input
-              type="hidden"
-              name="hero_ids"
-              value={JSON.stringify(selectedHeroIds)}
-            />
-            {mainRoleEnabled ? (
-              <input type="hidden" name="main_role" value="on" />
-            ) : null}
-
-            <button
-              type="submit"
-              className="inline-flex h-7 cursor-pointer items-center rounded-[10px] border border-white/[0.08] bg-white/[0.05] px-2.5 text-[11px] font-semibold text-zinc-100 transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.08] hover:text-white"
-            >
-              Save
-            </button>
-          </form>
-        </div>
       </section>
     </PageReveal>
   );

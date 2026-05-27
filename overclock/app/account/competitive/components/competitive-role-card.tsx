@@ -36,16 +36,16 @@ export function CompetitiveRoleCard({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
-            <h2 className="text-[13px] font-semibold tracking-[-0.01em] text-zinc-100">
+            <h2 className="font-mono text-[13px] font-semibold text-zinc-100">
               {COMPETITIVE_ROLE_LABELS[role]}
             </h2>
             {isMainRole ? (
-              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-white/50">
+              <span className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-white/50">
                 Main role
               </span>
             ) : null}
           </div>
-          <div className="mt-0.5 flex min-h-4 items-center gap-1 text-[10px] font-medium text-white/65">
+          <div className="mt-0.5 flex min-h-4 items-center gap-1 font-mono text-[10px] font-medium text-white/65">
             {rankIconSrc && roleProfile ? (
               <span className="relative h-3 w-3 shrink-0">
                 <Image
@@ -99,7 +99,7 @@ export function CompetitiveRoleCard({
             ))}
           </div>
         ) : (
-          <p className="pt-0.5 text-sm font-medium text-zinc-600">
+          <p className="pt-0.5 font-mono text-[12px] font-medium text-zinc-600">
             No heroes selected
           </p>
         )}
