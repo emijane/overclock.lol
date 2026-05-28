@@ -1,4 +1,4 @@
-import { PageContainer } from "@/components/app-shell/page-container";
+import { AuthenticatedWorkspaceShell } from "@/components/app-shell/authenticated-workspace-shell";
 
 function SkeletonBlock({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-2xl bg-white/[0.06] ${className}`} />;
@@ -6,6 +6,223 @@ function SkeletonBlock({ className }: { className: string }) {
 
 type LFGPageLoadingTone = "default" | "duos";
 type LFGFeedLoadingVariant = "default" | "duos" | "stacks";
+
+function DuosFeedCardSkeleton() {
+  return (
+    <div className="rounded-[12px] oc-card-lift">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-transparent">
+        <SkeletonBlock className="h-14 w-full rounded-none bg-white/[0.05]" />
+        <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
+          <div className="absolute left-3 top-0">
+            <SkeletonBlock className="-mt-[1.5rem] h-[48px] w-[48px] rounded-[10px] bg-white/[0.08]" />
+          </div>
+          <div className="absolute right-3 top-2 flex flex-wrap justify-end gap-1">
+            <SkeletonBlock className="h-4.5 w-12 rounded-[5px]" />
+            <SkeletonBlock className="h-4.5 w-14 rounded-[5px]" />
+            <SkeletonBlock className="h-4.5 w-7 rounded-[5px]" />
+          </div>
+
+          <div className="min-w-0 pt-3.5">
+            <div className="min-w-0 pt-2.5">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
+                <SkeletonBlock className="h-4 w-24" />
+                <SkeletonBlock className="h-3 w-16" />
+                <SkeletonBlock className="h-4 w-12 rounded-[6px]" />
+              </div>
+              <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                <SkeletonBlock className="h-3.5 w-3.5 rounded-full" />
+                <SkeletonBlock className="h-3 w-14" />
+                <SkeletonBlock className="h-3 w-10" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-1 min-w-0">
+            <SkeletonBlock className="h-4 w-full max-w-[17rem]" />
+            <SkeletonBlock className="mt-2 h-4 w-full max-w-[14rem]" />
+          </div>
+
+          <div className="mt-auto flex items-end justify-between gap-3 pt-2.5">
+            <div className="flex flex-wrap gap-1.5">
+              <SkeletonBlock className="h-8 w-8 rounded-[8px]" />
+              <SkeletonBlock className="h-8 w-8 rounded-[8px]" />
+              <SkeletonBlock className="h-8 w-8 rounded-[8px]" />
+            </div>
+            <SkeletonBlock className="h-7 w-22 shrink-0 rounded-[10px]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StacksFeedCardSkeleton() {
+  return (
+    <div className="rounded-[12px] oc-card-lift">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[11px] bg-transparent">
+        <SkeletonBlock className="h-14 w-full rounded-none bg-white/[0.05]" />
+        <div className="relative z-10 flex flex-1 flex-col px-3 pb-3 pt-2">
+          <div className="absolute right-3 top-2 flex flex-wrap justify-end gap-1">
+            <SkeletonBlock className="h-4.5 w-12 rounded-[5px]" />
+            <SkeletonBlock className="h-4.5 w-16 rounded-[5px]" />
+            <SkeletonBlock className="h-4.5 w-8 rounded-[5px]" />
+          </div>
+
+          <div className="min-w-0 pt-1.5">
+            <SkeletonBlock className="-mt-[1.5rem] h-[48px] w-[48px] rounded-[10px] bg-white/[0.08]" />
+            <div className="min-w-0 pt-1.5">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
+                <SkeletonBlock className="h-4 w-24" />
+                <SkeletonBlock className="h-3 w-16" />
+                <SkeletonBlock className="h-4 w-12 rounded-[6px]" />
+              </div>
+              <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                <SkeletonBlock className="h-3.5 w-3.5 rounded-full" />
+                <SkeletonBlock className="h-3 w-14" />
+                <SkeletonBlock className="h-3 w-10" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-1 min-w-0">
+            <SkeletonBlock className="h-4 w-full max-w-[16rem]" />
+            <SkeletonBlock className="mt-2 h-4 w-full max-w-[12rem]" />
+          </div>
+
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <SkeletonBlock className="h-4 w-16 rounded-[5px]" />
+            <SkeletonBlock className="h-4 w-18 rounded-[5px]" />
+          </div>
+
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center">
+                <SkeletonBlock className="h-4.5 w-4.5 rounded-[6px]" />
+                <SkeletonBlock className="-ml-1 h-4.5 w-4.5 rounded-[6px]" />
+                <SkeletonBlock className="-ml-1 h-4.5 w-4.5 rounded-[6px]" />
+              </div>
+              <SkeletonBlock className="h-3.5 w-10" />
+            </div>
+            <SkeletonBlock className="h-7 w-28 shrink-0 rounded-[10px]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DefaultFeedCardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
+        <SkeletonBlock className="h-20 w-full rounded-none bg-white/[0.05]" />
+        <div className="flex flex-1 flex-col px-4 pb-3.5 pt-2">
+          <div className="flex items-start justify-between gap-3">
+            <SkeletonBlock className="-mt-[1.5rem] h-[84px] w-[84px] shrink-0 rounded-full bg-white/[0.08]" />
+            <div className="flex flex-col items-end gap-1 pt-1">
+              <SkeletonBlock className="h-6 w-20 rounded-full" />
+              <SkeletonBlock className="h-3 w-14" />
+            </div>
+          </div>
+          <div className="mt-2 min-w-0">
+            <SkeletonBlock className="h-4 w-24" />
+            <SkeletonBlock className="mt-2 h-3 w-16" />
+          </div>
+          <div className="mt-2 min-w-0">
+            <SkeletonBlock className="h-4 w-full max-w-[16rem]" />
+            <SkeletonBlock className="mt-2 h-4 w-full max-w-[13rem]" />
+          </div>
+          <div className="mt-auto flex gap-2 pt-3">
+            <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+            <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+            <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SidebarSkeleton() {
+  return (
+    <div className="flex min-w-0 flex-col gap-4 px-2 py-1">
+      <div className="space-y-2 pb-3">
+        <div className="flex items-center justify-between gap-2">
+          <SkeletonBlock className="h-3 w-18 rounded-full" />
+          <SkeletonBlock className="h-3 w-10 rounded-full" />
+        </div>
+        <SkeletonBlock className="h-3 w-14 rounded-full" />
+        <div className="flex flex-wrap gap-1.5">
+          <SkeletonBlock className="h-6 w-18 rounded-[8px]" />
+          <SkeletonBlock className="h-6 w-16 rounded-[8px]" />
+        </div>
+      </div>
+
+      {[0, 1, 2, 3, 4].map((item) => (
+        <div key={item} className="space-y-2 border-t border-white/[0.03] pt-3 first:border-t-0 first:pt-0">
+          <div className="flex items-center justify-between px-2.5">
+            <SkeletonBlock className="h-3 w-14 rounded-full" />
+            <SkeletonBlock className="h-3 w-3 rounded-full" />
+          </div>
+          <div className="space-y-1">
+            <SkeletonBlock className="h-8 w-full rounded-[10px]" />
+            <SkeletonBlock className="h-8 w-full rounded-[10px]" />
+            <SkeletonBlock className="h-8 w-full rounded-[10px]" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DuosMobileFilterSkeleton() {
+  return (
+    <section className="space-y-2.5 px-5 py-1.5 sm:px-6 sm:py-2">
+      <div className="flex items-center justify-between rounded-[12px] border border-white/[0.06] bg-white/[0.025] px-3 py-2.5">
+        <div className="flex items-center gap-2">
+          <SkeletonBlock className="h-7 w-7 rounded-[10px]" />
+          <div className="space-y-1">
+            <SkeletonBlock className="h-3.5 w-16" />
+            <SkeletonBlock className="h-2.5 w-12 rounded-full" />
+          </div>
+        </div>
+        <SkeletonBlock className="h-4 w-4 rounded-full" />
+      </div>
+      <SkeletonBlock className="h-3 w-20 rounded-full" />
+    </section>
+  );
+}
+
+function StacksMobileFilterSkeleton() {
+  return (
+    <section className="px-5 py-1.5 sm:px-6 sm:py-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <SkeletonBlock className="h-7.5 w-18 rounded-[10px]" />
+          <SkeletonBlock className="h-7.5 w-20 rounded-[10px]" />
+          <SkeletonBlock className="h-7.5 w-18 rounded-[10px]" />
+          <SkeletonBlock className="h-7.5 w-19 rounded-[10px]" />
+          <SkeletonBlock className="h-7.5 w-18 rounded-[10px]" />
+          <SkeletonBlock className="h-7.5 w-18 rounded-[10px]" />
+        </div>
+        <SkeletonBlock className="h-3.5 w-28 rounded-full" />
+      </div>
+    </section>
+  );
+}
+
+function getFeedSkeletonGridClassName(
+  feedVariant: LFGFeedLoadingVariant,
+  tone: LFGPageLoadingTone
+) {
+  if (feedVariant === "duos" || feedVariant === "stacks") {
+    return tone === "duos"
+      ? "grid gap-3.5 md:grid-cols-2"
+      : "grid gap-3 md:grid-cols-2 lg:grid-cols-3";
+  }
+
+  return "grid gap-3 md:grid-cols-2 xl:grid-cols-4";
+}
 
 export function LFGPageLoading({
   breadcrumb = false,
@@ -31,280 +248,150 @@ export function LFGPageLoading({
   const usesDuosTone = tone === "duos";
   const usesSharedLFGFeedLayout =
     !composerOnly && (feedVariant === "duos" || feedVariant === "stacks");
-  const showsFeedSearch = usesSharedLFGFeedLayout;
-  const showsSidebar = usesSharedLFGFeedLayout;
-  const showsFeedFilters = usesSharedLFGFeedLayout;
-  const usesThreeColumnFeed = feedVariant === "stacks";
+  const isDuosFeed = feedVariant === "duos";
+  const isStacksFeed = feedVariant === "stacks";
+  const centerClassName =
+    usesSharedLFGFeedLayout && isDuosFeed ? "w-full max-w-[58rem]" : "w-full max-w-4xl";
+  const sectionClassName = usesSharedLFGFeedLayout
+    ? `flex min-h-0 w-full flex-1 min-w-0 flex-col ${
+        isDuosFeed
+          ? "lg:self-start"
+          : "lg:self-start lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)]"
+      }`
+    : `${usesDuosTone ? "" : "rounded-[28px]"} flex min-h-0 w-full flex-1 min-w-0 flex-col`;
+  const showsCreateCta = composerCta || usesSharedLFGFeedLayout;
 
   return (
-    <main
-      className={`relative px-4 text-zinc-100 sm:px-6 ${
-        composerOnly
-          ? "flex min-h-0 flex-col pb-0 pt-2 sm:pt-3"
-          : usesDuosTone
-            ? "flex min-h-0 flex-1 flex-col py-6 sm:py-8"
-            : "flex min-h-0 flex-1 flex-col py-5 sm:py-7"
-      }`}
+    <AuthenticatedWorkspaceShell
+      balanceDesktopCenter={!usesSharedLFGFeedLayout}
+      centerClassName={centerClassName}
+      maxWidthClassName={usesDuosTone ? "max-w-none" : "max-w-[96rem]"}
+      rightRail={usesSharedLFGFeedLayout ? <SidebarSkeleton /> : undefined}
     >
-      {usesDuosTone ? (
-        <>
-          <div aria-hidden="true" className="oc-atmosphere-bg pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-dots-primary pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-dots-secondary pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-spotlight pointer-events-none absolute inset-0" />
-          <div aria-hidden="true" className="oc-atmosphere-vignette pointer-events-none absolute inset-0" />
-        </>
-      ) : (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-68 [mask-image:radial-gradient(circle_at_34%_12%,black_0,black_12%,transparent_28%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,242,254,0.68)_0.6px,transparent_0.95px)] bg-[length:11px_11px] opacity-64 [mask-image:radial-gradient(circle_at_72%_62%,black_0,black_10%,transparent_24%)]"
-          />
-        </>
-      )}
-      <PageContainer
-        className={`relative z-10 flex ${
-          composerOnly
-            ? "flex-col gap-2"
-            : showsSidebar
-              ? "min-h-full flex-1 items-stretch gap-4 xl:gap-5"
-              : "min-h-full flex-1 flex-col gap-4"
-        }`}
-        maxWidthClassName={
-          composerOnly ? "max-w-4xl" : usesDuosTone ? "max-w-none" : "max-w-[96rem]"
-        }
-      >
-        {showsSidebar ? (
-          <aside className="hidden min-h-full w-56 shrink-0 self-stretch lg:block">
-            <div className="h-full overflow-hidden rounded-[10px] border border-white/[0.04] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] p-3">
-              <SkeletonBlock className="h-8 w-28 rounded-[10px]" />
-              <div className="mt-4 space-y-2.5">
-                <SkeletonBlock className="h-9 w-full rounded-[10px]" />
-                <SkeletonBlock className="h-9 w-full rounded-[10px]" />
-                <SkeletonBlock className="h-9 w-full rounded-[10px]" />
-              </div>
-              <div className="mt-5 border-t border-white/[0.05] pt-4">
-                <SkeletonBlock className="h-3 w-16" />
-                <div className="mt-3 space-y-2">
-                  <SkeletonBlock className="h-8 w-full rounded-[10px]" />
-                  <SkeletonBlock className="h-8 w-full rounded-[10px]" />
-                </div>
-              </div>
-            </div>
-          </aside>
-        ) : null}
-        <section
+      <section className={sectionClassName}>
+        <div
           className={
             usesDuosTone
-              ? showsSidebar
-                ? "flex min-h-full min-w-0 flex-1 flex-col"
-                : "flex min-h-full flex-1 flex-col oc-profile-shell rounded-[12px] bg-[#111111] p-px"
-              : showsSidebar
-                ? "flex min-h-full flex-1 flex-col rounded-[28px]"
-                : "flex min-h-full flex-1 flex-col rounded-[28px]"
+              ? "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_28%,rgba(7,7,9,0.96)_100%)] shadow-[0_16px_36px_rgba(0,0,0,0.22)] sm:rounded-[10px] sm:border-0 sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] sm:shadow-none"
+              : "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px]"
           }
         >
-          <div
-            className={
-              usesDuosTone
-                ? showsSidebar
-                  ? "flex min-h-full flex-1 flex-col overflow-hidden rounded-[16px] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.018)_0%,rgba(255,255,255,0.008)_28%,rgba(7,7,9,0.96)_100%)] shadow-[0_16px_36px_rgba(0,0,0,0.22)] sm:rounded-[10px] sm:border-0 sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)] sm:shadow-none"
-                  : "flex min-h-full flex-1 flex-col overflow-hidden rounded-[11px] bg-[#090909]"
-                : "flex min-h-full flex-1 flex-col overflow-hidden rounded-[28px]"
-            }
+          <header
+            className={`relative z-10 shrink-0 px-5 sm:px-6 ${
+              composerOnly
+                ? "py-3 sm:py-4"
+                : usesDuosTone
+                  ? usesSharedLFGFeedLayout
+                    ? "border-b border-white/[0.04] py-2.5 sm:py-3"
+                    : "py-3 sm:py-4"
+                  : "py-5 sm:py-7"
+            }`}
           >
-            <header
-              className={`px-5 sm:px-6 ${
+            <div
+              className={
                 composerOnly
-                  ? "py-3 sm:py-4"
+                  ? "space-y-3"
                   : usesDuosTone
-                    ? showsSidebar
-                      ? "py-2 sm:py-3"
-                      : "py-4 sm:py-5"
-                    : "py-5 sm:py-6"
-              }`}
+                    ? usesSharedLFGFeedLayout
+                      ? "space-y-2"
+                      : "space-y-3"
+                    : "space-y-5"
+              }
             >
-              <div className={composerCta ? "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" : undefined}>
-                <div>
-                  {breadcrumb ? (
-                    <SkeletonBlock className="h-3 w-24 rounded-full" />
-                  ) : null}
-                  <h1
-                    className={`${breadcrumb ? "mt-3" : ""} ${
-                      usesDuosTone
-                        ? showsSidebar
-                          ? "oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]"
-                          : "oc-profile-display text-[34px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[40px]"
-                        : `font-semibold tracking-[-0.04em] text-zinc-50 ${
-                            composerOnly ? "text-4xl sm:text-5xl" : "text-2xl sm:text-3xl"
-                          }`
-                    }`}
-                  >
-                    {title}
-                  </h1>
-                  {showDescription ? (
-                    <>
-                      <SkeletonBlock className="mt-3 h-4 w-full max-w-2xl" />
-                      <SkeletonBlock className="mt-2 h-4 w-full max-w-xl" />
-                    </>
-                  ) : null}
-                  {helperText ? (
-                    <SkeletonBlock className="mt-2 h-4 w-full max-w-lg" />
-                  ) : null}
-                </div>
-                {showsFeedSearch ? (
-                  <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
+              {usesDuosTone && usesSharedLFGFeedLayout ? (
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 space-y-2">
+                    {breadcrumb ? (
+                      <SkeletonBlock className="h-3 w-24 rounded-full" />
+                    ) : null}
+                    <div className="space-y-1">
+                      <h1 className="oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]">
+                        {title}
+                      </h1>
+                      {showDescription ? (
+                        <SkeletonBlock className="h-3.5 w-full max-w-xl" />
+                      ) : null}
+                      {helperText ? <SkeletonBlock className="h-3.5 w-full max-w-lg" /> : null}
+                    </div>
+                  </div>
+                  <div className="flex w-full flex-col items-stretch gap-2 sm:flex-row sm:items-center lg:w-auto lg:justify-end">
                     <SkeletonBlock className="h-8 w-full rounded-[10px] sm:w-[18rem]" />
-                    {feedVariant === "duos" ? (
-                      <SkeletonBlock className="h-8 w-28 shrink-0 rounded-[10px]" />
+                    {showsCreateCta ? (
+                      <SkeletonBlock className="h-8 w-30 shrink-0 rounded-[10px]" />
                     ) : null}
                   </div>
-                ) : composerCta ? (
-                  <SkeletonBlock className="h-9 w-28 shrink-0 rounded-full" />
-                ) : null}
-              </div>
-
-              {composerOnly ? (
-                <section className="mt-4">
-                  <div className="oc-surface-panel rounded-[24px] px-4 py-4 sm:px-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <SkeletonBlock className="h-4 w-20" />
-                      <div className="flex items-center gap-2">
-                        <SkeletonBlock className="h-8 w-24 rounded-full" />
-                        <SkeletonBlock className="h-8 w-28 rounded-full" />
-                      </div>
+                </div>
+              ) : (
+                <div>
+                  <div
+                    className={
+                      usesDuosTone
+                        ? "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+                        : "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+                    }
+                  >
+                    <div className={composerOnly ? "space-y-2" : "space-y-3"}>
+                      {breadcrumb ? <SkeletonBlock className="h-3 w-24 rounded-full" /> : null}
+                      <h1
+                        className={
+                          usesDuosTone
+                            ? "oc-profile-display text-[20px] font-bold tracking-[-0.03em] text-zinc-50 sm:text-[24px]"
+                            : `font-semibold tracking-[-0.075em] text-zinc-50 ${
+                                composerOnly ? "text-4xl sm:text-5xl" : "text-5xl sm:text-6xl"
+                              }`
+                        }
+                      >
+                        {title}
+                      </h1>
                     </div>
-                    <SkeletonBlock className="mt-2 h-[54px] w-full rounded-[18px]" />
-
-                    <SkeletonBlock className="mt-4 h-4 w-16" />
-                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                      <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
-                      <SkeletonBlock className="h-[56px] w-full rounded-[16px]" />
-                    </div>
-
-                    <SkeletonBlock className="mt-4 h-4 w-10" />
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <SkeletonBlock className="h-8 w-20 rounded-full" />
-                      <SkeletonBlock className="h-8 w-18 rounded-full" />
-                      <SkeletonBlock className="h-8 w-24 rounded-full" />
-                    </div>
-
-                    <SkeletonBlock className="mt-4 h-4 w-20" />
-                    <SkeletonBlock className="mt-2 h-3 w-44" />
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <SkeletonBlock className="h-8 w-20 rounded-full" />
-                      <SkeletonBlock className="h-8 w-18 rounded-full" />
-                      <SkeletonBlock className="h-8 w-24 rounded-full" />
-                      <SkeletonBlock className="h-8 w-14 rounded-full border border-dashed border-white/10 bg-white/[0.03]" />
-                    </div>
+                    {showsCreateCta ? (
+                      <SkeletonBlock className="h-9 w-32 shrink-0 rounded-[10px]" />
+                    ) : null}
                   </div>
-                </section>
-              ) : null}
-            </header>
-
-            {composerOnly ? null : (
-              <div className="flex min-h-0 flex-1 flex-col">
-                {showsFeedFilters ? (
-                  <div className="lg:hidden">
-                    <section className="px-5 pb-4 sm:px-6">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <SkeletonBlock className="h-8 w-22 rounded-full" />
-                        <SkeletonBlock className="h-8 w-24 rounded-full" />
-                        <SkeletonBlock className="h-8 w-20 rounded-full" />
-                        <SkeletonBlock className="h-8 w-24 rounded-full" />
-                      </div>
-                    </section>
-                  </div>
-                ) : null}
-                {showsFeedFilters && !composerCta ? null : composerCta ? (
-                  <section className="px-5 py-1.5 sm:px-6 sm:py-2">
-                    <div className="mb-4">
-                      <div className={`flex items-center gap-3 px-4 py-3 ${
-                        usesDuosTone
-                          ? "rounded-[12px] border border-white/[0.06] bg-white/[0.02]"
-                          : "rounded-[18px] border border-white/[0.07] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.04)]"
-                      }`}>
-                        <SkeletonBlock className="h-9 w-9 rounded-full" />
-                        <SkeletonBlock className="h-4 w-full max-w-md" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
-                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
-                        <SkeletonBlock className="h-7.5 w-22 rounded-full" />
-                        <SkeletonBlock className="h-7.5 w-24 rounded-full" />
-                      </div>
-                      <SkeletonBlock className="h-3.5 w-28" />
-                    </div>
-                  </section>
-                ) : (
-                  <section className="border-t border-white/10 px-5 py-5 sm:px-6">
-                    <div className="rounded-[18px] border border-dashed border-white/12 bg-[#05070b] px-4 py-4">
-                      <SkeletonBlock className="h-4 w-20" />
-                      <SkeletonBlock className="mt-3 h-4 w-full max-w-md" />
-                    </div>
-                  </section>
-                )}
-
-                <section className="flex-1 border-t border-white/10 px-5 py-5 sm:px-6 sm:py-6">
-                  {feedLoading === "cards" ? (
-                    <div className={`grid gap-3 md:grid-cols-2 ${usesThreeColumnFeed ? "xl:grid-cols-3" : "xl:grid-cols-4"}`}>
-                      {[0, 1, 2, 3, ...(usesThreeColumnFeed ? [4, 5] : [])].map((item) => (
-                        <div
-                          key={item}
-                          className="overflow-hidden rounded-[22px] border border-[#12161d] bg-[#05070b] shadow-[0_16px_36px_rgba(0,0,0,0.26)]"
-                        >
-                          <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-[21px] bg-[#05070b] ring-1 ring-white/[0.05]">
-                            <SkeletonBlock className="h-20 w-full rounded-none bg-white/[0.05]" />
-                            <div className="relative flex flex-1 flex-col px-4 pb-3.5 pt-2">
-                              <div className="absolute left-4 top-0">
-                                <SkeletonBlock className="h-[84px] w-[84px] rounded-full border-[3px] border-[#05070b] bg-white/[0.08]" />
-                              </div>
-                              <div className="absolute right-4 top-2.5 flex flex-col items-end gap-1">
-                                <SkeletonBlock className="h-6 w-20 rounded-full" />
-                                <SkeletonBlock className="h-3 w-14" />
-                              </div>
-                              <div className="min-w-0 pt-8">
-                                <SkeletonBlock className="h-4 w-24" />
-                                <SkeletonBlock className="mt-2 h-3 w-16" />
-                              </div>
-                              <div className="mt-2 min-w-0">
-                                <SkeletonBlock className="h-4 w-full max-w-[16rem]" />
-                                <SkeletonBlock className="mt-2 h-4 w-full max-w-[13rem]" />
-                                <div className="mt-3 flex items-center gap-2">
-                                  <SkeletonBlock className="h-4 w-4 rounded-full" />
-                                  <SkeletonBlock className="h-3.5 w-28" />
-                                </div>
-                              </div>
-                              {usesThreeColumnFeed ? (
-                                <div className="mt-4 flex flex-wrap gap-2">
-                                  <SkeletonBlock className="h-7.5 w-18 rounded-full" />
-                                  <SkeletonBlock className="h-7.5 w-18 rounded-full" />
-                                  <SkeletonBlock className="h-7.5 w-18 rounded-full" />
-                                </div>
-                              ) : null}
-                              <div className="mt-auto flex gap-2 pt-3">
-                                <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
-                                <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
-                                <SkeletonBlock className="h-8 w-8 rounded-[10px]" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  {showDescription ? (
+                    <SkeletonBlock className="mt-3 h-4 w-full max-w-xl" />
                   ) : null}
-                </section>
-              </div>
-            )}
-          </div>
-        </section>
-      </PageContainer>
-    </main>
+                  {helperText ? <SkeletonBlock className="mt-2 h-4 w-full max-w-lg" /> : null}
+                </div>
+              )}
+            </div>
+          </header>
+
+          {composerOnly ? null : (
+            <div
+              className={
+                usesDuosTone
+                  ? "flex min-h-0 flex-1 flex-col border-t border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.014)_0%,rgba(255,255,255,0.006)_100%)] sm:border-t sm:border-white/[0.03] sm:bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0.006)_100%)]"
+                  : "flex min-h-0 flex-1 flex-col"
+              }
+            >
+              {usesSharedLFGFeedLayout ? (
+                <div className="lg:hidden">
+                  {isDuosFeed ? <DuosMobileFilterSkeleton /> : <StacksMobileFilterSkeleton />}
+                </div>
+              ) : null}
+
+              <section className="flex-1 px-5 pb-6 pt-2 sm:px-6 sm:pb-7 sm:pt-2.5">
+                {feedLoading === "cards" ? (
+                  <div className={getFeedSkeletonGridClassName(feedVariant, tone)}>
+                    {[0, 1, 2, 3].map((item) => (
+                      <div key={item}>
+                        {isStacksFeed ? (
+                          <StacksFeedCardSkeleton />
+                        ) : isDuosFeed ? (
+                          <DuosFeedCardSkeleton />
+                        ) : (
+                          <DefaultFeedCardSkeleton />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            </div>
+          )}
+        </div>
+      </section>
+    </AuthenticatedWorkspaceShell>
   );
 }
