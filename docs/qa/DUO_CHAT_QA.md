@@ -60,5 +60,7 @@
 - Sidebar navigation includes `Social`.
 - `/connections` still behaves as before.
 - Direct thread loads do not depend on inbox-wide lock recomputation work.
+- New or renamed chat RPC migrations include a PostgREST schema reload step, and direct thread routes still load after deploy.
+- If a chat RPC was added after an older migration already shipped, a forward-only repair migration exists so stale local databases do not keep falling through to thread 404s.
 - `npm run verify` passes.
 - Production build passes.

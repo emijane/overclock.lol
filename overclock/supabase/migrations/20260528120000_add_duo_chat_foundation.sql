@@ -1458,3 +1458,11 @@ grant execute on function public.get_social_threads_dto() to authenticated;
 grant execute on function public.get_social_thread_dto(uuid) to authenticated;
 grant execute on function public.get_chat_thread_messages(uuid, timestamptz, uuid, integer) to authenticated;
 grant execute on function public.send_chat_message(uuid, text) to authenticated;
+
+do $$
+begin
+  perform pg_notify('pgrst', 'reload schema');
+exception
+  when others then null;
+end;
+$$;

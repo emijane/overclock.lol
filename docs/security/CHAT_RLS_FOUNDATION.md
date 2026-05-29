@@ -55,6 +55,12 @@ If any of those checks fail, the message is not inserted.
 - V1 does not subscribe to an inbox-wide channel.
 - The client should treat subscription error/closed states as a thread refresh signal so access revocation after block/archive is handled intentionally.
 
+## RPC Migration Contract
+
+- New chat RPCs must trigger a PostgREST schema reload in the migration that introduces or renames them.
+- If an earlier migration has already been applied in developer or shared environments, repair missing chat RPCs with a new forward-only migration instead of editing the old migration and expecting it to replay.
+- Direct thread routes should fail closed if schema cache drift temporarily hides a required RPC.
+
 ## Access Matrix
 
 - Connected Duo pair:

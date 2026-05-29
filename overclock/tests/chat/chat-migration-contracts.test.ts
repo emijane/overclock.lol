@@ -10,6 +10,13 @@ const migrationPath = path.join(
   "20260528120000_add_duo_chat_foundation.sql"
 );
 const migrationSql = readFileSync(migrationPath, "utf8");
+const repairMigrationPath = path.join(
+  process.cwd(),
+  "supabase",
+  "migrations",
+  "20260528130000_repair_duo_chat_thread_rpc.sql"
+);
+const repairMigrationSql = readFileSync(repairMigrationPath, "utf8");
 
 function getFunctionBody(functionName: string) {
   const startMarker = `create or replace function public.${functionName}`;
@@ -89,4 +96,19 @@ test("get_chat_thread_messages avoids lock refresh work on the pagination path",
     /refresh_duo_chat_thread_lock_state/i
   );
   assert.match(functionBody, /limit v_limit \+ 1/i);
+});
+
+test("duo chat thread RPC repair migration re-registers the direct thread DTO", () => {
+  assert.match(
+    repairMigrationSql,
+    /create or replace function public\.get_social_thread_dto\(\s*p_thread_id uuid/i
+  );
+  assert.match(
+    repairMigrationSql,
+    /grant execute on function public\.get_social_thread_dto\(uuid\) to authenticated;/i
+  );
+  assert.match(
+    repairMigrationSql,
+    /pg_notify\('pgrst', 'reload schema'\)/i
+  );
 });

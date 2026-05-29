@@ -11,6 +11,23 @@ import type {
 } from "@/lib/chat/chat-types";
 import { createClient } from "@/lib/supabase/server";
 
+function isMissingRpcError(
+  error: unknown,
+  expectedFunctionName: string
+): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as Record<string, unknown>;
+
+  return (
+    candidate.code === "PGRST202" &&
+    typeof candidate.message === "string" &&
+    candidate.message.includes(expectedFunctionName)
+  );
+}
+
 function asRecord(value: unknown) {
   return value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -141,6 +158,17 @@ export async function getSocialThreadRecord(threadId: string) {
   });
 
   if (error) {
+    if (isMissingRpcError(error, "public.get_social_thread_dto")) {
+      console.error("Duo chat thread RPC is missing from the database schema cache.", {
+        expectedFunction: "public.get_social_thread_dto(uuid)",
+        hint: "Apply the forward-only duo chat RPC repair migration and ensure PostgREST reloads schema metadata.",
+        likelyCause:
+          "A local or shared database applied an earlier duo chat migration before the dedicated thread RPC was added.",
+        threadId,
+      });
+      return null;
+    }
+
     throw error;
   }
 
