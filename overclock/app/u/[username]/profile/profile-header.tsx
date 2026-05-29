@@ -66,7 +66,7 @@ export function ProfileHeader({
 
   return (
     <section className="bg-transparent">
-      <div className="pb-4 sm:pb-5">
+      <div className="pb-2 sm:pb-3">
         <div
           className="relative overflow-hidden px-4 py-3 sm:px-6"
           style={{ aspectRatio: PROFILE_COVER_ASPECT_RATIO }}
@@ -80,7 +80,7 @@ export function ProfileHeader({
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div
-                className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#090909] via-[#090909]/60 to-transparent"
+                className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-[#090909]/50 via-[#090909]/25 to-transparent"
                 aria-hidden="true"
               />
             </>
@@ -145,11 +145,11 @@ export function ProfileHeader({
           </div>
         </div>
 
-        <div className="mt-4 px-4 sm:-mt-9 sm:px-6">
+        <div className="mt-3 px-4 sm:-mt-9 sm:px-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div className="min-w-0 flex-1">
-              <div className="h-3 sm:h-14" aria-hidden="true" />
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="h-2 sm:h-10" aria-hidden="true" />
+              <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                 <h1 className="oc-profile-display text-[28px] font-bold leading-[0.98] tracking-[-0.045em] text-zinc-50 sm:text-[36px]">
                   {displayName}
                 </h1>

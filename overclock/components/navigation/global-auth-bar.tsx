@@ -43,7 +43,7 @@ export function GlobalAuthBar({
   const discoveryLinks = userId ? signedInDiscoveryLinks : guestDiscoveryLinks;
 
   return (
-    <header className="relative z-[70] border-b border-white/[0.06] bg-[rgba(6,6,8,0.72)] px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-[rgba(6,6,8,0.62)] sm:px-6 sm:py-3.5">
+    <header className="relative z-[70] border-b border-white/[0.06] bg-transparent px-4 py-2 sm:px-6 sm:py-2.5">
       <PageContainer
         className="flex items-center justify-between gap-3 sm:gap-4"
         maxWidthClassName="max-w-[120rem]"
