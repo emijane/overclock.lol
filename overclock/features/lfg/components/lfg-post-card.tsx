@@ -39,6 +39,7 @@ function getPostingRoleLabel(role: LFGPost["postingRole"]) {
 
 type LFGPostCardProps = {
   cardClassName?: string;
+  connectedHref?: string | null;
   currentProfileId?: string | null;
   post: LFGPost;
   inviteState?: ProfileInviteState;
@@ -55,6 +56,7 @@ type LFGPostCardProps = {
 
 export function LFGPostCard({
   cardClassName,
+  connectedHref,
   currentProfileId,
   post,
   inviteState = "invite_to_play",
@@ -309,6 +311,7 @@ export function LFGPostCard({
               </div>
               {!isOwner && post.profileId ? (
                 <LFGInviteButton
+                  connectedHref={connectedHref}
                   initialState={inviteState}
                   onInviteSent={onInviteSent}
                   recipientProfileId={post.profileId}

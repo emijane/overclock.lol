@@ -122,6 +122,7 @@ test("update action mapper returns success and fallback errors", () => {
       status: "success",
       inviteId: "invite-2",
       inviteStatus: "declined",
+      threadHref: null,
     }
   );
 

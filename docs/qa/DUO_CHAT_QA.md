@@ -20,6 +20,8 @@
 - Verify oversized messages fail.
 - Verify direct inserts into `chat_messages` fail for authenticated users.
 - Verify rate limiting blocks rapid sends.
+- Verify connected Duo posts expose a `Message` CTA that opens the correct thread.
+- Verify the open thread header shows Discord and Battle.net only when the pair is connected and those values exist.
 
 ## Connection Removal
 
@@ -46,6 +48,7 @@
 - Verify only messages for the active `thread_id` appear.
 - Verify unrelated thread messages do not show up in the open thread.
 - Verify subscription error/closed states trigger a thread refresh path rather than leaving stale access indefinitely.
+- Verify accept-driven connection creation refreshes notification surfaces so new chat deep-links appear without a hard reload.
 
 ## Multi-Tab
 

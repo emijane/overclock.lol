@@ -55,6 +55,18 @@ export function PlayInviteRealtimeRefresh({
         table: "play_invites",
         filter: `sender_profile_id=eq.${currentProfileId}`,
       }, scheduleRefresh)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "profile_connections",
+        filter: `profile_low_id=eq.${currentProfileId}`,
+      }, scheduleRefresh)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "profile_connections",
+        filter: `profile_high_id=eq.${currentProfileId}`,
+      }, scheduleRefresh)
       .subscribe();
 
     return () => {

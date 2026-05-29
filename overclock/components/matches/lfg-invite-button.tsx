@@ -11,6 +11,7 @@ import type {
 } from "@/lib/matches/play-invite-types";
 
 type LFGInviteButtonProps = {
+  connectedHref?: string | null;
   initialState: ProfileInviteState;
   onInviteSent?: (profileId: string) => void;
   recipientProfileId: string;
@@ -20,6 +21,7 @@ type LFGInviteButtonProps = {
 };
 
 export function LFGInviteButton({
+  connectedHref,
   initialState,
   onInviteSent,
   recipientProfileId,
@@ -33,7 +35,9 @@ export function LFGInviteButton({
   const presentation = getInviteActionPresentation({
     inviteState,
     isPending,
+    connectedHref,
     labels: {
+      connected: "Message",
       idle: "Connect",
     },
     viewerState,
@@ -77,6 +81,14 @@ export function LFGInviteButton({
     });
   }
 
+  if (inviteState === "invite_sent") {
+    return (
+      <span className="oc-profile-meta inline-flex h-7 shrink-0 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-semibold text-zinc-500">
+        Invited
+      </span>
+    );
+  }
+
   if (inviteState === "connected") {
     return (
       <span
@@ -87,14 +99,6 @@ export function LFGInviteButton({
         }`}
       >
         Connected
-      </span>
-    );
-  }
-
-  if (inviteState === "invite_sent") {
-    return (
-      <span className="oc-profile-meta inline-flex h-7 shrink-0 items-center rounded-full border border-white/[0.06] bg-white/[0.03] px-3 text-[11px] font-semibold text-zinc-500">
-        Invited
       </span>
     );
   }

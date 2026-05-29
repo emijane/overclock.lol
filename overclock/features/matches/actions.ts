@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getSocialThreadHrefForInviteId } from "@/lib/chat/chat-records";
 import { matchesPerfLog, stacksPerfStart } from "@/lib/dev/perf-log";
 import {
   acceptPlayInviteRecord,
@@ -149,7 +150,14 @@ export async function acceptPlayInvite(input: {
     const tRpc = stacksPerfStart();
     const result = await acceptPlayInviteRecord({ inviteId });
     logMatchesAction("acceptPlayInvite rpc", tRpc, result.updated ? 1 : 0);
-    const actionResult = mapUpdatePlayInviteActionResult(result);
+    const threadHref =
+      result.updated && result.inviteId
+        ? await getSocialThreadHrefForInviteId(result.inviteId).catch(() => null)
+        : null;
+    const actionResult = mapUpdatePlayInviteActionResult({
+      ...result,
+      threadHref,
+    });
 
     if (actionResult.status !== "success") {
       logMatchesAction("acceptPlayInvite total", tAction, 0);
@@ -158,6 +166,7 @@ export async function acceptPlayInvite(input: {
 
     const tRevalidate = stacksPerfStart();
     revalidatePath("/matches");
+    revalidatePath("/social");
     logMatchesAction("acceptPlayInvite revalidate", tRevalidate);
     logMatchesAction("acceptPlayInvite total", tAction, 1);
 

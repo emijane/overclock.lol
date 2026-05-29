@@ -11,7 +11,11 @@ import {
 
 import type { LFGFeedFilters } from "@/lib/lfg/lfg-feed-filters";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
-import type { LFGInviteStateMap, InviteViewerState } from "@/lib/matches/play-invite-types";
+import type {
+  InviteViewerState,
+  LFGInviteStateMap,
+  LFGMessageHrefMap,
+} from "@/lib/matches/play-invite-types";
 
 import type { DuosFeedPageDto } from "../duos-feed";
 import { LFGPostList } from "./lfg-post-list";
@@ -25,6 +29,7 @@ type DuosInfiniteFeedProps = {
   hasActiveFilters?: boolean;
   initialHasMore: boolean;
   initialInviteStates: LFGInviteStateMap;
+  initialMessageHrefs: LFGMessageHrefMap;
   initialNextCursor: DuosFeedPageDto["nextCursor"];
   initialPosts: LFGPost[];
   retryHref?: string;
@@ -156,6 +161,7 @@ export function DuosInfiniteFeed({
   hasActiveFilters = false,
   initialHasMore,
   initialInviteStates,
+  initialMessageHrefs,
   initialNextCursor,
   initialPosts,
   retryHref,
@@ -165,6 +171,7 @@ export function DuosInfiniteFeed({
 }: DuosInfiniteFeedProps) {
   const [posts, setPosts] = useState(initialPosts);
   const [inviteStates, setInviteStates] = useState(initialInviteStates);
+  const [messageHrefs, setMessageHrefs] = useState(initialMessageHrefs);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
   const [appendError, setAppendError] = useState<string | null>(null);
@@ -208,6 +215,10 @@ export function DuosInfiniteFeed({
         setInviteStates((previousStates) => ({
           ...previousStates,
           ...nextPage.inviteStates,
+        }));
+        setMessageHrefs((previousHrefs) => ({
+          ...previousHrefs,
+          ...nextPage.messageHrefs,
         }));
         setHasMore(nextPage.hasMore);
         setNextCursor(nextPage.nextCursor);
@@ -280,6 +291,7 @@ export function DuosInfiniteFeed({
         hasActiveFilters={hasActiveFilters}
         inviteStates={inviteStates}
         layout="grid-3"
+        messageHrefs={messageHrefs}
         posts={posts}
         retryHref={retryHref}
         tone={tone}

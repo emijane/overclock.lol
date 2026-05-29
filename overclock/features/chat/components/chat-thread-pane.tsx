@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeftIcon } from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
+import { SiBattledotnet } from "react-icons/si";
 
 import { loadOlderChatMessages, sendChatMessage } from "@/features/chat/actions";
 import { mergeChatMessages } from "@/lib/chat/chat-message-state";
@@ -178,6 +180,22 @@ export function ChatThreadPane({
             <p className="oc-profile-meta mt-1 text-[11px] leading-5 text-zinc-400">
               {thread.sourcePostTitle ?? "Accepted Duo chat"}
             </p>
+            {thread.peer.discordUsername || thread.peer.battlenetHandle ? (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px]">
+                {thread.peer.discordUsername ? (
+                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-[3px] text-zinc-300">
+                    <FaDiscord className="oc-social-discord h-3 w-3 shrink-0" />
+                    {thread.peer.discordUsername}
+                  </span>
+                ) : null}
+                {thread.peer.battlenetHandle ? (
+                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-[3px] text-zinc-300">
+                    <SiBattledotnet className="oc-social-battlenet h-3 w-3 shrink-0" />
+                    {thread.peer.battlenetHandle}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

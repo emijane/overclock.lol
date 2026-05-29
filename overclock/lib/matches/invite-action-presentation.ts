@@ -10,6 +10,7 @@ type InviteActionPresentation = {
 };
 
 type InviteActionPresentationInput = {
+  connectedHref?: string | null;
   inviteState: ProfileInviteState;
   isPending: boolean;
   labels?: Partial<{
@@ -71,7 +72,7 @@ export function getInviteActionPresentation(
   if (input.inviteState === "connected") {
     return {
       canSendInvite: false,
-      href: null,
+      href: input.connectedHref ?? null,
       label: labels.connected,
     };
   }

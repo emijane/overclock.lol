@@ -51,6 +51,12 @@ Invite-capable surfaces currently use these states:
 
 These states are derived server-side so profiles and LFG cards stay aligned.
 
+On Duo feed cards specifically:
+
+- the public CTA stays `Connect` while unconnected
+- `Invited` remains the pending sent state
+- connected Duo cards can upgrade to `Message` when a Duo chat thread exists
+
 ## Invite Lifecycle
 
 ### Pending
@@ -72,8 +78,11 @@ If the recipient accepts:
 - the invite becomes `accepted`
 - the pair is upserted into `profile_connections`
 - both participants can see the connection in `/matches` and `/connections`
+- both participants can access the accepted Duo chat in `/social`
 - Discord and Battle.net contact info can be shown there
 - both public profiles show the active connection count
+
+Accepted Duo connections can also surface a chat-oriented notification/deep-link so users do not need to discover `/social` manually.
 
 Active connections do not expire.
 

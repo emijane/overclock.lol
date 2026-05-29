@@ -13,7 +13,12 @@ export type SendPlayInviteActionResult =
   | { status: "error"; message: string };
 
 export type UpdatePlayInviteActionResult =
-  | { status: "success"; inviteId: string; inviteStatus: PlayInviteStatus }
+  | {
+      status: "success";
+      inviteId: string;
+      inviteStatus: PlayInviteStatus;
+      threadHref: string | null;
+    }
   | { status: "unauthenticated" }
   | { status: "onboarding_required" }
   | { status: "error"; message: string };
@@ -136,13 +141,14 @@ export function mapSendPlayInviteActionResult(
 }
 
 export function mapUpdatePlayInviteActionResult(
-  result: UpdatePlayInviteResult
+  result: UpdatePlayInviteResult & { threadHref?: string | null }
 ): UpdatePlayInviteActionResult {
   if (result.updated && result.inviteId && result.status) {
     return {
       status: "success",
       inviteId: result.inviteId,
       inviteStatus: result.status,
+      threadHref: result.threadHref ?? null,
     };
   }
 

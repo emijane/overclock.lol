@@ -53,8 +53,10 @@ function parseIdentity(input: {
 
   return {
     avatarUrl: typeof input.avatarUrl === "string" ? input.avatarUrl : null,
+    battlenetHandle: null,
     displayName:
       typeof input.displayName === "string" ? input.displayName : null,
+    discordUsername: null,
     profileId: input.profileId,
     username: typeof input.username === "string" ? input.username : null,
   };
@@ -149,6 +151,35 @@ export async function getSocialThreadsRecord() {
     : [];
 
   return { threads };
+}
+
+export async function getSocialThreadHrefMapByPeerProfileId(peerProfileIds?: string[]) {
+  const { threads } = await getSocialThreadsRecord();
+  const allowedPeerIds = peerProfileIds ? new Set(peerProfileIds) : null;
+  const hrefsByPeerProfileId: Record<string, string> = {};
+
+  for (const thread of threads) {
+    if (thread.threadType !== "duo") {
+      continue;
+    }
+
+    if (allowedPeerIds && !allowedPeerIds.has(thread.peer.profileId)) {
+      continue;
+    }
+
+    if (!hrefsByPeerProfileId[thread.peer.profileId]) {
+      hrefsByPeerProfileId[thread.peer.profileId] = `/social/duos/${thread.id}`;
+    }
+  }
+
+  return hrefsByPeerProfileId;
+}
+
+export async function getSocialThreadHrefForInviteId(inviteId: string) {
+  const { threads } = await getSocialThreadsRecord();
+  const matchingThread = threads.find((thread) => thread.sourceInviteId === inviteId);
+
+  return matchingThread ? `/social/duos/${matchingThread.id}` : null;
 }
 
 export async function getSocialThreadRecord(threadId: string) {

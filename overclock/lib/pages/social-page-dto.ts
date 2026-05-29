@@ -7,10 +7,32 @@ import {
 import type { ChatThreadPageDto, SocialPageDto } from "@/lib/chat/chat-types";
 import { getProfileAvatarUrl } from "@/lib/profiles/profile-media";
 import { getCurrentProfile } from "@/lib/profiles/get-current-profile";
+import { createClient } from "@/lib/supabase/server";
 
 async function getRequiredViewer() {
   const { user, profile } = await getCurrentProfile();
   return { user, profile };
+}
+
+async function getChatPeerContact(profileId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("discord_username, battlenet_handle")
+    .eq("id", profileId)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    battlenetHandle:
+      typeof data?.battlenet_handle === "string" ? data.battlenet_handle : null,
+    discordUsername:
+      typeof data?.discord_username === "string" ? data.discord_username : null,
+  };
 }
 
 export async function getSocialPageDto(): Promise<SocialPageDto | null> {
@@ -57,6 +79,8 @@ export async function getChatThreadPageDto(
     return null;
   }
 
+  const peerContact = await getChatPeerContact(activeThread.peer.profileId);
+
   return {
     threads: threadsResult.threads,
     viewer: {
@@ -67,7 +91,13 @@ export async function getChatThreadPageDto(
       profileId: profile.id,
       username: profile.username,
     },
-    activeThread,
+    activeThread: {
+      ...activeThread,
+      peer: {
+        ...activeThread.peer,
+        ...peerContact,
+      },
+    },
     initialMessages,
   };
 }

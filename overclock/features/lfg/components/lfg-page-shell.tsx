@@ -71,6 +71,7 @@ type LFGPageData = {
   currentStackPostId: string | null;
   hasMorePosts: boolean;
   inviteStates: Record<string, "invite_to_play" | "invite_sent" | "connected">;
+  messageHrefs: Record<string, string>;
   nextCursor: { createdAt: string; id: string } | null;
   posts: import("@/lib/lfg/lfg-post-types").LFGPost[];
   postsErrorMessage: string | null;
@@ -282,6 +283,7 @@ async function getLFGPageData(
       currentStackPostId: null,
       hasMorePosts: dtoResult.dto?.hasMore ?? false,
       inviteStates: dtoResult.dto?.inviteStates ?? {},
+      messageHrefs: dtoResult.dto?.messageHrefs ?? {},
       nextCursor: dtoResult.dto?.nextCursor ?? null,
       posts: dtoResult.dto?.posts ?? [],
       postsErrorMessage: dtoResult.postsErrorMessage,
@@ -303,6 +305,7 @@ async function getLFGPageData(
       currentStackPostId: null,
       hasMorePosts: false,
       inviteStates: {},
+      messageHrefs: {},
       nextCursor: null,
       posts: STACKS_PLACEHOLDER_POSTS,
       postsErrorMessage: null,
@@ -337,6 +340,7 @@ async function getLFGPageData(
       currentStackPostId: null,
       hasMorePosts: false,
       inviteStates: dtoResult.dto?.inviteStates ?? {},
+      messageHrefs: {},
       nextCursor: null,
       posts: dtoResult.dto?.posts ?? [],
       postsErrorMessage: dtoResult.postsErrorMessage,
@@ -364,6 +368,7 @@ async function getLFGPageData(
     currentStackPostId,
     hasMorePosts: false,
     inviteStates: dtoResult.dto?.inviteStates ?? {},
+    messageHrefs: {},
     nextCursor: null,
     posts: dtoResult.dto?.posts ?? [],
     postsErrorMessage: dtoResult.postsErrorMessage,
@@ -437,6 +442,7 @@ export async function LFGPageShell({
     currentStackPostId: null,
     hasMorePosts: false,
     inviteStates: {},
+    messageHrefs: {},
     nextCursor: null,
     posts: [],
     postsErrorMessage: null,
@@ -915,6 +921,7 @@ export async function LFGPageShell({
                     hasActiveFilters={hasActiveLFGFeedFilters(feedFilters)}
                     initialHasMore={pageData.hasMorePosts}
                     initialInviteStates={inviteStates}
+                    initialMessageHrefs={pageData.messageHrefs}
                     initialNextCursor={pageData.nextCursor}
                     initialPosts={pageData.posts}
                     retryHref={sectionHref}

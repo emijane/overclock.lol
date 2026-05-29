@@ -6,7 +6,9 @@ export type ChatThreadLockReason = (typeof CHAT_THREAD_LOCK_REASONS)[number];
 
 export type ChatParticipantIdentity = {
   avatarUrl: string | null;
+  battlenetHandle?: string | null;
   displayName: string | null;
+  discordUsername?: string | null;
   profileId: string;
   username: string | null;
 };

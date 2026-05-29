@@ -6,6 +6,7 @@ import Link from "next/link";
 import type {
   InviteViewerState,
   LFGInviteStateMap,
+  LFGMessageHrefMap,
 } from "@/lib/matches/play-invite-types";
 import type { LFGPost } from "@/lib/lfg/lfg-post-types";
 import { LFGPostCard } from "./lfg-post-card";
@@ -22,6 +23,7 @@ type LFGPostListProps = {
   hasActiveFilters?: boolean;
   inviteStates?: LFGInviteStateMap;
   layout?: "list" | "grid-3";
+  messageHrefs?: LFGMessageHrefMap;
   posts: LFGPost[];
   retryHref?: string;
   stackRequestStates?: StackRequestStateMap;
@@ -78,6 +80,7 @@ export function LFGPostList({
   hasActiveFilters = false,
   inviteStates,
   layout = "list",
+  messageHrefs,
   posts,
   retryHref,
   stackRequestStates,
@@ -160,6 +163,7 @@ export function LFGPostList({
             <div key={post.id}>
               <LFGPostCard
                 cardClassName={cardClassName}
+                connectedHref={messageHrefs?.[post.id] ?? null}
                 currentProfileId={currentProfileId}
                 inviteState={effectiveState}
                 onInviteSent={handleInviteSent}

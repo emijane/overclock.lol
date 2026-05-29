@@ -1,4 +1,5 @@
 import { getProfileBadges } from "@/lib/badges/badges";
+import { getSocialThreadHrefMapByPeerProfileId } from "@/lib/chat/chat-records";
 import type { ProfileBadge } from "@/lib/badges/badge-types";
 import {
   getBlockedProfileIdsForViewer,
@@ -41,6 +42,7 @@ export type LFGFeedCursor = {
 export type ActiveLFGPostsPage = {
   hasMore: boolean;
   inviteStates: import("@/lib/matches/play-invite-types").LFGInviteStateMap;
+  messageHrefs: import("@/lib/matches/play-invite-types").LFGMessageHrefMap;
   nextCursor: LFGFeedCursor | null;
   posts: LFGPost[];
 };
@@ -636,11 +638,41 @@ export async function getActiveLFGPostsPage(input: {
       profileId: post.profileId,
     })),
   });
+  const connectedProfileIds = Array.from(
+    new Set(
+      posts
+        .filter(
+          (post) =>
+            Boolean(post.profileId) && inviteStates[post.id] === "connected"
+        )
+        .map((post) => post.profileId as string)
+    )
+  );
+  const messageHrefsByProfileId =
+    connectedProfileIds.length > 0
+      ? await getSocialThreadHrefMapByPeerProfileId(connectedProfileIds)
+      : {};
   const lastPost = posts.at(-1) ?? null;
+  const messageHrefs = posts.reduce<
+    import("@/lib/matches/play-invite-types").LFGMessageHrefMap
+  >((result, post) => {
+    if (!post.profileId) {
+      return result;
+    }
+
+    const href = messageHrefsByProfileId[post.profileId];
+
+    if (href) {
+      result[post.id] = href;
+    }
+
+    return result;
+  }, {});
 
   return {
     hasMore,
     inviteStates,
+    messageHrefs,
     nextCursor: hasMore && lastPost ? { createdAt: lastPost.createdAt, id: lastPost.id } : null,
     posts,
   };

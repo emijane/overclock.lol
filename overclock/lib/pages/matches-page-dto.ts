@@ -4,7 +4,9 @@ import type {
   MatchParticipant,
   PendingSentPlayInvite,
 } from "@/lib/matches/play-invites";
+import { getActiveProfileConnections } from "@/lib/matches/play-invites";
 import type { IncomingPendingStackRequest } from "@/lib/lfg/stack-request-types";
+import { getSocialThreadHrefMapByPeerProfileId } from "@/lib/chat/chat-records";
 import {
   matchesPerfLog,
   notificationsPerfLog,
@@ -34,10 +36,21 @@ export type MatchesPageDto = {
 };
 
 export type NotificationsMenuDto = {
+  acceptedConnections: AcceptedConnectionNotification[];
   incomingInvites: IncomingPendingPlayInvite[];
   stackRequests: IncomingPendingStackRequest[];
   totalCount: number;
 };
+
+export type AcceptedConnectionNotification = {
+  connectedAt: string;
+  id: string;
+  participant: MatchParticipant;
+  sourcePostTitle: string | null;
+  threadHref: string | null;
+};
+
+const ACCEPTED_CONNECTION_NOTIFICATION_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 function normalizeParticipant(value: unknown): MatchParticipant | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -266,23 +279,45 @@ export async function getNotificationsMenuDto(
 ): Promise<NotificationsMenuDto> {
   const tTotal = stacksPerfStart();
   const tRpc = stacksPerfStart();
-  const data = await callRpc<Record<string, unknown>>(
-    "get_notifications_menu_dto",
-    {
+  const [data, activeConnections] = await Promise.all([
+    callRpc<Record<string, unknown>>("get_notifications_menu_dto", {
       p_current_profile_id: currentProfileId,
-    }
-  );
+    }),
+    getActiveProfileConnections({ currentProfileId, limit: 12 }),
+  ]);
   notificationsPerfLog("getNotificationsMenuDto rpc", tRpc);
   const tNormalize = stacksPerfStart();
   const incomingInvites = normalizePendingInviteArray(
     data.incomingInvites
   ) as IncomingPendingPlayInvite[];
   const stackRequests = normalizeStackRequests(data.stackRequests);
+  const recentConnections = activeConnections.filter((connection) => {
+    const connectedAt = new Date(connection.connectedAt).getTime();
+
+    return (
+      Number.isFinite(connectedAt) &&
+      Date.now() - connectedAt <= ACCEPTED_CONNECTION_NOTIFICATION_WINDOW_MS
+    );
+  });
+  const threadHrefsByPeerProfileId =
+    recentConnections.length > 0
+      ? await getSocialThreadHrefMapByPeerProfileId(
+          recentConnections.map((connection) => connection.participant.profileId)
+        )
+      : {};
+  const acceptedConnections = recentConnections.map((connection) => ({
+    connectedAt: connection.connectedAt,
+    id: connection.id,
+    participant: connection.participant,
+    sourcePostTitle: connection.sourcePostTitle,
+    threadHref: threadHrefsByPeerProfileId[connection.participant.profileId] ?? null,
+  }));
 
   const dto = {
+    acceptedConnections,
     incomingInvites,
     stackRequests,
-    totalCount: incomingInvites.length + stackRequests.length,
+    totalCount: incomingInvites.length + stackRequests.length + acceptedConnections.length,
   };
   notificationsPerfLog("getNotificationsMenuDto normalize", tNormalize, dto.totalCount);
   notificationsPerfLog("getNotificationsMenuDto total", tTotal, dto.totalCount);

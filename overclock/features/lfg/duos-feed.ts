@@ -8,7 +8,10 @@ import {
   getActiveLFGPostsPage,
   type LFGFeedCursor,
 } from "@/lib/lfg/posts/posts-queries";
-import type { LFGInviteStateMap } from "@/lib/matches/play-invite-types";
+import type {
+  LFGInviteStateMap,
+  LFGMessageHrefMap,
+} from "@/lib/matches/play-invite-types";
 import { getProfileHeroPools, type ProfileHeroPools } from "@/lib/heroes/profile-hero-pools";
 
 import { DUOS_PLACEHOLDER_POSTS } from "./dev-fixtures";
@@ -24,6 +27,7 @@ type DuosViewerBundle = {
 export type DuosFeedPageDto = {
   hasMore: boolean;
   inviteStates: LFGInviteStateMap;
+  messageHrefs: LFGMessageHrefMap;
   nextCursor: LFGFeedCursor | null;
   posts: LFGPost[];
 };
@@ -59,6 +63,7 @@ function getFixturePage(input: {
   return {
     hasMore,
     inviteStates: Object.fromEntries(posts.map((post) => [post.id, "invite_to_play"])),
+    messageHrefs: {},
     nextCursor: hasMore && lastPost ? { createdAt: lastPost.createdAt, id: lastPost.id } : null,
     posts,
   };
@@ -118,6 +123,7 @@ export async function getDuosFeedPage(input: {
   return {
     hasMore: page.hasMore,
     inviteStates: page.inviteStates,
+    messageHrefs: page.messageHrefs,
     nextCursor: page.nextCursor,
     posts: page.posts,
   };

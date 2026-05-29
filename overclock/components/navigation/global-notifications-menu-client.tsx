@@ -39,6 +39,9 @@ export function GlobalNotificationsMenuClient({
   initialNotifications,
 }: GlobalNotificationsMenuClientProps) {
   const router = useRouter();
+  const [acceptedConnections, setAcceptedConnections] = useState(
+    initialNotifications?.acceptedConnections ?? []
+  );
   const [invites, setInvites] = useState<IncomingPendingPlayInvite[]>(
     initialNotifications?.incomingInvites ?? []
   );
@@ -54,6 +57,7 @@ export function GlobalNotificationsMenuClient({
   const [isPending, startTransition] = useTransition();
 
   function applyNotificationsDto(dto: NotificationsMenuDto) {
+    setAcceptedConnections(dto.acceptedConnections);
     setInvites(dto.incomingInvites);
     setStackRequests(dto.stackRequests);
     setTotalCount(dto.totalCount);
@@ -178,6 +182,10 @@ export function GlobalNotificationsMenuClient({
         setActiveInviteId(null);
         void refreshNotifications();
         router.refresh();
+
+        if (action === "accept" && result.threadHref) {
+          router.push(result.threadHref);
+        }
         return;
       }
 
@@ -199,7 +207,8 @@ export function GlobalNotificationsMenuClient({
   }
 
   const visibleBadgeLabel = totalCount > 9 ? "9+" : String(totalCount);
-  const hasNotifications = invites.length > 0 || stackRequests.length > 0;
+  const hasNotifications =
+    acceptedConnections.length > 0 || invites.length > 0 || stackRequests.length > 0;
 
   return (
     <>
@@ -238,9 +247,9 @@ export function GlobalNotificationsMenuClient({
             </div>
           ) : !hasNotifications ? (
             <div className="px-5 py-8 text-center">
-              <p className="oc-profile-display text-sm font-medium text-zinc-200">No pending notifications</p>
+              <p className="oc-profile-display text-sm font-medium text-zinc-200">No notifications</p>
               <p className="mt-1.5 text-sm leading-6 text-zinc-500">
-                Invite and stack join requests will show up here.
+                Invite, connection, and stack join updates will show up here.
               </p>
               <Link
                 href="/matches"
@@ -253,7 +262,7 @@ export function GlobalNotificationsMenuClient({
             <>
               <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
                 <p className="oc-profile-meta text-[11px] font-semibold uppercase tracking-[0.18em]">
-                  Pending
+                  Updates
                 </p>
                 <Link
                   href="/matches"
@@ -425,6 +434,77 @@ export function GlobalNotificationsMenuClient({
                             {rowPending ? "..." : "Decline"}
                           </button>
                         </div>
+                      </div>
+                    </li>
+                  );
+                })}
+
+                {acceptedConnections.map((connection, index) => {
+                  const participantHref = connection.participant.username
+                    ? `/u/${connection.participant.username}`
+                    : null;
+                  const isLast = index === acceptedConnections.length - 1;
+
+                  return (
+                    <li
+                      key={connection.id}
+                      className={!isLast ? "border-b border-white/[0.06]" : ""}
+                    >
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-white/[0.02]">
+                        <Avatar className="h-8 w-8 shrink-0 rounded-full">
+                          {connection.participant.avatarUrl ? (
+                            <AvatarImage
+                              src={connection.participant.avatarUrl}
+                              alt={`${connection.participant.displayName ?? connection.participant.username ?? "Player"} avatar`}
+                            />
+                          ) : null}
+                          <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
+                            {getAvatarFallback(
+                              connection.participant.displayName,
+                              connection.participant.username
+                            )}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline gap-1">
+                            {participantHref ? (
+                              <Link
+                                href={participantHref}
+                                className="oc-profile-display text-[13px] font-semibold text-zinc-100 hover:underline"
+                              >
+                                {connection.participant.displayName ??
+                                  connection.participant.username ??
+                                  "Unknown player"}
+                              </Link>
+                            ) : (
+                              <span className="oc-profile-display text-[13px] font-semibold text-zinc-100">
+                                {connection.participant.displayName ??
+                                  connection.participant.username ??
+                                  "Unknown player"}
+                              </span>
+                            )}
+                            {connection.participant.username ? (
+                              <span className="oc-profile-meta truncate text-[11px]">
+                                @{connection.participant.username}
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="oc-profile-meta mt-0.5 truncate text-[11px]">
+                            {connection.sourcePostTitle
+                              ? `${connection.sourcePostTitle} · You can message now`
+                              : "You can message now"}
+                          </p>
+                        </div>
+
+                        {connection.threadHref ? (
+                          <Link
+                            href={connection.threadHref}
+                            className="oc-profile-display inline-flex h-6 shrink-0 items-center rounded-[10px] bg-zinc-100 px-2.5 text-[11px] font-semibold text-black transition hover:bg-white"
+                          >
+                            Message
+                          </Link>
+                        ) : null}
                       </div>
                     </li>
                   );

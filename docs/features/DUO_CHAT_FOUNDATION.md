@@ -9,6 +9,7 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 - `/social` is the signed-in inbox route.
 - `/social/duos/[threadId]` is the accepted Duo chat thread route.
 - Threads are created only from accepted Duo `play_invites`.
+- Connected Duo posts can deep-link straight into the accepted chat thread.
 - The schema is generic enough for future Stack chat:
   - `chat_threads`
   - `chat_participants`
@@ -28,6 +29,7 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 - A thread is ensured when a valid Duo invite is accepted.
 - The accepted invite remains the permanent source identity for that thread.
 - Existing accepted Duo invites are backfilled into chat threads by migration.
+- The accepted thread is the message destination surfaced from connected Duo posts and connection notifications.
 
 ## Participant Lifecycle
 
@@ -80,6 +82,12 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 - Inline thread timestamps use the viewer's local browser timezone.
 - Messages from the current local calendar day show time only.
 - Messages from a previous local day show a compact date, with the year added for prior-year messages.
+
+## Contact Display
+
+- Discord and Battle.net remain gated to connected pairs.
+- The open Duo chat header can show the peer's Discord and Battle.net when those values exist.
+- Inbox rows stay compact and do not display contact chips.
 
 ## Pagination
 

@@ -87,6 +87,24 @@ test("connected state is disabled", () => {
   });
 });
 
+test("connected state can deep-link into chat when a thread is available", () => {
+  const result = getInviteActionPresentation({
+    connectedHref: "/social/duos/thread-1",
+    inviteState: "connected",
+    isPending: false,
+    labels: {
+      connected: "Message",
+    },
+    viewerState: "signed_in",
+  });
+
+  assert.deepEqual(result, {
+    canSendInvite: false,
+    href: "/social/duos/thread-1",
+    label: "Message",
+  });
+});
+
 test("callers can override the idle label for LFG cards", () => {
   const result = getInviteActionPresentation({
     inviteState: "invite_to_play",

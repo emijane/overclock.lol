@@ -4,5 +4,6 @@ export type ProfileInviteState =
   | "connected";
 
 export type LFGInviteStateMap = Record<string, ProfileInviteState>;
+export type LFGMessageHrefMap = Record<string, string>;
 
 export type InviteViewerState = "guest" | "profile_required" | "signed_in";
