@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 
+import { getChatThreadRealtimeRefreshState } from "@/lib/chat/chat-thread-realtime-state";
 import type { ChatMessageRecord, ChatParticipantIdentity } from "@/lib/chat/chat-types";
 import { createClient } from "@/lib/supabase/client";
 
@@ -47,6 +48,15 @@ export function ChatThreadRealtime({
   participants: ChatParticipantIdentity[];
   threadId: string;
 }) {
+  const handleRealtimeMessage = useEffectEvent((message: ChatMessageRecord) => {
+    onMessage(message);
+  });
+  const handleRealtimeChannelState = useEffectEvent(
+    (state: "errored" | "timed_out") => {
+      onChannelState?.(state);
+    }
+  );
+
   useEffect(() => {
     if (!threadId) {
       return;
@@ -78,24 +88,22 @@ export function ChatThreadRealtime({
           );
 
           if (message) {
-            onMessage(message);
+            handleRealtimeMessage(message);
           }
         }
       )
       .subscribe((status) => {
-        if (status === "CHANNEL_ERROR") {
-          onChannelState?.("errored");
-        } else if (status === "TIMED_OUT") {
-          onChannelState?.("timed_out");
-        } else if (status === "CLOSED") {
-          onChannelState?.("closed");
+        const nextState = getChatThreadRealtimeRefreshState(status);
+
+        if (nextState) {
+          handleRealtimeChannelState(nextState);
         }
       });
 
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [onChannelState, onMessage, participants, threadId]);
+  }, [participants, threadId]);
 
   return null;
 }
