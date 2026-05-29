@@ -143,7 +143,7 @@ export function ChatThreadPane({
   }
 
   return (
-    <div className="flex min-h-[34rem] flex-1 flex-col">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
       <ChatThreadRealtime
         onChannelState={handleRealtimeChannelState}
         onMessage={handleRealtimeMessage}
