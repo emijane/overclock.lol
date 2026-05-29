@@ -39,6 +39,7 @@
 
 - Verify the first load returns the newest 50 messages.
 - Verify older-message pagination returns the next older slice without duplicates or gaps.
+- Verify same-day message timestamps render as time-only, prior-day same-year messages render as `Mon Day`, and prior-year messages render as `Mon Day, Year`.
 
 ## Realtime
 

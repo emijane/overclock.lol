@@ -75,6 +75,12 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 - Realtime filter is `thread_id=eq.<threadId>`.
 - V1 does not include inbox-wide realtime or unread counts.
 
+## Message Timestamp Display
+
+- Inline thread timestamps use the viewer's local browser timezone.
+- Messages from the current local calendar day show time only.
+- Messages from a previous local day show a compact date, with the year added for prior-year messages.
+
 ## Pagination
 
 - Initial load fetches the newest 50 messages.

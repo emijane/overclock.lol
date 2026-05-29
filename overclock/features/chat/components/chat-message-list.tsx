@@ -2,10 +2,31 @@
 
 import type { ChatMessageRecord } from "@/lib/chat/chat-types";
 
-function formatMessageTime(value: string) {
-  return new Date(value).toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
+export function getFormattedMessageTimestamp(value: string, now = new Date()) {
+  const date = new Date(value);
+
+  if (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+  ) {
+    return date.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+
+  if (date.getFullYear() === now.getFullYear()) {
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+  }
+
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
@@ -66,7 +87,7 @@ export function ChatMessageList({
                   {message.body}
                 </p>
                 <p className="oc-profile-meta mt-1.5 text-[10px] text-zinc-500">
-                  {formatMessageTime(message.createdAt)}
+                  {getFormattedMessageTimestamp(message.createdAt)}
                 </p>
               </div>
             </div>
