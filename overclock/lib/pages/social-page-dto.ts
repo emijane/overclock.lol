@@ -1,6 +1,7 @@
 import { CHAT_PAGE_SIZE } from "@/lib/chat/chat-constants";
 import {
   getChatThreadMessagesRecord,
+  getSocialThreadRecord,
   getSocialThreadsRecord,
 } from "@/lib/chat/chat-records";
 import type { ChatThreadPageDto, SocialPageDto } from "@/lib/chat/chat-types";
@@ -37,29 +38,35 @@ export async function getSocialPageDto(): Promise<SocialPageDto | null> {
 export async function getChatThreadPageDto(
   threadId: string
 ): Promise<ChatThreadPageDto | null> {
-  const socialDto = await getSocialPageDto();
+  const { user, profile } = await getRequiredViewer();
 
-  if (!socialDto) {
+  if (!user || !profile) {
     return null;
   }
 
-  const activeThread = socialDto.threads.find((thread) => thread.id === threadId);
+  const [threadsResult, activeThread, initialMessages] = await Promise.all([
+    getSocialThreadsRecord(),
+    getSocialThreadRecord(threadId),
+    getChatThreadMessagesRecord({
+      limit: CHAT_PAGE_SIZE,
+      threadId,
+    }),
+  ]);
 
-  if (!activeThread) {
-    return null;
-  }
-
-  const initialMessages = await getChatThreadMessagesRecord({
-    limit: CHAT_PAGE_SIZE,
-    threadId,
-  });
-
-  if (!initialMessages.isAccessible) {
+  if (!activeThread || !initialMessages.isAccessible) {
     return null;
   }
 
   return {
-    ...socialDto,
+    threads: threadsResult.threads,
+    viewer: {
+      avatarUrl:
+        profile.discord_avatar_url ??
+        getProfileAvatarUrl(profile.avatar_url, profile.avatar_updated_at),
+      displayName: profile.display_name,
+      profileId: profile.id,
+      username: profile.username,
+    },
     activeThread,
     initialMessages,
   };

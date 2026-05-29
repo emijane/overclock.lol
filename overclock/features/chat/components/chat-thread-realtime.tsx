@@ -37,10 +37,12 @@ function toRealtimeMessage(
 }
 
 export function ChatThreadRealtime({
+  onChannelState,
   onMessage,
   participants,
   threadId,
 }: {
+  onChannelState?: (state: "closed" | "errored" | "timed_out") => void;
   onMessage: (message: ChatMessageRecord) => void;
   participants: ChatParticipantIdentity[];
   threadId: string;
@@ -80,12 +82,20 @@ export function ChatThreadRealtime({
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          onChannelState?.("errored");
+        } else if (status === "TIMED_OUT") {
+          onChannelState?.("timed_out");
+        } else if (status === "CLOSED") {
+          onChannelState?.("closed");
+        }
+      });
 
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [onMessage, participants, threadId]);
+  }, [onChannelState, onMessage, participants, threadId]);
 
   return null;
 }

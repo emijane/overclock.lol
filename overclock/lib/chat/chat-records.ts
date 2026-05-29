@@ -134,6 +134,19 @@ export async function getSocialThreadsRecord() {
   return { threads };
 }
 
+export async function getSocialThreadRecord(threadId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_social_thread_dto", {
+    p_thread_id: threadId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return normalizeThread(data);
+}
+
 export async function getChatThreadMessagesRecord(input: {
   beforeCreatedAt?: string | null;
   beforeId?: string | null;

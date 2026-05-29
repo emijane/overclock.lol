@@ -15,6 +15,7 @@ The main risks for v1 chat are:
 - RLS is the primary read boundary.
 - RPC is the primary write boundary.
 - Normal users do not get direct insert/update/delete access to `chat_messages`.
+- Internal helper functions used by policies stay private to SQL and are not exposed as authenticated public RPC surfaces.
 - The client sends `thread_id` and `body` only.
 - The sender comes from `auth.uid()` inside the database.
 
@@ -52,6 +53,7 @@ If any of those checks fail, the message is not inserted.
 - Realtime listens to `chat_messages` only.
 - Subscriptions are filtered by `thread_id`.
 - V1 does not subscribe to an inbox-wide channel.
+- The client should treat subscription error/closed states as a thread refresh signal so access revocation after block/archive is handled intentionally.
 
 ## Access Matrix
 
@@ -74,6 +76,7 @@ If any of those checks fail, the message is not inserted.
 - Two open tabs must not bypass a newly applied block or disconnect.
 - Old messages stay readable after disconnect, but not after block.
 - Direct inserts into `chat_messages` must fail for authenticated users.
+- Inbox reads should not perform per-thread lock recomputation work on every page load.
 
 ## Why Direct Inserts Are Forbidden
 

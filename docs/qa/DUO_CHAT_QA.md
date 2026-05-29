@@ -11,6 +11,7 @@
 - Verify a participant can read an active thread.
 - Verify a non-participant cannot read thread rows, participant rows, or messages.
 - Verify an archived thread disappears from normal reads.
+- Verify internal helper functions are not exposed as authenticated public RPC entrypoints.
 
 ## Messaging
 
@@ -43,12 +44,14 @@
 
 - Verify only messages for the active `thread_id` appear.
 - Verify unrelated thread messages do not show up in the open thread.
+- Verify subscription error/closed states trigger a thread refresh path rather than leaving stale access indefinitely.
 
 ## Multi-Tab
 
 - Open the same thread in two tabs.
 - Remove the connection in one tab and verify the other tab becomes read-only on next send.
 - Apply a block in one tab and verify the other tab loses access correctly.
+- Verify the thread route refreshes or becomes inaccessible correctly if realtime reports channel failure after access changes.
 
 ## Regression Checklist
 
@@ -56,5 +59,6 @@
 - `/social/duos/[threadId]` matches the current Overclock panel and spacing patterns.
 - Sidebar navigation includes `Social`.
 - `/connections` still behaves as before.
+- Direct thread loads do not depend on inbox-wide lock recomputation work.
 - `npm run verify` passes.
 - Production build passes.

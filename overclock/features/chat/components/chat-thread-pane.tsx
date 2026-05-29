@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeftIcon } from "lucide-react";
 
 import { loadOlderChatMessages, sendChatMessage } from "@/features/chat/actions";
+import { mergeChatMessages } from "@/lib/chat/chat-message-state";
 import { ChatComposer } from "@/features/chat/components/chat-composer";
 import { ChatMessageList } from "@/features/chat/components/chat-message-list";
 import { ChatThreadRealtime } from "@/features/chat/components/chat-thread-realtime";
@@ -15,25 +16,6 @@ import type {
   ChatThreadMessagesPage,
   ChatThreadSummary,
 } from "@/lib/chat/chat-types";
-
-function mergeMessages(current: ChatMessageRecord[], incoming: ChatMessageRecord[]) {
-  const byId = new Map(current.map((message) => [message.id, message]));
-
-  for (const message of incoming) {
-    byId.set(message.id, message);
-  }
-
-  return Array.from(byId.values()).sort((a, b) => {
-    const createdDiff =
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-
-    if (createdDiff !== 0) {
-      return createdDiff;
-    }
-
-    return a.id.localeCompare(b.id);
-  });
-}
 
 function getLockBannerCopy(lockReason: ChatThreadSummary["lockReason"]) {
   if (lockReason === "connection_removed") {
@@ -77,7 +59,12 @@ export function ChatThreadPane({
   const oldestMessage = messages[0] ?? null;
 
   function handleRealtimeMessage(message: ChatMessageRecord) {
-    setMessages((current) => mergeMessages(current, [message]));
+    setMessages((current) => mergeChatMessages(current, [message]));
+  }
+
+  function handleRealtimeChannelState() {
+    setErrorMessage("Chat availability changed. Refreshing the thread...");
+    router.refresh();
   }
 
   function handleLoadOlder() {
@@ -98,7 +85,7 @@ export function ChatThreadPane({
       }
 
       setHasMore(page.hasMore);
-      setMessages((current) => mergeMessages(current, page.messages));
+      setMessages((current) => mergeChatMessages(current, page.messages));
     });
   }
 
@@ -116,7 +103,7 @@ export function ChatThreadPane({
 
       if (result.status === "success") {
         setComposerValue("");
-        setMessages((current) => mergeMessages(current, [result.message]));
+        setMessages((current) => mergeChatMessages(current, [result.message]));
         return;
       }
 
@@ -156,6 +143,7 @@ export function ChatThreadPane({
   return (
     <div className="flex min-h-[34rem] flex-1 flex-col">
       <ChatThreadRealtime
+        onChannelState={handleRealtimeChannelState}
         onMessage={handleRealtimeMessage}
         participants={participants}
         threadId={thread.id}
