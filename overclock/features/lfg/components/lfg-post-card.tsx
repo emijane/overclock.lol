@@ -281,7 +281,13 @@ export function LFGPostCard({
 
           <div className="mt-1 min-w-0">
             <h2 className="oc-profile-display line-clamp-2 min-h-[2.6rem] text-[15px] font-semibold leading-[1.3] tracking-[-0.025em] text-zinc-50">
-              {post.title}
+              {viewHref ? (
+                <Link href={viewHref} className="transition hover:text-white">
+                  {post.title}
+                </Link>
+              ) : (
+                post.title
+              )}
             </h2>
           </div>
 

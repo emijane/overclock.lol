@@ -74,7 +74,7 @@ export function LFGPostActionsMenu({
   postId,
   returnPath,
   viewHref,
-  viewLabel = "View Section",
+  viewLabel = "View post",
 }: LFGPostActionsMenuProps) {
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [messageType, setMessageType] = useState<"error" | "success">("success");

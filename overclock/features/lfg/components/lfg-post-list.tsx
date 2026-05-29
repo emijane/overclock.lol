@@ -170,6 +170,7 @@ export function LFGPostList({
                 post={post}
                 returnPath={`/${post.lfgType}`}
                 tone={tone}
+                viewHref={post.lfgType === "duos" ? `/duos/${post.id}` : undefined}
                 viewerState={viewerState}
               />
             </div>

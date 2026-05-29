@@ -796,6 +796,106 @@ export async function getStackPostDetailById(
   });
 }
 
+export type DuoPostDetail = {
+  expiresAt: string | null;
+  isActive: boolean;
+  isExpired: boolean;
+  post: LFGPost;
+};
+
+async function getDuoPostDetailByIdInternal(input: {
+  postId: string;
+  viewerProfileId?: string | null;
+}): Promise<DuoPostDetail | null> {
+  const supabase = await createClient();
+  const nowIso = new Date().toISOString();
+  const blockedProfileIdsPromise = input.viewerProfileId
+    ? getBlockedProfileIdsForViewerTrusted({
+        currentProfileId: input.viewerProfileId,
+        perfLabel: "getDuoPostDetailById blocks",
+        viewerId: input.viewerProfileId,
+      })
+    : Promise.resolve<string[]>([]);
+
+  const postQueryPromise = supabase
+    .from("lfg_posts")
+    .select(
+      [
+        "id",
+        "profile_id",
+        "lfg_type",
+        "game_mode",
+        "title",
+        "status",
+        "looking_for_roles",
+        "posting_role",
+        "snapshot_platform",
+        "snapshot_rank_tier",
+        "snapshot_rank_division",
+        "snapshot_region",
+        "snapshot_timezone",
+        "hero_pool_snapshot",
+        "created_at",
+        "expires_at",
+        "profiles:profile_id(username,display_name,avatar_url,avatar_updated_at,cover_image_path,cover_image_updated_at,last_seen_at,is_looking_to_play,hide_offline_presence)",
+      ].join(",")
+    )
+    .eq("id", input.postId)
+    .eq("lfg_type", "duos")
+    .neq("status", "archived")
+    .limit(1)
+    .maybeSingle();
+
+  const [blockedProfileIds, { data: postData, error: postError }] = await Promise.all([
+    blockedProfileIdsPromise,
+    postQueryPromise,
+  ]);
+
+  if (postError) {
+    throw postError;
+  }
+
+  const postRow =
+    postData && typeof postData === "object" && !Array.isArray(postData)
+      ? (postData as Record<string, unknown>)
+      : null;
+
+  if (!postRow) {
+    return null;
+  }
+
+  const authorProfileId =
+    typeof postRow.profile_id === "string" ? postRow.profile_id : null;
+
+  if (authorProfileId && blockedProfileIds.includes(authorProfileId)) {
+    return null;
+  }
+
+  const badgesByProfileId = await loadBadgesByProfileId(
+    supabase,
+    [postRow],
+    "getDuoPostDetailById"
+  );
+  const post = normalizeLFGPostRow(
+    postRow,
+    authorProfileId ? (badgesByProfileId.get(authorProfileId) ?? []) : [],
+    []
+  );
+
+  const expiresAt = typeof postRow.expires_at === "string" ? postRow.expires_at : null;
+  const isExpired = Boolean(expiresAt && expiresAt <= nowIso);
+  const isActive = post.status === "active" && !isExpired;
+
+  return { expiresAt, isActive, isExpired, post };
+}
+
+export async function getDuoPostDetailById(
+  postId: string,
+  viewerProfileId?: string | null
+): Promise<DuoPostDetail | null> {
+  return getDuoPostDetailByIdInternal({ postId, viewerProfileId });
+}
+
 export async function getStackPostById(
   postId: string,
   viewerProfileId?: string | null
