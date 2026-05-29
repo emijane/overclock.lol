@@ -45,8 +45,8 @@ export function ChatMessageList({
 }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="border-b border-white/[0.06] px-4 py-2.5 sm:px-5">
-        {hasMore ? (
+      {hasMore ? (
+        <div className="border-b border-white/[0.06] px-4 py-2.5 sm:px-5">
           <button
             type="button"
             onClick={onLoadOlder}
@@ -55,14 +55,10 @@ export function ChatMessageList({
           >
             {isLoadingMore ? "Loading..." : "Load older messages"}
           </button>
-        ) : (
-          <p className="oc-profile-meta text-[10px] uppercase tracking-[0.14em] text-zinc-500">
-            Start of chat
-          </p>
-        )}
-      </div>
+        </div>
+      ) : null}
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 sm:px-5">
+      <div className="oc-sidebar-scroll flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 sm:px-5">
         {messages.map((message) => {
           const isOwnMessage = message.sender.profileId === viewerProfileId;
 

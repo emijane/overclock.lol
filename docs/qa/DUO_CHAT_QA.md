@@ -42,6 +42,7 @@
 - Verify the first load returns the newest 50 messages.
 - Verify older-message pagination returns the next older slice without duplicates or gaps.
 - Verify same-day message timestamps render as time-only, prior-day same-year messages render as `Mon Day`, and prior-year messages render as `Mon Day, Year`.
+- Verify `Start of chat` does not appear once the oldest loaded page is visible.
 
 ## Realtime
 
@@ -61,6 +62,8 @@
 
 - `/social` matches the current Overclock workspace layout.
 - `/social/duos/[threadId]` matches the current Overclock panel and spacing patterns.
+- The thread header renders as compact identity text on one line before the contact chips.
+- The inbox list and message history both use the themed internal scrollbar treatment.
 - Sidebar navigation includes `Social`.
 - `/connections` still behaves as before.
 - Direct thread loads do not depend on inbox-wide lock recomputation work.

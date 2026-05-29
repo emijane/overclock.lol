@@ -29,7 +29,7 @@ export function ChatThreadList({
 }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-white/[0.06] px-4 py-4 sm:px-5">
+      <div className="border-b border-white/[0.06] px-4 py-3 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="oc-profile-meta inline-flex h-6 items-center rounded-[9px] border border-white/[0.07] bg-black/30 px-2.5 text-[9px] font-medium uppercase tracking-[0.08em] text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
             Inbox
@@ -38,15 +38,9 @@ export function ChatThreadList({
             {threads.length}
           </span>
         </div>
-        <h2 className="oc-profile-display mt-2 text-[15px] font-semibold tracking-[-0.03em] text-zinc-100">
-          Duo chats
-        </h2>
-        <p className="oc-profile-meta mt-1 text-[11px] leading-5 text-zinc-500">
-          Active conversations and read-only history live here.
-        </p>
       </div>
 
-      <ul className="min-h-0 flex-1 overflow-y-auto px-2 py-2 sm:px-2.5">
+      <ul className="oc-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-2 py-1.5 sm:px-2.5">
         {threads.map((thread) => {
           const lockCopy = getLockCopy(thread.lockReason);
           const isActive = thread.id === activeThreadId;
@@ -60,7 +54,7 @@ export function ChatThreadList({
               <Link
                 href={`/social/duos/${thread.id}`}
                 aria-current={isActive ? "page" : undefined}
-                className={`block rounded-[12px] border px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] transition sm:px-4 ${
+                className={`block rounded-[12px] border px-3.5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] transition sm:px-4 ${
                   isActive
                     ? "border-white/[0.10] bg-white/[0.07]"
                     : "border-transparent bg-transparent hover:border-white/[0.06] hover:bg-white/[0.03]"
@@ -83,7 +77,7 @@ export function ChatThreadList({
                     </p>
                   </div>
                   {thread.lastMessageAt ? (
-                    <span className="oc-profile-meta shrink-0 rounded-[8px] border border-white/[0.05] bg-black/20 px-1.5 py-0.5 text-[10px] text-zinc-500">
+                    <span className="oc-profile-meta shrink-0 rounded-[8px] border border-white/[0.04] bg-black/15 px-1.5 py-0.5 text-[10px] text-zinc-600">
                       {new Date(thread.lastMessageAt).toLocaleDateString(undefined, {
                         month: "short",
                         day: "numeric",

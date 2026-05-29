@@ -161,36 +161,36 @@ export function ChatThreadPane({
         </Link>
       </div>
 
-      <div className="border-b border-white/[0.06] px-4 py-3.5 sm:px-5">
+      <div className="border-b border-white/[0.06] px-4 py-2.5 sm:px-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-2">
-              <h2 className="oc-profile-display truncate text-[17px] font-semibold tracking-[-0.03em] text-zinc-100">
+            <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+              <h2 className="oc-profile-display truncate text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
                 {thread.peer.displayName ?? thread.peer.username ?? "Player"}
               </h2>
               {thread.peer.username ? (
                 <Link
                   href={`/u/${thread.peer.username}`}
-                  className="oc-profile-meta text-[11px] text-zinc-500 transition hover:text-zinc-300"
+                  className="oc-profile-meta shrink-0 text-[11px] text-zinc-500 transition hover:text-zinc-300"
                 >
                   @{thread.peer.username}
                 </Link>
               ) : null}
+              <p className="oc-profile-meta min-w-0 truncate text-[11px] text-zinc-400">
+                - {thread.sourcePostTitle ?? "Accepted Duo chat"}
+              </p>
             </div>
-            <p className="oc-profile-meta mt-1 text-[11px] leading-5 text-zinc-400">
-              {thread.sourcePostTitle ?? "Accepted Duo chat"}
-            </p>
             {thread.peer.discordUsername || thread.peer.battlenetHandle ? (
-              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px]">
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px]">
                 {thread.peer.discordUsername ? (
-                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-[3px] text-zinc-300">
-                    <FaDiscord className="oc-social-discord h-3 w-3 shrink-0" />
+                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[8px] border border-white/[0.06] bg-white/[0.02] px-2 py-[2px] text-zinc-300">
+                    <FaDiscord className="oc-social-discord h-[11px] w-[11px] shrink-0" />
                     {thread.peer.discordUsername}
                   </span>
                 ) : null}
                 {thread.peer.battlenetHandle ? (
-                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[9px] border border-white/[0.06] bg-white/[0.02] px-2 py-[3px] text-zinc-300">
-                    <SiBattledotnet className="oc-social-battlenet h-3 w-3 shrink-0" />
+                  <span className="oc-profile-meta inline-flex items-center gap-1 rounded-[8px] border border-white/[0.06] bg-white/[0.02] px-2 py-[2px] text-zinc-300">
+                    <SiBattledotnet className="oc-social-battlenet h-[11px] w-[11px] shrink-0" />
                     {thread.peer.battlenetHandle}
                   </span>
                 ) : null}

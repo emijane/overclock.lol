@@ -86,6 +86,7 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 ## Contact Display
 
 - Discord and Battle.net remain gated to connected pairs.
+- The open Duo chat header uses a compact single-line identity row with display name, `@username`, and source post title.
 - The open Duo chat header can show the peer's Discord and Battle.net when those values exist.
 - Inbox rows stay compact and do not display contact chips.
 
@@ -94,6 +95,13 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 - Initial load fetches the newest 50 messages.
 - Older pages also use the same size of 50.
 - Pagination is cursor-based on `(created_at, id)`.
+- The thread does not render a `Start of chat` label once the oldest loaded page is reached.
+
+## Social Surface Chrome
+
+- The inbox list uses the shared site-themed scrollbar styling.
+- The open message history uses the same shared scrollbar styling.
+- The inbox header stays intentionally compact and avoids extra helper copy.
 
 ## Future Compatibility
 

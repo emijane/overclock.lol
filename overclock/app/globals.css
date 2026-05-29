@@ -371,11 +371,12 @@ summary {
 
 .oc-sidebar-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+  scrollbar-gutter: stable;
 }
 
 .oc-sidebar-scroll::-webkit-scrollbar {
-  width: 3px;
+  width: 6px;
 }
 
 .oc-sidebar-scroll::-webkit-scrollbar-track {
@@ -383,12 +384,14 @@ summary {
 }
 
 .oc-sidebar-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid transparent;
+  background-clip: padding-box;
   border-radius: 9999px;
 }
 
 .oc-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* Search input chrome reset */
