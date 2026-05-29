@@ -14,6 +14,8 @@ featured videos, and create LFG posts.
 - `/account/competitive` manages per-role Competitive Profile setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private LFG management page for active and past posts.
+- `/social` is the private social inbox for accepted Duo chats.
+- `/social/duos/[threadId]` renders the accepted Duo chat thread and composer state.
 - `/lfg` is the main LFG hub.
 - `/duos` is the browse-first duo feed with server-rendered filters, feed search, and
   a dedicated create route at `/duos/create`.
@@ -86,6 +88,8 @@ npm run verify
 - The global header currently exposes Duos and Stacks navigation plus placeholder
   notifications for signed-in users.
 - Root `docs/legal/*` is intentionally the source of truth for legal page content.
+- Duo chat is currently invite-anchored to accepted Duo `play_invites`, with
+  reads protected by RLS and message sends restricted to server-side RPCs.
 
 ## Next Steps
 

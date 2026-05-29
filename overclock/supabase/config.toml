@@ -86,7 +86,6 @@ enroll_enabled = false
 verify_enabled = false
 otp_length = 6
 template = "Your code is {{ .Code }}"
-otp_expiry = 60
 
 [auth.sessions]
 timebox = "0"

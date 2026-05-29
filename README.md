@@ -56,6 +56,8 @@ callback route: `/auth/callback`.
 - `/account/competitive` - saved LFG preferences and competitive role setup
 - `/account/hero-pools` - redirects to competitive setup
 - `/lfg` - main LFG shell
+- `/social` - private social inbox for accepted Duo chats
+- `/social/duos/[threadId]` - accepted Duo chat thread view
 - `/duos` - browse-first duo feed
 - `/duos/create` - dedicated duo post composer
 - `/stacks` - stacks feed
@@ -70,7 +72,7 @@ Roadmap-only, not currently shipped:
 ## Status
 
 Active work is currently centered on profile quality, onboarding polish, hero pools,
-LFG quality, and general codebase cleanup.
+LFG quality, Duo chat foundation work, and general codebase cleanup.
 
 ## Stacks Notes
 

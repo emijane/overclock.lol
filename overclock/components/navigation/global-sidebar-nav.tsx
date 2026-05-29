@@ -62,6 +62,12 @@ const SIGNED_IN_NAV_SECTIONS: GlobalNavSection[] = [
     heading: "/ SOCIAL",
     items: [
       {
+        href: "/social",
+        icon: MessageSquareIcon,
+        label: "Social",
+        match: (pathname) => pathname === "/social" || pathname.startsWith("/social/"),
+      },
+      {
         href: "/connections",
         icon: UsersRoundIcon,
         label: "Connections",

@@ -40,6 +40,8 @@ The current product shape is profile-first rather than feed-first:
 - `/account/competitive` manages per-role rank and hero setup.
 - `/account/hero-pools` redirects to `/account/competitive` for old links.
 - `/account/posts` is the private owner-only surface for managing LFG posts.
+- `/social` is the signed-in inbox route for accepted Duo chats.
+- `/social/duos/[threadId]` is the accepted Duo chat thread surface.
 - `/u/[username]` renders the public player profile.
 - `/lfg` is the top-level LFG hub.
 - `/duos` is now a browse-first LFG feed with first-pass URL-based filters and
@@ -127,7 +129,8 @@ These are already visible in the codebase today:
   still live in `play_invites`, accepted invites now upsert durable active rows
   in `profile_connections`, `/matches` renders active connections plus pending
   invite management, `/connections` exposes the same connection data inside the
-  account workspace, public profiles show connection counts, accepted players
+  account workspace, `/social` now hosts accepted Duo chat threads anchored to
+  accepted Duo invites, public profiles show connection counts, accepted players
   can unmatch, and the bell plus matches surfaces refresh on realtime invite
   changes.
 
@@ -148,8 +151,9 @@ These are already visible in the codebase today:
 - Add validation helpers for external profile URLs and richer profile fields.
 - Build rank verification for high-rank role claims and related trust display.
 - Continue polishing Invite to Play and Connections UX, including richer edge
-  cases, clearer invite state messaging, and any remaining cleanup across the
-  existing profile, feed, bell, and connections surfaces.
+  cases, clearer invite state messaging, Duo chat lock-state edge cases, and
+  any remaining cleanup across the existing profile, feed, bell, connections,
+  and `/social` surfaces.
 - Add optional cleanup or backfill for expired LFG posts if explicit closed
   status becomes important for analytics, moderation, or history.
 
