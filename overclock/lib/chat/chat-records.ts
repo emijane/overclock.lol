@@ -9,6 +9,7 @@ import type {
   ChatThreadMessagesPage,
   ChatThreadSummary,
 } from "@/lib/chat/chat-types";
+import { resolveProfileMediaUrl } from "@/lib/profiles/profile-media";
 import { createClient } from "@/lib/supabase/server";
 
 function isMissingRpcError(
@@ -52,7 +53,10 @@ function parseIdentity(input: {
   }
 
   return {
-    avatarUrl: typeof input.avatarUrl === "string" ? input.avatarUrl : null,
+    avatarUrl:
+      typeof input.avatarUrl === "string"
+        ? resolveProfileMediaUrl(input.avatarUrl)
+        : null,
     battlenetHandle: null,
     displayName:
       typeof input.displayName === "string" ? input.displayName : null,

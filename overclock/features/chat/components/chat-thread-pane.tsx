@@ -7,6 +7,7 @@ import { ChevronLeftIcon } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
 import { SiBattledotnet } from "react-icons/si";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { loadOlderChatMessages, sendChatMessage } from "@/features/chat/actions";
 import { mergeChatMessages } from "@/lib/chat/chat-message-state";
 import { ChatComposer } from "@/features/chat/components/chat-composer";
@@ -33,6 +34,13 @@ function getLockBannerCopy(lockReason: ChatThreadSummary["lockReason"]) {
   }
 
   return null;
+}
+
+function getAvatarFallback(
+  displayName: string | null,
+  username: string | null
+) {
+  return (displayName ?? username ?? "P").slice(0, 1).toUpperCase();
 }
 
 export function ChatThreadPane({
@@ -162,8 +170,20 @@ export function ChatThreadPane({
       </div>
 
       <div className="border-b border-white/[0.06] px-4 py-2.5 sm:px-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
+        <div className="flex items-start gap-3">
+          <Avatar className="h-10 w-10 border border-white/[0.06] bg-black/30">
+            {thread.peer.avatarUrl ? (
+              <AvatarImage
+                src={thread.peer.avatarUrl}
+                alt={`${thread.peer.displayName ?? thread.peer.username ?? "Player"} avatar`}
+              />
+            ) : null}
+            <AvatarFallback className="bg-zinc-900 text-xs text-zinc-100">
+              {getAvatarFallback(thread.peer.displayName, thread.peer.username)}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="min-w-0 flex-1">
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
               <h2 className="oc-profile-display truncate text-[16px] font-semibold tracking-[-0.03em] text-zinc-100">
                 {thread.peer.displayName ?? thread.peer.username ?? "Player"}

@@ -21,6 +21,11 @@
 - Verify direct inserts into `chat_messages` fail for authenticated users.
 - Verify rate limiting blocks rapid sends.
 - Verify connected Duo posts expose a `Message` CTA that opens the correct thread.
+- Verify social chat prefers the peer's current uploaded profile avatar when one exists.
+- Verify chat avatars render when the participant snapshot stores a profile-media path.
+- Verify chat avatars also render when the participant snapshot stores an absolute remote URL.
+- Verify inbox rows show the peer avatar when present and a clean fallback when absent.
+- Verify the open thread header shows the peer avatar to the left of the compact identity row.
 - Verify the open thread header shows Discord and Battle.net only when the pair is connected and those values exist.
 
 ## Connection Removal

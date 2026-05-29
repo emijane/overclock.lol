@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ChatThreadSummary } from "@/lib/chat/chat-types";
 
 function getLockCopy(lockReason: ChatThreadSummary["lockReason"]) {
@@ -18,6 +19,13 @@ function getLockCopy(lockReason: ChatThreadSummary["lockReason"]) {
   }
 
   return null;
+}
+
+function getAvatarFallback(
+  displayName: string | null,
+  username: string | null
+) {
+  return (displayName ?? username ?? "P").slice(0, 1).toUpperCase();
 }
 
 export function ChatThreadList({
@@ -49,30 +57,47 @@ export function ChatThreadList({
                     : "border-transparent bg-transparent hover:border-white/[0.06] hover:bg-white/[0.03]"
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <p className="oc-profile-display truncate text-[13px] font-semibold tracking-[-0.02em] text-zinc-100">
-                        {thread.peer.displayName ?? thread.peer.username ?? "Player"}
+                <div className="flex items-start gap-3">
+                  <Avatar className="mt-0.5 h-9 w-9 border border-white/[0.06] bg-black/30">
+                    {thread.peer.avatarUrl ? (
+                      <AvatarImage
+                        src={thread.peer.avatarUrl}
+                        alt={`${thread.peer.displayName ?? thread.peer.username ?? "Player"} avatar`}
+                      />
+                    ) : null}
+                    <AvatarFallback className="bg-zinc-900 text-[11px] text-zinc-100">
+                      {getAvatarFallback(
+                        thread.peer.displayName,
+                        thread.peer.username
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <p className="oc-profile-display truncate text-[13px] font-semibold tracking-[-0.02em] text-zinc-100">
+                          {thread.peer.displayName ?? thread.peer.username ?? "Player"}
+                        </p>
+                        {lockCopy ? (
+                          <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-400">
+                            {lockCopy}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="oc-profile-meta mt-1 truncate text-[11px] leading-5 text-zinc-400">
+                        {secondaryLine}
                       </p>
-                      {lockCopy ? (
-                        <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-400">
-                          {lockCopy}
-                        </span>
-                      ) : null}
                     </div>
-                    <p className="oc-profile-meta mt-1 truncate text-[11px] leading-5 text-zinc-400">
-                      {secondaryLine}
-                    </p>
+                    {thread.lastMessageAt ? (
+                      <span className="oc-profile-meta mt-0.5 shrink-0 rounded-[8px] border border-white/[0.04] bg-black/15 px-1.5 py-0.5 text-[10px] text-zinc-600">
+                        {new Date(thread.lastMessageAt).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    ) : null}
                   </div>
-                  {thread.lastMessageAt ? (
-                    <span className="oc-profile-meta shrink-0 rounded-[8px] border border-white/[0.04] bg-black/15 px-1.5 py-0.5 text-[10px] text-zinc-600">
-                      {new Date(thread.lastMessageAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                  ) : null}
                 </div>
               </Link>
             </li>

@@ -40,6 +40,18 @@ function buildStorageUrl(path: string) {
   ).toString();
 }
 
+export function resolveProfileMediaUrl(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  return buildStorageUrl(value);
+}
+
 export function getProfileCoverUrl(
   coverImagePath: string | null,
   coverImageUpdatedAt: string | null
@@ -68,7 +80,7 @@ export function getProfileAvatarUrl(
   avatarUpdatedAt: string | null
 ) {
   const path = avatarUrl ?? PROFILE_AVATAR_DEFAULT_PATH;
-  const base = buildStorageUrl(path);
+  const base = resolveProfileMediaUrl(path);
 
   if (!base) {
     return null;

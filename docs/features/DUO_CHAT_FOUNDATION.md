@@ -85,6 +85,11 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 
 ## Contact Display
 
+- Chat participant avatar snapshots can come from either stored profile-media paths or legacy absolute avatar URLs.
+- The social chat page prefers the peer's current uploaded profile avatar when it exists, then falls back to the chat snapshot avatar value.
+- The chat client normalizes those avatar values before rendering.
+- Inbox rows can show the peer avatar using the participant avatar snapshot stored on the thread.
+- The open Duo chat header can show the peer avatar to the left of the compact identity row.
 - Discord and Battle.net remain gated to connected pairs.
 - The open Duo chat header uses a compact single-line identity row with display name, `@username`, and source post title.
 - The open Duo chat header can show the peer's Discord and Battle.net when those values exist.
