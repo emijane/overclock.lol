@@ -21,9 +21,17 @@ export function SocialPageView({
         <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
           Social
         </h1>
+        {threads.length > 0 ? (
+          <div className="flex items-center gap-2">
+            <span className="oc-profile-meta inline-flex h-6 items-center rounded-[9px] border border-white/[0.07] bg-black/30 px-2.5 text-[9px] font-medium uppercase tracking-[0.08em] text-zinc-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+              Inbox
+            </span>
+            <span className="oc-profile-meta text-[10px] text-zinc-600">
+              {threads.length}
+            </span>
+          </div>
+        ) : null}
       </div>
-
-      <div className="border-t border-white/[0.05]" />
 
       {threads.length === 0 ? (
         <div className="grid min-h-0 flex-1 place-items-center px-5 py-10 text-center sm:px-6">
