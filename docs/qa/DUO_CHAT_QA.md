@@ -67,6 +67,8 @@
 
 - `/social` matches the current Overclock workspace layout.
 - `/social/duos/[threadId]` matches the current Overclock panel and spacing patterns.
+- The social chat panel keeps a fixed viewport-bounded height regardless of thread length.
+- The composer auto-grows until its height cap, then scrolls internally instead of expanding the page.
 - The thread header renders as compact identity text on one line before the contact chips.
 - The inbox list and message history both use the themed internal scrollbar treatment.
 - Sidebar navigation includes `Social`.

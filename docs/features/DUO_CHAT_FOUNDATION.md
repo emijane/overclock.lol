@@ -104,9 +104,11 @@ Ship the smallest secure private chat foundation for accepted Duo matches.
 
 ## Social Surface Chrome
 
+- The `/social` shell uses a fixed viewport-bounded height rather than shrinking with message content.
 - The inbox list uses the shared site-themed scrollbar styling.
 - The open message history uses the same shared scrollbar styling.
 - The inbox header stays intentionally compact and avoids extra helper copy.
+- The composer auto-expands upward as the user types until it reaches a capped height, then becomes internally scrollable.
 
 ## Future Compatibility
 

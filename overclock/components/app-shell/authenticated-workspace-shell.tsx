@@ -46,14 +46,14 @@ export async function AuthenticatedWorkspaceShell({
         className="relative z-10 flex flex-1"
         maxWidthClassName={maxWidthClassName}
       >
-        <div className="mx-auto flex w-full max-w-[88rem] items-start gap-4 xl:gap-5">
+        <div className="mx-auto flex min-h-0 flex-1 w-full max-w-[88rem] items-stretch gap-4 xl:gap-5">
           <aside className="sticky top-8 hidden w-56 shrink-0 self-start lg:block">
             <div className="max-h-[calc(100vh-4rem)] overflow-x-hidden overflow-y-auto oc-sidebar-scroll">
               <GlobalSidebarNavServer />
             </div>
           </aside>
           <section
-            className={`flex min-w-0 flex-1 basis-0 flex-col ${centerClassName}`.trim()}
+            className={`flex min-h-0 min-w-0 flex-1 basis-0 self-stretch flex-col ${centerClassName}`.trim()}
           >
             {children}
           </section>

@@ -16,7 +16,7 @@ export function SocialPageView({
   viewer,
 }: SocialPageViewProps) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
       <div className="flex shrink-0 items-center justify-between px-5 py-3 sm:px-6">
         <h1 className="oc-profile-display text-[18px] font-bold tracking-[-0.03em] text-zinc-50">
           Social
@@ -49,7 +49,7 @@ export function SocialPageView({
           </div>
         </div>
       ) : (
-        <div className="grid min-h-0 flex-1 overflow-hidden lg:grid-cols-[18rem_minmax(0,1fr)]">
+        <div className="grid h-full min-h-0 flex-1 overflow-hidden lg:grid-cols-[18rem_minmax(0,1fr)]">
           <div
             className={`${activeThread ? "hidden lg:block" : "block"} min-h-0 overflow-hidden border-r border-white/[0.06] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.008)_100%)]`}
           >
