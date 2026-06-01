@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import {
   CHAT_THREAD_LOCK_REASONS,
   MAX_CHAT_MESSAGE_LENGTH,
@@ -9,8 +11,11 @@ import type {
   ChatThreadMessagesPage,
   ChatThreadSummary,
 } from "@/lib/chat/chat-types";
-import { resolveProfileMediaUrl } from "@/lib/profiles/profile-media";
-import { createClient } from "@/lib/supabase/server";
+import {
+  getProfileAvatarUrl,
+  resolveProfileMediaUrl,
+} from "@/lib/profiles/profile-media";
+import { getServerClient } from "@/lib/supabase/server";
 
 function isMissingRpcError(
   error: unknown,
@@ -44,7 +49,9 @@ function parseLockReason(value: unknown): ChatThreadLockReason | null {
 
 function parseIdentity(input: {
   avatarUrl: unknown;
+  battlenetHandle?: unknown;
   displayName: unknown;
+  discordUsername?: unknown;
   profileId: unknown;
   username: unknown;
 }): ChatParticipantIdentity | null {
@@ -57,13 +64,37 @@ function parseIdentity(input: {
       typeof input.avatarUrl === "string"
         ? resolveProfileMediaUrl(input.avatarUrl)
         : null,
-    battlenetHandle: null,
+    battlenetHandle:
+      typeof input.battlenetHandle === "string" ? input.battlenetHandle : null,
     displayName:
       typeof input.displayName === "string" ? input.displayName : null,
-    discordUsername: null,
+    discordUsername:
+      typeof input.discordUsername === "string" ? input.discordUsername : null,
     profileId: input.profileId,
     username: typeof input.username === "string" ? input.username : null,
   };
+}
+
+function resolvePreferredPeerAvatar(record: Record<string, unknown>) {
+  const currentAvatarUrl =
+    typeof record.peerAvatarPath === "string"
+      ? getProfileAvatarUrl(
+          record.peerAvatarPath,
+          typeof record.peerAvatarUpdatedAt === "string"
+            ? record.peerAvatarUpdatedAt
+            : null
+        )
+      : null;
+  const snapshotAvatarUrl =
+    typeof record.peerAvatarSnapshot === "string"
+      ? resolveProfileMediaUrl(record.peerAvatarSnapshot)
+      : null;
+  const discordAvatarUrl =
+    typeof record.peerDiscordAvatarUrl === "string"
+      ? record.peerDiscordAvatarUrl
+      : null;
+
+  return currentAvatarUrl ?? snapshotAvatarUrl ?? discordAvatarUrl ?? null;
 }
 
 function normalizeThread(value: unknown): ChatThreadSummary | null {
@@ -74,8 +105,10 @@ function normalizeThread(value: unknown): ChatThreadSummary | null {
   }
 
   const peer = parseIdentity({
-    avatarUrl: record.peerAvatarUrl,
+    avatarUrl: resolvePreferredPeerAvatar(record),
+    battlenetHandle: record.peerBattlenetHandle,
     displayName: record.peerDisplayName,
+    discordUsername: record.peerDiscordUsername,
     profileId: record.peerProfileId,
     username: record.peerUsername,
   });
@@ -140,8 +173,8 @@ function normalizeMessage(value: unknown): ChatMessageRecord | null {
   };
 }
 
-export async function getSocialThreadsRecord() {
-  const supabase = await createClient();
+const loadSocialThreadsRecord = cache(async () => {
+  const supabase = await getServerClient();
   const { data, error } = await supabase.rpc("get_social_threads_dto");
 
   if (error) {
@@ -155,6 +188,10 @@ export async function getSocialThreadsRecord() {
     : [];
 
   return { threads };
+});
+
+export async function getSocialThreadsRecord() {
+  return loadSocialThreadsRecord();
 }
 
 export async function getSocialThreadHrefMapByPeerProfileId(peerProfileIds?: string[]) {
@@ -187,7 +224,7 @@ export async function getSocialThreadHrefForInviteId(inviteId: string) {
 }
 
 export async function getSocialThreadRecord(threadId: string) {
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const { data, error } = await supabase.rpc("get_social_thread_dto", {
     p_thread_id: threadId,
   });
@@ -216,7 +253,7 @@ export async function getChatThreadMessagesRecord(input: {
   limit?: number;
   threadId: string;
 }): Promise<ChatThreadMessagesPage> {
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const { data, error } = await supabase.rpc("get_chat_thread_messages", {
     p_before_created_at: input.beforeCreatedAt ?? null,
     p_before_id: input.beforeId ?? null,
@@ -255,7 +292,7 @@ export async function sendChatMessageRecord(input: {
     } as const;
   }
 
-  const supabase = await createClient();
+  const supabase = await getServerClient();
   const { data, error } = await supabase.rpc("send_chat_message", {
     p_body: normalizedBody,
     p_thread_id: input.threadId,
